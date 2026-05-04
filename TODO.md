@@ -14,7 +14,7 @@
 
 Build a personal portfolio as an AI-agent-inspired workbench.
 
-Next step: convert current TanStack starter layout into planned vertical structure.
+Next step: project setup cleanup, then first static workbench shell.
 
 The MVP must work without a live LLM. The scripted agent experience should feel polished first. A real scoped `/ask` mode can be added later.
 
@@ -39,37 +39,22 @@ The MVP must work without a live LLM. The scripted agent experience should feel 
 - [x] Add formatting and linting.
 - [x] Add path aliases.
 - [x] Add hybrid no-FOUC theme toggle.
-- [ ] Create base vertical folder structure.
 - [ ] Add initial README.
 - [x] Add `PLAN.md`.
 - [x] Add `TODO.md`.
 
-## 1. Vertical source structure
+## 1. Architecture rules
 
-Create this initial structure:
+Use vertical source structure, but create each vertical only when real implementation needs it.
 
-```text
-src/
-  app/
-  workbench/
-  portfolio-agent/
-  portfolio-content/
-  code-viewer/
-  design-system/
-  shared-kernel/
-```
+Rules:
 
-Tasks:
-
-- [ ] Create `src/app`.
-- [ ] Create `src/workbench`.
-- [ ] Create `src/portfolio-agent`.
-- [ ] Create `src/portfolio-content`.
-- [ ] Create `src/code-viewer`.
-- [ ] Create `src/design-system`.
-- [ ] Create `src/shared-kernel`.
-- [ ] Add public `index.ts` files where useful.
-- [ ] Avoid top-level `components`, `hooks`, `utils`, `types`, or `services`.
+- Keep TanStack file routes in `src/routes`.
+- Do not create empty scaffolding folders.
+- Do not use barrel files.
+- Prefer repo-root `#/*` imports across folders.
+- Avoid top-level generic folders like `components`, `hooks`, `utils`, `types`, or `services`.
+- Keep feature-specific code inside its owning vertical, for example `src/workbench`, `src/portfolio-agent`, `src/portfolio-content`, `src/code-viewer`, or `src/design-system`.
 
 ## 2. Design system foundation
 
@@ -464,7 +449,7 @@ Recommended order:
 
 1. [x] Hybrid no-FOUC theme toggle.
 2. [ ] Project setup cleanup.
-3. [ ] Static workbench shell.
+3. [ ] Static workbench shell, creating `src/workbench` only when first workbench file is added.
 4. [ ] Portfolio content model.
 5. [ ] Artifact viewer.
 6. [ ] Scripted terminal commands.
@@ -530,8 +515,8 @@ Done:
 
 Next:
 
-- Convert current TanStack starter `src/routes` layout into planned vertical structure.
-- Create Base UI-backed `src/design-system` wrappers.
+- Fix project setup cleanup items, especially Vitest/Cloudflare config conflict.
+- Create Base UI-backed `src/design-system` wrappers only when first primitive is used.
 - Configure Motion usage in animation layer when implementing workbench UI.
 - Configure Shiki highlighting in code-viewer phase.
 
@@ -550,7 +535,8 @@ Done:
 
 Next:
 
-- Convert current TanStack starter `src/routes` layout into planned vertical structure.
+- Fix project setup cleanup items, especially Vitest/Cloudflare config conflict.
+- Start static workbench shell and create vertical folders only when real files are added.
 
 Blocked:
 

@@ -681,7 +681,7 @@ Tasks:
 - configure Tailwind;
 - install Base UI primitives;
 - add hybrid cookie-backed theme toggle with no FOUC before building main workbench shell;
-- create vertical folder structure;
+- create vertical folders only when implementation needs real files;
 - create initial design tokens.
 
 Done when:
@@ -873,8 +873,8 @@ Start here:
   - update DOM and cookie immediately on client;
   - do not call `router.invalidate()` for theme changes;
   - memoize theme context value.
-- [ ] Create vertical folder structure from current TanStack starter layout.
-- [ ] Build static workbench layout.
+- [ ] Fix project setup cleanup items, especially Vitest/Cloudflare config conflict.
+- [ ] Build static workbench layout and create `src/workbench` only when first workbench file is added.
 - [ ] Create `portfolio-content` artifact model.
 - [ ] Add three real project artifacts.
 - [ ] Implement tabbed artifact viewer.
