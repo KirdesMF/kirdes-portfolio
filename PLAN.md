@@ -680,6 +680,7 @@ Tasks:
 - configure formatting/linting;
 - configure Tailwind;
 - install Base UI primitives;
+- add hybrid cookie-backed theme toggle with no FOUC before building main workbench shell;
 - create vertical folder structure;
 - create initial design tokens.
 
@@ -693,7 +694,7 @@ Done when:
 
 Tasks:
 
-- build top bar;
+- build top bar with theme toggle;
 - build explorer;
 - build editor shell;
 - build inspector;
@@ -864,7 +865,14 @@ Mitigation:
 
 Start here:
 
-- [ ] Choose TanStack Start or Next.js.
+- [x] Choose TanStack Start.
+- [x] Add hybrid no-FOUC theme toggle:
+  - read theme cookie in root loader with TanStack server helpers;
+  - render `<html>` with resolved theme during SSR;
+  - run tiny `ScriptOnce` boot script before hydration for `system` preference;
+  - update DOM and cookie immediately on client;
+  - do not call `router.invalidate()` for theme changes;
+  - memoize theme context value.
 - [ ] Create vertical folder structure from current TanStack starter layout.
 - [ ] Build static workbench layout.
 - [ ] Create `portfolio-content` artifact model.
