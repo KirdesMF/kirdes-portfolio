@@ -14,6 +14,8 @@
 
 Build a personal portfolio as an AI-agent-inspired workbench.
 
+Next step: convert current TanStack starter layout into planned vertical structure.
+
 The MVP must work without a live LLM. The scripted agent experience should feel polished first. A real scoped `/ask` mode can be added later.
 
 ## Status legend
@@ -36,6 +38,7 @@ The MVP must work without a live LLM. The scripted agent experience should feel 
 - [x] Install Shiki.
 - [x] Add formatting and linting.
 - [x] Add path aliases.
+- [x] Add hybrid no-FOUC theme toggle.
 - [ ] Create base vertical folder structure.
 - [ ] Add initial README.
 - [x] Add `PLAN.md`.
@@ -72,9 +75,24 @@ Tasks:
 
 Use Base UI as the accessible primitive layer. Do not use shadcn/ui or generated shadcn components. Keep project-specific composition inside the relevant vertical.
 
+Theme rule:
+
+- Add light/dark/system theme toggle before workbench shell.
+- Store selected theme preference in a cookie, not localStorage.
+- Read the cookie in the root loader with TanStack server cookie helpers.
+- Apply the resolved theme class directly on `<html>` during SSR.
+- Avoid FOUC by using TanStack `ScriptOnce` before hydration, especially for `system` preference.
+- Update `document.documentElement` and the cookie immediately on client toggle.
+- Do not call `router.invalidate()` for theme changes.
+- Memoize the theme context value with `useMemo` and stabilize `setTheme` with `useCallback`.
+- Keep `suppressHydrationWarning` on `<html>` because the script may mutate class/data attributes before hydration.
+
 Tasks:
 
 - [ ] Define base theme tokens.
+- [x] Add no-FOUC theme boot script in root document.
+- [x] Add cookie-backed theme storage helper.
+- [x] Add theme toggle UI.
 - [ ] Wrap selected `@base-ui/react` primitives in `src/design-system` components.
 - [ ] Define dark workbench palette.
 - [ ] Add button primitive.
@@ -444,18 +462,19 @@ The MVP is complete when:
 
 Recommended order:
 
-1. [ ] Project setup.
-2. [ ] Static workbench shell.
-3. [ ] Portfolio content model.
-4. [ ] Artifact viewer.
-5. [ ] Scripted terminal commands.
-6. [ ] `/audit` scenario.
-7. [ ] Inspector wiring.
-8. [ ] Shiki code viewer.
-9. [ ] Motion animation.
-10. [ ] Content polish.
-11. [ ] Accessibility pass.
-12. [ ] Optional `/ask`.
+1. [x] Hybrid no-FOUC theme toggle.
+2. [ ] Project setup cleanup.
+3. [ ] Static workbench shell.
+4. [ ] Portfolio content model.
+5. [ ] Artifact viewer.
+6. [ ] Scripted terminal commands.
+7. [ ] `/audit` scenario.
+8. [ ] Inspector wiring.
+9. [ ] Shiki code viewer.
+10. [ ] Motion animation.
+11. [ ] Content polish.
+12. [ ] Accessibility pass.
+13. [ ] Optional `/ask`.
 
 ## 19. Working log
 
@@ -519,6 +538,23 @@ Next:
 Blocked:
 
 - None.
+
+### 2026-05-05
+
+Done:
+
+- Created `feature/theme-toggle` branch.
+- Implemented hybrid theme strategy: SSR reads theme cookie with TanStack server helpers, `<html>` gets resolved class, TanStack `ScriptOnce` boot script prevents FOUC, client toggle updates DOM and cookie immediately.
+- Added memoized `ThemeProvider` and `ThemeToggle`.
+- Confirmed `bun run check` and `bun run build` pass.
+
+Next:
+
+- Convert current TanStack starter `src/routes` layout into planned vertical structure.
+
+Blocked:
+
+- `bun run test` still blocked by existing Cloudflare Vite plugin/Vitest environment conflict.
 
 ```
 
