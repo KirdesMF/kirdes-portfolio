@@ -192,6 +192,9 @@ body {
 	--grid-template-columns-editor-shell-right: 0px minmax(0, 1fr) 20rem;
 	--grid-template-columns-editor-shell-both: 17.5rem minmax(0, 1fr) 20rem;
 
+	--grid-template-rows-editor-terminal-closed: minmax(0, 1fr) 0px;
+	--grid-template-rows-editor-terminal-open: minmax(0, 1fr) 12rem;
+
 	--ease-editor-shell: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
