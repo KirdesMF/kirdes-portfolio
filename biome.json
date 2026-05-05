@@ -7,7 +7,12 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["**/src/**/*", "**/vite.config.ts", "!**/src/routeTree.gen.ts"]
+		"includes": [
+			"**/src/**/*",
+			"**/vite.config.ts",
+			"**/vitest.config.ts",
+			"!**/src/routeTree.gen.ts"
+		]
 	},
 	"formatter": {
 		"lineWidth": 100,

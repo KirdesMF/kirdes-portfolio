@@ -873,7 +873,7 @@ Start here:
   - update DOM and cookie immediately on client;
   - do not call `router.invalidate()` for theme changes;
   - memoize theme context value.
-- [ ] Fix project setup cleanup items, especially Vitest/Cloudflare config conflict.
+- [x] Fix project setup cleanup items, especially Vitest/Cloudflare config conflict.
 - [ ] Build static workbench layout and create `src/workbench` only when first workbench file is added.
 - [ ] Create `portfolio-content` artifact model.
 - [ ] Add three real project artifacts.

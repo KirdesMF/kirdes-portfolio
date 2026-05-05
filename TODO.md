@@ -14,7 +14,7 @@
 
 Build a personal portfolio as an AI-agent-inspired workbench.
 
-Next step: project setup cleanup, then first static workbench shell.
+Next step: first static workbench shell.
 
 The MVP must work without a live LLM. The scripted agent experience should feel polished first. A real scoped `/ask` mode can be added later.
 
@@ -40,6 +40,7 @@ The MVP must work without a live LLM. The scripted agent experience should feel 
 - [x] Add path aliases.
 - [x] Add hybrid no-FOUC theme toggle.
 - [ ] Add initial README.
+- [x] Fix Vitest/Cloudflare config conflict.
 - [x] Add `PLAN.md`.
 - [x] Add `TODO.md`.
 
@@ -448,7 +449,7 @@ The MVP is complete when:
 Recommended order:
 
 1. [x] Hybrid no-FOUC theme toggle.
-2. [ ] Project setup cleanup.
+2. [x] Project setup cleanup.
 3. [ ] Static workbench shell, creating `src/workbench` only when first workbench file is added.
 4. [ ] Portfolio content model.
 5. [ ] Artifact viewer.
@@ -515,7 +516,6 @@ Done:
 
 Next:
 
-- Fix project setup cleanup items, especially Vitest/Cloudflare config conflict.
 - Create Base UI-backed `src/design-system` wrappers only when first primitive is used.
 - Configure Motion usage in animation layer when implementing workbench UI.
 - Configure Shiki highlighting in code-viewer phase.
@@ -535,12 +535,11 @@ Done:
 
 Next:
 
-- Fix project setup cleanup items, especially Vitest/Cloudflare config conflict.
 - Start static workbench shell and create vertical folders only when real files are added.
 
 Blocked:
 
-- `bun run test` still blocked by existing Cloudflare Vite plugin/Vitest environment conflict.
+- None.
 
 ```
 
