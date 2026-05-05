@@ -72,6 +72,7 @@ body {
 	--shadow-2xl: 0px 2px 4px 0px hsl(0 0% 0% / 0.25);
 	--tracking-normal: -0.01em;
 	--spacing: 0.25rem;
+	--grid-cols-custom: 1fr 1fr 1fr;
 }
 
 .dark {
@@ -185,6 +186,16 @@ body {
 	--tracking-wide: calc(var(--tracking-normal) + 0.025em);
 	--tracking-wider: calc(var(--tracking-normal) + 0.05em);
 	--tracking-widest: calc(var(--tracking-normal) + 0.1em);
+
+	--grid-template-columns-editor-shell-closed: 0px minmax(0, 1fr) 0px;
+	--grid-template-columns-editor-shell-left: 17.5rem minmax(0, 1fr) 0px;
+	--grid-template-columns-editor-shell-right: 0px minmax(0, 1fr) 20rem;
+	--grid-template-columns-editor-shell-both: 17.5rem minmax(0, 1fr) 20rem;
+
+	--grid-template-rows-editor-terminal-closed: minmax(0, 1fr) 0px;
+	--grid-template-rows-editor-terminal-open: minmax(0, 1fr) 12rem;
+
+	--ease-editor-shell: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @custom-variant dark (&:is(.dark *));

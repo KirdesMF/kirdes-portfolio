@@ -3,7 +3,6 @@ import { createRootRoute, HeadContent, ScriptOnce, Scripts } from "@tanstack/rea
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import type { ReactNode } from "react";
 import { ThemeProvider } from "#/theme/ThemeProvider";
-import { ThemeToggle } from "#/theme/ThemeToggle";
 import { getInitialThemePreference } from "#/theme/theme.functions";
 import { themeBootScript } from "#/theme/themeBootScript";
 import { defaultResolvedTheme, resolveThemePreference } from "#/theme/themeTypes";
@@ -38,16 +37,8 @@ function RootDocument({ children }: { children: ReactNode }) {
 				<HeadContent />
 				<ScriptOnce>{themeBootScript}</ScriptOnce>
 			</head>
-			<body className="root isolate relative font-mono bg-background">
-				<ThemeProvider initialTheme={initialTheme}>
-					<header className="flex items-center justify-between border-b border-border px-6 py-4">
-						<span className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-							Kirdes Portfolio
-						</span>
-						<ThemeToggle />
-					</header>
-					{children}
-				</ThemeProvider>
+			<body className="root isolate relative h-dvh overflow-hidden font-mono bg-background">
+				<ThemeProvider initialTheme={initialTheme}>{children}</ThemeProvider>
 				<TanStackDevtools
 					config={{
 						position: "bottom-right",

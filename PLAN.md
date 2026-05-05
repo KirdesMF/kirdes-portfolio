@@ -695,6 +695,7 @@ Done when:
 Tasks:
 
 - build top bar with theme toggle;
+- add tiny footer/status bar placeholder;
 - build explorer;
 - build editor shell;
 - build inspector;

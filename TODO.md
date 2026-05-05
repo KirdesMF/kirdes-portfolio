@@ -14,7 +14,7 @@
 
 Build a personal portfolio as an AI-agent-inspired workbench.
 
-Next step: first static workbench shell.
+Next step: pause workbench implementation and decide design direction.
 
 The MVP must work without a live LLM. The scripted agent experience should feel polished first. A real scoped `/ask` mode can be added later.
 
@@ -98,15 +98,18 @@ Build the desktop shell first with mock data.
 
 Tasks:
 
-- [ ] Build top bar.
+- [x] Build top bar.
 - [ ] Build left project explorer.
 - [ ] Build center editor area.
 - [ ] Build right inspector panel.
 - [ ] Build bottom terminal panel.
+- [x] Add tiny footer/status bar placeholder with terminal icon.
+- [x] Constrain app shell to `h-dvh` with no document scroll.
+- [x] Add URL-backed left/right panel toggles with app shell grid transitions.
 - [ ] Add resizable-looking panel dividers.
 - [ ] Add tab bar in editor area.
 - [ ] Add terminal tabs: `TERMINAL`, `AGENT STREAM`, `LOGS`, `MEMORY`.
-- [ ] Add mock selected project state.
+- [ ] Add selected project state after route/state model decision.
 - [ ] Add empty states.
 - [ ] Add mobile fallback layout.
 
@@ -535,7 +538,8 @@ Done:
 
 Next:
 
-- Start static workbench shell and create vertical folders only when real files are added.
+- Pause workbench implementation until design direction is clearer.
+- Decide whether workbench selection should use TanStack route/search params or local state first.
 
 Blocked:
 
