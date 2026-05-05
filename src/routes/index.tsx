@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/")({ component: Home });
-
-function Home() {
-	return <main className="min-h-0 overflow-hidden bg-background" />;
-}
+export const Route = createFileRoute("/")({
+	beforeLoad: () => {
+		throw redirect({ to: "/editor", search: { left: "closed", right: "closed" } });
+	},
+});

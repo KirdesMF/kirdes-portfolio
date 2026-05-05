@@ -1,7 +1,7 @@
 import { Separator } from "@base-ui/react/separator";
 import { Sparkles, Terminal } from "lucide-react";
 
-export function AppFooter(): React.ReactNode {
+export function EditorFooter(): React.ReactNode {
 	return (
 		<footer className="flex h-8 items-center gap-1 border-t border-border px-2">
 			<button

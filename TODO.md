@@ -98,13 +98,14 @@ Build the desktop shell first with mock data.
 
 Tasks:
 
-- [ ] Build top bar.
+- [x] Build top bar.
 - [ ] Build left project explorer.
 - [ ] Build center editor area.
 - [ ] Build right inspector panel.
 - [ ] Build bottom terminal panel.
 - [x] Add tiny footer/status bar placeholder with terminal icon.
 - [x] Constrain app shell to `h-dvh` with no document scroll.
+- [x] Add URL-backed left/right panel toggles with app shell grid transitions.
 - [ ] Add resizable-looking panel dividers.
 - [ ] Add tab bar in editor area.
 - [ ] Add terminal tabs: `TERMINAL`, `AGENT STREAM`, `LOGS`, `MEMORY`.

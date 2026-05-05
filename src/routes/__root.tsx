@@ -2,8 +2,6 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, HeadContent, ScriptOnce, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import type { ReactNode } from "react";
-import { AppFooter } from "#/app/AppFooter";
-import { AppHeader } from "#/app/AppHeader";
 import { ThemeProvider } from "#/theme/ThemeProvider";
 import { getInitialThemePreference } from "#/theme/theme.functions";
 import { themeBootScript } from "#/theme/themeBootScript";
@@ -40,13 +38,7 @@ function RootDocument({ children }: { children: ReactNode }) {
 				<ScriptOnce>{themeBootScript}</ScriptOnce>
 			</head>
 			<body className="root isolate relative h-dvh overflow-hidden font-mono bg-background">
-				<ThemeProvider initialTheme={initialTheme}>
-					<div className="grid h-dvh grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden">
-						<AppHeader />
-						{children}
-						<AppFooter />
-					</div>
-				</ThemeProvider>
+				<ThemeProvider initialTheme={initialTheme}>{children}</ThemeProvider>
 				<TanStackDevtools
 					config={{
 						position: "bottom-right",
