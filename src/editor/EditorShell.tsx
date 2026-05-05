@@ -1,9 +1,9 @@
 import { Link, useSearch } from "@tanstack/react-router";
-import { ChevronDown, Terminal } from "lucide-react";
+import { ChevronDown, Maximize2, Minimize2, Terminal } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { cn } from "#/design-system/cn";
-import { toggleTerminalSearch } from "#/editor/editor-search";
+import { closeTerminalSearch, toggleTerminalFullscreenSearch } from "#/editor/editor-search";
 
 const editorShellGridClassNameByPanelState = {
 	closed: "grid-cols-editor-shell-closed",
@@ -15,6 +15,7 @@ const editorShellGridClassNameByPanelState = {
 const editorContentGridClassNameByTerminalState = {
 	closed: "grid-rows-editor-terminal-closed",
 	open: "grid-rows-editor-terminal-open",
+	fullscreen: "grid-rows-editor-terminal-fullscreen",
 } as const;
 
 type EditorShellPanelState = keyof typeof editorShellGridClassNameByPanelState;
@@ -38,7 +39,7 @@ export function EditorShell({ children }: { children: ReactNode }): ReactNode {
 		isLeftPanelOpen: search.left === "open",
 		isRightPanelOpen: search.right === "open",
 	});
-	const terminalState = search.terminal === "open" ? "open" : "closed";
+	const isTerminalFullscreen = search.terminal === "fullscreen";
 
 	return (
 		<div
@@ -52,25 +53,41 @@ export function EditorShell({ children }: { children: ReactNode }): ReactNode {
 			</aside>
 			<div
 				className={cn(
-					"grid min-w-0 overflow-hidden transition-[grid-template-rows] duration-200 ease-editor-shell motion-reduce:transition-none",
-					editorContentGridClassNameByTerminalState[terminalState],
+					"grid min-w-0 grid-areas-editor-center overflow-hidden transition-[grid-template-rows] duration-200 ease-editor-shell motion-reduce:transition-none",
+					editorContentGridClassNameByTerminalState[search.terminal],
 				)}
 			>
-				<div className="min-h-0 overflow-hidden">{children}</div>
-				<section className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)] overflow-hidden border-t border-border bg-sidebar">
+				<div className="area-editor-main min-h-0 overflow-hidden">{children}</div>
+				<section className="area-editor-terminal grid min-h-0 grid-rows-[auto_minmax(0,1fr)] overflow-hidden border-t border-border bg-sidebar">
 					<header className="flex h-7 items-center justify-between border-b border-border px-2 text-muted-foreground text-xs">
 						<div className="flex items-center gap-1.5">
 							<Terminal className="size-3.5" />
 							<span>Terminal</span>
 						</div>
-						<Link
-							aria-label="Close terminal panel"
-							className="inline-flex size-5 items-center justify-center rounded-sm transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
-							from="/editor"
-							search={toggleTerminalSearch}
-						>
-							<ChevronDown className="size-3.5" />
-						</Link>
+						<div className="flex items-center gap-1">
+							<Link
+								aria-label={
+									isTerminalFullscreen ? "Restore terminal panel" : "Expand terminal panel"
+								}
+								className="inline-flex size-5 items-center justify-center rounded-sm transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+								from="/editor"
+								search={toggleTerminalFullscreenSearch}
+							>
+								{isTerminalFullscreen ? (
+									<Minimize2 className="size-3.5" />
+								) : (
+									<Maximize2 className="size-3.5" />
+								)}
+							</Link>
+							<Link
+								aria-label="Close terminal panel"
+								className="inline-flex size-5 items-center justify-center rounded-sm transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+								from="/editor"
+								search={closeTerminalSearch}
+							>
+								<ChevronDown className="size-3.5" />
+							</Link>
+						</div>
 					</header>
 					<div className="min-h-0 overflow-hidden p-2 text-muted-foreground text-xs">Terminal</div>
 				</section>

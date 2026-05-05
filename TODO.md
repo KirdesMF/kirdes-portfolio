@@ -102,7 +102,7 @@ Tasks:
 - [ ] Build left project explorer.
 - [ ] Build center editor area.
 - [ ] Build right inspector panel.
-- [ ] Build bottom terminal panel.
+- [x] Build bottom terminal panel.
 - [x] Add tiny footer/status bar placeholder with terminal icon.
 - [x] Constrain app shell to `h-dvh` with no document scroll.
 - [x] Add URL-backed left/right panel toggles with app shell grid transitions.
@@ -203,6 +203,15 @@ Initial commands:
 - [ ] `/show-tradeoffs`
 - [ ] `/weaknesses`
 - [ ] `/contact`
+- [ ] `/tetris`
+
+Game command note:
+
+- [ ] Design `/tetris` terminal game state model.
+- [ ] Implement `/tetris` command mode after core scripted commands.
+- [ ] Add keyboard controls for terminal Tetris.
+- [ ] Add clean exit back to normal terminal command mode.
+- [ ] Keep Tetris bounded inside terminal panel.
 
 Done when:
 
@@ -371,7 +380,31 @@ Done when:
 - [ ] Out-of-scope questions are refused.
 - [ ] Every answer is grounded in visible sources.
 
-## 13. Accessibility checklist
+## 13. Optional playful interactions
+
+These are polish, not MVP blockers.
+
+### Terminal Tetris
+
+- [ ] Decide final `/tetris` scope.
+- [ ] Define terminal game loop/state.
+- [ ] Render board inside bottom terminal panel.
+- [ ] Support keyboard controls.
+- [ ] Add pause/exit behavior.
+- [ ] Respect reduced motion.
+- [ ] Ensure normal terminal commands resume after exit.
+
+### About sliding puzzle
+
+This is optional and needs more product/design thought.
+
+- [ ] Decide whether `/about` gets a sliding puzzle.
+- [ ] Decide if puzzle reveals content or stays decorative.
+- [ ] Define mobile behavior.
+- [ ] Define keyboard/accessibility behavior.
+- [ ] Prototype only if it improves the portfolio story.
+
+## 14. Accessibility checklist
 
 - [ ] Keyboard navigation works in explorer.
 - [ ] Keyboard navigation works in tabs.
@@ -385,7 +418,7 @@ Done when:
 - [ ] Terminal output is readable by assistive technologies.
 - [ ] No essential information relies only on color.
 
-## 14. Performance checklist
+## 15. Performance checklist
 
 - [ ] Avoid highlighting large files on every render.
 - [ ] Cache highlighted HTML.
@@ -396,7 +429,7 @@ Done when:
 - [ ] Keep initial load focused on shell and first artifact.
 - [ ] Verify mobile performance.
 
-## 15. Content quality checklist
+## 16. Content quality checklist
 
 For each project:
 
@@ -421,7 +454,7 @@ For candidate profile:
 - [ ] Contact information.
 - [ ] Links.
 
-## 16. Open decisions
+## 17. Open decisions
 
 - [ ] Final app name: `Cédric Workbench`, `Portfolio Agent OS`, or another name.
 - [ ] Final hosting provider.
@@ -431,8 +464,10 @@ For candidate profile:
 - [ ] Whether to include GitHub links.
 - [ ] Whether to include analytics.
 - [ ] Whether to include a public changelog.
+- [ ] Whether `/tetris` ships in first public release or later.
+- [ ] Whether `/about` includes a sliding puzzle.
 
-## 17. MVP definition
+## 18. MVP definition
 
 The MVP is complete when:
 
@@ -447,7 +482,7 @@ The MVP is complete when:
 - [ ] The app is usable on mobile.
 - [ ] The app remains useful without a live LLM.
 
-## 18. First build order
+## 19. First build order
 
 Recommended order:
 
@@ -463,9 +498,11 @@ Recommended order:
 10. [ ] Motion animation.
 11. [ ] Content polish.
 12. [ ] Accessibility pass.
-13. [ ] Optional `/ask`.
+13. [ ] Optional terminal `/tetris` easter egg.
+14. [ ] Optional `/about` sliding puzzle.
+15. [ ] Optional `/ask`.
 
-## 19. Working log
+## 20. Working log
 
 Use this section while building.
 

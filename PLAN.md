@@ -139,6 +139,7 @@ Responsibilities:
 - display scripted agent traces;
 - stream command output;
 - route `/ask` questions to the portfolio agent;
+- support small terminal-native easter eggs such as `/tetris` once core commands work;
 - expose logs and memory tabs later.
 
 ## 6. Modes
@@ -175,7 +176,45 @@ The UI must react to the agent trace:
 - reveal evidence;
 - show final recommendation.
 
-### 6.2 Live Ask mode
+### 6.2 Terminal game mode
+
+This is optional polish after the scripted agent feels useful.
+
+Planned command:
+
+```text
+/tetris
+```
+
+Behavior:
+
+- runs inside the bottom terminal panel;
+- does not replace the workbench shell;
+- pauses or exits cleanly back to normal terminal command mode;
+- supports keyboard controls;
+- respects reduced motion if animations become heavy;
+- remains an easter egg, not the main portfolio path.
+
+Purpose:
+
+- make the terminal memorable;
+- show interaction craft;
+- avoid distracting from project evidence.
+
+### 6.3 Optional About puzzle
+
+The `/about` section may include a simple sliding puzzle.
+
+Current decision: optional and needs interaction design.
+
+Open questions:
+
+- does the puzzle reveal content, decorate content, or sit behind an easter egg;
+- how it behaves on mobile and keyboard;
+- how to keep it accessible;
+- whether it helps the portfolio story enough to justify complexity.
+
+### 6.4 Live Ask mode
 
 This mode uses a real LLM, but only for scoped portfolio questions.
 
@@ -824,7 +863,8 @@ The MVP is done when:
 Mitigation:
 
 - make the GUI useful;
-- ensure commands open artifacts and change the interface.
+- ensure commands open artifacts and change the interface;
+- keep `/tetris` as an easter egg after core terminal commands work.
 
 ### Risk: overbuilding agent infrastructure
 
@@ -860,7 +900,8 @@ Mitigation:
 Mitigation:
 
 - animate only agent-driven moments;
-- respect reduced motion.
+- respect reduced motion;
+- keep any game animations bounded to their panel and optional.
 
 ## 21. First implementation checklist
 

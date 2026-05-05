@@ -192,10 +192,23 @@ body {
 	--grid-template-columns-editor-shell-right: 0px minmax(0, 1fr) 20rem;
 	--grid-template-columns-editor-shell-both: 17.5rem minmax(0, 1fr) 20rem;
 
-	--grid-template-rows-editor-terminal-closed: minmax(0, 1fr) 0px;
-	--grid-template-rows-editor-terminal-open: minmax(0, 1fr) 12rem;
+	--grid-template-rows-editor-terminal-closed: minmax(0, calc(100% - 0rem)) 0rem;
+	--grid-template-rows-editor-terminal-open: minmax(0, calc(100% - 12rem)) 12rem;
+	--grid-template-rows-editor-terminal-fullscreen: minmax(0, calc(100% - 100%)) 100%;
 
 	--ease-editor-shell: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@utility grid-areas-editor-center {
+	grid-template-areas: "main" "terminal";
+}
+
+@utility area-editor-main {
+	grid-area: main;
+}
+
+@utility area-editor-terminal {
+	grid-area: terminal;
 }
 
 @custom-variant dark (&:is(.dark *));
