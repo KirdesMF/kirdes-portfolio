@@ -1,7 +1,7 @@
-import { Separator } from "@base-ui/react/separator";
 import { Link, useSearch } from "@tanstack/react-router";
 import { PanelLeftOpen, PanelRightOpen } from "lucide-react";
 
+import { Separator } from "#/design-system/Separator";
 import { toggleLeftPanelSearch, toggleRightPanelSearch } from "#/editor/editor-search";
 import { ThemeToggle } from "#/theme/ThemeToggle";
 
@@ -24,7 +24,7 @@ export function EditorHeader(): React.ReactNode {
 			</Link>
 			<div className="flex items-center gap-1">
 				<ThemeToggle />
-				<Separator className="h-4 w-px bg-border" orientation="vertical" />
+				<Separator orientation="vertical" />
 				<Link
 					aria-label={isRightPanelOpen ? "Close right panel" : "Open right panel"}
 					aria-pressed={isRightPanelOpen}
