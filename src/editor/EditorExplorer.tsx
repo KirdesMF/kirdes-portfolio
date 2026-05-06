@@ -52,46 +52,29 @@ export function EditorExplorer(): React.ReactNode {
 										return (
 											<li key={projectId}>
 												{index > 0 ? <Separator className="my-1" /> : null}
-												<div
-													className={cn(
-														"relative flex h-9 w-full items-center rounded-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground",
-														isSelected && "text-sidebar-foreground",
-													)}
+												<Link
+													aria-label={isOpen ? `Collapse ${label}` : `Expand ${label}`}
+													aria-pressed={isOpen}
+													className="relative flex h-9 w-full items-center gap-2 rounded-sm px-2 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-2 focus-visible:outline-ring"
+													search={(previousSearch) =>
+														toggleEditorProjectOpenSearch(previousSearch, projectId)
+													}
+													to="."
 												>
-													<Link
-														aria-current={isSelected ? "page" : undefined}
-														className="flex h-full min-w-0 flex-1 items-center gap-2 rounded-l-sm px-2 text-left focus-visible:outline-2 focus-visible:outline-ring"
-														params={{ projectId, workspaceId: id }}
-														search={(previousSearch) =>
-															selectEditorProjectSearch(previousSearch, id, projectId)
-														}
-														to="/editor/$workspaceId/$projectId"
-													>
-														<span className="inline-flex size-6 shrink-0 items-center justify-center rounded-md bg-primary/10 p-1 font-medium text-[0.65rem] text-primary uppercase transition-colors">
-															{label[0]}
-														</span>
-														<span className="min-w-0 flex-1 truncate">{label}</span>
-														{isSelected ? (
-															<span className="size-1.5 animate-selected-folder-dot-pulse rounded-full bg-selected-folder-indicator motion-reduce:animate-none" />
-														) : null}
-													</Link>
-													<Link
-														aria-label={isOpen ? `Collapse ${label}` : `Expand ${label}`}
-														aria-pressed={isOpen}
-														className="flex h-full w-8 shrink-0 items-center justify-center rounded-r-sm focus-visible:outline-2 focus-visible:outline-ring"
-														search={(previousSearch) =>
-															toggleEditorProjectOpenSearch(previousSearch, projectId)
-														}
-														to="."
-													>
-														<ChevronRight
-															className={cn(
-																"size-3.5 shrink-0 transition-transform duration-200 ease-editor-shell motion-reduce:transition-none",
-																isOpen && "rotate-90",
-															)}
-														/>
-													</Link>
-												</div>
+													<span className="inline-flex size-6 shrink-0 items-center justify-center rounded-md bg-primary/10 p-1 font-medium text-[0.65rem] text-primary uppercase transition-colors">
+														{label[0]}
+													</span>
+													<span className="min-w-0 flex-1 truncate">{label}</span>
+													{isSelected ? (
+														<span className="size-1.5 animate-selected-folder-dot-pulse rounded-full bg-selected-folder-indicator motion-reduce:animate-none" />
+													) : null}
+													<ChevronRight
+														className={cn(
+															"size-3.5 shrink-0 transition-transform duration-200 ease-editor-shell motion-reduce:transition-none",
+															isOpen && "rotate-90",
+														)}
+													/>
+												</Link>
 												<div
 													className={cn(
 														"ml-8 grid overflow-hidden transition-[grid-template-rows,opacity] duration-200 ease-editor-shell motion-reduce:transition-none",
@@ -99,14 +82,26 @@ export function EditorExplorer(): React.ReactNode {
 													)}
 												>
 													<div className="min-h-0 overflow-hidden">
-														<div className="flex min-w-0 items-center gap-1.5 px-2 py-2 text-muted-foreground">
+														<Link
+															aria-current={isSelected ? "page" : undefined}
+															className={cn(
+																"flex min-w-0 items-center gap-1.5 rounded-sm border border-transparent px-2 py-2 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-2 focus-visible:outline-ring",
+																isSelected &&
+																	"border-selected-folder-indicator/60 text-sidebar-foreground",
+															)}
+															params={{ projectId, workspaceId: id }}
+															search={(previousSearch) =>
+																selectEditorProjectSearch(previousSearch, id, projectId)
+															}
+															to="/editor/$workspaceId/$projectId"
+														>
 															<GitBranch className="size-3.5 shrink-0" />
 															<span className="min-w-0 flex-1 truncate">{branch}</span>
 															<span className="shrink-0 text-selected-folder-indicator">
 																+{additions}
 															</span>
 															<span className="shrink-0 text-destructive">-{deletions}</span>
-														</div>
+														</Link>
 													</div>
 												</div>
 											</li>
