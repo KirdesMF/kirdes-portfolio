@@ -3,6 +3,7 @@ import { ChevronRight, GitBranch } from "lucide-react";
 
 import { cn } from "#/design-system/cn";
 import { Separator } from "#/design-system/Separator";
+import { Tooltip } from "#/design-system/Tooltip";
 import {
 	type EditorProjectSearchValue,
 	type EditorWorkspaceSearchValue,
@@ -13,6 +14,7 @@ import {
 const workspaces = [
 	{
 		id: "1",
+		label: "Workspace 1",
 		projects: [
 			{ id: "about", label: "about", branch: "feature/about", additions: 42, deletions: 8 },
 			{
@@ -35,12 +37,14 @@ const workspaces = [
 	},
 	{
 		id: "2",
+		label: "Workspace 2",
 		projects: [
 			{ id: "game", label: "game", branch: "feature/game", additions: 217, deletions: 53 },
 		],
 	},
 ] as const satisfies ReadonlyArray<{
 	id: EditorWorkspaceSearchValue;
+	label: string;
 	projects: ReadonlyArray<{
 		additions: number;
 		branch: string;
@@ -132,25 +136,26 @@ export function EditorExplorer(): React.ReactNode {
 				</div>
 			</div>
 			<footer className="flex h-8 items-center justify-center gap-1 border-t border-border px-2">
-				{workspaces.map(({ id }) => {
+				{workspaces.map(({ id, label }) => {
 					const isSelected = workspace.id === id;
 
 					return (
-						<Link
-							aria-label={`Switch to workspace ${id}`}
-							aria-current={isSelected ? "page" : undefined}
-							className="group inline-flex size-5 items-center justify-center rounded-sm focus-visible:outline-2 focus-visible:outline-ring"
-							from="/editor"
-							key={id}
-							search={(previousSearch) => selectEditorWorkspaceSearch(previousSearch, id)}
-						>
-							<span
-								className={cn(
-									"size-1.5 rounded-full bg-muted-foreground/35 transition-colors group-hover:bg-muted-foreground",
-									isSelected && "bg-primary",
-								)}
-							/>
-						</Link>
+						<Tooltip content={label} key={id}>
+							<Link
+								aria-label={`Switch to ${label}`}
+								aria-current={isSelected ? "page" : undefined}
+								className="group inline-flex size-5 items-center justify-center rounded-sm focus-visible:outline-2 focus-visible:outline-ring"
+								from="/editor"
+								search={(previousSearch) => selectEditorWorkspaceSearch(previousSearch, id)}
+							>
+								<span
+									className={cn(
+										"size-1.5 rounded-full bg-muted-foreground/35 transition-colors group-hover:bg-muted-foreground",
+										isSelected && "bg-primary",
+									)}
+								/>
+							</Link>
+						</Tooltip>
 					);
 				})}
 			</footer>
