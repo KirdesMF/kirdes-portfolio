@@ -201,6 +201,7 @@ body {
 
 	--ease-editor-shell: cubic-bezier(0.32, 0.72, 0, 1);
 	--animate-selected-folder-dot-pulse: selected-folder-dot-pulse 1.8s ease-in-out infinite;
+	--animate-status-dot-pulse: status-dot-pulse 1.8s ease-in-out infinite;
 }
 
 @keyframes selected-folder-dot-pulse {
@@ -212,6 +213,18 @@ body {
 	50% {
 		opacity: 0.72;
 		box-shadow: 0 0 0 3px color-mix(in oklch, var(--selected-folder-indicator) 0%, transparent);
+	}
+}
+
+@keyframes status-dot-pulse {
+	0%,
+	100% {
+		opacity: 1;
+		box-shadow: 0 0 0 0 color-mix(in oklch, currentColor 35%, transparent);
+	}
+	50% {
+		opacity: 0.72;
+		box-shadow: 0 0 0 3px color-mix(in oklch, currentColor 0%, transparent);
 	}
 }
 
