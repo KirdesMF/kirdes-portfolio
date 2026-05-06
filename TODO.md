@@ -87,8 +87,6 @@ Tasks:
 - [x] Add theme toggle UI.
 - [ ] Wrap selected `@base-ui/react` primitives in `src/design-system` components.
 - [!] Revisit Tooltip/Popover wrappers and convert prop-only APIs to shadcn-like composition.
-- [!] Run an a11y pass after wrapper refactor: names, focus, keyboard behavior, roles, descriptions, and reduced motion.
-- [!] Check whether the left side panel should use a Base UI Collapsible-style primitive for expandable project rows.
 - [ ] Define dark workbench palette.
 - [ ] Add button primitive.
 - [ ] Add panel primitive.
@@ -462,23 +460,7 @@ Display a fake system monitor inside the terminal panel.
 - [ ] Respect reduced motion.
 - [ ] Keep bounded inside terminal panel.
 
-## 15. Accessibility checklist
-
-- [!] Run a dedicated a11y pass after design-system Tooltip/Popover composition refactor.
-- [!] Verify left explorer expandable rows use appropriate collapsible semantics or a Collapsible primitive.
-- [ ] Keyboard navigation works in explorer.
-- [ ] Keyboard navigation works in tabs.
-- [ ] Keyboard navigation works in terminal input.
-- [ ] Keyboard navigation works in command palette.
-- [ ] Focus states are visible.
-- [ ] Reduced motion is respected.
-- [ ] Color contrast is acceptable.
-- [ ] Buttons have accessible names.
-- [ ] Tabs use appropriate semantics.
-- [ ] Terminal output is readable by assistive technologies.
-- [ ] No essential information relies only on color.
-
-## 16. Performance checklist
+## 15. Performance checklist
 
 - [ ] Avoid highlighting large files on every render.
 - [ ] Cache highlighted HTML.
@@ -489,7 +471,7 @@ Display a fake system monitor inside the terminal panel.
 - [ ] Keep initial load focused on shell and first artifact.
 - [ ] Verify mobile performance.
 
-## 17. Content quality checklist
+## 16. Content quality checklist
 
 For each project:
 
@@ -514,7 +496,7 @@ For candidate profile:
 - [ ] Contact information.
 - [ ] Links.
 
-## 18. Open decisions
+## 17. Open decisions
 
 - [ ] Final app name: `Cédric Workbench`, `Portfolio Agent OS`, or another name.
 - [ ] Final hosting provider.
@@ -527,7 +509,7 @@ For candidate profile:
 - [ ] Whether `/tetris` ships in first public release or later.
 - [ ] Whether `/about` includes a sliding puzzle.
 
-## 19. MVP definition
+## 18. MVP definition
 
 The MVP is complete when:
 
@@ -542,7 +524,7 @@ The MVP is complete when:
 - [ ] The app is usable on mobile.
 - [ ] The app remains useful without a live LLM.
 
-## 20. First build order
+## 19. First build order
 
 Recommended order:
 
@@ -561,6 +543,23 @@ Recommended order:
 13. [ ] Optional terminal `/tetris` easter egg.
 14. [ ] Optional `/about` sliding puzzle.
 15. [ ] Optional `/ask`.
+
+## 20. Endgame accessibility checklist
+
+- [!] Run a dedicated a11y pass after design-system overlay composition refactor.
+- [!] Verify left explorer expandable rows use appropriate collapsible semantics or a Collapsible primitive.
+- [ ] Keyboard navigation works in explorer.
+- [ ] Keyboard navigation works in tabs.
+- [ ] Keyboard navigation works in terminal input.
+- [ ] Keyboard navigation works in command palette.
+- [ ] Focus states are visible.
+- [ ] Reduced motion is respected.
+- [ ] Color contrast is acceptable.
+- [ ] Buttons have accessible names.
+- [ ] Tabs use appropriate semantics.
+- [ ] Terminal output is readable by assistive technologies.
+- [ ] No essential information relies only on color.
+
 
 ## 21. Working log
 
