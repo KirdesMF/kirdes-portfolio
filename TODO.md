@@ -99,6 +99,7 @@ Tasks:
 - [ ] Add tooltip primitive.
 - [ ] Add language toggle primitive/state.
 - [ ] Add command palette primitive or compose one from Base UI primitives.
+- [ ] Add command palette keyboard shortcut.
 - [ ] Add visible focus states.
 - [ ] Add reduced-motion-safe defaults.
 
