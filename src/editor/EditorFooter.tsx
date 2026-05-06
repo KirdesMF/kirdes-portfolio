@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 
 import { cn } from "#/design-system/cn";
 import { Menu } from "#/design-system/Menu";
-import { Popover } from "#/design-system/Popover";
+import {
+	Popover,
+	PopoverContent,
+	PopoverDescription,
+	PopoverTitle,
+	PopoverTrigger,
+} from "#/design-system/Popover";
 import { Separator } from "#/design-system/Separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "#/design-system/Tooltip";
 import { toggleTerminalSearch } from "#/editor/editor-search";
@@ -119,30 +125,31 @@ export function EditorFooter(): React.ReactNode {
 					<span>You {visitorTime}</span>
 				</div>
 				<Separator orientation="vertical" />
-				<Popover
-					content={
-						<div className="space-y-1">
-							<p className="font-medium text-sm">{currentAvailabilityStatus.label}</p>
-							<p className="text-muted-foreground text-xs">
-								Fake status for now. I am open to focused frontend, design system, and product UI
-								work.
-							</p>
-						</div>
-					}
-				>
-					<button
-						aria-label="Show availability details"
-						className="flex items-center gap-1.5 rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
-						type="button"
-					>
-						<span
-							className={cn(
-								"size-1.5 animate-status-dot-pulse rounded-full bg-current motion-reduce:animate-none",
-								statusDotClassNameByStatus[currentAvailabilityStatus.value],
-							)}
-						/>
-						<span className="truncate">{currentAvailabilityStatus.label}</span>
-					</button>
+				<Popover>
+					<PopoverTrigger
+						render={
+							<button
+								aria-label="Show availability details"
+								className="flex items-center gap-1.5 rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+								type="button"
+							>
+								<span
+									className={cn(
+										"size-1.5 animate-status-dot-pulse rounded-full bg-current motion-reduce:animate-none",
+										statusDotClassNameByStatus[currentAvailabilityStatus.value],
+									)}
+								/>
+								<span className="truncate">{currentAvailabilityStatus.label}</span>
+							</button>
+						}
+					/>
+					<PopoverContent>
+						<PopoverTitle>{currentAvailabilityStatus.label}</PopoverTitle>
+						<PopoverDescription>
+							Fake status for now. I am open to focused frontend, design system, and product UI
+							work.
+						</PopoverDescription>
+					</PopoverContent>
 				</Popover>
 				<Separator orientation="vertical" />
 				<Menu items={contactLinks}>
