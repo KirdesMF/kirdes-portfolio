@@ -142,9 +142,21 @@ Responsibilities:
 - support small terminal-native easter eggs such as `/tetris` once core commands work;
 - expose logs and memory tabs later.
 
-## 6. Modes
+## 6. Internationalization
 
-### 6.1 Guided Agent mode
+MVP language behavior:
+
+- support French and English content paths;
+- expose a visible `FR | EN` toggle in the header;
+- keep the header toggle fake until the locale state model is implemented;
+- prefer URL-backed locale state when implemented so shared links preserve language;
+- default to English unless a future locale detector or saved preference says otherwise;
+- localize portfolio content, command labels, empty states, tooltips, and status text;
+- keep technical artifact names stable when translation would reduce clarity.
+
+## 7. Modes
+
+### 7.1 Guided Agent mode
 
 This is the default and most important mode.
 
@@ -244,7 +256,7 @@ Rule:
 
 The LLM must answer only from retrieved portfolio artifacts.
 
-## 7. Content model
+## 8. Content model
 
 Store portfolio content as structured artifacts.
 
@@ -301,7 +313,7 @@ type ArtifactKind =
   | "contact";
 ```
 
-## 8. Vertical architecture
+## 9. Vertical architecture
 
 Use vertical boundaries. Do not create top-level generic folders like `components`, `hooks`, `utils`, or `types`.
 
@@ -401,7 +413,7 @@ Import rules:
 - avoid barrel exports that blindly expose internals;
 - colocate tests with the behavior they verify.
 
-## 9. Core commands
+## 10. Core commands
 
 MVP commands:
 
@@ -428,7 +440,7 @@ Later commands:
 /show evidence frontend-depth
 ```
 
-## 10. Scripted agent scenarios
+## 11. Scripted agent scenarios
 
 Represent scripted scenarios as typed sequences of agent events.
 
@@ -482,7 +494,7 @@ Initial scenarios:
 5. `contact`
 6. `replay refactor portfolio-agent-router`
 
-## 11. LLM design
+## 12. LLM design
 
 The LLM is optional and should be added only after the scripted workbench feels excellent.
 
@@ -582,7 +594,7 @@ Rules:
 - Keep answers concise, specific, and evidence-based.
 ```
 
-## 12. Cost controls
+## 13. Cost controls
 
 The live LLM must never be required for the core UX.
 
@@ -611,7 +623,7 @@ The live agent is temporarily unavailable to keep this portfolio lightweight.
 You can still explore the guided portfolio commands.
 ```
 
-## 13. Code highlighting
+## 14. Code highlighting
 
 Use Shiki for syntax highlighting.
 
@@ -651,7 +663,7 @@ Do not animate every file. Use animation only when it supports the agent story.
 
 Respect `prefers-reduced-motion` with Motion reduced-motion utilities and local fallbacks.
 
-## 14. Visual direction
+## 15. Visual direction
 
 Design qualities:
 
@@ -675,7 +687,7 @@ Avoid:
 - overanimated code;
 - noisy command output.
 
-## 15. Accessibility
+## 16. Accessibility
 
 Requirements:
 
@@ -687,7 +699,7 @@ Requirements:
 - screen-reader-friendly command output;
 - no essential information conveyed only by color.
 
-## 16. Mobile strategy
+## 17. Mobile strategy
 
 Do not attempt to reproduce the full desktop IDE layout on mobile.
 
@@ -708,7 +720,7 @@ Core mobile tasks:
 - contact Cedric;
 - ask a scoped question.
 
-## 17. Build phases
+## 18. Build phases
 
 ### Phase 0 - Project setup
 
@@ -827,7 +839,7 @@ Done when:
 - out-of-scope questions are refused;
 - every answer shows sources.
 
-## 18. Minimal tests
+## 19. Minimal tests
 
 Add tests for non-trivial logic:
 
@@ -841,7 +853,7 @@ Add tests for non-trivial logic:
 
 Do not over-test visual components in the MVP.
 
-## 19. Definition of done for MVP
+## 20. Definition of done for MVP
 
 The MVP is done when:
 
@@ -856,7 +868,7 @@ The MVP is done when:
 - reduced motion is respected;
 - the site remains useful without a live LLM.
 
-## 20. Risks
+## 21. Risks
 
 ### Risk: terminal gimmick
 
@@ -903,7 +915,7 @@ Mitigation:
 - respect reduced motion;
 - keep any game animations bounded to their panel and optional.
 
-## 21. First implementation checklist
+## 22. First implementation checklist
 
 Start here:
 
@@ -931,7 +943,7 @@ Start here:
 - [ ] Add accessibility pass.
 - [ ] Add optional `/ask` only after MVP feels strong.
 
-## 22. Quality bar
+## 23. Quality bar
 
 This project should feel like a product, not a demo.
 

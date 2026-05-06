@@ -61,6 +61,12 @@ Rules:
 
 Use Base UI as the accessible primitive layer. Do not use shadcn/ui or generated shadcn components. Keep project-specific composition inside the relevant vertical.
 
+Component composition rule:
+
+- Design-system wrappers should compose like shadcn/ui primitives (`Popover.Root`, `Popover.Trigger`, `Popover.Content`, `Popover.Title`, `Popover.Description`) instead of prop-only APIs.
+- Prop-only wrappers are too limiting for structured content such as popover title and description.
+- Revisit current Tooltip/Popover wrappers ASAP and convert them to composable primitives.
+
 Theme rule:
 
 - Add light/dark/system theme toggle before workbench shell.
@@ -80,6 +86,9 @@ Tasks:
 - [x] Add cookie-backed theme storage helper.
 - [x] Add theme toggle UI.
 - [ ] Wrap selected `@base-ui/react` primitives in `src/design-system` components.
+- [!] Revisit Tooltip/Popover wrappers and convert prop-only APIs to shadcn-like composition.
+- [!] Run an a11y pass after wrapper refactor: names, focus, keyboard behavior, roles, descriptions, and reduced motion.
+- [!] Check whether the left side panel should use a Base UI Collapsible-style primitive for expandable project rows.
 - [ ] Define dark workbench palette.
 - [ ] Add button primitive.
 - [ ] Add panel primitive.
@@ -88,11 +97,23 @@ Tasks:
 - [ ] Add input primitive.
 - [ ] Add scroll-area primitive.
 - [ ] Add tooltip primitive.
+- [ ] Add language toggle primitive/state.
 - [ ] Add command palette primitive or compose one from Base UI primitives.
 - [ ] Add visible focus states.
 - [ ] Add reduced-motion-safe defaults.
 
-## 3. Static workbench shell
+## 3. Internationalization
+
+Behavior:
+
+- [ ] Support French and English (`fr` / `en`).
+- [ ] Add URL-backed locale state.
+- [ ] Default to English until locale detection or saved preference exists.
+- [ ] Localize portfolio content, command labels, empty states, tooltips, and status text.
+- [ ] Keep technical artifact names stable when translation hurts clarity.
+- [x] Add fake `FR | EN` header toggle placeholder.
+
+## 4. Static workbench shell
 
 Build the desktop shell first with mock data.
 
@@ -108,6 +129,8 @@ Tasks:
 - [x] Add URL-backed left/right panel toggles with app shell grid transitions.
 - [ ] Add resizable-looking panel dividers.
 - [ ] Add tab bar in editor area.
+- [ ] Add drag-and-drop tab reordering.
+- [ ] Add tab pinning.
 - [ ] Add terminal tabs: `TERMINAL`, `AGENT STREAM`, `LOGS`, `MEMORY`.
 - [x] Add selected project state after route/state model decision.
 - [x] Add workspace pagination in the left explorer.
@@ -121,7 +144,7 @@ Done when:
 - [ ] The layout is usable without real data.
 - [ ] The desktop and mobile layouts do not break.
 
-## 4. Portfolio content model
+## 5. Portfolio content model
 
 Tasks:
 
@@ -156,7 +179,7 @@ Done when:
 - [ ] The editor can render selected markdown artifacts.
 - [ ] The inspector reflects the selected artifact/project.
 
-## 5. Workbench state
+## 6. Workbench state
 
 Tasks:
 
@@ -177,7 +200,7 @@ Done when:
 - [ ] Opening an artifact creates or activates a tab.
 - [ ] Agent events can update the workbench state.
 
-## 6. Scripted agent core
+## 7. Scripted agent core
 
 The scripted agent is the MVP. It must not depend on a live LLM.
 
@@ -222,7 +245,7 @@ Done when:
 - [ ] Agent events update the inspector.
 - [ ] The terminal feels useful, not decorative.
 
-## 7. Scripted scenarios
+## 8. Scripted scenarios
 
 Create these first:
 
@@ -270,7 +293,7 @@ Done when:
 - [ ] Each scenario feels intentionally authored.
 - [ ] Each scenario changes more than terminal text.
 
-## 8. Code viewer with Shiki
+## 9. Code viewer with Shiki
 
 Tasks:
 
@@ -298,7 +321,7 @@ Done when:
 - [ ] The agent can open highlighted code files.
 - [ ] The code viewer looks integrated into the workbench.
 
-## 9. Motion animation layer
+## 10. Motion animation layer
 
 Use Motion (`motion/react`) for choreography, not logic.
 
@@ -319,7 +342,7 @@ Done when:
 - [ ] Motion helps explain agent actions.
 - [ ] Motion does not make the interface noisy.
 
-## 10. Diff and replay features
+## 11. Diff and replay features
 
 This can come after the core MVP.
 
@@ -338,7 +361,7 @@ Done when:
 
 - [ ] The app can tell a technical story through code changes.
 
-## 11. Command palette
+## 12. Command palette
 
 Tasks:
 
@@ -354,7 +377,7 @@ Done when:
 
 - [ ] A visitor does not need to guess terminal commands.
 
-## 12. Optional live LLM mode
+## 13. Optional live LLM mode
 
 Do this only after the scripted workbench is excellent.
 
@@ -382,7 +405,7 @@ Done when:
 - [ ] Out-of-scope questions are refused.
 - [ ] Every answer is grounded in visible sources.
 
-## 13. Optional playful interactions
+## 14. Optional playful interactions
 
 These are polish, not MVP blockers.
 
@@ -406,8 +429,20 @@ This is optional and needs more product/design thought.
 - [ ] Define keyboard/accessibility behavior.
 - [ ] Prototype only if it improves the portfolio story.
 
-## 14. Accessibility checklist
+### Rendez-vous / booking panel
 
+Optional contact flow for visitors who want to schedule time.
+
+- [ ] Decide if this belongs in contact, inspector, popover, or command flow.
+- [ ] Add calendar-style date/time picker placeholder.
+- [ ] Add free-text message field.
+- [ ] Define fake vs real booking behavior.
+- [ ] Add a11y and timezone handling notes before implementation.
+
+## 15. Accessibility checklist
+
+- [!] Run a dedicated a11y pass after design-system Tooltip/Popover composition refactor.
+- [!] Verify left explorer expandable rows use appropriate collapsible semantics or a Collapsible primitive.
 - [ ] Keyboard navigation works in explorer.
 - [ ] Keyboard navigation works in tabs.
 - [ ] Keyboard navigation works in terminal input.
@@ -420,7 +455,7 @@ This is optional and needs more product/design thought.
 - [ ] Terminal output is readable by assistive technologies.
 - [ ] No essential information relies only on color.
 
-## 15. Performance checklist
+## 16. Performance checklist
 
 - [ ] Avoid highlighting large files on every render.
 - [ ] Cache highlighted HTML.
@@ -431,7 +466,7 @@ This is optional and needs more product/design thought.
 - [ ] Keep initial load focused on shell and first artifact.
 - [ ] Verify mobile performance.
 
-## 16. Content quality checklist
+## 17. Content quality checklist
 
 For each project:
 
@@ -456,7 +491,7 @@ For candidate profile:
 - [ ] Contact information.
 - [ ] Links.
 
-## 17. Open decisions
+## 18. Open decisions
 
 - [ ] Final app name: `Cédric Workbench`, `Portfolio Agent OS`, or another name.
 - [ ] Final hosting provider.
@@ -469,7 +504,7 @@ For candidate profile:
 - [ ] Whether `/tetris` ships in first public release or later.
 - [ ] Whether `/about` includes a sliding puzzle.
 
-## 18. MVP definition
+## 19. MVP definition
 
 The MVP is complete when:
 
@@ -484,7 +519,7 @@ The MVP is complete when:
 - [ ] The app is usable on mobile.
 - [ ] The app remains useful without a live LLM.
 
-## 19. First build order
+## 20. First build order
 
 Recommended order:
 
@@ -504,7 +539,7 @@ Recommended order:
 14. [ ] Optional `/about` sliding puzzle.
 15. [ ] Optional `/ask`.
 
-## 20. Working log
+## 21. Working log
 
 Use this section while building.
 
