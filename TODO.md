@@ -99,7 +99,7 @@ Build the desktop shell first with mock data.
 Tasks:
 
 - [x] Build top bar.
-- [ ] Build left project explorer.
+- [x] Build left project explorer.
 - [ ] Build center editor area.
 - [ ] Build right inspector panel.
 - [x] Build bottom terminal panel.
@@ -109,7 +109,9 @@ Tasks:
 - [ ] Add resizable-looking panel dividers.
 - [ ] Add tab bar in editor area.
 - [ ] Add terminal tabs: `TERMINAL`, `AGENT STREAM`, `LOGS`, `MEMORY`.
-- [ ] Add selected project state after route/state model decision.
+- [x] Add selected project state after route/state model decision.
+- [x] Add workspace pagination in the left explorer.
+- [x] Add expandable fake branch rows in the left explorer.
 - [ ] Add empty states.
 - [ ] Add mobile fallback layout.
 
@@ -158,7 +160,7 @@ Done when:
 
 Tasks:
 
-- [ ] Define selected project state.
+- [x] Define selected project state.
 - [ ] Define opened tabs state.
 - [ ] Define active tab state.
 - [ ] Define focused artifact range state.
