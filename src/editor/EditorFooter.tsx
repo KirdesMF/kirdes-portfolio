@@ -6,7 +6,7 @@ import { cn } from "#/design-system/cn";
 import { Menu } from "#/design-system/Menu";
 import { Popover } from "#/design-system/Popover";
 import { Separator } from "#/design-system/Separator";
-import { Tooltip } from "#/design-system/Tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "#/design-system/Tooltip";
 import { toggleTerminalSearch } from "#/editor/editor-search";
 
 type AvailabilityStatus = "available" | "looking" | "unavailable";
@@ -63,37 +63,54 @@ export function EditorFooter(): React.ReactNode {
 	return (
 		<footer className="flex h-8 items-center justify-between gap-1 border-t border-border px-2">
 			<div className="flex items-center gap-1">
-				<Tooltip content="Settings">
-					<button
-						aria-label="Open settings"
-						className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
-						type="button"
-					>
-						<Settings className="size-3.5" />
-					</button>
+				<Tooltip>
+					<TooltipTrigger
+						render={
+							<button
+								aria-label="Open settings"
+								className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+								type="button"
+							>
+								<Settings className="size-3.5" />
+							</button>
+						}
+					/>
+					<TooltipContent>Settings</TooltipContent>
 				</Tooltip>
 				<Separator orientation="vertical" />
-				<Tooltip content="Open AI agent panel">
-					<button
-						aria-label="Open AI agent panel"
-						className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
-						type="button"
-					>
-						<Sparkles className="size-3.5" />
-					</button>
+				<Tooltip>
+					<TooltipTrigger
+						render={
+							<button
+								aria-label="Open AI agent panel"
+								className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+								type="button"
+							>
+								<Sparkles className="size-3.5" />
+							</button>
+						}
+					/>
+					<TooltipContent>Open AI agent panel</TooltipContent>
 				</Tooltip>
 				<Separator orientation="vertical" />
-				<Tooltip content={isTerminalOpen ? "Close terminal panel" : "Open terminal panel"}>
-					<Link
-						aria-label={isTerminalOpen ? "Close terminal panel" : "Open terminal panel"}
-						aria-pressed={isTerminalOpen}
-						className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring data-[active=true]:text-primary"
-						data-active={isTerminalOpen}
-						from="/editor"
-						search={toggleTerminalSearch}
-					>
-						<Terminal className="size-3.5" />
-					</Link>
+				<Tooltip>
+					<TooltipTrigger
+						render={
+							<Link
+								aria-label={isTerminalOpen ? "Close terminal panel" : "Open terminal panel"}
+								aria-pressed={isTerminalOpen}
+								className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring data-[active=true]:text-primary"
+								data-active={isTerminalOpen}
+								from="/editor"
+								search={toggleTerminalSearch}
+							>
+								<Terminal className="size-3.5" />
+							</Link>
+						}
+					/>
+					<TooltipContent>
+						{isTerminalOpen ? "Close terminal panel" : "Open terminal panel"}
+					</TooltipContent>
 				</Tooltip>
 			</div>
 			<div className="flex min-w-0 items-center gap-1.5 text-muted-foreground text-xs">

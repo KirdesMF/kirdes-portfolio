@@ -1,8 +1,17 @@
 import { Link, useSearch } from "@tanstack/react-router";
-import { Maximize2, Minus, PanelLeftOpen, PanelRightOpen, X } from "lucide-react";
+import {
+	ArrowBigUp,
+	Command,
+	Maximize2,
+	Minus,
+	PanelLeftOpen,
+	PanelRightOpen,
+	X,
+} from "lucide-react";
 
+import { Kbd } from "#/design-system/Kbd";
 import { Separator } from "#/design-system/Separator";
-import { Tooltip } from "#/design-system/Tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "#/design-system/Tooltip";
 import { toggleLeftPanelSearch, toggleRightPanelSearch } from "#/editor/editor-search";
 import { ThemeToggle } from "#/theme/ThemeToggle";
 
@@ -37,17 +46,27 @@ export function EditorHeader(): React.ReactNode {
 						<Maximize2 className="size-1.5 opacity-0 transition-opacity group-hover:opacity-100" />
 					</button>
 				</div>
-				<Tooltip content="Toggle left panel" shortcut={["cmd", "E"]}>
-					<Link
-						aria-label={isLeftPanelOpen ? "Close left panel" : "Open left panel"}
-						aria-pressed={isLeftPanelOpen}
-						className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring data-[active=true]:text-primary"
-						data-active={isLeftPanelOpen}
-						from="/editor"
-						search={toggleLeftPanelSearch}
-					>
-						<PanelLeftOpen className="size-3.5" />
-					</Link>
+				<Tooltip>
+					<TooltipTrigger
+						render={
+							<Link
+								aria-label={isLeftPanelOpen ? "Close left panel" : "Open left panel"}
+								aria-pressed={isLeftPanelOpen}
+								className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring data-[active=true]:text-primary"
+								data-active={isLeftPanelOpen}
+								from="/editor"
+								search={toggleLeftPanelSearch}
+							>
+								<PanelLeftOpen className="size-3.5" />
+							</Link>
+						}
+					/>
+					<TooltipContent>
+						<span>Toggle left panel</span>
+						<Kbd>
+							<Command className="size-2.5" />E
+						</Kbd>
+					</TooltipContent>
 				</Tooltip>
 			</div>
 			<div className="flex items-center gap-1">
@@ -61,17 +80,28 @@ export function EditorHeader(): React.ReactNode {
 				<Separator orientation="vertical" />
 				<ThemeToggle />
 				<Separator orientation="vertical" />
-				<Tooltip content="Toggle right panel" shortcut={["cmd", "shift", "E"]}>
-					<Link
-						aria-label={isRightPanelOpen ? "Close right panel" : "Open right panel"}
-						aria-pressed={isRightPanelOpen}
-						className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring data-[active=true]:text-primary"
-						data-active={isRightPanelOpen}
-						from="/editor"
-						search={toggleRightPanelSearch}
-					>
-						<PanelRightOpen className="size-3.5" />
-					</Link>
+				<Tooltip>
+					<TooltipTrigger
+						render={
+							<Link
+								aria-label={isRightPanelOpen ? "Close right panel" : "Open right panel"}
+								aria-pressed={isRightPanelOpen}
+								className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring data-[active=true]:text-primary"
+								data-active={isRightPanelOpen}
+								from="/editor"
+								search={toggleRightPanelSearch}
+							>
+								<PanelRightOpen className="size-3.5" />
+							</Link>
+						}
+					/>
+					<TooltipContent>
+						<span>Toggle right panel</span>
+						<Kbd>
+							<Command className="size-2.5" />
+							<ArrowBigUp className="size-2.5" />E
+						</Kbd>
+					</TooltipContent>
 				</Tooltip>
 			</div>
 		</header>

@@ -3,7 +3,7 @@ import { ChevronRight, GitBranch } from "lucide-react";
 
 import { cn } from "#/design-system/cn";
 import { Separator } from "#/design-system/Separator";
-import { Tooltip } from "#/design-system/Tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "#/design-system/Tooltip";
 import {
 	type EditorProjectSearchValue,
 	type EditorWorkspaceSearchValue,
@@ -141,21 +141,26 @@ export function EditorExplorer(): React.ReactNode {
 					const isSelected = workspace.id === id;
 
 					return (
-						<Tooltip content={label} key={id}>
-							<Link
-								aria-label={`Switch to ${label}`}
-								aria-current={isSelected ? "page" : undefined}
-								className="group inline-flex size-5 items-center justify-center rounded-sm focus-visible:outline-2 focus-visible:outline-ring"
-								from="/editor"
-								search={(previousSearch) => selectEditorWorkspaceSearch(previousSearch, id)}
-							>
-								<span
-									className={cn(
-										"size-1.5 rounded-full bg-muted-foreground/35 transition-colors group-hover:bg-muted-foreground",
-										isSelected && "bg-primary",
-									)}
-								/>
-							</Link>
+						<Tooltip key={id}>
+							<TooltipTrigger
+								render={
+									<Link
+										aria-label={`Switch to ${label}`}
+										aria-current={isSelected ? "page" : undefined}
+										className="group inline-flex size-5 items-center justify-center rounded-sm focus-visible:outline-2 focus-visible:outline-ring"
+										from="/editor"
+										search={(previousSearch) => selectEditorWorkspaceSearch(previousSearch, id)}
+									>
+										<span
+											className={cn(
+												"size-1.5 rounded-full bg-muted-foreground/35 transition-colors group-hover:bg-muted-foreground",
+												isSelected && "bg-primary",
+											)}
+										/>
+									</Link>
+								}
+							/>
+							<TooltipContent>{label}</TooltipContent>
 						</Tooltip>
 					);
 				})}
