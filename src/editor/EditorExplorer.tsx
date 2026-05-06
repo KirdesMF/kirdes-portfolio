@@ -1,5 +1,5 @@
 import { Link, useSearch } from "@tanstack/react-router";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, GitBranch } from "lucide-react";
 
 import { cn } from "#/design-system/cn";
 import { Separator } from "#/design-system/Separator";
@@ -14,20 +14,37 @@ const workspaces = [
 	{
 		id: "1",
 		projects: [
-			{ id: "about", label: "about" },
-			{ id: "projects", label: "projects" },
-			{ id: "skills", label: "skills" },
-			{ id: "contact", label: "contact" },
-			{ id: "help-command", label: "help command" },
+			{ id: "about", label: "about", branch: "feature/about", additions: 42, deletions: 8 },
+			{
+				id: "projects",
+				label: "projects",
+				branch: "feature/projects",
+				additions: 128,
+				deletions: 31,
+			},
+			{ id: "skills", label: "skills", branch: "feature/skills", additions: 64, deletions: 12 },
+			{ id: "contact", label: "contact", branch: "feature/contact", additions: 24, deletions: 4 },
+			{
+				id: "help-command",
+				label: "help command",
+				branch: "feature/help-command",
+				additions: 36,
+				deletions: 9,
+			},
 		],
 	},
 	{
 		id: "2",
-		projects: [{ id: "game", label: "game" }],
+		projects: [
+			{ id: "game", label: "game", branch: "feature/game", additions: 217, deletions: 53 },
+		],
 	},
 ] as const satisfies ReadonlyArray<{
 	id: EditorWorkspaceSearchValue;
 	projects: ReadonlyArray<{
+		additions: number;
+		branch: string;
+		deletions: number;
 		id: EditorProjectSearchValue;
 		label: string;
 	}>;
@@ -56,8 +73,9 @@ export function EditorExplorer(): React.ReactNode {
 								className="min-h-0 overflow-hidden p-1.5"
 							>
 								<ul>
-									{projects.map(({ id: projectId, label }, index) => {
+									{projects.map(({ additions, branch, deletions, id: projectId, label }, index) => {
 										const isSelected = search.project === projectId;
+										const isOpen = search.openProject === projectId;
 
 										return (
 											<li key={projectId}>
@@ -80,8 +98,30 @@ export function EditorExplorer(): React.ReactNode {
 													{isSelected ? (
 														<span className="size-1.5 animate-selected-folder-dot-pulse rounded-full bg-selected-folder-indicator motion-reduce:animate-none" />
 													) : null}
-													<ChevronRight className="size-3.5 shrink-0" />
+													<ChevronRight
+														className={cn(
+															"size-3.5 shrink-0 transition-transform duration-200 ease-editor-shell motion-reduce:transition-none",
+															isOpen && "rotate-90",
+														)}
+													/>
 												</Link>
+												<div
+													className={cn(
+														"ml-8 grid overflow-hidden transition-[grid-template-rows,opacity] duration-200 ease-editor-shell motion-reduce:transition-none",
+														isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+													)}
+												>
+													<div className="min-h-0 overflow-hidden">
+														<div className="flex min-w-0 items-center gap-1.5 px-2 py-2 text-muted-foreground">
+															<GitBranch className="size-3.5 shrink-0" />
+															<span className="min-w-0 flex-1 truncate">{branch}</span>
+															<span className="shrink-0 text-selected-folder-indicator">
+																+{additions}
+															</span>
+															<span className="shrink-0 text-destructive">-{deletions}</span>
+														</div>
+													</div>
+												</div>
 											</li>
 										);
 									})}

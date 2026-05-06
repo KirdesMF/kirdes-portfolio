@@ -15,6 +15,7 @@ export type EditorWorkspaceSearchValue = (typeof editorWorkspaceSearchValues)[nu
 
 export type EditorSearch = {
 	left: EditorPanelSearchValue;
+	openProject?: EditorProjectSearchValue;
 	project?: EditorProjectSearchValue;
 	right: EditorPanelSearchValue;
 	terminal: EditorTerminalSearchValue;
@@ -43,6 +44,7 @@ function isEditorWorkspaceSearchValue(value: unknown): value is EditorWorkspaceS
 export function validateEditorSearch(search: Record<string, unknown>): EditorSearch {
 	return {
 		left: isEditorPanelSearchValue(search.left) ? search.left : "closed",
+		openProject: isEditorProjectSearchValue(search.openProject) ? search.openProject : undefined,
 		project: isEditorProjectSearchValue(search.project) ? search.project : undefined,
 		right: isEditorPanelSearchValue(search.right) ? search.right : "closed",
 		terminal: isEditorTerminalSearchValue(search.terminal) ? search.terminal : "closed",
@@ -56,6 +58,7 @@ export function selectEditorProjectSearch(
 ): EditorSearch {
 	return {
 		...search,
+		openProject: search.project === project && search.openProject === project ? undefined : project,
 		project,
 	};
 }
@@ -66,6 +69,7 @@ export function selectEditorWorkspaceSearch(
 ): EditorSearch {
 	return {
 		...search,
+		openProject: undefined,
 		project: undefined,
 		workspace,
 	};
