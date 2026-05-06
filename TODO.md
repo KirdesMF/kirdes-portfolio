@@ -440,6 +440,28 @@ Optional contact flow for visitors who want to schedule time.
 - [ ] Define fake vs real booking behavior.
 - [ ] Add a11y and timezone handling notes before implementation.
 
+### Spotify player (bonus)
+
+Terminal-style mini player for background music while using the workbench.
+
+- [ ] Decide UI placement (bottom panel or floating).
+- [ ] Implement Spotify Web API integration or mock.
+- [ ] Add play/pause/skip controls.
+- [ ] Add track info display.
+- [ ] Add volume control.
+- [ ] Respect reduced motion.
+- [ ] Ensure不影响 terminal usage.
+
+### btop terminal command (bonus)
+
+Display a fake system monitor inside the terminal panel.
+
+- [ ] Design btop-like UI with CPU/memory/disk stats.
+- [ ] Add animated mock data.
+- [ ] Add keyboard controls for process list.
+- [ ] Respect reduced motion.
+- [ ] Keep bounded inside terminal panel.
+
 ## 15. Accessibility checklist
 
 - [!] Run a dedicated a11y pass after design-system Tooltip/Popover composition refactor.
