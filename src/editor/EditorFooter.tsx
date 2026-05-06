@@ -1,7 +1,7 @@
-import { Separator } from "@base-ui/react/separator";
 import { Link, useSearch } from "@tanstack/react-router";
 import { Sparkles, Terminal } from "lucide-react";
 
+import { Separator } from "#/design-system/Separator";
 import { toggleTerminalSearch } from "#/editor/editor-search";
 
 export function EditorFooter(): React.ReactNode {
@@ -17,7 +17,7 @@ export function EditorFooter(): React.ReactNode {
 			>
 				<Sparkles className="size-3.5" />
 			</button>
-			<Separator className="h-4 w-px bg-border" orientation="vertical" />
+			<Separator orientation="vertical" />
 			<Link
 				aria-label={isTerminalOpen ? "Close terminal panel" : "Open terminal panel"}
 				aria-pressed={isTerminalOpen}

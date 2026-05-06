@@ -3,6 +3,7 @@ import { ChevronDown, Maximize2, Minimize2, Terminal } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { cn } from "#/design-system/cn";
+import { EditorExplorer } from "#/editor/EditorExplorer";
 import { closeTerminalSearch, toggleTerminalFullscreenSearch } from "#/editor/editor-search";
 
 const editorShellGridClassNameByPanelState = {
@@ -49,7 +50,7 @@ export function EditorShell({ children }: { children: ReactNode }): ReactNode {
 			)}
 		>
 			<aside className="min-w-0 overflow-hidden border-r border-border bg-sidebar">
-				<div className="w-70 p-2 text-muted-foreground text-xs">Left panel</div>
+				<EditorExplorer />
 			</aside>
 			<div
 				className={cn(

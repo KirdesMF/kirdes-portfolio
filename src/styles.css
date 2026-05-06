@@ -36,6 +36,7 @@ body {
 	--accent-foreground: oklch(1 0 0);
 	--destructive: oklch(0.5879 0.1927 20.4694);
 	--destructive-foreground: oklch(1 0 0);
+	--selected-folder-indicator: oklch(0.64 0.18 145);
 	--border: oklch(0.9177 0.0063 255.4771);
 	--input: oklch(1 0 0);
 	--ring: oklch(0.6354 0.1984 255.8343);
@@ -92,6 +93,7 @@ body {
 	--accent-foreground: oklch(1 0 0);
 	--destructive: oklch(0.6651 0.2046 26.9596);
 	--destructive-foreground: oklch(1 0 0);
+	--selected-folder-indicator: oklch(0.72 0.18 145);
 	--border: oklch(0.33 0.0149 252.3099);
 	--input: oklch(0.1763 0.014 258.3572);
 	--ring: oklch(0.7153 0.1518 253.3061);
@@ -145,6 +147,7 @@ body {
 	--color-accent-foreground: var(--accent-foreground);
 	--color-destructive: var(--destructive);
 	--color-destructive-foreground: var(--destructive-foreground);
+	--color-selected-folder-indicator: var(--selected-folder-indicator);
 	--color-border: var(--border);
 	--color-input: var(--input);
 	--color-ring: var(--ring);
@@ -197,6 +200,19 @@ body {
 	--grid-template-rows-editor-terminal-fullscreen: minmax(0, calc(100% - 100%)) 100%;
 
 	--ease-editor-shell: cubic-bezier(0.32, 0.72, 0, 1);
+	--animate-selected-folder-dot-pulse: selected-folder-dot-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes selected-folder-dot-pulse {
+	0%,
+	100% {
+		opacity: 1;
+		box-shadow: 0 0 0 0 color-mix(in oklch, var(--selected-folder-indicator) 35%, transparent);
+	}
+	50% {
+		opacity: 0.72;
+		box-shadow: 0 0 0 3px color-mix(in oklch, var(--selected-folder-indicator) 0%, transparent);
+	}
 }
 
 @utility grid-areas-editor-center {
