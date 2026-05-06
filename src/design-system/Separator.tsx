@@ -3,7 +3,9 @@ import type { ComponentProps } from "react";
 
 import { cn } from "#/design-system/cn";
 
-type SeparatorProps = ComponentProps<typeof BaseSeparator>;
+type SeparatorProps = Omit<ComponentProps<typeof BaseSeparator>, "className"> & {
+	className?: string;
+};
 
 export function Separator({
 	className,

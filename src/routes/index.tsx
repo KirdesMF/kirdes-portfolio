@@ -2,6 +2,9 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
 	beforeLoad: () => {
-		throw redirect({ to: "/editor", search: { left: "closed", right: "closed" } });
+		throw redirect({
+			to: "/editor",
+			search: { left: "closed", right: "closed", terminal: "closed", workspace: "1" },
+		});
 	},
 });
