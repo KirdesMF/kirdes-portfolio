@@ -3,13 +3,14 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 export const Route = createFileRoute("/")({
 	beforeLoad: () => {
 		throw redirect({
-			to: "/editor",
+			params: { projectId: "welcome", workspaceId: "1" },
+			to: "/editor/$workspaceId/$projectId",
 			search: {
 				left: "closed",
-				openProjects: [],
+				open: ["welcome"],
 				right: "closed",
+				selected: { "1": "welcome" },
 				terminal: "closed",
-				workspace: "1",
 			},
 		});
 	},

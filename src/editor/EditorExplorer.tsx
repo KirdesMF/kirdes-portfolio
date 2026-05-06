@@ -1,63 +1,30 @@
-import { Link, useSearch } from "@tanstack/react-router";
+import { Link, useParams, useSearch } from "@tanstack/react-router";
 import { ChevronRight, GitBranch } from "lucide-react";
 
 import { cn } from "#/design-system/cn";
 import { Separator } from "#/design-system/Separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "#/design-system/Tooltip";
 import {
-	type EditorProjectSearchValue,
-	type EditorWorkspaceSearchValue,
+	editorWorkspaces,
+	getEditorWorkspace,
+	getEditorWorkspaceDefaultProject,
+	isEditorProjectInWorkspace,
+	isEditorWorkspaceValue,
+} from "#/editor/editor-projects";
+import {
 	selectEditorProjectSearch,
 	selectEditorWorkspaceSearch,
+	toggleEditorProjectOpenSearch,
 } from "#/editor/editor-search";
-
-const workspaces = [
-	{
-		id: "1",
-		label: "Workspace 1",
-		projects: [
-			{ id: "about", label: "about", branch: "feature/about", additions: 42, deletions: 8 },
-			{
-				id: "projects",
-				label: "projects",
-				branch: "feature/projects",
-				additions: 128,
-				deletions: 31,
-			},
-			{ id: "skills", label: "skills", branch: "feature/skills", additions: 64, deletions: 12 },
-			{ id: "contact", label: "contact", branch: "feature/contact", additions: 24, deletions: 4 },
-			{
-				id: "help-command",
-				label: "help command",
-				branch: "feature/help-command",
-				additions: 36,
-				deletions: 9,
-			},
-		],
-	},
-	{
-		id: "2",
-		label: "Workspace 2",
-		projects: [
-			{ id: "game", label: "game", branch: "feature/game", additions: 217, deletions: 53 },
-			{ id: "motion", label: "Motion", branch: "feature/motion", additions: 89, deletions: 14 },
-		],
-	},
-] as const satisfies ReadonlyArray<{
-	id: EditorWorkspaceSearchValue;
-	label: string;
-	projects: ReadonlyArray<{
-		additions: number;
-		branch: string;
-		deletions: number;
-		id: EditorProjectSearchValue;
-		label: string;
-	}>;
-}>;
 
 export function EditorExplorer(): React.ReactNode {
 	const search = useSearch({ from: "/editor" });
-	const workspace = workspaces.find(({ id }) => id === search.workspace) ?? workspaces[0];
+	const { projectId: selectedProjectId, workspaceId: selectedWorkspaceId } = useParams({
+		strict: false,
+	});
+	const workspace = getEditorWorkspace(
+		isEditorWorkspaceValue(selectedWorkspaceId) ? selectedWorkspaceId : "1",
+	);
 
 	return (
 		<div className="grid h-full min-w-0 grid-rows-[minmax(0,1fr)_auto] overflow-hidden text-xs">
@@ -68,7 +35,7 @@ export function EditorExplorer(): React.ReactNode {
 						workspace.id === "2" && "-translate-x-1/2",
 					)}
 				>
-					{workspaces.map(({ id, projects }) => (
+					{editorWorkspaces.map(({ id, projects }) => (
 						<section className="grid h-full min-w-0 flex-1 grid-rows-[auto_minmax(0,1fr)]" key={id}>
 							<header className="flex h-7 items-center border-b border-border px-2 font-medium text-muted-foreground uppercase tracking-wide">
 								WORKSPACE {id}
@@ -79,37 +46,52 @@ export function EditorExplorer(): React.ReactNode {
 							>
 								<ul>
 									{projects.map(({ additions, branch, deletions, id: projectId, label }, index) => {
-										const isSelected = search.project === projectId;
-										const isOpen = search.openProjects.includes(projectId);
+										const isSelected = workspace.id === id && selectedProjectId === projectId;
+										const isOpen = search.open.includes(projectId);
 
 										return (
 											<li key={projectId}>
 												{index > 0 ? <Separator className="my-1" /> : null}
-												<Link
-													aria-current={isSelected ? "page" : undefined}
+												<div
 													className={cn(
-														"relative flex h-9 w-full items-center gap-2 rounded-sm px-2 text-left text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-2 focus-visible:outline-ring",
+														"relative flex h-9 w-full items-center rounded-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground",
 														isSelected && "text-sidebar-foreground",
 													)}
-													from="/editor"
-													search={(previousSearch) =>
-														selectEditorProjectSearch(previousSearch, projectId)
-													}
 												>
-													<span className="inline-flex size-6 shrink-0 items-center justify-center rounded-md bg-primary/10 p-1 font-medium text-[0.65rem] text-primary uppercase transition-colors">
-														{label[0]}
-													</span>
-													<span className="min-w-0 flex-1 truncate">{label}</span>
-													{isSelected ? (
-														<span className="size-1.5 animate-selected-folder-dot-pulse rounded-full bg-selected-folder-indicator motion-reduce:animate-none" />
-													) : null}
-													<ChevronRight
-														className={cn(
-															"size-3.5 shrink-0 transition-transform duration-200 ease-editor-shell motion-reduce:transition-none",
-															isOpen && "rotate-90",
-														)}
-													/>
-												</Link>
+													<Link
+														aria-current={isSelected ? "page" : undefined}
+														className="flex h-full min-w-0 flex-1 items-center gap-2 rounded-l-sm px-2 text-left focus-visible:outline-2 focus-visible:outline-ring"
+														params={{ projectId, workspaceId: id }}
+														search={(previousSearch) =>
+															selectEditorProjectSearch(previousSearch, id, projectId)
+														}
+														to="/editor/$workspaceId/$projectId"
+													>
+														<span className="inline-flex size-6 shrink-0 items-center justify-center rounded-md bg-primary/10 p-1 font-medium text-[0.65rem] text-primary uppercase transition-colors">
+															{label[0]}
+														</span>
+														<span className="min-w-0 flex-1 truncate">{label}</span>
+														{isSelected ? (
+															<span className="size-1.5 animate-selected-folder-dot-pulse rounded-full bg-selected-folder-indicator motion-reduce:animate-none" />
+														) : null}
+													</Link>
+													<Link
+														aria-label={isOpen ? `Collapse ${label}` : `Expand ${label}`}
+														aria-pressed={isOpen}
+														className="flex h-full w-8 shrink-0 items-center justify-center rounded-r-sm focus-visible:outline-2 focus-visible:outline-ring"
+														search={(previousSearch) =>
+															toggleEditorProjectOpenSearch(previousSearch, projectId)
+														}
+														to="."
+													>
+														<ChevronRight
+															className={cn(
+																"size-3.5 shrink-0 transition-transform duration-200 ease-editor-shell motion-reduce:transition-none",
+																isOpen && "rotate-90",
+															)}
+														/>
+													</Link>
+												</div>
 												<div
 													className={cn(
 														"ml-8 grid overflow-hidden transition-[grid-template-rows,opacity] duration-200 ease-editor-shell motion-reduce:transition-none",
@@ -137,8 +119,15 @@ export function EditorExplorer(): React.ReactNode {
 				</div>
 			</div>
 			<footer className="flex h-8 items-center justify-center gap-1 border-t border-border px-2">
-				{workspaces.map(({ id, label }) => {
+				{editorWorkspaces.map(({ id, label }) => {
 					const isSelected = workspace.id === id;
+					const rememberedProjectId = search.selected[id];
+					const targetProjectId =
+						rememberedProjectId && isEditorProjectInWorkspace(rememberedProjectId, id)
+							? rememberedProjectId
+							: getEditorWorkspaceDefaultProject(id)?.id;
+
+					if (!targetProjectId) return null;
 
 					return (
 						<Tooltip key={id}>
@@ -148,8 +137,11 @@ export function EditorExplorer(): React.ReactNode {
 										aria-label={`Switch to ${label}`}
 										aria-current={isSelected ? "page" : undefined}
 										className="group inline-flex size-5 items-center justify-center rounded-sm focus-visible:outline-2 focus-visible:outline-ring"
-										from="/editor"
-										search={(previousSearch) => selectEditorWorkspaceSearch(previousSearch, id)}
+										params={{ projectId: targetProjectId, workspaceId: id }}
+										search={(previousSearch) =>
+											selectEditorWorkspaceSearch(previousSearch, id, targetProjectId)
+										}
+										to="/editor/$workspaceId/$projectId"
 									>
 										<span
 											className={cn(

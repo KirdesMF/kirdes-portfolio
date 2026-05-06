@@ -1,9 +1,10 @@
-import { Link, useSearch } from "@tanstack/react-router";
+import { Link, useParams, useSearch } from "@tanstack/react-router";
 import { ChevronDown, Maximize2, Minimize2, Terminal } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { cn } from "#/design-system/cn";
 import { EditorExplorer } from "#/editor/EditorExplorer";
+import { getEditorProjectInWorkspace, isEditorWorkspaceValue } from "#/editor/editor-projects";
 import { closeTerminalSearch, toggleTerminalFullscreenSearch } from "#/editor/editor-search";
 
 const editorShellGridClassNameByPanelState = {
@@ -36,6 +37,10 @@ function getEditorShellPanelState({
 
 export function EditorShell({ children }: { children: ReactNode }): ReactNode {
 	const search = useSearch({ from: "/editor" });
+	const { projectId, workspaceId } = useParams({ strict: false });
+	const project = isEditorWorkspaceValue(workspaceId)
+		? getEditorProjectInWorkspace(workspaceId, projectId)
+		: undefined;
 	const panelState = getEditorShellPanelState({
 		isLeftPanelOpen: search.left === "open",
 		isRightPanelOpen: search.right === "open",
@@ -71,8 +76,8 @@ export function EditorShell({ children }: { children: ReactNode }): ReactNode {
 									isTerminalFullscreen ? "Restore terminal panel" : "Expand terminal panel"
 								}
 								className="inline-flex size-5 items-center justify-center rounded-sm transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
-								from="/editor"
 								search={toggleTerminalFullscreenSearch}
+								to="."
 							>
 								{isTerminalFullscreen ? (
 									<Minimize2 className="size-3.5" />
@@ -83,8 +88,8 @@ export function EditorShell({ children }: { children: ReactNode }): ReactNode {
 							<Link
 								aria-label="Close terminal panel"
 								className="inline-flex size-5 items-center justify-center rounded-sm transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
-								from="/editor"
 								search={closeTerminalSearch}
+								to="."
 							>
 								<ChevronDown className="size-3.5" />
 							</Link>
@@ -94,7 +99,21 @@ export function EditorShell({ children }: { children: ReactNode }): ReactNode {
 				</section>
 			</div>
 			<aside className="min-w-0 overflow-hidden border-l border-border bg-sidebar">
-				<div className="w-80 p-2 text-muted-foreground text-xs">Right panel</div>
+				<div className="w-80 space-y-3 p-3 text-xs">
+					<p className="font-medium text-sidebar-foreground">Right panel</p>
+					{project ? (
+						<div className="space-y-2 text-muted-foreground">
+							<p className="text-sidebar-foreground">{project.label}</p>
+							<p>{project.branch}</p>
+							<div className="flex gap-2">
+								<span className="text-selected-folder-indicator">+{project.additions}</span>
+								<span className="text-destructive">-{project.deletions}</span>
+							</div>
+						</div>
+					) : (
+						<p className="text-muted-foreground">Select project to see context.</p>
+					)}
+				</div>
 			</aside>
 		</div>
 	);

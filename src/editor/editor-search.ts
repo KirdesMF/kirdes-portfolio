@@ -1,122 +1,164 @@
-export const editorProjectSearchValues = [
-	"about",
-	"projects",
-	"skills",
-	"contact",
-	"help-command",
-	"game",
-	"motion",
-] as const;
-export const editorWorkspaceSearchValues = ["1", "2"] as const;
+import {
+	type EditorProjectValue,
+	type EditorWorkspaceValue,
+	isEditorProjectInWorkspace,
+	isEditorProjectValue,
+	isEditorWorkspaceValue,
+} from "#/editor/editor-projects";
 
 export type EditorPanelSearchValue = "open" | "closed";
-export type EditorProjectSearchValue = (typeof editorProjectSearchValues)[number];
+export type EditorProjectSearchValue = EditorProjectValue;
 export type EditorTerminalSearchValue = "open" | "closed" | "fullscreen";
-export type EditorWorkspaceSearchValue = (typeof editorWorkspaceSearchValues)[number];
+export type EditorWorkspaceSearchValue = EditorWorkspaceValue;
+
+export type EditorWorkspaceSelectionsSearchValue = Partial<
+	Record<EditorWorkspaceSearchValue, EditorProjectSearchValue>
+>;
 
 export type EditorSearch = {
 	left: EditorPanelSearchValue;
-	openProjects: readonly EditorProjectSearchValue[];
-	project?: EditorProjectSearchValue;
+	open: readonly EditorProjectSearchValue[];
 	right: EditorPanelSearchValue;
+	selected: EditorWorkspaceSelectionsSearchValue;
 	terminal: EditorTerminalSearchValue;
-	workspace: EditorWorkspaceSearchValue;
 };
-
-const editorProjectSearchValueSet: ReadonlySet<string> = new Set(editorProjectSearchValues);
-const editorWorkspaceSearchValueSet: ReadonlySet<string> = new Set(editorWorkspaceSearchValues);
 
 function isEditorPanelSearchValue(value: unknown): value is EditorPanelSearchValue {
 	return value === "open" || value === "closed";
 }
 
-function isEditorProjectSearchValue(value: unknown): value is EditorProjectSearchValue {
-	return typeof value === "string" && editorProjectSearchValueSet.has(value);
-}
-
 function isEditorProjectSearchValueArray(
 	value: unknown,
 ): value is readonly EditorProjectSearchValue[] {
-	return Array.isArray(value) && value.every(isEditorProjectSearchValue);
+	return Array.isArray(value) && value.every(isEditorProjectValue);
 }
 
 function isEditorTerminalSearchValue(value: unknown): value is EditorTerminalSearchValue {
 	return value === "open" || value === "closed" || value === "fullscreen";
 }
 
-function isEditorWorkspaceSearchValue(value: unknown): value is EditorWorkspaceSearchValue {
-	return typeof value === "string" && editorWorkspaceSearchValueSet.has(value);
+function validateEditorWorkspaceSelectionsSearch(
+	value: unknown,
+): EditorWorkspaceSelectionsSearchValue {
+	if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+
+	return Object.fromEntries(
+		Object.entries(value).filter(
+			(entry): entry is [EditorWorkspaceSearchValue, EditorProjectSearchValue] => {
+				const [workspace, project] = entry;
+
+				return (
+					isEditorWorkspaceValue(workspace) &&
+					isEditorProjectValue(project) &&
+					isEditorProjectInWorkspace(project, workspace)
+				);
+			},
+		),
+	);
 }
 
 export function validateEditorSearch(search: Record<string, unknown>): EditorSearch {
 	return {
 		left: isEditorPanelSearchValue(search.left) ? search.left : "closed",
-		openProjects: isEditorProjectSearchValueArray(search.openProjects) ? search.openProjects : [],
-		project: isEditorProjectSearchValue(search.project) ? search.project : undefined,
+		open: isEditorProjectSearchValueArray(search.open) ? search.open : [],
 		right: isEditorPanelSearchValue(search.right) ? search.right : "closed",
+		selected: validateEditorWorkspaceSelectionsSearch(search.selected),
 		terminal: isEditorTerminalSearchValue(search.terminal) ? search.terminal : "closed",
-		workspace: isEditorWorkspaceSearchValue(search.workspace) ? search.workspace : "1",
 	};
 }
 
+function normalizeEditorSearch(search: Partial<EditorSearch>): EditorSearch {
+	return validateEditorSearch(search as Record<string, unknown>);
+}
+
 export function selectEditorProjectSearch(
-	search: EditorSearch,
+	search: Partial<EditorSearch>,
+	workspace: EditorWorkspaceSearchValue,
 	project: EditorProjectSearchValue,
 ): EditorSearch {
-	const isOpen = search.openProjects.includes(project);
+	const nextSearch = normalizeEditorSearch(search);
 
 	return {
-		...search,
-		openProjects: isOpen
-			? search.openProjects.filter((openProject) => openProject !== project)
-			: [...search.openProjects, project],
-		project,
+		...nextSearch,
+		open: nextSearch.open.includes(project) ? nextSearch.open : [...nextSearch.open, project],
+		selected: {
+			...nextSearch.selected,
+			[workspace]: project,
+		},
+	};
+}
+
+export function toggleEditorProjectOpenSearch(
+	search: Partial<EditorSearch>,
+	project: EditorProjectSearchValue,
+): EditorSearch {
+	const nextSearch = normalizeEditorSearch(search);
+	const isOpen = nextSearch.open.includes(project);
+
+	return {
+		...nextSearch,
+		open: isOpen
+			? nextSearch.open.filter((openProject) => openProject !== project)
+			: [...nextSearch.open, project],
 	};
 }
 
 export function selectEditorWorkspaceSearch(
-	search: EditorSearch,
+	search: Partial<EditorSearch>,
 	workspace: EditorWorkspaceSearchValue,
+	project: EditorProjectSearchValue,
 ): EditorSearch {
+	const nextSearch = normalizeEditorSearch(search);
+
 	return {
-		...search,
-		openProjects: [],
-		project: undefined,
-		workspace,
+		...nextSearch,
+		open: nextSearch.open.includes(project) ? nextSearch.open : [...nextSearch.open, project],
+		selected: {
+			...nextSearch.selected,
+			[workspace]: project,
+		},
 	};
 }
 
-export function toggleLeftPanelSearch(search: EditorSearch): EditorSearch {
+export function toggleLeftPanelSearch(search: Partial<EditorSearch>): EditorSearch {
+	const nextSearch = normalizeEditorSearch(search);
+
 	return {
-		...search,
-		left: search.left === "open" ? "closed" : "open",
+		...nextSearch,
+		left: nextSearch.left === "open" ? "closed" : "open",
 	};
 }
 
-export function toggleRightPanelSearch(search: EditorSearch): EditorSearch {
+export function toggleRightPanelSearch(search: Partial<EditorSearch>): EditorSearch {
+	const nextSearch = normalizeEditorSearch(search);
+
 	return {
-		...search,
-		right: search.right === "open" ? "closed" : "open",
+		...nextSearch,
+		right: nextSearch.right === "open" ? "closed" : "open",
 	};
 }
 
-export function toggleTerminalSearch(search: EditorSearch): EditorSearch {
+export function toggleTerminalSearch(search: Partial<EditorSearch>): EditorSearch {
+	const nextSearch = normalizeEditorSearch(search);
+
 	return {
-		...search,
-		terminal: search.terminal === "closed" ? "open" : "closed",
+		...nextSearch,
+		terminal: nextSearch.terminal === "closed" ? "open" : "closed",
 	};
 }
 
-export function closeTerminalSearch(search: EditorSearch): EditorSearch {
+export function closeTerminalSearch(search: Partial<EditorSearch>): EditorSearch {
 	return {
-		...search,
+		...normalizeEditorSearch(search),
 		terminal: "closed",
 	};
 }
 
-export function toggleTerminalFullscreenSearch(search: EditorSearch): EditorSearch {
+export function toggleTerminalFullscreenSearch(search: Partial<EditorSearch>): EditorSearch {
+	const nextSearch = normalizeEditorSearch(search);
+
 	return {
-		...search,
-		terminal: search.terminal === "fullscreen" ? "open" : "fullscreen",
+		...nextSearch,
+		terminal: nextSearch.terminal === "fullscreen" ? "open" : "fullscreen",
 	};
 }

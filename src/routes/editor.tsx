@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 import { EditorPage } from "#/editor/EditorPage";
 import { validateEditorSearch } from "#/editor/editor-search";
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/editor")({
 function EditorRoute() {
 	return (
 		<EditorPage>
-			<main className="min-h-0 overflow-hidden bg-background" />
+			<Outlet />
 		</EditorPage>
 	);
 }

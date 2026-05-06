@@ -107,8 +107,8 @@ export function EditorFooter(): React.ReactNode {
 								aria-pressed={isTerminalOpen}
 								className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring data-[active=true]:text-primary"
 								data-active={isTerminalOpen}
-								from="/editor"
 								search={toggleTerminalSearch}
+								to="."
 							>
 								<Terminal className="size-3.5" />
 							</Link>

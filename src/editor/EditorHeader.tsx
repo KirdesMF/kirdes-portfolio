@@ -54,8 +54,8 @@ export function EditorHeader(): React.ReactNode {
 								aria-pressed={isLeftPanelOpen}
 								className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring data-[active=true]:text-primary"
 								data-active={isLeftPanelOpen}
-								from="/editor"
 								search={toggleLeftPanelSearch}
+								to="."
 							>
 								<PanelLeftOpen className="size-3.5" />
 							</Link>
@@ -88,8 +88,8 @@ export function EditorHeader(): React.ReactNode {
 								aria-pressed={isRightPanelOpen}
 								className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring data-[active=true]:text-primary"
 								data-active={isRightPanelOpen}
-								from="/editor"
 								search={toggleRightPanelSearch}
+								to="."
 							>
 								<PanelRightOpen className="size-3.5" />
 							</Link>
