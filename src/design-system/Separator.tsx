@@ -1,5 +1,5 @@
 import { Separator as BaseSeparator } from "@base-ui/react/separator";
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "#/design-system/cn";
 
@@ -11,12 +11,12 @@ export function Separator({
 	className,
 	orientation = "horizontal",
 	...props
-}: SeparatorProps): React.ReactNode {
+}: SeparatorProps): ReactNode {
 	return (
 		<BaseSeparator
 			className={cn(
+				"shrink-0 bg-border",
 				orientation === "vertical" ? "h-4 w-px" : "h-px w-full",
-				"bg-border",
 				className,
 			)}
 			orientation={orientation}
