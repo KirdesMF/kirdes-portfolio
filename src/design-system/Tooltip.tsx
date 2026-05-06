@@ -35,7 +35,7 @@ export function Tooltip({ children, content, shortcut }: TooltipProps): ReactNod
 					<BaseTooltip.Positioner side="bottom" sideOffset={6}>
 						<BaseTooltip.Popup
 							className={cn(
-								"flex items-center gap-2 rounded-lg border border-border bg-popover px-2 py-1 text-popover-foreground text-xs shadow-md",
+								"flex items-center gap-2 rounded-md border border-border bg-popover px-2 py-1 text-popover-foreground text-xs shadow-md",
 								"data-ending-style:opacity-0 data-starting-style:opacity-0 data-ending-style:translate-y-0.5 data-starting-style:translate-y-0.5",
 								"transition-[opacity,transform] duration-150 ease-editor-shell motion-reduce:transition-none",
 							)}
