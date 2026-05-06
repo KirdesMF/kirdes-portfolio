@@ -3,7 +3,7 @@ import { Contact, Settings, Sparkles, Terminal } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { cn } from "#/design-system/cn";
-import { Menu } from "#/design-system/Menu";
+import { Menu, MenuContent, MenuLinkItem, MenuTrigger } from "#/design-system/Menu";
 import {
 	Popover,
 	PopoverContent,
@@ -152,14 +152,25 @@ export function EditorFooter(): React.ReactNode {
 					</PopoverContent>
 				</Popover>
 				<Separator orientation="vertical" />
-				<Menu items={contactLinks}>
-					<button
-						aria-label="Open contact menu"
-						className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
-						type="button"
-					>
-						<Contact className="size-3.5" />
-					</button>
+				<Menu>
+					<MenuTrigger
+						render={
+							<button
+								aria-label="Open contact menu"
+								className="inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+								type="button"
+							>
+								<Contact className="size-3.5" />
+							</button>
+						}
+					/>
+					<MenuContent>
+						{contactLinks.map(({ href, label }) => (
+							<MenuLinkItem closeOnClick href={href} key={label} label={label}>
+								{label}
+							</MenuLinkItem>
+						))}
+					</MenuContent>
 				</Menu>
 			</div>
 		</footer>
