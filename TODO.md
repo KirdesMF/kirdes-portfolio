@@ -134,6 +134,7 @@ Tasks:
 - [x] Add selected project state after route/state model decision.
 - [x] Add workspace pagination in the left explorer.
 - [x] Add expandable fake branch rows in the left explorer.
+- [ ] Review whether left explorer open folders/workspace belong in URL search params, compact comma search params, or local store for cleaner URLs.
 - [ ] Add empty states.
 - [ ] Add mobile fallback layout.
 
@@ -508,6 +509,7 @@ For candidate profile:
 - [ ] Whether to include a public changelog.
 - [ ] Whether `/tetris` ships in first public release or later.
 - [ ] Whether `/about` includes a sliding puzzle.
+- [ ] Decide if explorer UI-only state (open folders, active workspace) should move out of search params into local/store state; clean URLs may matter more than restoring open folders.
 
 ## 18. MVP definition
 

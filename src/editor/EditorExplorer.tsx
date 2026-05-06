@@ -80,7 +80,7 @@ export function EditorExplorer(): React.ReactNode {
 								<ul>
 									{projects.map(({ additions, branch, deletions, id: projectId, label }, index) => {
 										const isSelected = search.project === projectId;
-										const isOpen = search.openProject === projectId;
+										const isOpen = search.openProjects.includes(projectId);
 
 										return (
 											<li key={projectId}>

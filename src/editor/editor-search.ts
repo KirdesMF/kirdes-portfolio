@@ -16,7 +16,7 @@ export type EditorWorkspaceSearchValue = (typeof editorWorkspaceSearchValues)[nu
 
 export type EditorSearch = {
 	left: EditorPanelSearchValue;
-	openProject?: EditorProjectSearchValue;
+	openProjects: readonly EditorProjectSearchValue[];
 	project?: EditorProjectSearchValue;
 	right: EditorPanelSearchValue;
 	terminal: EditorTerminalSearchValue;
@@ -34,6 +34,12 @@ function isEditorProjectSearchValue(value: unknown): value is EditorProjectSearc
 	return typeof value === "string" && editorProjectSearchValueSet.has(value);
 }
 
+function isEditorProjectSearchValueArray(
+	value: unknown,
+): value is readonly EditorProjectSearchValue[] {
+	return Array.isArray(value) && value.every(isEditorProjectSearchValue);
+}
+
 function isEditorTerminalSearchValue(value: unknown): value is EditorTerminalSearchValue {
 	return value === "open" || value === "closed" || value === "fullscreen";
 }
@@ -45,7 +51,7 @@ function isEditorWorkspaceSearchValue(value: unknown): value is EditorWorkspaceS
 export function validateEditorSearch(search: Record<string, unknown>): EditorSearch {
 	return {
 		left: isEditorPanelSearchValue(search.left) ? search.left : "closed",
-		openProject: isEditorProjectSearchValue(search.openProject) ? search.openProject : undefined,
+		openProjects: isEditorProjectSearchValueArray(search.openProjects) ? search.openProjects : [],
 		project: isEditorProjectSearchValue(search.project) ? search.project : undefined,
 		right: isEditorPanelSearchValue(search.right) ? search.right : "closed",
 		terminal: isEditorTerminalSearchValue(search.terminal) ? search.terminal : "closed",
@@ -57,9 +63,13 @@ export function selectEditorProjectSearch(
 	search: EditorSearch,
 	project: EditorProjectSearchValue,
 ): EditorSearch {
+	const isOpen = search.openProjects.includes(project);
+
 	return {
 		...search,
-		openProject: search.project === project && search.openProject === project ? undefined : project,
+		openProjects: isOpen
+			? search.openProjects.filter((openProject) => openProject !== project)
+			: [...search.openProjects, project],
 		project,
 	};
 }
@@ -70,7 +80,7 @@ export function selectEditorWorkspaceSearch(
 ): EditorSearch {
 	return {
 		...search,
-		openProject: undefined,
+		openProjects: [],
 		project: undefined,
 		workspace,
 	};

@@ -4,7 +4,13 @@ export const Route = createFileRoute("/")({
 	beforeLoad: () => {
 		throw redirect({
 			to: "/editor",
-			search: { left: "closed", right: "closed", terminal: "closed", workspace: "1" },
+			search: {
+				left: "closed",
+				openProjects: [],
+				right: "closed",
+				terminal: "closed",
+				workspace: "1",
+			},
 		});
 	},
 });
