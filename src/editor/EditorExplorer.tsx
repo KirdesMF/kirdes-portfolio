@@ -40,6 +40,7 @@ const workspaces = [
 		label: "Workspace 2",
 		projects: [
 			{ id: "game", label: "game", branch: "feature/game", additions: 217, deletions: 53 },
+			{ id: "motion", label: "Motion", branch: "feature/motion", additions: 89, deletions: 14 },
 		],
 	},
 ] as const satisfies ReadonlyArray<{

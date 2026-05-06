@@ -51,6 +51,14 @@ export function EditorHeader(): React.ReactNode {
 				</Tooltip>
 			</div>
 			<div className="flex items-center gap-1">
+				<button
+					aria-label="Toggle language between French and English"
+					className="inline-flex h-6 items-center rounded-sm px-1.5 font-medium text-[0.65rem] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+					type="button"
+				>
+					FR | EN
+				</button>
+				<Separator orientation="vertical" />
 				<ThemeToggle />
 				<Separator orientation="vertical" />
 				<Tooltip content="Toggle right panel" shortcut={["cmd", "shift", "E"]}>

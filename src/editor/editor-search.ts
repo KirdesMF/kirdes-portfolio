@@ -5,6 +5,7 @@ export const editorProjectSearchValues = [
 	"contact",
 	"help-command",
 	"game",
+	"motion",
 ] as const;
 export const editorWorkspaceSearchValues = ["1", "2"] as const;
 
