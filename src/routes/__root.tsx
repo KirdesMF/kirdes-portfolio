@@ -1,8 +1,8 @@
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, HeadContent, ScriptOnce, Scripts } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { Folder } from "lucide-react";
 import type { ReactNode } from "react";
 import { ThemeProvider } from "#/theme/ThemeProvider";
+import { ThemeToggle } from "#/theme/ThemeToggle";
 import { getInitialThemePreference } from "#/theme/theme.functions";
 import { themeBootScript } from "#/theme/themeBootScript";
 import { defaultResolvedTheme, resolveThemePreference } from "#/theme/themeTypes";
@@ -14,7 +14,7 @@ export const Route = createRootRoute({
 		meta: [
 			{ charSet: "utf-8" },
 			{ name: "viewport", content: "width=device-width, initial-scale=1" },
-			{ title: "TanStack Start Starter" },
+			{ title: "kirdes — portfolio" },
 		],
 		links: [{ rel: "stylesheet", href: appCss }],
 	}),
@@ -37,19 +37,19 @@ function RootDocument({ children }: { children: ReactNode }) {
 				<HeadContent />
 				<ScriptOnce>{themeBootScript}</ScriptOnce>
 			</head>
-			<body className="root isolate relative h-dvh overflow-hidden font-mono bg-background">
-				<ThemeProvider initialTheme={initialTheme}>{children}</ThemeProvider>
-				<TanStackDevtools
-					config={{
-						position: "bottom-right",
-					}}
-					plugins={[
-						{
-							name: "Tanstack Router",
-							render: <TanStackRouterDevtoolsPanel />,
-						},
-					]}
-				/>
+			<body className="isolate h-dvh overflow-hidden bg-background font-mono text-foreground">
+				<ThemeProvider initialTheme={initialTheme}>
+					<div className="flex h-dvh flex-col">
+						<header className="flex h-8 shrink-0 items-center justify-between border-b border-border px-3">
+							<div className="flex items-center gap-2 text-sm">
+								<Folder className="size-3.5 text-primary" />
+								<span className="font-medium text-foreground">~</span>
+							</div>
+							<ThemeToggle />
+						</header>
+						<main className="flex min-h-0 flex-1">{children}</main>
+					</div>
+				</ThemeProvider>
 				<Scripts />
 			</body>
 		</html>

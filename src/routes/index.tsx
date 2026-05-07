@@ -1,17 +1,17 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
-	beforeLoad: () => {
-		throw redirect({
-			params: { projectId: "welcome", workspaceId: "workspace-1" },
-			to: "/editor/$workspaceId/$projectId",
-			search: {
-				left: "open",
-				open: ["welcome"],
-				right: "open",
-				selected: { "workspace-1": "welcome" },
-				terminal: "closed",
-			},
-		});
-	},
+	component: RouteComponent,
 });
+
+function RouteComponent() {
+	return (
+		<div className="flex flex-1 flex-col p-4 text-sm">
+			<div className="flex items-center gap-2 text-muted-foreground">
+				<span className="text-primary">~</span>
+				<span>$</span>
+				<span className="animate-pulse">_</span>
+			</div>
+		</div>
+	);
+}
