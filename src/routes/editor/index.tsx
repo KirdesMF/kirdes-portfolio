@@ -4,7 +4,7 @@ import { getEditorWorkspace, isEditorProjectInWorkspace } from "#/editor/editor-
 
 export const Route = createFileRoute("/editor/")({
 	beforeLoad: ({ search }) => {
-		const workspace = getEditorWorkspace("1");
+		const workspace = getEditorWorkspace("workspace-1");
 		const rememberedProjectId = search.selected[workspace.id];
 		const projectId =
 			rememberedProjectId && isEditorProjectInWorkspace(rememberedProjectId, workspace.id)

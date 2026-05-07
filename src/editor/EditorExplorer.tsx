@@ -23,7 +23,7 @@ export function EditorExplorer(): React.ReactNode {
 		strict: false,
 	});
 	const workspace = getEditorWorkspace(
-		isEditorWorkspaceValue(selectedWorkspaceId) ? selectedWorkspaceId : "1",
+		isEditorWorkspaceValue(selectedWorkspaceId) ? selectedWorkspaceId : "workspace-1",
 	);
 
 	return (
@@ -32,16 +32,16 @@ export function EditorExplorer(): React.ReactNode {
 				<div
 					className={cn(
 						"flex h-full w-[200%] transition-transform duration-200 ease-editor-shell motion-reduce:transition-none",
-						workspace.id === "2" && "-translate-x-1/2",
+						workspace.id === "workspace-2" && "-translate-x-1/2",
 					)}
 				>
-					{editorWorkspaces.map(({ id, projects }) => (
+					{editorWorkspaces.map(({ id, label, projects }) => (
 						<section className="grid h-full min-w-0 flex-1 grid-rows-[auto_minmax(0,1fr)]" key={id}>
 							<header className="flex h-7 items-center border-b border-border px-2 font-medium text-muted-foreground uppercase tracking-wide">
-								WORKSPACE {id}
+								{label.toUpperCase()}
 							</header>
 							<nav
-								aria-label={`Workspace ${id} projects`}
+								aria-label={`${label} projects`}
 								className="min-h-0 overflow-hidden p-1.5"
 							>
 								<ul>

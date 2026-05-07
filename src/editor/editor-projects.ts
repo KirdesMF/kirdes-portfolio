@@ -9,7 +9,7 @@ export const editorProjectValues = [
 	"motion",
 ] as const;
 
-export const editorWorkspaceValues = ["1", "2"] as const;
+export const editorWorkspaceValues = ["workspace-1", "workspace-2"] as const;
 
 export type EditorProjectValue = (typeof editorProjectValues)[number];
 export type EditorWorkspaceValue = (typeof editorWorkspaceValues)[number];
@@ -30,7 +30,7 @@ export type EditorWorkspace = {
 
 export const editorWorkspaces: readonly EditorWorkspace[] = [
 	{
-		id: "1",
+		id: "workspace-1",
 		label: "Workspace 1",
 		projects: [
 			{ id: "welcome", label: "welcome", branch: "main", additions: 0, deletions: 0 },
@@ -54,7 +54,7 @@ export const editorWorkspaces: readonly EditorWorkspace[] = [
 		],
 	},
 	{
-		id: "2",
+		id: "workspace-2",
 		label: "Workspace 2",
 		projects: [
 			{ id: "game", label: "game", branch: "feature/game", additions: 217, deletions: 53 },
