@@ -13,6 +13,10 @@ import { Route as EditorRouteImport } from './routes/editor'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EditorIndexRouteImport } from './routes/editor.index'
 import { Route as EditorWorkspaceIdProjectIdRouteImport } from './routes/editor.$workspaceId.$projectId'
+import { Route as EditorWorkspaceIdProjectIdFilesRouteImport } from './routes/editor.$workspaceId.$projectId.files'
+import { Route as EditorWorkspaceIdProjectIdContextRouteImport } from './routes/editor.$workspaceId.$projectId.context'
+import { Route as EditorWorkspaceIdProjectIdChangesRouteImport } from './routes/editor.$workspaceId.$projectId.changes'
+import { Route as EditorWorkspaceIdProjectIdFilesFileIdRouteImport } from './routes/editor.$workspaceId.$projectId.files.$fileId'
 
 const EditorRoute = EditorRouteImport.update({
   id: '/editor',
@@ -35,36 +39,91 @@ const EditorWorkspaceIdProjectIdRoute =
     path: '/$workspaceId/$projectId',
     getParentRoute: () => EditorRoute,
   } as any)
+const EditorWorkspaceIdProjectIdFilesRoute =
+  EditorWorkspaceIdProjectIdFilesRouteImport.update({
+    id: '/files',
+    path: '/files',
+    getParentRoute: () => EditorWorkspaceIdProjectIdRoute,
+  } as any)
+const EditorWorkspaceIdProjectIdContextRoute =
+  EditorWorkspaceIdProjectIdContextRouteImport.update({
+    id: '/context',
+    path: '/context',
+    getParentRoute: () => EditorWorkspaceIdProjectIdRoute,
+  } as any)
+const EditorWorkspaceIdProjectIdChangesRoute =
+  EditorWorkspaceIdProjectIdChangesRouteImport.update({
+    id: '/changes',
+    path: '/changes',
+    getParentRoute: () => EditorWorkspaceIdProjectIdRoute,
+  } as any)
+const EditorWorkspaceIdProjectIdFilesFileIdRoute =
+  EditorWorkspaceIdProjectIdFilesFileIdRouteImport.update({
+    id: '/$fileId',
+    path: '/$fileId',
+    getParentRoute: () => EditorWorkspaceIdProjectIdFilesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/editor': typeof EditorRouteWithChildren
   '/editor/': typeof EditorIndexRoute
-  '/editor/$workspaceId/$projectId': typeof EditorWorkspaceIdProjectIdRoute
+  '/editor/$workspaceId/$projectId': typeof EditorWorkspaceIdProjectIdRouteWithChildren
+  '/editor/$workspaceId/$projectId/changes': typeof EditorWorkspaceIdProjectIdChangesRoute
+  '/editor/$workspaceId/$projectId/context': typeof EditorWorkspaceIdProjectIdContextRoute
+  '/editor/$workspaceId/$projectId/files': typeof EditorWorkspaceIdProjectIdFilesRouteWithChildren
+  '/editor/$workspaceId/$projectId/files/$fileId': typeof EditorWorkspaceIdProjectIdFilesFileIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/editor': typeof EditorIndexRoute
-  '/editor/$workspaceId/$projectId': typeof EditorWorkspaceIdProjectIdRoute
+  '/editor/$workspaceId/$projectId': typeof EditorWorkspaceIdProjectIdRouteWithChildren
+  '/editor/$workspaceId/$projectId/changes': typeof EditorWorkspaceIdProjectIdChangesRoute
+  '/editor/$workspaceId/$projectId/context': typeof EditorWorkspaceIdProjectIdContextRoute
+  '/editor/$workspaceId/$projectId/files': typeof EditorWorkspaceIdProjectIdFilesRouteWithChildren
+  '/editor/$workspaceId/$projectId/files/$fileId': typeof EditorWorkspaceIdProjectIdFilesFileIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/editor': typeof EditorRouteWithChildren
   '/editor/': typeof EditorIndexRoute
-  '/editor/$workspaceId/$projectId': typeof EditorWorkspaceIdProjectIdRoute
+  '/editor/$workspaceId/$projectId': typeof EditorWorkspaceIdProjectIdRouteWithChildren
+  '/editor/$workspaceId/$projectId/changes': typeof EditorWorkspaceIdProjectIdChangesRoute
+  '/editor/$workspaceId/$projectId/context': typeof EditorWorkspaceIdProjectIdContextRoute
+  '/editor/$workspaceId/$projectId/files': typeof EditorWorkspaceIdProjectIdFilesRouteWithChildren
+  '/editor/$workspaceId/$projectId/files/$fileId': typeof EditorWorkspaceIdProjectIdFilesFileIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/editor' | '/editor/' | '/editor/$workspaceId/$projectId'
+  fullPaths:
+    | '/'
+    | '/editor'
+    | '/editor/'
+    | '/editor/$workspaceId/$projectId'
+    | '/editor/$workspaceId/$projectId/changes'
+    | '/editor/$workspaceId/$projectId/context'
+    | '/editor/$workspaceId/$projectId/files'
+    | '/editor/$workspaceId/$projectId/files/$fileId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/editor' | '/editor/$workspaceId/$projectId'
+  to:
+    | '/'
+    | '/editor'
+    | '/editor/$workspaceId/$projectId'
+    | '/editor/$workspaceId/$projectId/changes'
+    | '/editor/$workspaceId/$projectId/context'
+    | '/editor/$workspaceId/$projectId/files'
+    | '/editor/$workspaceId/$projectId/files/$fileId'
   id:
     | '__root__'
     | '/'
     | '/editor'
     | '/editor/'
     | '/editor/$workspaceId/$projectId'
+    | '/editor/$workspaceId/$projectId/changes'
+    | '/editor/$workspaceId/$projectId/context'
+    | '/editor/$workspaceId/$projectId/files'
+    | '/editor/$workspaceId/$projectId/files/$fileId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -102,17 +161,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EditorWorkspaceIdProjectIdRouteImport
       parentRoute: typeof EditorRoute
     }
+    '/editor/$workspaceId/$projectId/files': {
+      id: '/editor/$workspaceId/$projectId/files'
+      path: '/files'
+      fullPath: '/editor/$workspaceId/$projectId/files'
+      preLoaderRoute: typeof EditorWorkspaceIdProjectIdFilesRouteImport
+      parentRoute: typeof EditorWorkspaceIdProjectIdRoute
+    }
+    '/editor/$workspaceId/$projectId/context': {
+      id: '/editor/$workspaceId/$projectId/context'
+      path: '/context'
+      fullPath: '/editor/$workspaceId/$projectId/context'
+      preLoaderRoute: typeof EditorWorkspaceIdProjectIdContextRouteImport
+      parentRoute: typeof EditorWorkspaceIdProjectIdRoute
+    }
+    '/editor/$workspaceId/$projectId/changes': {
+      id: '/editor/$workspaceId/$projectId/changes'
+      path: '/changes'
+      fullPath: '/editor/$workspaceId/$projectId/changes'
+      preLoaderRoute: typeof EditorWorkspaceIdProjectIdChangesRouteImport
+      parentRoute: typeof EditorWorkspaceIdProjectIdRoute
+    }
+    '/editor/$workspaceId/$projectId/files/$fileId': {
+      id: '/editor/$workspaceId/$projectId/files/$fileId'
+      path: '/$fileId'
+      fullPath: '/editor/$workspaceId/$projectId/files/$fileId'
+      preLoaderRoute: typeof EditorWorkspaceIdProjectIdFilesFileIdRouteImport
+      parentRoute: typeof EditorWorkspaceIdProjectIdFilesRoute
+    }
   }
 }
 
+interface EditorWorkspaceIdProjectIdFilesRouteChildren {
+  EditorWorkspaceIdProjectIdFilesFileIdRoute: typeof EditorWorkspaceIdProjectIdFilesFileIdRoute
+}
+
+const EditorWorkspaceIdProjectIdFilesRouteChildren: EditorWorkspaceIdProjectIdFilesRouteChildren =
+  {
+    EditorWorkspaceIdProjectIdFilesFileIdRoute:
+      EditorWorkspaceIdProjectIdFilesFileIdRoute,
+  }
+
+const EditorWorkspaceIdProjectIdFilesRouteWithChildren =
+  EditorWorkspaceIdProjectIdFilesRoute._addFileChildren(
+    EditorWorkspaceIdProjectIdFilesRouteChildren,
+  )
+
+interface EditorWorkspaceIdProjectIdRouteChildren {
+  EditorWorkspaceIdProjectIdChangesRoute: typeof EditorWorkspaceIdProjectIdChangesRoute
+  EditorWorkspaceIdProjectIdContextRoute: typeof EditorWorkspaceIdProjectIdContextRoute
+  EditorWorkspaceIdProjectIdFilesRoute: typeof EditorWorkspaceIdProjectIdFilesRouteWithChildren
+}
+
+const EditorWorkspaceIdProjectIdRouteChildren: EditorWorkspaceIdProjectIdRouteChildren =
+  {
+    EditorWorkspaceIdProjectIdChangesRoute:
+      EditorWorkspaceIdProjectIdChangesRoute,
+    EditorWorkspaceIdProjectIdContextRoute:
+      EditorWorkspaceIdProjectIdContextRoute,
+    EditorWorkspaceIdProjectIdFilesRoute:
+      EditorWorkspaceIdProjectIdFilesRouteWithChildren,
+  }
+
+const EditorWorkspaceIdProjectIdRouteWithChildren =
+  EditorWorkspaceIdProjectIdRoute._addFileChildren(
+    EditorWorkspaceIdProjectIdRouteChildren,
+  )
+
 interface EditorRouteChildren {
   EditorIndexRoute: typeof EditorIndexRoute
-  EditorWorkspaceIdProjectIdRoute: typeof EditorWorkspaceIdProjectIdRoute
+  EditorWorkspaceIdProjectIdRoute: typeof EditorWorkspaceIdProjectIdRouteWithChildren
 }
 
 const EditorRouteChildren: EditorRouteChildren = {
   EditorIndexRoute: EditorIndexRoute,
-  EditorWorkspaceIdProjectIdRoute: EditorWorkspaceIdProjectIdRoute,
+  EditorWorkspaceIdProjectIdRoute: EditorWorkspaceIdProjectIdRouteWithChildren,
 }
 
 const EditorRouteWithChildren =

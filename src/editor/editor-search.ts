@@ -59,9 +59,9 @@ function validateEditorWorkspaceSelectionsSearch(
 
 export function validateEditorSearch(search: Record<string, unknown>): EditorSearch {
 	return {
-		left: isEditorPanelSearchValue(search.left) ? search.left : "closed",
+		left: isEditorPanelSearchValue(search.left) ? search.left : "open",
 		open: isEditorProjectSearchValueArray(search.open) ? search.open : [],
-		right: isEditorPanelSearchValue(search.right) ? search.right : "closed",
+		right: isEditorPanelSearchValue(search.right) ? search.right : "open",
 		selected: validateEditorWorkspaceSelectionsSearch(search.selected),
 		terminal: isEditorTerminalSearchValue(search.terminal) ? search.terminal : "closed",
 	};

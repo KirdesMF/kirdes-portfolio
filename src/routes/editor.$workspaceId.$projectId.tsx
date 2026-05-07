@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useLocation } from "@tanstack/react-router";
 import { GitBranch } from "lucide-react";
 
+import { getEditorFakeFile } from "#/editor/editor-files";
 import { getEditorProjectInWorkspace, isEditorWorkspaceValue } from "#/editor/editor-projects";
 
 export const Route = createFileRoute("/editor/$workspaceId/$projectId")({
@@ -9,6 +10,9 @@ export const Route = createFileRoute("/editor/$workspaceId/$projectId")({
 
 function EditorProjectRoute(): React.ReactNode {
 	const { projectId, workspaceId } = Route.useParams();
+	const { pathname } = useLocation();
+	const fileId = pathname.split("/files/").at(1);
+	const selectedFile = getEditorFakeFile(fileId);
 	const project = isEditorWorkspaceValue(workspaceId)
 		? getEditorProjectInWorkspace(workspaceId, projectId)
 		: undefined;
@@ -22,7 +26,7 @@ function EditorProjectRoute(): React.ReactNode {
 	}
 
 	return (
-		<main className="grid h-full grid-rows-[auto_minmax(0,1fr)] overflow-hidden bg-background">
+		<main className="grid h-full grid-rows-editor-panel overflow-hidden bg-background">
 			<header className="flex h-10 items-center justify-between border-b border-border px-3 text-sm">
 				<div className="min-w-0">
 					<h1 className="truncate font-medium">{project.label}</h1>
@@ -37,15 +41,27 @@ function EditorProjectRoute(): React.ReactNode {
 				</div>
 			</header>
 			<section className="min-h-0 overflow-auto p-4 text-sm">
-				<div className="rounded-md border border-border bg-sidebar p-4">
-					<p className="font-medium">Main editor view</p>
-					<p className="mt-1 text-muted-foreground text-xs">
-						Selected project comes from route params:{" "}
-						<code>
-							{workspaceId}/{project.id}
-						</code>
-					</p>
-				</div>
+				{selectedFile ? (
+					<div className="grid overflow-hidden rounded-md border border-border bg-sidebar">
+						<header className="border-b border-border px-3 py-2">
+							<p className="font-medium">{selectedFile.name}</p>
+							<p className="mt-1 text-muted-foreground text-xs">{selectedFile.path}</p>
+						</header>
+						<pre className="overflow-auto p-3 text-muted-foreground text-xs leading-5">
+							<code>{selectedFile.content}</code>
+						</pre>
+					</div>
+				) : (
+					<div className="rounded-md border border-border bg-sidebar p-4">
+						<p className="font-medium">Main editor view</p>
+						<p className="mt-1 text-muted-foreground text-xs">
+							Selected project comes from route params:{" "}
+							<code>
+								{workspaceId}/{project.id}
+							</code>
+						</p>
+					</div>
+				)}
 			</section>
 		</main>
 	);

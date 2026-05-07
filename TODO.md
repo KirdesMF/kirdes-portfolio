@@ -14,7 +14,7 @@
 
 Build a personal portfolio as an AI-agent-inspired workbench.
 
-Next step: pause workbench implementation and decide design direction.
+Next step: build the center editor area and right inspector using real portfolio content behind the existing workspace/project route model.
 
 The MVP must work without a live LLM. The scripted agent experience should feel polished first. A real scoped `/ask` mode can be added later.
 
@@ -120,8 +120,8 @@ Tasks:
 
 - [x] Build top bar.
 - [x] Build left project explorer.
-- [ ] Build center editor area.
-- [ ] Build right inspector panel.
+- [~] Build center editor area.
+- [~] Build right inspector panel.
 - [x] Build bottom terminal panel.
 - [x] Add tiny footer/status bar placeholder with terminal icon.
 - [x] Constrain app shell to `h-dvh` with no document scroll.
@@ -134,8 +134,8 @@ Tasks:
 - [x] Add selected project state after route/state model decision.
 - [x] Add workspace pagination in the left explorer.
 - [x] Add expandable fake branch rows in the left explorer.
-- [ ] Review whether left explorer open folders/workspace belong in URL search params, compact comma search params, or local store for cleaner URLs.
-- [ ] Add empty states.
+- [x] Review whether left explorer open folders/workspace belong in URL search params, compact comma search params, or local store for cleaner URLs.
+- [~] Add empty states.
 - [ ] Add mobile fallback layout.
 
 Done when:
@@ -196,7 +196,7 @@ Tasks:
 
 Done when:
 
-- [ ] Selecting a project updates editor and inspector.
+- [x] Selecting a project updates editor and inspector.
 - [ ] Opening an artifact creates or activates a tab.
 - [ ] Agent events can update the workbench state.
 
@@ -509,7 +509,7 @@ For candidate profile:
 - [ ] Whether to include a public changelog.
 - [ ] Whether `/tetris` ships in first public release or later.
 - [ ] Whether `/about` includes a sliding puzzle.
-- [ ] Decide if explorer UI-only state (open folders, active workspace) should move out of search params into local/store state; clean URLs may matter more than restoring open folders.
+- [x] Decide if explorer UI-only state should move out of search params: keep URL search params for reload/share fidelity; use short keys (`open`, `selected`) and route path for workspace/project content.
 
 ## 18. MVP definition
 
@@ -532,7 +532,7 @@ Recommended order:
 
 1. [x] Hybrid no-FOUC theme toggle.
 2. [x] Project setup cleanup.
-3. [ ] Static workbench shell, creating `src/workbench` only when first workbench file is added.
+3. [~] Static workbench shell, creating `src/workbench` only when first workbench file is added.
 4. [ ] Portfolio content model.
 5. [ ] Artifact viewer.
 6. [ ] Scripted terminal commands.
@@ -549,7 +549,7 @@ Recommended order:
 ## 20. Endgame accessibility checklist
 
 - [!] Run a dedicated a11y pass after design-system overlay composition refactor.
-- [!] Verify left explorer expandable rows use appropriate collapsible semantics or a Collapsible primitive.
+- [~] Verify left explorer expandable rows use appropriate collapsible semantics or a Collapsible primitive.
 - [ ] Keyboard navigation works in explorer.
 - [ ] Keyboard navigation works in tabs.
 - [ ] Keyboard navigation works in terminal input.
@@ -643,6 +643,27 @@ Blocked:
 
 - None.
 
-```
+### 2026-05-06
 
-```
+Done:
+
+- Added editor workspace/project route model: `/editor/$workspaceId/$projectId`.
+- Added `welcome` project as first-load default.
+- Moved current workspace/project selection into route params.
+- Kept reloadable UI state in search params with short keys: `open`, `selected`, `left`, `right`, `terminal`.
+- Implemented workspace restore behavior through `selected` search state.
+- Refined explorer interaction: folder row toggles expand/collapse, branch row navigates/selects, selected branch has a thin border, selected folder keeps status dot.
+- Added placeholder center editor and right inspector content driven by selected route params.
+- Confirmed `bun run check` and `bun run typecheck` pass.
+- Merged and pushed changes to `main`.
+
+Next:
+
+- Replace fake project rows with real portfolio content model.
+- Build artifact viewer in the center editor.
+- Wire right inspector to selected artifact/project evidence.
+- Revisit explorer row semantics with a Base UI Collapsible-style primitive or equivalent accessible markup.
+
+Blocked:
+
+- None.

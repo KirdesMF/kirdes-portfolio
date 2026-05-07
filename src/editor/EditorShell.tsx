@@ -1,10 +1,10 @@
-import { Link, useParams, useSearch } from "@tanstack/react-router";
+import { Link, useSearch } from "@tanstack/react-router";
 import { ChevronDown, Maximize2, Minimize2, Terminal } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { cn } from "#/design-system/cn";
 import { EditorExplorer } from "#/editor/EditorExplorer";
-import { getEditorProjectInWorkspace, isEditorWorkspaceValue } from "#/editor/editor-projects";
+import { EditorRightPanel } from "#/editor/EditorRightPanel";
 import { closeTerminalSearch, toggleTerminalFullscreenSearch } from "#/editor/editor-search";
 
 const editorShellGridClassNameByPanelState = {
@@ -37,10 +37,6 @@ function getEditorShellPanelState({
 
 export function EditorShell({ children }: { children: ReactNode }): ReactNode {
 	const search = useSearch({ from: "/editor" });
-	const { projectId, workspaceId } = useParams({ strict: false });
-	const project = isEditorWorkspaceValue(workspaceId)
-		? getEditorProjectInWorkspace(workspaceId, projectId)
-		: undefined;
 	const panelState = getEditorShellPanelState({
 		isLeftPanelOpen: search.left === "open",
 		isRightPanelOpen: search.right === "open",
@@ -50,21 +46,21 @@ export function EditorShell({ children }: { children: ReactNode }): ReactNode {
 	return (
 		<div
 			className={cn(
-				"grid min-h-0 overflow-hidden transition-[grid-template-columns] duration-200 ease-editor-shell motion-reduce:transition-none",
+				"grid min-h-0 overflow-hidden transition-editor-shell-columns duration-200 ease-editor-shell motion-reduce:transition-none",
 				editorShellGridClassNameByPanelState[panelState],
 			)}
 		>
-			<aside className="min-w-0 overflow-hidden border-r border-border bg-sidebar">
+			<aside className="min-w-0 overflow-hidden border-e border-border bg-sidebar">
 				<EditorExplorer />
 			</aside>
 			<div
 				className={cn(
-					"grid min-w-0 grid-areas-editor-center overflow-hidden transition-[grid-template-rows] duration-200 ease-editor-shell motion-reduce:transition-none",
+					"grid min-w-0 grid-areas-editor-center overflow-hidden transition-editor-shell-rows duration-200 ease-editor-shell motion-reduce:transition-none",
 					editorContentGridClassNameByTerminalState[search.terminal],
 				)}
 			>
 				<div className="area-editor-main min-h-0 overflow-hidden">{children}</div>
-				<section className="area-editor-terminal grid min-h-0 grid-rows-[auto_minmax(0,1fr)] overflow-hidden border-t border-border bg-sidebar">
+				<section className="area-editor-terminal grid min-h-0 grid-rows-editor-panel overflow-hidden border-t border-border bg-sidebar">
 					<header className="flex h-7 items-center justify-between border-b border-border px-2 text-muted-foreground text-xs">
 						<div className="flex items-center gap-1.5">
 							<Terminal className="size-3.5" />
@@ -98,22 +94,8 @@ export function EditorShell({ children }: { children: ReactNode }): ReactNode {
 					<div className="min-h-0 overflow-hidden p-2 text-muted-foreground text-xs">Terminal</div>
 				</section>
 			</div>
-			<aside className="min-w-0 overflow-hidden border-l border-border bg-sidebar">
-				<div className="w-80 space-y-3 p-3 text-xs">
-					<p className="font-medium text-sidebar-foreground">Right panel</p>
-					{project ? (
-						<div className="space-y-2 text-muted-foreground">
-							<p className="text-sidebar-foreground">{project.label}</p>
-							<p>{project.branch}</p>
-							<div className="flex gap-2">
-								<span className="text-selected-folder-indicator">+{project.additions}</span>
-								<span className="text-destructive">-{project.deletions}</span>
-							</div>
-						</div>
-					) : (
-						<p className="text-muted-foreground">Select project to see context.</p>
-					)}
-				</div>
+			<aside className="min-w-0 overflow-hidden border-s border-border bg-sidebar">
+				<EditorRightPanel />
 			</aside>
 		</div>
 	);
