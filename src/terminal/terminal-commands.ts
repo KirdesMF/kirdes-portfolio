@@ -5,6 +5,7 @@ export const terminalCommands = [
 	"close",
 	"help",
 	"ls",
+	"music",
 	"open",
 	"reload",
 	"whoami",

@@ -8,7 +8,14 @@ export const Route = createFileRoute("/terminal")({
 });
 
 function RouteComponent() {
-	const { file, files, panel } = Route.useSearch();
+	const { dialog, file, files, panel } = Route.useSearch();
 
-	return <Terminal activePanel={panel} activeFileName={file} openFileNames={files} />;
+	return (
+		<Terminal
+			activeDialog={dialog}
+			activeFileName={file}
+			activePanel={panel}
+			openFileNames={files}
+		/>
+	);
 }

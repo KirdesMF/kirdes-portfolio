@@ -4,6 +4,7 @@ import { useState } from "react";
 import { cn } from "#/design-system/cn";
 import { ReadOnlyFileEditor } from "#/editor/ReadOnlyFileEditor";
 import { AppHeader } from "#/layout/AppHeader";
+import { MusicDialog } from "#/music/MusicDialog";
 import { type EditorFileName, findEditorFile } from "../editor/editor-files";
 import { TerminalFooter } from "./TerminalFooter";
 import { TerminalPrompt } from "./TerminalPrompt";
@@ -24,11 +25,7 @@ type TerminalHistoryEntry = {
 	output: ReactNode;
 };
 
-type TerminalSearchState = {
-	file: EditorFileName | undefined;
-	files: Array<EditorFileName>;
-	panel: TerminalPanelName;
-};
+// TerminalSearchState not needed — inline objects used
 
 let nextHistoryEntryId = 0;
 
@@ -44,7 +41,7 @@ function getHelpOutput(): ReactNode {
 	return (
 		<div>
 			<p>available routes: {terminalRoutes.join(" ")}</p>
-			<p>commands: cat cd clear close help ls open reload whoami</p>
+			<p>commands: cat cd clear close help ls music open reload whoami</p>
 		</div>
 	);
 }
@@ -253,10 +250,12 @@ function EditorPanel({
 }
 
 export function Terminal({
+	activeDialog,
 	activeFileName,
 	activePanel,
 	openFileNames,
 }: {
+	activeDialog: "music" | undefined;
 	activeFileName?: EditorFileName;
 	activePanel: TerminalPanelName;
 	openFileNames: Array<EditorFileName>;
@@ -278,25 +277,45 @@ export function Terminal({
 		setHistory((previous) => [...previous, entry]);
 	}
 
-	function navigateSearch(nextSearch: TerminalSearchState): TerminalSearchState {
-		return {
-			file: nextSearch.file,
-			files: nextSearch.files,
-			panel: nextSearch.panel,
-		};
+	function openDialog(dialogName: "music") {
+		void router.navigate({
+			search: (previous) => ({
+				dialog: dialogName,
+				file: previous.file,
+				files: previous.files as Array<EditorFileName>,
+				panel: previous.panel as TerminalPanelName,
+			}),
+			to: currentTerminalRoute,
+		});
+	}
+
+	function closeDialog() {
+		void router.navigate({
+			search: (previous) => ({
+				dialog: undefined,
+				file: previous.file,
+				files: previous.files as Array<EditorFileName>,
+				panel: previous.panel as TerminalPanelName,
+			}),
+			to: currentTerminalRoute,
+		});
 	}
 
 	function setMobilePanel(panel: TerminalPanelName) {
 		void router.navigate({
-			search: (previous) =>
-				navigateSearch({ file: previous.file, files: previous.files ?? [], panel }),
+			search: (previous) => ({
+				dialog: previous.dialog,
+				file: previous.file,
+				files: previous.files ?? [],
+				panel,
+			}),
 			to: currentTerminalRoute,
 		});
 	}
 
 	function closeEditor() {
 		void router.navigate({
-			search: { file: undefined, files: [], panel: isHomeRoute ? "terminal" : "route" },
+			search: { dialog: undefined, file: undefined, files: [], panel: isHomeRoute ? "terminal" : "route" },
 			to: currentTerminalRoute,
 		});
 	}
@@ -312,15 +331,19 @@ export function Terminal({
 				: activeFileName;
 
 		void router.navigate({
-			search: { file, files, panel: "editor" },
+			search: { dialog: undefined, file, files, panel: "editor" },
 			to: currentTerminalRoute,
 		});
 	}
 
 	function openEditor() {
 		void router.navigate({
-			search: (previous) =>
-				navigateSearch({ file: previous.file, files: previous.files ?? [], panel: "editor" }),
+			search: (previous) => ({
+				dialog: previous.dialog,
+				file: previous.file,
+				files: previous.files ?? [],
+				panel: "editor",
+			}),
 			to: currentTerminalRoute,
 		});
 	}
@@ -330,7 +353,7 @@ export function Terminal({
 		if (file === null) return false;
 
 		void router.navigate({
-			search: { file: file.name, files: addOpenFile(openFileNames, file.name), panel: "editor" },
+			search: { dialog: undefined, file: file.name, files: addOpenFile(openFileNames, file.name), panel: "editor" },
 			to: currentTerminalRoute,
 		});
 		return true;
@@ -341,7 +364,7 @@ export function Terminal({
 		if (file === null) return;
 
 		void router.navigate({
-			search: { file: file.name, files: addOpenFile(openFileNames, file.name), panel: "editor" },
+			search: { dialog: undefined, file: file.name, files: addOpenFile(openFileNames, file.name), panel: "editor" },
 			to: currentTerminalRoute,
 		});
 	}
@@ -351,8 +374,12 @@ export function Terminal({
 		if (route) {
 			pushHistory(command, `opening ${command}`);
 			void router.navigate({
-				search: (previous) =>
-					navigateSearch({ file: previous.file, files: previous.files ?? [], panel: "route" }),
+				search: (previous) => ({
+					dialog: previous.dialog,
+					file: previous.file,
+					files: previous.files ?? [],
+					panel: "route",
+				}),
 				to: route,
 			});
 			return;
@@ -365,8 +392,12 @@ export function Terminal({
 			if (targetRoute) {
 				pushHistory(command, `opening ${target || "~"}`);
 				void router.navigate({
-					search: (previous) =>
-						navigateSearch({ file: previous.file, files: previous.files ?? [], panel: "route" }),
+					search: (previous) => ({
+						dialog: previous.dialog,
+						file: previous.file,
+						files: previous.files ?? [],
+						panel: "route",
+					}),
 					to: targetRoute,
 				});
 				return;
@@ -412,7 +443,7 @@ export function Terminal({
 
 		if (normalizedCommand === "close all") {
 			void router.navigate({
-				search: { file: undefined, files: [], panel: "editor" },
+				search: { dialog: undefined, file: undefined, files: [], panel: "editor" },
 				to: currentTerminalRoute,
 			});
 			return;
@@ -456,6 +487,12 @@ export function Terminal({
 			return;
 		}
 
+		if (terminalCommand === "music") {
+			pushHistory(command, "opening music player");
+			openDialog("music");
+			return;
+		}
+
 		if (terminalCommand === "reload") {
 			void router.navigate({ to: "/" });
 			return;
@@ -470,52 +507,55 @@ export function Terminal({
 	}
 
 	return (
-		<div className="flex h-dvh flex-col">
-			<AppHeader />
-			<TerminalMobilePanels
-				activeFileName={activeFileName}
-				activePanel={activePanel}
-				hasEditorPanel={hasEditorPanel}
-				isHomeRoute={isHomeRoute}
-				onSelectPanel={setMobilePanel}
-			/>
-			<div className="flex min-h-0 flex-1">
-				<TerminalPane
-					className={cn(mobilePanel === "terminal" ? "flex" : "hidden", "md:flex")}
-					hasRightPanel={hasRightPanel}
-					history={history}
-					onSubmit={handleSubmit}
+		<>
+			{activeDialog === "music" ? <MusicDialog onClose={closeDialog} /> : null}
+			<div className="flex h-dvh flex-col">
+				<AppHeader />
+				<TerminalMobilePanels
+					activeFileName={activeFileName}
+					activePanel={activePanel}
+					hasEditorPanel={hasEditorPanel}
+					isHomeRoute={isHomeRoute}
+					onSelectPanel={setMobilePanel}
 				/>
-				{hasRightPanel ? (
-					<aside
-						className={cn(
-							"min-w-0 flex-1 overflow-hidden text-xs md:grid md:w-1/2 md:flex-none",
-							mobilePanel === "terminal" ? "hidden md:grid" : "grid",
-							hasEditorPanel && !isHomeRoute ? "md:grid-rows-2" : "md:grid-rows-1",
-						)}
-					>
-						{isHomeRoute ? null : (
-							<RoutePanel
-								className={cn(mobilePanel === "route" ? "block" : "hidden", "md:block")}
-								hasEditorPanel={hasEditorPanel}
-							/>
-						)}
-						{hasEditorPanel ? (
-							<EditorPanel
-								activeFileName={activeFileName}
-								className={cn(mobilePanel === "editor" ? "block" : "hidden", "md:block")}
-								onCloseEditor={closeEditor}
-								onCloseFile={closeFile}
-								onOpenFile={(fileName) => {
-									void openFile(fileName);
-								}}
-								onSelectFile={selectFile}
-								openFileNames={openFileNames}
-							/>
-						) : null}
-					</aside>
-				) : null}
+				<div className="flex min-h-0 flex-1">
+					<TerminalPane
+						className={cn(mobilePanel === "terminal" ? "flex" : "hidden", "md:flex")}
+						hasRightPanel={hasRightPanel}
+						history={history}
+						onSubmit={handleSubmit}
+					/>
+					{hasRightPanel ? (
+						<aside
+							className={cn(
+								"min-w-0 flex-1 overflow-hidden text-xs md:grid md:w-1/2 md:flex-none",
+								mobilePanel === "terminal" ? "hidden md:grid" : "grid",
+								hasEditorPanel && !isHomeRoute ? "md:grid-rows-2" : "md:grid-rows-1",
+							)}
+						>
+							{isHomeRoute ? null : (
+								<RoutePanel
+									className={cn(mobilePanel === "route" ? "block" : "hidden", "md:block")}
+									hasEditorPanel={hasEditorPanel}
+								/>
+							)}
+							{hasEditorPanel ? (
+								<EditorPanel
+									activeFileName={activeFileName}
+									className={cn(mobilePanel === "editor" ? "block" : "hidden", "md:block")}
+									onCloseEditor={closeEditor}
+									onCloseFile={closeFile}
+									onOpenFile={(fileName) => {
+										void openFile(fileName);
+									}}
+									onSelectFile={selectFile}
+									openFileNames={openFileNames}
+								/>
+							) : null}
+						</aside>
+					) : null}
+				</div>
 			</div>
-		</div>
+		</>
 	);
 }
