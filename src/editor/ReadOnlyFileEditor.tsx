@@ -8,9 +8,17 @@ import type { EditorHighlightNode } from "./editor-highlight-types";
 
 type HighlightedFileState =
 	| { status: "idle" | "loading" }
-	| { status: "success"; fileName: string; nodes: Array<EditorHighlightNode>; language: string }
+	| {
+			status: "success";
+			fileName: string;
+			nodes: Array<EditorHighlightNode>;
+			language: string;
+			preClassName?: string;
+	  }
 	| { status: "not-found"; fileName: string }
 	| { status: "error"; message: string };
+
+const highlightedFileCache = new Map<string, HighlightedFileState>();
 
 function renderHighlightNode(node: EditorHighlightNode, key: string): ReactNode {
 	if (node.type === "text") return node.value;
@@ -31,32 +39,45 @@ function isLineNode(node: EditorHighlightNode): boolean {
 	return node.type === "element" && node.properties.className?.split(" ").includes("line") === true;
 }
 
-function getHighlightedLines(
-	nodes: Array<EditorHighlightNode>,
-): Array<{ lineNumber: number; nodes: Array<EditorHighlightNode> }> {
+function getHighlightedLines(nodes: Array<EditorHighlightNode>): {
+	lines: Array<{ lineNumber: number; nodes: Array<EditorHighlightNode> }>;
+	preClassName?: string;
+} {
 	const preNode = nodes.find((node) => node.type === "element" && node.tagName === "pre");
-	if (preNode?.type !== "element") return [];
+	if (preNode?.type !== "element") return { lines: [] };
 
 	const codeNode = preNode.children.find(
 		(node) => node.type === "element" && node.tagName === "code",
 	);
-	if (codeNode?.type !== "element") return [];
+	if (codeNode?.type !== "element")
+		return { lines: [], preClassName: preNode.properties.className };
 
-	return codeNode.children.filter(isLineNode).map((node, index) => {
-		if (node.type !== "element") return { lineNumber: index + 1, nodes: [] };
+	return {
+		preClassName: preNode.properties.className,
+		lines: codeNode.children.filter(isLineNode).map((node, index) => {
+			if (node.type !== "element") return { lineNumber: index + 1, nodes: [] };
 
-		return { lineNumber: index + 1, nodes: node.children };
-	});
+			return { lineNumber: index + 1, nodes: node.children };
+		}),
+	};
 }
 
-function HighlightedCode({ nodes }: { nodes: Array<EditorHighlightNode> }) {
-	const lines = getHighlightedLines(nodes);
+function HighlightedCode({
+	nodes,
+	preClassName,
+}: {
+	nodes: Array<EditorHighlightNode>;
+	preClassName?: string;
+}) {
+	const { lines, preClassName: extractedClassName } = getHighlightedLines(nodes);
+	const preClass = preClassName ?? extractedClassName;
+
 	if (lines.length === 0) {
 		return <>{nodes.map((node, index) => renderHighlightNode(node, String(index)))}</>;
 	}
 
 	return (
-		<pre className="min-w-max font-mono text-xs leading-relaxed">
+		<pre className={cn("min-w-max font-mono text-xs leading-relaxed", preClass)}>
 			{lines.map((line) => (
 				<div
 					className="group flex min-h-[1.375rem] gap-4 rounded px-1 hover:bg-muted/35"
@@ -161,6 +182,12 @@ function EditorBody({ fileName }: { fileName: string }) {
 	const [fileState, setFileState] = useState<HighlightedFileState>({ status: "idle" });
 
 	useEffect(() => {
+		const cached = highlightedFileCache.get(fileName);
+		if (cached) {
+			setFileState(cached);
+			return;
+		}
+
 		let isActive = true;
 		setFileState({ status: "loading" });
 
@@ -169,17 +196,23 @@ function EditorBody({ fileName }: { fileName: string }) {
 				const result = await getHighlightedFile({ data: { fileName } });
 				if (!isActive) return;
 
+				let nextState: HighlightedFileState;
+
 				if (!result.found) {
-					setFileState({ fileName: result.fileName, status: "not-found" });
-					return;
+					nextState = { fileName: result.fileName, status: "not-found" };
+				} else {
+					nextState = {
+						fileName: result.fileName,
+						language: result.language,
+						nodes: result.nodes,
+						preClassName: result.preClassName,
+						status: "success",
+					};
 				}
 
-				setFileState({
-					fileName: result.fileName,
-					language: result.language,
-					nodes: result.nodes,
-					status: "success",
-				});
+				highlightedFileCache.set(fileName, nextState);
+				if (!isActive) return;
+				setFileState(nextState);
 			} catch (error) {
 				if (!isActive) return;
 				const message = error instanceof Error ? error.message : "highlighting failed";
@@ -197,7 +230,7 @@ function EditorBody({ fileName }: { fileName: string }) {
 	if (fileState.status === "success") {
 		return (
 			<div className="min-h-0 flex-1 overflow-auto p-2">
-				<HighlightedCode nodes={fileState.nodes} />
+				<HighlightedCode nodes={fileState.nodes} preClassName={fileState.preClassName} />
 			</div>
 		);
 	}

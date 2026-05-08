@@ -40,15 +40,20 @@ function createHistoryEntry(input: string, output: ReactNode): TerminalHistoryEn
 	};
 }
 
-function getHelpOutput(): string {
-	return `available routes: ${terminalRoutes.join(" ")} | commands: cat cd clear close help ls open reload whoami`;
+function getHelpOutput(): ReactNode {
+	return (
+		<div>
+			<p>available routes: {terminalRoutes.join(" ")}</p>
+			<p>commands: cat cd clear close help ls open reload whoami</p>
+		</div>
+	);
 }
 
 function getWelcomeOutput(): ReactNode {
 	return (
 		<div className="flex flex-col gap-0.5">
-			<div>Welcome to kirdes terminal.</div>
-			<div className="text-muted-foreground">Type help to list available commands.</div>
+			<p>Welcome to kirdes terminal.</p>
+			<p className="text-muted-foreground">Type help to list available commands.</p>
 		</div>
 	);
 }
@@ -56,8 +61,8 @@ function getWelcomeOutput(): ReactNode {
 function getWhoamiOutput(): ReactNode {
 	return (
 		<div className="flex flex-col gap-0.5">
-			<div>kirdes</div>
-			<div className="text-muted-foreground">product engineer / interface builder</div>
+			<p>kirdes</p>
+			<p className="text-muted-foreground">product engineer / interface builder</p>
 		</div>
 	);
 }

@@ -4,6 +4,7 @@ import json from "shiki/langs/json.mjs";
 import markdown from "shiki/langs/markdown.mjs";
 import typescript from "shiki/langs/typescript.mjs";
 import githubDarkDefault from "shiki/themes/github-dark-default.mjs";
+import githubLightDefault from "shiki/themes/github-light-default.mjs";
 import { findTerminalFile } from "#/terminal/terminal-files";
 import type { EditorHighlightNode } from "./editor-highlight-types";
 
@@ -20,7 +21,7 @@ const supportedTagNames = ["pre", "code", "span"] as const;
 const highlighterPromise = createHighlighterCore({
 	engine: createJavaScriptRegexEngine(),
 	langs: [json, markdown, typescript],
-	themes: [githubDarkDefault],
+	themes: [githubDarkDefault, githubLightDefault],
 });
 
 function normalizeClassName(value: unknown): string | undefined {
@@ -31,6 +32,8 @@ function normalizeClassName(value: unknown): string | undefined {
 }
 
 function toCamelCaseProperty(propertyName: string): string {
+	if (propertyName.startsWith("--")) return propertyName;
+
 	return propertyName.replace(/-([a-z])/g, (_, letter: string) => letter.toUpperCase());
 }
 
@@ -100,8 +103,16 @@ export async function highlightEditorFile(fileName: string) {
 	const highlighter = await highlighterPromise;
 	const hast = highlighter.codeToHast(file.content, {
 		lang: file.language,
-		theme: "github-dark-default",
+		themes: {
+			light: "github-light-default",
+			dark: "github-dark-default",
+		},
 	}) as HastNode;
+
+	const preNode = hast.children?.find(
+		(child): child is HastNode => child.type === "element" && child.tagName === "pre",
+	);
+
 	const nodes = (hast.children ?? [])
 		.map((child) => normalizeHastNode(child))
 		.filter((node) => node !== null);
@@ -111,5 +122,6 @@ export async function highlightEditorFile(fileName: string) {
 		fileName: file.name,
 		language: file.language,
 		nodes,
+		preClassName: normalizeClassName(preNode?.properties?.class),
 	};
 }

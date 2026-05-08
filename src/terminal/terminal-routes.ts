@@ -1,7 +1,7 @@
 import { terminalCommands } from "./terminal-commands";
 
 export const terminalNavigationItems = [
-	{ command: "/", label: "~", to: "/terminal" },
+	{ command: "/home", label: "~", to: "/terminal" },
 	{ command: "/contact", label: "contact", to: "/terminal/contact" },
 	{ command: "/work", label: "work", to: "/terminal/work" },
 	{ command: "/skill", label: "skill", to: "/terminal/skill" },
@@ -11,7 +11,6 @@ export const terminalNavigationItems = [
 export const terminalRoutes = terminalNavigationItems.map(({ command }) => command);
 
 export type TerminalRouteCommand = (typeof terminalNavigationItems)[number]["command"];
-
 export type TerminalRoutePath = (typeof terminalNavigationItems)[number]["to"];
 
 export const commandNames = [...terminalRoutes, ...terminalCommands] as const;

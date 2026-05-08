@@ -76,6 +76,11 @@ body {
 	--spacing: 0.25rem;
 }
 
+.dark .shiki span {
+	/* biome-ignore lint/complexity/noImportantStyles: shiki inline styles from light theme must be overridden for dark mode */
+	color: var(--shiki-dark) !important;
+}
+
 .dark {
 	--background: oklch(0.1763 0.014 258.3572);
 	--foreground: oklch(0.9425 0.0111 243.6566);
