@@ -1,10 +1,18 @@
 import { type SubmitEvent, useId, useState } from "react";
-import { commandNames } from "#/terminal/terminal-routes";
+import { commandNames, terminalNavigationItems } from "#/terminal/terminal-routes";
+
+const cdSuggestions = terminalNavigationItems.flatMap(({ command, label }) => {
+	if (label === "~") return ["cd ~", "cd /"];
+
+	return [`cd ${label}`, `cd ${command}`];
+});
+
+const commandSuggestions = [...commandNames, ...cdSuggestions] as const;
 
 function findSuggestion(input: string): string | undefined {
 	if (!input) return undefined;
 	const lower = input.toLowerCase();
-	return commandNames.find((name) => name.startsWith(lower) && name !== lower);
+	return commandSuggestions.find((name) => name.startsWith(lower) && name !== lower);
 }
 
 export function TerminalPrompt({ onSubmit }: { onSubmit: (command: string) => void }) {

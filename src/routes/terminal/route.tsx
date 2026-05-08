@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Terminal } from "#/terminal/Terminal";
 
 export const Route = createFileRoute("/terminal")({
@@ -6,9 +6,5 @@ export const Route = createFileRoute("/terminal")({
 });
 
 function RouteComponent() {
-	return (
-		<Terminal>
-			<Outlet />
-		</Terminal>
-	);
+	return <Terminal />;
 }

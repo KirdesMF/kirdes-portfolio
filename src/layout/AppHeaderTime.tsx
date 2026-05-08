@@ -13,7 +13,7 @@ function formatTime(timestamp: number): string {
 	return `${hours}:${minutes}:${seconds}`;
 }
 
-export function TerminalTime() {
+export function AppHeaderTime() {
 	const [timestamp, setTimestamp] = useState<number>(getCurrentTimestamp);
 
 	useEffect(() => {

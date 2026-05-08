@@ -1,4 +1,4 @@
-export const terminalCommands = ["clear", "help", "whoami"] as const;
+export const terminalCommands = ["cd", "clear", "help", "ls", "whoami"] as const;
 
 export type TerminalCommandName = (typeof terminalCommands)[number];
 

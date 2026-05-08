@@ -1,12 +1,14 @@
-import { useRouter, useRouterState } from "@tanstack/react-router";
+import { Outlet, useRouter, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { cn } from "#/design-system/cn";
+import { AppHeader } from "#/layout/AppHeader";
 import { TerminalFooter } from "./TerminalFooter";
-import { TerminalHeader } from "./TerminalHeader";
 import { TerminalPrompt } from "./TerminalPrompt";
+import { TerminalRouteList } from "./TerminalRouteList";
+import { TerminalSessionHeader } from "./TerminalSessionHeader";
 import { parseTerminalCommand } from "./terminal-commands";
-import { parseTerminalRoute, terminalRoutes } from "./terminal-routes";
+import { parseTerminalRoute, parseTerminalRouteTarget, terminalRoutes } from "./terminal-routes";
 
 type TerminalHistoryEntry = {
 	id: string;
@@ -25,7 +27,7 @@ function createHistoryEntry(input: string, output: ReactNode): TerminalHistoryEn
 }
 
 function getHelpOutput(): string {
-	return `available routes: ${terminalRoutes.join(" ")} | commands: clear help whoami`;
+	return `available routes: ${terminalRoutes.join(" ")} | commands: cd clear help ls whoami`;
 }
 
 function getWelcomeOutput(): ReactNode {
@@ -53,10 +55,11 @@ function createInitialHistory(): Array<TerminalHistoryEntry> {
 	];
 }
 
-export function Terminal({ children }: { children: ReactNode }) {
+export function Terminal() {
 	const router = useRouter();
-	const pathname = useRouterState({ select: (state) => state.location.pathname });
-	const isHomeRoute = pathname === "/terminal";
+	const isHomeRoute = useRouterState({
+		select: (state) => state.matches.at(-1)?.routeId === "/terminal",
+	});
 	const [history, setHistory] = useState<Array<TerminalHistoryEntry>>(createInitialHistory);
 
 	function pushHistory(input: string, output: ReactNode) {
@@ -72,6 +75,20 @@ export function Terminal({ children }: { children: ReactNode }) {
 			return;
 		}
 
+		const normalizedCommand = command.trim().toLowerCase();
+		if (normalizedCommand === "cd" || normalizedCommand.startsWith("cd ")) {
+			const target = normalizedCommand.slice(2).trim();
+			const targetRoute = parseTerminalRouteTarget(target);
+			if (targetRoute) {
+				pushHistory(command, `opening ${target || "~"}`);
+				void router.navigate({ to: targetRoute });
+				return;
+			}
+
+			pushHistory(command, `directory not found: ${target}`);
+			return;
+		}
+
 		const terminalCommand = parseTerminalCommand(command);
 		if (terminalCommand === "clear") {
 			setHistory([]);
@@ -80,6 +97,11 @@ export function Terminal({ children }: { children: ReactNode }) {
 
 		if (terminalCommand === "help") {
 			pushHistory(command, getHelpOutput());
+			return;
+		}
+
+		if (terminalCommand === "ls") {
+			pushHistory(command, <TerminalRouteList />);
 			return;
 		}
 
@@ -93,11 +115,15 @@ export function Terminal({ children }: { children: ReactNode }) {
 
 	return (
 		<div className="flex h-dvh flex-col">
-			<TerminalHeader />
+			<AppHeader />
 			<div className="flex min-h-0 flex-1">
 				<div
-					className={cn("flex min-w-0 flex-1 flex-col", !isHomeRoute && "border-r border-border")}
+					className={cn(
+						"flex min-w-0 flex-col",
+						isHomeRoute ? "flex-1" : "w-1/2 border-r border-border",
+					)}
 				>
+					<TerminalSessionHeader />
 					<div className="min-h-0 flex-1 overflow-y-auto p-3 text-xs">
 						{history.map((entry) => (
 							<div className="mb-4 last:mb-0" key={entry.id}>
@@ -108,17 +134,19 @@ export function Terminal({ children }: { children: ReactNode }) {
 							</div>
 						))}
 					</div>
+					<div className="shrink-0">
+						<div className="px-3 py-1 text-tiny text-muted-foreground/70">
+							TIP: type help for commands -- / to navigate
+						</div>
+						<TerminalPrompt onSubmit={handleSubmit} />
+						<TerminalFooter />
+					</div>
 				</div>
 				{isHomeRoute ? null : (
-					<aside className="w-1/2 min-w-0 overflow-y-auto p-3 text-xs">{children}</aside>
+					<aside className="w-1/2 min-w-0 overflow-y-auto p-3 text-xs">
+						<Outlet />
+					</aside>
 				)}
-			</div>
-			<div className="shrink-0">
-				<div className="px-3 py-1 text-tiny text-muted-foreground/70">
-					TIP: type help for commands -- / to navigate
-				</div>
-				<TerminalPrompt onSubmit={handleSubmit} />
-				<TerminalFooter />
 			</div>
 		</div>
 	);

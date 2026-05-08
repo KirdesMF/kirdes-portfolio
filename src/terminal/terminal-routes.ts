@@ -1,29 +1,38 @@
 import { terminalCommands } from "./terminal-commands";
 
-export const terminalRoutes = ["/", "/contact", "/work", "/skill", "/projects"] as const;
+export const terminalNavigationItems = [
+	{ command: "/", label: "~", to: "/terminal" },
+	{ command: "/contact", label: "contact", to: "/terminal/contact" },
+	{ command: "/work", label: "work", to: "/terminal/work" },
+	{ command: "/skill", label: "skill", to: "/terminal/skill" },
+	{ command: "/projects", label: "projects", to: "/terminal/projects" },
+] as const;
 
-export type TerminalRouteCommand = (typeof terminalRoutes)[number];
+export const terminalRoutes = terminalNavigationItems.map(({ command }) => command);
 
-export type TerminalRoutePath =
-	| "/terminal"
-	| "/terminal/contact"
-	| "/terminal/work"
-	| "/terminal/skill"
-	| "/terminal/projects";
+export type TerminalRouteCommand = (typeof terminalNavigationItems)[number]["command"];
+
+export type TerminalRoutePath = (typeof terminalNavigationItems)[number]["to"];
 
 export const commandNames = [...terminalRoutes, ...terminalCommands] as const;
 
-const routePathByCommand: Record<TerminalRouteCommand, TerminalRoutePath> = {
-	"/": "/terminal",
-	"/contact": "/terminal/contact",
-	"/work": "/terminal/work",
-	"/skill": "/terminal/skill",
-	"/projects": "/terminal/projects",
-};
+function normalizeRouteTarget(input: string): string {
+	const normalized = input.trim().toLowerCase();
+	if (normalized === "" || normalized === "~") return "/";
+	if (normalized.startsWith("/")) return normalized;
+
+	return `/${normalized}`;
+}
+
+export function parseTerminalRouteTarget(input: string): TerminalRoutePath | null {
+	const normalized = normalizeRouteTarget(input);
+	const item = terminalNavigationItems.find(({ command }) => command === normalized);
+	return item?.to ?? null;
+}
 
 export function parseTerminalRoute(input: string): TerminalRoutePath | null {
-	const normalized = input.trim().toLowerCase() as TerminalRouteCommand;
+	const normalized = input.trim().toLowerCase();
 	if (!normalized.startsWith("/")) return null;
 
-	return routePathByCommand[normalized] ?? null;
+	return parseTerminalRouteTarget(normalized);
 }
