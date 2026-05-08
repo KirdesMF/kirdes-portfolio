@@ -1,12 +1,21 @@
 import { type SubmitEvent, useId, useState } from "react";
 
-export function TerminalPrompt() {
+export interface TerminalEntry {
+	id: string;
+	type: "input" | "output";
+	content: string;
+}
+
+export function TerminalPrompt({ onSubmit }: { onSubmit: (command: string) => void }) {
 	const [value, setValue] = useState("");
 	const inputId = useId();
 
 	function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
-		// TODO: handle command
+		const trimmed = value.trim();
+		if (!trimmed) return;
+
+		onSubmit(trimmed);
 		setValue("");
 	}
 
@@ -21,7 +30,7 @@ export function TerminalPrompt() {
 			</label>
 			<input
 				autoComplete="off"
-				className="min-w-0 flex-1 bg-transparent text-foreground outline-none placeholder:text-muted-foreground/70 placeholder:text-xs"
+				className="min-w-0 flex-1 bg-transparent text-foreground outline-none placeholder:text-muted-foreground/70 placeholder:text-xs text-xs"
 				id={inputId}
 				placeholder="type a command..."
 				spellCheck={false}

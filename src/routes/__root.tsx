@@ -1,4 +1,10 @@
-import { createRootRoute, HeadContent, ScriptOnce, Scripts } from "@tanstack/react-router";
+import {
+	ClientOnly,
+	createRootRoute,
+	HeadContent,
+	ScriptOnce,
+	Scripts,
+} from "@tanstack/react-router";
 import { Folder } from "lucide-react";
 import type { ReactNode } from "react";
 import { Separator } from "#/design-system/Separator";
@@ -50,7 +56,9 @@ function RootDocument({ children }: { children: ReactNode }) {
 							<div className="flex items-center gap-2">
 								<span className="text-tiny text-muted-foreground">FR | EN</span>
 								<Separator orientation="vertical" />
-								<Time />
+								<ClientOnly fallback={null}>
+									<Time />
+								</ClientOnly>
 								<Separator orientation="vertical" />
 								<ThemeToggle />
 							</div>

@@ -26,5 +26,7 @@ export function Time() {
 		};
 	}, []);
 
-	return <span className="text-tiny text-muted-foreground">{formatTime(timestamp)}</span>;
+	return (
+		<span className="text-tiny text-muted-foreground tabular-nums">{formatTime(timestamp)}</span>
+	);
 }
