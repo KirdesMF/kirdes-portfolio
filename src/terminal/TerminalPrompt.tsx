@@ -1,14 +1,28 @@
 import { type SubmitEvent, useId, useState } from "react";
+import { commandNames } from "#/terminal/terminal-routes";
 
-export interface TerminalEntry {
-	id: string;
-	type: "input" | "output";
-	content: string;
+function findSuggestion(input: string): string | undefined {
+	if (!input) return undefined;
+	const lower = input.toLowerCase();
+	return commandNames.find((name) => name.startsWith(lower) && name !== lower);
 }
 
 export function TerminalPrompt({ onSubmit }: { onSubmit: (command: string) => void }) {
 	const [value, setValue] = useState("");
+	const [suggestion, setSuggestion] = useState<string | undefined>();
 	const inputId = useId();
+
+	function handleChange(nextValue: string) {
+		setValue(nextValue);
+		setSuggestion(findSuggestion(nextValue));
+	}
+
+	function acceptSuggestion() {
+		if (suggestion) {
+			setValue(suggestion);
+			setSuggestion(undefined);
+		}
+	}
 
 	function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
@@ -17,6 +31,14 @@ export function TerminalPrompt({ onSubmit }: { onSubmit: (command: string) => vo
 
 		onSubmit(trimmed);
 		setValue("");
+		setSuggestion(undefined);
+	}
+
+	function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+		if (event.key === "Tab") {
+			event.preventDefault();
+			acceptSuggestion();
+		}
 	}
 
 	return (
@@ -28,16 +50,24 @@ export function TerminalPrompt({ onSubmit }: { onSubmit: (command: string) => vo
 				<span className="shrink-0 text-primary">~</span>
 				<span className="shrink-0 text-muted-foreground">$</span>
 			</label>
-			<input
-				autoComplete="off"
-				className="min-w-0 flex-1 bg-transparent text-foreground outline-none placeholder:text-muted-foreground/70 placeholder:text-xs text-xs"
-				id={inputId}
-				placeholder="type a command..."
-				spellCheck={false}
-				type="text"
-				value={value}
-				onChange={(event) => setValue(event.target.value)}
-			/>
+			<div className="relative flex-1 flex items-center">
+				{suggestion ? (
+					<div className="pointer-events-none absolute inset-0 flex items-center text-xs text-muted-foreground/30">
+						{suggestion}
+					</div>
+				) : null}
+				<input
+					autoComplete="off"
+					className="relative w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/70"
+					id={inputId}
+					placeholder="type a command..."
+					spellCheck={false}
+					type="text"
+					value={value}
+					onChange={(event) => handleChange(event.target.value)}
+					onKeyDown={handleKeyDown}
+				/>
+			</div>
 		</form>
 	);
 }

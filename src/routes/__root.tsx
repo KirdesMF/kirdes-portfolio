@@ -1,16 +1,6 @@
-import {
-	ClientOnly,
-	createRootRoute,
-	HeadContent,
-	ScriptOnce,
-	Scripts,
-} from "@tanstack/react-router";
-import { Folder } from "lucide-react";
+import { createRootRoute, HeadContent, Outlet, ScriptOnce, Scripts } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Separator } from "#/design-system/Separator";
-import { Time } from "#/terminal/Time";
 import { ThemeProvider } from "#/theme/ThemeProvider";
-import { ThemeToggle } from "#/theme/ThemeToggle";
 import { getInitialThemePreference } from "#/theme/theme.functions";
 import { themeBootScript } from "#/theme/themeBootScript";
 import { defaultResolvedTheme, resolveThemePreference } from "#/theme/themeTypes";
@@ -26,8 +16,13 @@ export const Route = createRootRoute({
 		],
 		links: [{ rel: "stylesheet", href: appCss }],
 	}),
+	component: RootComponent,
 	shellComponent: RootDocument,
 });
+
+function RootComponent() {
+	return <Outlet />;
+}
 
 function RootDocument({ children }: { children: ReactNode }) {
 	const initialTheme = Route.useLoaderData();
@@ -46,26 +41,7 @@ function RootDocument({ children }: { children: ReactNode }) {
 				<ScriptOnce>{themeBootScript}</ScriptOnce>
 			</head>
 			<body className="isolate h-dvh overflow-hidden bg-background font-mono text-foreground">
-				<ThemeProvider initialTheme={initialTheme}>
-					<div className="flex h-dvh flex-col">
-						<header className="flex h-8 shrink-0 items-center justify-between border-b border-border px-3">
-							<div className="flex items-center gap-2 text-sm">
-								<Folder className="size-3.5 text-primary" />
-								<span className="font-medium text-foreground">~</span>
-							</div>
-							<div className="flex items-center gap-2">
-								<span className="text-tiny text-muted-foreground">FR | EN</span>
-								<Separator orientation="vertical" />
-								<ClientOnly fallback={null}>
-									<Time />
-								</ClientOnly>
-								<Separator orientation="vertical" />
-								<ThemeToggle />
-							</div>
-						</header>
-						<main className="flex min-h-0 flex-1">{children}</main>
-					</div>
-				</ThemeProvider>
+				<ThemeProvider initialTheme={initialTheme}>{children}</ThemeProvider>
 				<Scripts />
 			</body>
 		</html>
