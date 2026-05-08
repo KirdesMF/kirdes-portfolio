@@ -19,7 +19,11 @@ export function TerminalRouteList() {
 						activeProps={{ className: "text-primary" }}
 						className="text-muted-foreground underline-offset-2 hover:text-primary hover:underline"
 						key={command}
-						search={(previous) => ({ file: previous.file, panel: "route" })}
+						search={(previous) => ({
+							file: previous.file,
+							files: previous.files ?? [],
+							panel: "route",
+						})}
 						to={to}
 					>
 						{formatRouteLabel(label)}
@@ -32,7 +36,12 @@ export function TerminalRouteList() {
 					<Link
 						className="text-muted-foreground underline-offset-2 hover:text-primary hover:underline"
 						key={name}
-						search={(previous) => ({ ...previous, file: name, panel: "editor" })}
+						search={(previous) => ({
+							...previous,
+							file: name,
+							files: [...new Set([...(previous.files ?? []), name])],
+							panel: "editor",
+						})}
 						to="."
 					>
 						{name}

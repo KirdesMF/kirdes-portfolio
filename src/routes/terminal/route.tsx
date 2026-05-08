@@ -1,17 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Terminal } from "#/terminal/Terminal";
-import { parseTerminalPanelName } from "#/terminal/terminal-panel-types";
+import { parseTerminalSearch } from "#/terminal/terminal-search";
 
 export const Route = createFileRoute("/terminal")({
-	validateSearch: (search: Record<string, unknown>) => ({
-		file: typeof search.file === "string" ? search.file : undefined,
-		panel: parseTerminalPanelName(search.panel),
-	}),
+	validateSearch: parseTerminalSearch,
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-	const { file, panel } = Route.useSearch();
+	const { file, files, panel } = Route.useSearch();
 
-	return <Terminal activePanel={panel} fileName={file} />;
+	return <Terminal activePanel={panel} activeFileName={file} openFileNames={files} />;
 }

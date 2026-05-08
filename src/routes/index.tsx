@@ -18,7 +18,7 @@ function RouteComponent() {
 		const navigationTimeoutId: ReturnType<typeof setTimeout> = setTimeout(() => {
 			void navigate({
 				replace: true,
-				search: { file: undefined, panel: "terminal" },
+				search: { file: undefined, files: [], panel: "terminal" },
 				to: "/terminal",
 			});
 		}, 1800);

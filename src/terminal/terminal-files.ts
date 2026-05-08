@@ -43,3 +43,7 @@ export function findTerminalFile(name: string) {
 	const normalized = name.trim().toLowerCase();
 	return terminalFiles.find((file) => file.name.toLowerCase() === normalized) ?? null;
 }
+
+export function isTerminalFileName(name: string): name is TerminalFileName {
+	return findTerminalFile(name) !== null;
+}

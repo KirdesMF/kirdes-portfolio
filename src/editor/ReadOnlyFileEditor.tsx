@@ -1,6 +1,8 @@
 import { useServerFn } from "@tanstack/react-start";
 import { X } from "lucide-react";
 import { createElement, type ReactNode, useEffect, useState } from "react";
+import { cn } from "#/design-system/cn";
+import { terminalFiles } from "#/terminal/terminal-files";
 import { getHighlightedEditorFile } from "./editor-file-highlight.functions";
 import type { EditorHighlightNode } from "./editor-highlight-types";
 
@@ -76,27 +78,53 @@ function HighlightedCode({ nodes }: { nodes: Array<EditorHighlightNode> }) {
 	);
 }
 
-function EditorHeader({
-	fileName,
-	language,
-	onClose,
+function EditorTabs({
+	activeFileName,
+	onCloseEditor,
+	onCloseFile,
+	onSelectFile,
+	openFileNames,
 }: {
-	fileName: string;
-	language?: string;
-	onClose: () => void;
+	activeFileName?: string;
+	onCloseEditor: () => void;
+	onCloseFile: (fileName: string) => void;
+	onSelectFile: (fileName: string) => void;
+	openFileNames: Array<string>;
 }) {
 	return (
-		<div className="flex h-8 shrink-0 items-center justify-between border-b border-border px-3">
-			<div className="flex min-w-0 items-center gap-2">
-				<span className="truncate text-foreground">{fileName}</span>
-				{language ? <span className="text-muted-foreground/60">{language}</span> : null}
-			</div>
-			<div className="flex shrink-0 items-center gap-2">
-				<span className="text-muted-foreground/70">read-only</span>
+		<div className="flex h-8 shrink-0 items-center overflow-x-auto border-b border-border bg-background/60">
+			{openFileNames.map((fileName) => (
+				<div
+					className={cn(
+						"flex h-full max-w-40 shrink-0 items-center border-r border-border text-tiny text-muted-foreground hover:bg-muted/30 hover:text-foreground",
+						activeFileName === fileName && "bg-muted/40 text-foreground",
+					)}
+					key={fileName}
+				>
+					<button
+						className="h-full min-w-0 px-3"
+						type="button"
+						onClick={() => onSelectFile(fileName)}
+					>
+						<span className="truncate">{fileName}</span>
+					</button>
+					<button
+						aria-label={`Close ${fileName}`}
+						className="h-full px-2 text-muted-foreground hover:text-foreground"
+						type="button"
+						onClick={() => onCloseFile(fileName)}
+					>
+						<X className="size-3" />
+					</button>
+				</div>
+			))}
+			<div className="ml-auto flex h-full shrink-0 items-center gap-2 border-l border-border px-3 text-tiny text-muted-foreground/70">
+				<span>read-only</span>
 				<button
-					className="text-muted-foreground hover:text-foreground"
+					aria-label="Close editor"
+					className="rounded text-muted-foreground hover:text-foreground"
 					type="button"
-					onClick={onClose}
+					onClick={onCloseEditor}
 				>
 					<X className="size-3.5" />
 				</button>
@@ -105,13 +133,30 @@ function EditorHeader({
 	);
 }
 
-export function ReadOnlyFileEditor({
-	fileName,
-	onClose,
-}: {
-	fileName: string;
-	onClose: () => void;
-}) {
+function EmptyEditor({ onOpenFile }: { onOpenFile: (fileName: string) => void }) {
+	return (
+		<div className="flex min-h-0 flex-1 items-center justify-center p-4 text-xs">
+			<div className="flex max-w-sm flex-col items-center gap-3 text-center">
+				<div className="text-foreground">No file open</div>
+				<div className="text-muted-foreground">Open a file to inspect portfolio source.</div>
+				<div className="flex flex-wrap justify-center gap-2">
+					{terminalFiles.map(({ name }) => (
+						<button
+							className="rounded border border-border px-2 py-1 text-muted-foreground hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
+							key={name}
+							type="button"
+							onClick={() => onOpenFile(name)}
+						>
+							{name}
+						</button>
+					))}
+				</div>
+			</div>
+		</div>
+	);
+}
+
+function EditorBody({ fileName }: { fileName: string }) {
 	const getHighlightedFile = useServerFn(getHighlightedEditorFile);
 	const [fileState, setFileState] = useState<HighlightedFileState>({ status: "idle" });
 
@@ -151,41 +196,52 @@ export function ReadOnlyFileEditor({
 
 	if (fileState.status === "success") {
 		return (
-			<section className="flex h-full min-h-0 flex-col border-border text-xs">
-				<EditorHeader
-					fileName={fileState.fileName}
-					language={fileState.language}
-					onClose={onClose}
-				/>
-				<div className="min-h-0 flex-1 overflow-auto p-2">
-					<HighlightedCode nodes={fileState.nodes} />
-				</div>
-			</section>
+			<div className="min-h-0 flex-1 overflow-auto p-2">
+				<HighlightedCode nodes={fileState.nodes} />
+			</div>
 		);
 	}
 
 	if (fileState.status === "not-found") {
-		return (
-			<section className="flex h-full min-h-0 flex-col border-border text-xs">
-				<EditorHeader fileName={fileState.fileName} onClose={onClose} />
-				<div className="p-3 text-muted-foreground">unable to open {fileState.fileName}</div>
-			</section>
-		);
+		return <div className="p-3 text-muted-foreground">unable to open {fileState.fileName}</div>;
 	}
 
 	if (fileState.status === "error") {
-		return (
-			<section className="flex h-full min-h-0 flex-col border-border text-xs">
-				<EditorHeader fileName={fileName} onClose={onClose} />
-				<div className="p-3 text-muted-foreground">{fileState.message}</div>
-			</section>
-		);
+		return <div className="p-3 text-muted-foreground">{fileState.message}</div>;
 	}
 
+	return <div className="p-3 text-muted-foreground">highlighting file...</div>;
+}
+
+export function ReadOnlyFileEditor({
+	activeFileName,
+	onCloseEditor,
+	onCloseFile,
+	onOpenFile,
+	onSelectFile,
+	openFileNames,
+}: {
+	activeFileName?: string;
+	onCloseEditor: () => void;
+	onCloseFile: (fileName: string) => void;
+	onOpenFile: (fileName: string) => void;
+	onSelectFile: (fileName: string) => void;
+	openFileNames: Array<string>;
+}) {
 	return (
 		<section className="flex h-full min-h-0 flex-col border-border text-xs">
-			<EditorHeader fileName={fileName} onClose={onClose} />
-			<div className="p-3 text-muted-foreground">highlighting file...</div>
+			<EditorTabs
+				activeFileName={activeFileName}
+				onCloseEditor={onCloseEditor}
+				onCloseFile={onCloseFile}
+				onSelectFile={onSelectFile}
+				openFileNames={openFileNames}
+			/>
+			{activeFileName ? (
+				<EditorBody fileName={activeFileName} />
+			) : (
+				<EmptyEditor onOpenFile={onOpenFile} />
+			)}
 		</section>
 	);
 }

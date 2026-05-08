@@ -8,9 +8,20 @@ const cdSuggestions = terminalNavigationItems.flatMap(({ command, label }) => {
 	return [`cd ${label}`, `cd ${command}`];
 });
 
-const fileCommandSuggestions = terminalFiles.flatMap(({ name }) => [`cat ${name}`, `open ${name}`]);
+const fileCommandSuggestions = terminalFiles.flatMap(({ name }) => [
+	`cat ${name}`,
+	`close ${name}`,
+	`open ${name}`,
+]);
 
-const commandSuggestions = [...commandNames, ...cdSuggestions, ...fileCommandSuggestions] as const;
+const editorCommandSuggestions = ["close all", "close editor", "open editor"] as const;
+
+const commandSuggestions = [
+	...commandNames,
+	...cdSuggestions,
+	...fileCommandSuggestions,
+	...editorCommandSuggestions,
+] as const;
 
 function findSuggestion(input: string): string | undefined {
 	if (!input) return undefined;
