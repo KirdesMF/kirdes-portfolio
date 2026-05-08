@@ -24,6 +24,11 @@ function normalizeRouteTarget(input: string): string {
 	return `/${normalized}`;
 }
 
+export function getTerminalRoutePath(pathname: string): TerminalRoutePath {
+	const item = terminalNavigationItems.find(({ to }) => to === pathname);
+	return item?.to ?? "/terminal";
+}
+
 export function parseTerminalRouteTarget(input: string): TerminalRoutePath | null {
 	const normalized = normalizeRouteTarget(input);
 	const item = terminalNavigationItems.find(({ command }) => command === normalized);

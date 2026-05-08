@@ -3,12 +3,19 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 import { cn } from "#/design-system/cn";
 import { AppHeader } from "#/layout/AppHeader";
+import { TerminalFileEditor } from "./TerminalFileEditor";
 import { TerminalFooter } from "./TerminalFooter";
 import { TerminalPrompt } from "./TerminalPrompt";
 import { TerminalRouteList } from "./TerminalRouteList";
 import { TerminalSessionHeader } from "./TerminalSessionHeader";
 import { parseTerminalCommand } from "./terminal-commands";
-import { parseTerminalRoute, parseTerminalRouteTarget, terminalRoutes } from "./terminal-routes";
+import { findTerminalFile } from "./terminal-files";
+import {
+	getTerminalRoutePath,
+	parseTerminalRoute,
+	parseTerminalRouteTarget,
+	terminalRoutes,
+} from "./terminal-routes";
 
 type TerminalHistoryEntry = {
 	id: string;
@@ -27,7 +34,7 @@ function createHistoryEntry(input: string, output: ReactNode): TerminalHistoryEn
 }
 
 function getHelpOutput(): string {
-	return `available routes: ${terminalRoutes.join(" ")} | commands: cd clear help ls whoami`;
+	return `available routes: ${terminalRoutes.join(" ")} | commands: cat cd clear close help ls open reload whoami`;
 }
 
 function getWelcomeOutput(): ReactNode {
@@ -55,11 +62,16 @@ function createInitialHistory(): Array<TerminalHistoryEntry> {
 	];
 }
 
-export function Terminal() {
+export function Terminal({ fileName }: { fileName?: string }) {
 	const router = useRouter();
+	const currentTerminalRoute = useRouterState({
+		select: (state) => getTerminalRoutePath(state.location.pathname),
+	});
 	const isHomeRoute = useRouterState({
 		select: (state) => state.matches.at(-1)?.routeId === "/terminal",
 	});
+	const hasOpenFile = typeof fileName === "string";
+	const hasRightPanel = !isHomeRoute || hasOpenFile;
 	const [history, setHistory] = useState<Array<TerminalHistoryEntry>>(createInitialHistory);
 
 	function pushHistory(input: string, output: ReactNode) {
@@ -67,11 +79,23 @@ export function Terminal() {
 		setHistory((previous) => [...previous, entry]);
 	}
 
+	function closeFile() {
+		void router.navigate({ search: { file: undefined }, to: currentTerminalRoute });
+	}
+
+	function openFile(name: string): boolean {
+		const file = findTerminalFile(name);
+		if (file === null) return false;
+
+		void router.navigate({ search: { file: file.name }, to: currentTerminalRoute });
+		return true;
+	}
+
 	function handleSubmit(command: string) {
 		const route = parseTerminalRoute(command);
 		if (route) {
 			pushHistory(command, `opening ${command}`);
-			void router.navigate({ to: route });
+			void router.navigate({ search: { file: undefined }, to: route });
 			return;
 		}
 
@@ -81,7 +105,7 @@ export function Terminal() {
 			const targetRoute = parseTerminalRouteTarget(target);
 			if (targetRoute) {
 				pushHistory(command, `opening ${target || "~"}`);
-				void router.navigate({ to: targetRoute });
+				void router.navigate({ search: { file: undefined }, to: targetRoute });
 				return;
 			}
 
@@ -89,9 +113,37 @@ export function Terminal() {
 			return;
 		}
 
+		if (normalizedCommand.startsWith("cat ")) {
+			const target = normalizedCommand.slice(3).trim();
+			const file = findTerminalFile(target);
+			if (file) {
+				pushHistory(command, file.content);
+				return;
+			}
+
+			pushHistory(command, `file not found: ${target}`);
+			return;
+		}
+
+		if (normalizedCommand.startsWith("open ")) {
+			const target = normalizedCommand.slice(4).trim();
+			if (openFile(target)) {
+				pushHistory(command, `opening ${target}`);
+				return;
+			}
+
+			pushHistory(command, `file not found: ${target}`);
+			return;
+		}
+
 		const terminalCommand = parseTerminalCommand(command);
 		if (terminalCommand === "clear") {
 			setHistory([]);
+			return;
+		}
+
+		if (terminalCommand === "close") {
+			closeFile();
 			return;
 		}
 
@@ -102,6 +154,11 @@ export function Terminal() {
 
 		if (terminalCommand === "ls") {
 			pushHistory(command, <TerminalRouteList />);
+			return;
+		}
+
+		if (terminalCommand === "reload") {
+			void router.navigate({ to: "/" });
 			return;
 		}
 
@@ -120,7 +177,7 @@ export function Terminal() {
 				<div
 					className={cn(
 						"flex min-w-0 flex-col",
-						isHomeRoute ? "flex-1" : "w-1/2 border-r border-border",
+						hasRightPanel ? "w-1/2 border-r border-border" : "flex-1",
 					)}
 				>
 					<TerminalSessionHeader />
@@ -142,11 +199,30 @@ export function Terminal() {
 						<TerminalFooter />
 					</div>
 				</div>
-				{isHomeRoute ? null : (
-					<aside className="w-1/2 min-w-0 overflow-y-auto p-3 text-xs">
-						<Outlet />
+				{hasRightPanel ? (
+					<aside
+						className={cn(
+							"grid w-1/2 min-w-0 overflow-hidden text-xs",
+							hasOpenFile && !isHomeRoute ? "grid-rows-2" : "grid-rows-1",
+						)}
+					>
+						{isHomeRoute ? null : (
+							<div
+								className={cn(
+									"min-h-0 overflow-y-auto p-3",
+									hasOpenFile && "border-b border-border",
+								)}
+							>
+								<Outlet />
+							</div>
+						)}
+						{hasOpenFile ? (
+							<div className="min-h-0 overflow-hidden">
+								<TerminalFileEditor fileName={fileName ?? ""} onClose={closeFile} />
+							</div>
+						) : null}
 					</aside>
-				)}
+				) : null}
 			</div>
 		</div>
 	);

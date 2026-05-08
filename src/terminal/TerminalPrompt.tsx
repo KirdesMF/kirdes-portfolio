@@ -1,4 +1,5 @@
 import { type SubmitEvent, useId, useState } from "react";
+import { terminalFiles } from "#/terminal/terminal-files";
 import { commandNames, terminalNavigationItems } from "#/terminal/terminal-routes";
 
 const cdSuggestions = terminalNavigationItems.flatMap(({ command, label }) => {
@@ -7,7 +8,9 @@ const cdSuggestions = terminalNavigationItems.flatMap(({ command, label }) => {
 	return [`cd ${label}`, `cd ${command}`];
 });
 
-const commandSuggestions = [...commandNames, ...cdSuggestions] as const;
+const fileCommandSuggestions = terminalFiles.flatMap(({ name }) => [`cat ${name}`, `open ${name}`]);
+
+const commandSuggestions = [...commandNames, ...cdSuggestions, ...fileCommandSuggestions] as const;
 
 function findSuggestion(input: string): string | undefined {
 	if (!input) return undefined;

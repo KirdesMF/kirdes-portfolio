@@ -16,7 +16,7 @@ function RouteComponent() {
 			setVisibleLineCount((current) => Math.min(current + 1, bootLines.length));
 		}, 450);
 		const navigationTimeoutId: ReturnType<typeof setTimeout> = setTimeout(() => {
-			void navigate({ replace: true, to: "/terminal" });
+			void navigate({ replace: true, search: { file: undefined }, to: "/terminal" });
 		}, 1800);
 
 		return () => {
