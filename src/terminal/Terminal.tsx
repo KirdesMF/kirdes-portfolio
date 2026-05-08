@@ -2,8 +2,8 @@ import { Outlet, useRouter, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { cn } from "#/design-system/cn";
+import { ReadOnlyFileEditor } from "#/editor/ReadOnlyFileEditor";
 import { AppHeader } from "#/layout/AppHeader";
-import { TerminalFileEditor } from "./TerminalFileEditor";
 import { TerminalFooter } from "./TerminalFooter";
 import { TerminalPrompt } from "./TerminalPrompt";
 import { TerminalRouteList } from "./TerminalRouteList";
@@ -95,7 +95,7 @@ export function Terminal({ fileName }: { fileName?: string }) {
 		const route = parseTerminalRoute(command);
 		if (route) {
 			pushHistory(command, `opening ${command}`);
-			void router.navigate({ search: { file: undefined }, to: route });
+			void router.navigate({ search: (previous) => ({ file: previous.file }), to: route });
 			return;
 		}
 
@@ -105,7 +105,7 @@ export function Terminal({ fileName }: { fileName?: string }) {
 			const targetRoute = parseTerminalRouteTarget(target);
 			if (targetRoute) {
 				pushHistory(command, `opening ${target || "~"}`);
-				void router.navigate({ search: { file: undefined }, to: targetRoute });
+				void router.navigate({ search: (previous) => ({ file: previous.file }), to: targetRoute });
 				return;
 			}
 
@@ -218,7 +218,7 @@ export function Terminal({ fileName }: { fileName?: string }) {
 						)}
 						{hasOpenFile ? (
 							<div className="min-h-0 overflow-hidden">
-								<TerminalFileEditor fileName={fileName ?? ""} onClose={closeFile} />
+								<ReadOnlyFileEditor fileName={fileName ?? ""} onClose={closeFile} />
 							</div>
 						) : null}
 					</aside>
