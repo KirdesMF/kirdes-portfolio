@@ -10,6 +10,7 @@ import { TerminalRouteList } from "./TerminalRouteList";
 import { TerminalSessionHeader } from "./TerminalSessionHeader";
 import { parseTerminalCommand } from "./terminal-commands";
 import { findTerminalFile } from "./terminal-files";
+import type { TerminalPanelName } from "./terminal-panel-types";
 import {
 	getTerminalRoutePath,
 	parseTerminalRoute,
@@ -62,7 +63,150 @@ function createInitialHistory(): Array<TerminalHistoryEntry> {
 	];
 }
 
-export function Terminal({ fileName }: { fileName?: string }) {
+function getMobilePanel(
+	activePanel: TerminalPanelName,
+	hasOpenFile: boolean,
+	isHomeRoute: boolean,
+) {
+	if (activePanel === "editor" && hasOpenFile) return "editor";
+	if (activePanel === "route" && !isHomeRoute) return "route";
+
+	return "terminal";
+}
+
+function TerminalPane({
+	className,
+	hasRightPanel,
+	history,
+	onSubmit,
+}: {
+	className?: string;
+	hasRightPanel: boolean;
+	history: Array<TerminalHistoryEntry>;
+	onSubmit: (command: string) => void;
+}) {
+	return (
+		<div
+			className={cn(
+				"min-w-0 flex-1 flex-col",
+				hasRightPanel ? "md:flex-none md:w-1/2 md:border-r md:border-border" : "md:flex-1",
+				className,
+			)}
+		>
+			<TerminalSessionHeader />
+			<div className="min-h-0 flex-1 overflow-y-auto p-3 text-xs">
+				{history.map((entry) => (
+					<div className="mb-4 last:mb-0" key={entry.id}>
+						<div className="text-muted-foreground">
+							<span className="text-primary">$</span> {entry.input}
+						</div>
+						<div className="mt-1 text-foreground/90">{entry.output}</div>
+					</div>
+				))}
+			</div>
+			<div className="shrink-0">
+				<div className="px-3 py-1 text-tiny text-muted-foreground/70">
+					TIP: type help for commands -- / to navigate
+				</div>
+				<TerminalPrompt onSubmit={onSubmit} />
+				<TerminalFooter />
+			</div>
+		</div>
+	);
+}
+
+function TerminalMobilePanels({
+	activePanel,
+	fileName,
+	hasOpenFile,
+	isHomeRoute,
+	onSelectPanel,
+}: {
+	activePanel: TerminalPanelName;
+	fileName?: string;
+	hasOpenFile: boolean;
+	isHomeRoute: boolean;
+	onSelectPanel: (panel: TerminalPanelName) => void;
+}) {
+	const panel = getMobilePanel(activePanel, hasOpenFile, isHomeRoute);
+
+	return (
+		<div className="flex shrink-0 items-center gap-1 border-b border-border px-2 py-1 md:hidden">
+			<button
+				className={cn(
+					"rounded border border-transparent px-2 py-1 text-tiny text-muted-foreground",
+					panel === "terminal" && "border-primary/40 bg-primary/10 text-primary",
+				)}
+				type="button"
+				onClick={() => onSelectPanel("terminal")}
+			>
+				terminal
+			</button>
+			{isHomeRoute ? null : (
+				<button
+					className={cn(
+						"rounded border border-transparent px-2 py-1 text-tiny text-muted-foreground",
+						panel === "route" && "border-primary/40 bg-primary/10 text-primary",
+					)}
+					type="button"
+					onClick={() => onSelectPanel("route")}
+				>
+					route
+				</button>
+			)}
+			{hasOpenFile ? (
+				<button
+					className={cn(
+						"max-w-36 truncate rounded border border-transparent px-2 py-1 text-tiny text-muted-foreground",
+						panel === "editor" && "border-primary/40 bg-primary/10 text-primary",
+					)}
+					type="button"
+					onClick={() => onSelectPanel("editor")}
+				>
+					{fileName}
+				</button>
+			) : null}
+		</div>
+	);
+}
+
+function RoutePanel({ className, hasOpenFile }: { className?: string; hasOpenFile: boolean }) {
+	return (
+		<div
+			className={cn(
+				"min-h-0 w-full flex-1 overflow-y-auto p-3",
+				hasOpenFile && "md:border-b md:border-border",
+				className,
+			)}
+		>
+			<Outlet />
+		</div>
+	);
+}
+
+function EditorPanel({
+	className,
+	fileName,
+	onClose,
+}: {
+	className?: string;
+	fileName: string;
+	onClose: () => void;
+}) {
+	return (
+		<div className={cn("min-h-0 w-full flex-1 overflow-hidden", className)}>
+			<ReadOnlyFileEditor fileName={fileName} onClose={onClose} />
+		</div>
+	);
+}
+
+export function Terminal({
+	activePanel,
+	fileName,
+}: {
+	activePanel: TerminalPanelName;
+	fileName?: string;
+}) {
 	const router = useRouter();
 	const currentTerminalRoute = useRouterState({
 		select: (state) => getTerminalRoutePath(state.location.pathname),
@@ -72,6 +216,7 @@ export function Terminal({ fileName }: { fileName?: string }) {
 	});
 	const hasOpenFile = typeof fileName === "string";
 	const hasRightPanel = !isHomeRoute || hasOpenFile;
+	const mobilePanel = getMobilePanel(activePanel, hasOpenFile, isHomeRoute);
 	const [history, setHistory] = useState<Array<TerminalHistoryEntry>>(createInitialHistory);
 
 	function pushHistory(input: string, output: ReactNode) {
@@ -79,15 +224,35 @@ export function Terminal({ fileName }: { fileName?: string }) {
 		setHistory((previous) => [...previous, entry]);
 	}
 
+	function navigateSearch(nextSearch: { file?: string; panel: TerminalPanelName }) {
+		return {
+			file: nextSearch.file,
+			panel: nextSearch.panel,
+		};
+	}
+
+	function setMobilePanel(panel: TerminalPanelName) {
+		void router.navigate({
+			search: (previous) => navigateSearch({ file: previous.file, panel }),
+			to: currentTerminalRoute,
+		});
+	}
+
 	function closeFile() {
-		void router.navigate({ search: { file: undefined }, to: currentTerminalRoute });
+		void router.navigate({
+			search: { file: undefined, panel: isHomeRoute ? "terminal" : "route" },
+			to: currentTerminalRoute,
+		});
 	}
 
 	function openFile(name: string): boolean {
 		const file = findTerminalFile(name);
 		if (file === null) return false;
 
-		void router.navigate({ search: { file: file.name }, to: currentTerminalRoute });
+		void router.navigate({
+			search: { file: file.name, panel: "editor" },
+			to: currentTerminalRoute,
+		});
 		return true;
 	}
 
@@ -95,7 +260,10 @@ export function Terminal({ fileName }: { fileName?: string }) {
 		const route = parseTerminalRoute(command);
 		if (route) {
 			pushHistory(command, `opening ${command}`);
-			void router.navigate({ search: (previous) => ({ file: previous.file }), to: route });
+			void router.navigate({
+				search: (previous) => navigateSearch({ file: previous.file, panel: "route" }),
+				to: route,
+			});
 			return;
 		}
 
@@ -105,7 +273,10 @@ export function Terminal({ fileName }: { fileName?: string }) {
 			const targetRoute = parseTerminalRouteTarget(target);
 			if (targetRoute) {
 				pushHistory(command, `opening ${target || "~"}`);
-				void router.navigate({ search: (previous) => ({ file: previous.file }), to: targetRoute });
+				void router.navigate({
+					search: (previous) => navigateSearch({ file: previous.file, panel: "route" }),
+					to: targetRoute,
+				});
 				return;
 			}
 
@@ -173,53 +344,40 @@ export function Terminal({ fileName }: { fileName?: string }) {
 	return (
 		<div className="flex h-dvh flex-col">
 			<AppHeader />
+			<TerminalMobilePanels
+				activePanel={activePanel}
+				fileName={fileName}
+				hasOpenFile={hasOpenFile}
+				isHomeRoute={isHomeRoute}
+				onSelectPanel={setMobilePanel}
+			/>
 			<div className="flex min-h-0 flex-1">
-				<div
-					className={cn(
-						"flex min-w-0 flex-col",
-						hasRightPanel ? "w-1/2 border-r border-border" : "flex-1",
-					)}
-				>
-					<TerminalSessionHeader />
-					<div className="min-h-0 flex-1 overflow-y-auto p-3 text-xs">
-						{history.map((entry) => (
-							<div className="mb-4 last:mb-0" key={entry.id}>
-								<div className="text-muted-foreground">
-									<span className="text-primary">$</span> {entry.input}
-								</div>
-								<div className="mt-1 text-foreground/90">{entry.output}</div>
-							</div>
-						))}
-					</div>
-					<div className="shrink-0">
-						<div className="px-3 py-1 text-tiny text-muted-foreground/70">
-							TIP: type help for commands -- / to navigate
-						</div>
-						<TerminalPrompt onSubmit={handleSubmit} />
-						<TerminalFooter />
-					</div>
-				</div>
+				<TerminalPane
+					className={cn(mobilePanel === "terminal" ? "flex" : "hidden", "md:flex")}
+					hasRightPanel={hasRightPanel}
+					history={history}
+					onSubmit={handleSubmit}
+				/>
 				{hasRightPanel ? (
 					<aside
 						className={cn(
-							"grid w-1/2 min-w-0 overflow-hidden text-xs",
-							hasOpenFile && !isHomeRoute ? "grid-rows-2" : "grid-rows-1",
+							"min-w-0 flex-1 overflow-hidden text-xs md:grid md:w-1/2 md:flex-none",
+							mobilePanel === "terminal" ? "hidden md:grid" : "grid",
+							hasOpenFile && !isHomeRoute ? "md:grid-rows-2" : "md:grid-rows-1",
 						)}
 					>
 						{isHomeRoute ? null : (
-							<div
-								className={cn(
-									"min-h-0 overflow-y-auto p-3",
-									hasOpenFile && "border-b border-border",
-								)}
-							>
-								<Outlet />
-							</div>
+							<RoutePanel
+								className={cn(mobilePanel === "route" ? "block" : "hidden", "md:block")}
+								hasOpenFile={hasOpenFile}
+							/>
 						)}
 						{hasOpenFile ? (
-							<div className="min-h-0 overflow-hidden">
-								<ReadOnlyFileEditor fileName={fileName ?? ""} onClose={closeFile} />
-							</div>
+							<EditorPanel
+								className={cn(mobilePanel === "editor" ? "block" : "hidden", "md:block")}
+								fileName={fileName ?? ""}
+								onClose={closeFile}
+							/>
 						) : null}
 					</aside>
 				) : null}

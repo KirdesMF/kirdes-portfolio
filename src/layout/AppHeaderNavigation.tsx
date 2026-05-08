@@ -13,7 +13,7 @@ export function AppHeaderNavigation() {
 						}}
 						className="rounded border border-transparent px-1.5 py-0.5 text-tiny text-muted-foreground transition-colors hover:border-border hover:bg-muted/40 hover:text-foreground"
 						key={command}
-						search={(previous) => ({ file: previous.file })}
+						search={(previous) => ({ file: previous.file, panel: "route" })}
 						to={to}
 					>
 						{label === "~" ? label : `/${label}`}
