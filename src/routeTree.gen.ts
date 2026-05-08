@@ -9,38 +9,120 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TerminalRouteRouteImport } from './routes/terminal/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TerminalIndexRouteImport } from './routes/terminal/index'
+import { Route as TerminalWorkRouteRouteImport } from './routes/terminal/work/route'
+import { Route as TerminalSkillRouteRouteImport } from './routes/terminal/skill/route'
+import { Route as TerminalProjectsRouteRouteImport } from './routes/terminal/projects/route'
+import { Route as TerminalContactRouteRouteImport } from './routes/terminal/contact/route'
 
+const TerminalRouteRoute = TerminalRouteRouteImport.update({
+  id: '/terminal',
+  path: '/terminal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TerminalIndexRoute = TerminalIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TerminalRouteRoute,
+} as any)
+const TerminalWorkRouteRoute = TerminalWorkRouteRouteImport.update({
+  id: '/work',
+  path: '/work',
+  getParentRoute: () => TerminalRouteRoute,
+} as any)
+const TerminalSkillRouteRoute = TerminalSkillRouteRouteImport.update({
+  id: '/skill',
+  path: '/skill',
+  getParentRoute: () => TerminalRouteRoute,
+} as any)
+const TerminalProjectsRouteRoute = TerminalProjectsRouteRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => TerminalRouteRoute,
+} as any)
+const TerminalContactRouteRoute = TerminalContactRouteRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => TerminalRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/terminal': typeof TerminalRouteRouteWithChildren
+  '/terminal/contact': typeof TerminalContactRouteRoute
+  '/terminal/projects': typeof TerminalProjectsRouteRoute
+  '/terminal/skill': typeof TerminalSkillRouteRoute
+  '/terminal/work': typeof TerminalWorkRouteRoute
+  '/terminal/': typeof TerminalIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/terminal/contact': typeof TerminalContactRouteRoute
+  '/terminal/projects': typeof TerminalProjectsRouteRoute
+  '/terminal/skill': typeof TerminalSkillRouteRoute
+  '/terminal/work': typeof TerminalWorkRouteRoute
+  '/terminal': typeof TerminalIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/terminal': typeof TerminalRouteRouteWithChildren
+  '/terminal/contact': typeof TerminalContactRouteRoute
+  '/terminal/projects': typeof TerminalProjectsRouteRoute
+  '/terminal/skill': typeof TerminalSkillRouteRoute
+  '/terminal/work': typeof TerminalWorkRouteRoute
+  '/terminal/': typeof TerminalIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/terminal'
+    | '/terminal/contact'
+    | '/terminal/projects'
+    | '/terminal/skill'
+    | '/terminal/work'
+    | '/terminal/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/terminal/contact'
+    | '/terminal/projects'
+    | '/terminal/skill'
+    | '/terminal/work'
+    | '/terminal'
+  id:
+    | '__root__'
+    | '/'
+    | '/terminal'
+    | '/terminal/contact'
+    | '/terminal/projects'
+    | '/terminal/skill'
+    | '/terminal/work'
+    | '/terminal/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  TerminalRouteRoute: typeof TerminalRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terminal': {
+      id: '/terminal'
+      path: '/terminal'
+      fullPath: '/terminal'
+      preLoaderRoute: typeof TerminalRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +130,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terminal/': {
+      id: '/terminal/'
+      path: '/'
+      fullPath: '/terminal/'
+      preLoaderRoute: typeof TerminalIndexRouteImport
+      parentRoute: typeof TerminalRouteRoute
+    }
+    '/terminal/work': {
+      id: '/terminal/work'
+      path: '/work'
+      fullPath: '/terminal/work'
+      preLoaderRoute: typeof TerminalWorkRouteRouteImport
+      parentRoute: typeof TerminalRouteRoute
+    }
+    '/terminal/skill': {
+      id: '/terminal/skill'
+      path: '/skill'
+      fullPath: '/terminal/skill'
+      preLoaderRoute: typeof TerminalSkillRouteRouteImport
+      parentRoute: typeof TerminalRouteRoute
+    }
+    '/terminal/projects': {
+      id: '/terminal/projects'
+      path: '/projects'
+      fullPath: '/terminal/projects'
+      preLoaderRoute: typeof TerminalProjectsRouteRouteImport
+      parentRoute: typeof TerminalRouteRoute
+    }
+    '/terminal/contact': {
+      id: '/terminal/contact'
+      path: '/contact'
+      fullPath: '/terminal/contact'
+      preLoaderRoute: typeof TerminalContactRouteRouteImport
+      parentRoute: typeof TerminalRouteRoute
+    }
   }
 }
 
+interface TerminalRouteRouteChildren {
+  TerminalContactRouteRoute: typeof TerminalContactRouteRoute
+  TerminalProjectsRouteRoute: typeof TerminalProjectsRouteRoute
+  TerminalSkillRouteRoute: typeof TerminalSkillRouteRoute
+  TerminalWorkRouteRoute: typeof TerminalWorkRouteRoute
+  TerminalIndexRoute: typeof TerminalIndexRoute
+}
+
+const TerminalRouteRouteChildren: TerminalRouteRouteChildren = {
+  TerminalContactRouteRoute: TerminalContactRouteRoute,
+  TerminalProjectsRouteRoute: TerminalProjectsRouteRoute,
+  TerminalSkillRouteRoute: TerminalSkillRouteRoute,
+  TerminalWorkRouteRoute: TerminalWorkRouteRoute,
+  TerminalIndexRoute: TerminalIndexRoute,
+}
+
+const TerminalRouteRouteWithChildren = TerminalRouteRoute._addFileChildren(
+  TerminalRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TerminalRouteRoute: TerminalRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
