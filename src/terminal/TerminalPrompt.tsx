@@ -1,5 +1,5 @@
 import { type SubmitEvent, useId, useState } from "react";
-import { terminalFiles } from "#/terminal/terminal-files";
+import { editorFiles } from "#/editor/editor-files";
 import { commandNames, terminalNavigationItems } from "#/terminal/terminal-routes";
 
 const cdSuggestions = terminalNavigationItems.flatMap(({ command, label }) => {
@@ -8,7 +8,7 @@ const cdSuggestions = terminalNavigationItems.flatMap(({ command, label }) => {
 	return [`cd ${label}`, `cd ${command}`];
 });
 
-const fileCommandSuggestions = terminalFiles.flatMap(({ name }) => [
+const fileCommandSuggestions = editorFiles.flatMap(({ name }) => [
 	`cat ${name}`,
 	`close ${name}`,
 	`open ${name}`,

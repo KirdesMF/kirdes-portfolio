@@ -1,8 +1,8 @@
 import { useServerFn } from "@tanstack/react-start";
-import { X } from "lucide-react";
+import { Braces, FileText, FileType, type LucideIcon, X } from "lucide-react";
 import { createElement, type ReactNode, useEffect, useState } from "react";
 import { cn } from "#/design-system/cn";
-import { terminalFiles } from "#/terminal/terminal-files";
+import { editorFiles } from "#/editor/editor-files";
 import { getHighlightedEditorFile } from "./editor-file-highlight.functions";
 import type { EditorHighlightNode } from "./editor-highlight-types";
 
@@ -19,6 +19,18 @@ type HighlightedFileState =
 	| { status: "error"; message: string };
 
 const highlightedFileCache = new Map<string, HighlightedFileState>();
+
+const fileExtensionIcon: Record<string, LucideIcon> = {
+	md: FileText,
+	json: Braces,
+	ts: FileType,
+};
+
+function getFileIcon(fileName: string): LucideIcon | null {
+	const extension = fileName.split(".").pop()?.toLowerCase();
+	if (!extension) return null;
+	return fileExtensionIcon[extension] ?? null;
+}
 
 function renderHighlightNode(node: EditorHighlightNode, key: string): ReactNode {
 	if (node.type === "text") return node.value;
@@ -80,7 +92,7 @@ function HighlightedCode({
 		<pre className={cn("min-w-max font-mono text-xs leading-relaxed", preClass)}>
 			{lines.map((line) => (
 				<div
-					className="group flex min-h-[1.375rem] gap-4 rounded px-1 hover:bg-muted/35"
+					className="group flex min-h-5.5 gap-4 rounded px-1 hover:bg-muted/35"
 					key={line.lineNumber}
 				>
 					<span className="w-5 shrink-0 select-none text-right text-muted-foreground/35 group-hover:text-muted-foreground/70">
@@ -123,10 +135,14 @@ function EditorTabs({
 					key={fileName}
 				>
 					<button
-						className="h-full min-w-0 px-3"
+						className="flex h-full min-w-0 items-center gap-1.5 pl-3 pr-2"
 						type="button"
 						onClick={() => onSelectFile(fileName)}
 					>
+						{(() => {
+							const Icon = getFileIcon(fileName);
+							return Icon ? <Icon className="size-3 shrink-0" /> : null;
+						})()}
 						<span className="truncate">{fileName}</span>
 					</button>
 					<button
@@ -139,7 +155,7 @@ function EditorTabs({
 					</button>
 				</div>
 			))}
-			<div className="ml-auto flex h-full shrink-0 items-center gap-2 border-l border-border px-3 text-tiny text-muted-foreground/70">
+			<div className="ms-auto flex h-full shrink-0 items-center gap-2 border-l border-border px-3 text-tiny text-muted-foreground/70">
 				<span>read-only</span>
 				<button
 					aria-label="Close editor"
@@ -161,7 +177,7 @@ function EmptyEditor({ onOpenFile }: { onOpenFile: (fileName: string) => void })
 				<div className="text-foreground">No file open</div>
 				<div className="text-muted-foreground">Open a file to inspect portfolio source.</div>
 				<div className="flex flex-wrap justify-center gap-2">
-					{terminalFiles.map(({ name }) => (
+					{editorFiles.map(({ name }) => (
 						<button
 							className="rounded border border-border px-2 py-1 text-muted-foreground hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
 							key={name}

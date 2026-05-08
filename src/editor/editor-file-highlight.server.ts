@@ -5,8 +5,8 @@ import markdown from "shiki/langs/markdown.mjs";
 import typescript from "shiki/langs/typescript.mjs";
 import githubDarkDefault from "shiki/themes/github-dark-default.mjs";
 import githubLightDefault from "shiki/themes/github-light-default.mjs";
-import { findTerminalFile } from "#/terminal/terminal-files";
-import type { EditorHighlightNode } from "./editor-highlight-types";
+import { findEditorFile } from "#/editor/editor-files";
+import type { EditorHighlightNode, EditorHighlightProperties } from "./editor-highlight-types";
 
 type HastNode = {
 	type: string;
@@ -86,13 +86,13 @@ function normalizeHastNode(node: HastNode): EditorHighlightNode | null {
 			className: normalizeClassName(properties.class),
 			style: normalizeStyle(properties.style),
 			tabIndex: normalizeTabIndex(properties.tabindex),
-		},
+		} satisfies EditorHighlightProperties,
 		children,
 	};
 }
 
 export async function highlightEditorFile(fileName: string) {
-	const file = findTerminalFile(fileName);
+	const file = findEditorFile(fileName);
 	if (file === null) {
 		return {
 			found: false as const,

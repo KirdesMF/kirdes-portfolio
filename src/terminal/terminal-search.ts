@@ -1,5 +1,5 @@
 import * as v from "valibot";
-import { isTerminalFileName, type TerminalFileName } from "./terminal-files";
+import { type EditorFileName, isEditorFileName } from "../editor/editor-files";
 import { parseTerminalPanelName, type TerminalPanelName } from "./terminal-panel-types";
 
 const RawTerminalSearch = v.object({
@@ -8,20 +8,20 @@ const RawTerminalSearch = v.object({
 	panel: v.optional(v.string(), "terminal"),
 });
 
-function dedupeFiles(files: Array<string>): Array<TerminalFileName> {
-	const knownFiles = files.filter(isTerminalFileName);
+function dedupeFiles(files: Array<string>): Array<EditorFileName> {
+	const knownFiles = files.filter(isEditorFileName);
 	return [...new Set(knownFiles)];
 }
 
-function normalizeFiles(files: string | Array<string>): Array<TerminalFileName> {
+function normalizeFiles(files: string | Array<string>): Array<EditorFileName> {
 	if (Array.isArray(files)) return dedupeFiles(files);
 
 	return dedupeFiles([files]);
 }
 
 export type TerminalSearch = {
-	file: TerminalFileName | undefined;
-	files: Array<TerminalFileName>;
+	file: EditorFileName | undefined;
+	files: Array<EditorFileName>;
 	panel: TerminalPanelName;
 };
 
@@ -31,7 +31,7 @@ export function parseTerminalSearch(search: Record<string, unknown>): TerminalSe
 		? result.output
 		: { file: undefined, files: [], panel: "terminal" };
 	const activeFile =
-		rawSearch.file && isTerminalFileName(rawSearch.file) ? rawSearch.file : undefined;
+		rawSearch.file && isEditorFileName(rawSearch.file) ? rawSearch.file : undefined;
 	const files = activeFile
 		? dedupeFiles([...normalizeFiles(rawSearch.files), activeFile])
 		: normalizeFiles(rawSearch.files);

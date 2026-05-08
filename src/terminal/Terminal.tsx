@@ -4,12 +4,12 @@ import { useState } from "react";
 import { cn } from "#/design-system/cn";
 import { ReadOnlyFileEditor } from "#/editor/ReadOnlyFileEditor";
 import { AppHeader } from "#/layout/AppHeader";
+import { type EditorFileName, findEditorFile } from "../editor/editor-files";
 import { TerminalFooter } from "./TerminalFooter";
 import { TerminalPrompt } from "./TerminalPrompt";
 import { TerminalRouteList } from "./TerminalRouteList";
 import { TerminalSessionHeader } from "./TerminalSessionHeader";
 import { parseTerminalCommand } from "./terminal-commands";
-import { findTerminalFile, type TerminalFileName } from "./terminal-files";
 import type { TerminalPanelName } from "./terminal-panel-types";
 import {
 	getTerminalRoutePath,
@@ -25,8 +25,8 @@ type TerminalHistoryEntry = {
 };
 
 type TerminalSearchState = {
-	file: TerminalFileName | undefined;
-	files: Array<TerminalFileName>;
+	file: EditorFileName | undefined;
+	files: Array<EditorFileName>;
 	panel: TerminalPanelName;
 };
 
@@ -86,20 +86,20 @@ function getMobilePanel(
 }
 
 function addOpenFile(
-	files: Array<TerminalFileName>,
-	fileName: TerminalFileName,
-): Array<TerminalFileName> {
+	files: Array<EditorFileName>,
+	fileName: EditorFileName,
+): Array<EditorFileName> {
 	return [...new Set([...files, fileName])];
 }
 
-function removeOpenFile(files: Array<TerminalFileName>, fileName: string): Array<TerminalFileName> {
+function removeOpenFile(files: Array<EditorFileName>, fileName: string): Array<EditorFileName> {
 	return files.filter((openFileName) => openFileName !== fileName);
 }
 
 function getNextActiveFile(
-	files: Array<TerminalFileName>,
-	closedFileName: TerminalFileName,
-): TerminalFileName | undefined {
+	files: Array<EditorFileName>,
+	closedFileName: EditorFileName,
+): EditorFileName | undefined {
 	const closedIndex = files.indexOf(closedFileName);
 	const nextFiles = removeOpenFile(files, closedFileName);
 	return nextFiles[Math.max(0, closedIndex - 1)] ?? nextFiles.at(0);
@@ -153,7 +153,7 @@ function TerminalMobilePanels({
 	isHomeRoute,
 	onSelectPanel,
 }: {
-	activeFileName?: TerminalFileName;
+	activeFileName?: EditorFileName;
 	activePanel: TerminalPanelName;
 	hasEditorPanel: boolean;
 	isHomeRoute: boolean;
@@ -230,13 +230,13 @@ function EditorPanel({
 	onSelectFile,
 	openFileNames,
 }: {
-	activeFileName?: TerminalFileName;
+	activeFileName?: EditorFileName;
 	className?: string;
 	onCloseEditor: () => void;
 	onCloseFile: (fileName: string) => void;
 	onOpenFile: (fileName: string) => void;
 	onSelectFile: (fileName: string) => void;
-	openFileNames: Array<TerminalFileName>;
+	openFileNames: Array<EditorFileName>;
 }) {
 	return (
 		<div className={cn("min-h-0 w-full flex-1 overflow-hidden", className)}>
@@ -257,9 +257,9 @@ export function Terminal({
 	activePanel,
 	openFileNames,
 }: {
-	activeFileName?: TerminalFileName;
+	activeFileName?: EditorFileName;
 	activePanel: TerminalPanelName;
-	openFileNames: Array<TerminalFileName>;
+	openFileNames: Array<EditorFileName>;
 }) {
 	const router = useRouter();
 	const currentTerminalRoute = useRouterState({
@@ -302,7 +302,7 @@ export function Terminal({
 	}
 
 	function closeFile(fileName: string) {
-		const fileToClose = findTerminalFile(fileName);
+		const fileToClose = findEditorFile(fileName);
 		if (fileToClose === null) return;
 
 		const files = removeOpenFile(openFileNames, fileToClose.name);
@@ -326,7 +326,7 @@ export function Terminal({
 	}
 
 	function openFile(name: string): boolean {
-		const file = findTerminalFile(name);
+		const file = findEditorFile(name);
 		if (file === null) return false;
 
 		void router.navigate({
@@ -337,7 +337,7 @@ export function Terminal({
 	}
 
 	function selectFile(fileName: string) {
-		const file = findTerminalFile(fileName);
+		const file = findEditorFile(fileName);
 		if (file === null) return;
 
 		void router.navigate({
@@ -378,7 +378,7 @@ export function Terminal({
 
 		if (normalizedCommand.startsWith("cat ")) {
 			const target = normalizedCommand.slice(3).trim();
-			const file = findTerminalFile(target);
+			const file = findEditorFile(target);
 			if (file) {
 				pushHistory(command, file.content);
 				return;
@@ -420,7 +420,7 @@ export function Terminal({
 
 		if (normalizedCommand.startsWith("close ")) {
 			const target = normalizedCommand.slice(5).trim();
-			const file = findTerminalFile(target);
+			const file = findEditorFile(target);
 			if (file === null) {
 				pushHistory(command, `file not found: ${target}`);
 				return;

@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { terminalFiles } from "./terminal-files";
+import { editorFiles } from "../editor/editor-files";
 import { terminalNavigationItems } from "./terminal-routes";
 
 function formatRouteLabel(label: string): string {
@@ -32,7 +32,7 @@ export function TerminalRouteList() {
 			</div>
 			<div className="flex flex-wrap gap-x-4 gap-y-1">
 				<span className="w-10 text-muted-foreground/60">files</span>
-				{terminalFiles.map(({ name }) => (
+				{editorFiles.map(({ name }) => (
 					<Link
 						className="text-muted-foreground underline-offset-2 hover:text-primary hover:underline"
 						key={name}
