@@ -81,13 +81,35 @@ body {
 	color: var(--shiki-dark) !important;
 }
 
-.shiki a {
-	text-decoration: underline;
-	text-underline-offset: 2px;
+.shiki code {
+	counter-reset: line;
 }
 
-.shiki a:hover {
-	color: var(--primary);
+.shiki .line {
+	display: block;
+	position: relative;
+	padding-left: 2.5rem;
+}
+
+.shiki .line::before {
+	content: counter(line);
+	counter-increment: line;
+	position: absolute;
+	left: 0;
+	width: 2rem;
+	text-align: right;
+	color: var(--muted-foreground);
+	opacity: 0.35;
+	user-select: none;
+}
+
+.shiki .line:hover {
+	background: color-mix(in oklch, var(--muted) 35%, transparent);
+	border-radius: var(--radius);
+}
+
+.shiki .line:hover::before {
+	opacity: 0.7;
 }
 
 .dark {

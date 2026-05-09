@@ -1,7 +1,7 @@
 import * as v from "valibot";
 import { type EditorFileName, isEditorFileName } from "../editor/editor-files";
-import { parseTerminalPanelName, type TerminalPanelName } from "./terminal-panel-types";
 import type { TerminalDialogName } from "../music/music.types";
+import { parseTerminalPanelName, type TerminalPanelName } from "./terminal-panel-types";
 
 const RawTerminalSearch = v.object({
 	dialog: v.optional(v.string()),

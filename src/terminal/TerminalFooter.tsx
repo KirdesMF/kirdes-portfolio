@@ -1,4 +1,4 @@
-import { GitBranch, BoomBox } from "lucide-react";
+import { BoomBox, GitBranch } from "lucide-react";
 
 import { Separator } from "#/design-system/Separator";
 

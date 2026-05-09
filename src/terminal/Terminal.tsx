@@ -315,7 +315,12 @@ export function Terminal({
 
 	function closeEditor() {
 		void router.navigate({
-			search: { dialog: undefined, file: undefined, files: [], panel: isHomeRoute ? "terminal" : "route" },
+			search: {
+				dialog: undefined,
+				file: undefined,
+				files: [],
+				panel: isHomeRoute ? "terminal" : "route",
+			},
 			to: currentTerminalRoute,
 		});
 	}
@@ -353,7 +358,12 @@ export function Terminal({
 		if (file === null) return false;
 
 		void router.navigate({
-			search: { dialog: undefined, file: file.name, files: addOpenFile(openFileNames, file.name), panel: "editor" },
+			search: {
+				dialog: undefined,
+				file: file.name,
+				files: addOpenFile(openFileNames, file.name),
+				panel: "editor",
+			},
 			to: currentTerminalRoute,
 		});
 		return true;
@@ -364,7 +374,12 @@ export function Terminal({
 		if (file === null) return;
 
 		void router.navigate({
-			search: { dialog: undefined, file: file.name, files: addOpenFile(openFileNames, file.name), panel: "editor" },
+			search: {
+				dialog: undefined,
+				file: file.name,
+				files: addOpenFile(openFileNames, file.name),
+				panel: "editor",
+			},
 			to: currentTerminalRoute,
 		});
 	}

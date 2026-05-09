@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import * as v from "valibot";
-import { highlightEditorFile } from "./editor-file-highlight.server";
+import { highlightToHtml } from "./editor-file-highlight.server";
 
 const HighlightEditorFileInputSchema = v.object({
 	fileName: v.pipe(v.string(), v.trim(), v.minLength(1)),
@@ -8,4 +8,4 @@ const HighlightEditorFileInputSchema = v.object({
 
 export const getHighlightedEditorFile = createServerFn({ method: "GET" })
 	.inputValidator(v.parser(HighlightEditorFileInputSchema))
-	.handler(async ({ data }) => highlightEditorFile(data.fileName));
+	.handler(async ({ data }) => highlightToHtml(data.fileName));
