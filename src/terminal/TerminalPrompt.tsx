@@ -26,7 +26,10 @@ const commandSuggestions = [
 function findSuggestion(input: string): string | undefined {
 	if (!input) return undefined;
 	const lower = input.toLowerCase();
-	return commandSuggestions.find((name) => name.startsWith(lower) && name !== lower);
+	return commandSuggestions.find((name) => {
+		const nameLower = name.toLowerCase();
+		return nameLower.startsWith(lower) && nameLower !== lower;
+	});
 }
 
 export function TerminalPrompt({ onSubmit }: { onSubmit: (command: string) => void }) {

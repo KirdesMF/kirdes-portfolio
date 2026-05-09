@@ -39,6 +39,9 @@ function renderHighlightNode(node: EditorHighlightNode, key: string): ReactNode 
 		node.tagName,
 		{
 			className: node.properties.className,
+			...(node.tagName === "a"
+				? { href: node.properties.href, rel: "noopener noreferrer", target: "_blank" }
+				: {}),
 			key,
 			style: node.properties.style,
 			tabIndex: node.properties.tabIndex,

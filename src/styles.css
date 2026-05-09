@@ -81,6 +81,15 @@ body {
 	color: var(--shiki-dark) !important;
 }
 
+.shiki a {
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.shiki a:hover {
+	color: var(--primary);
+}
+
 .dark {
 	--background: oklch(0.1763 0.014 258.3572);
 	--foreground: oklch(0.9425 0.0111 243.6566);

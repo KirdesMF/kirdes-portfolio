@@ -2,6 +2,7 @@ import { createHighlighterCore } from "shiki/core";
 import { createJavaScriptRegexEngine } from "shiki/engine/javascript";
 import json from "shiki/langs/json.mjs";
 import markdown from "shiki/langs/markdown.mjs";
+import tsx from "shiki/langs/tsx.mjs";
 import typescript from "shiki/langs/typescript.mjs";
 import githubDarkDefault from "shiki/themes/github-dark-default.mjs";
 import githubLightDefault from "shiki/themes/github-light-default.mjs";
@@ -16,11 +17,11 @@ type HastNode = {
 	children?: Array<HastNode>;
 };
 
-const supportedTagNames = ["pre", "code", "span"] as const;
+const supportedTagNames = ["pre", "code", "span", "a"] as const;
 
 const highlighterPromise = createHighlighterCore({
 	engine: createJavaScriptRegexEngine(),
-	langs: [json, markdown, typescript],
+	langs: [json, markdown, typescript, tsx],
 	themes: [githubDarkDefault, githubLightDefault],
 });
 
@@ -84,11 +85,52 @@ function normalizeHastNode(node: HastNode): EditorHighlightNode | null {
 		tagName: node.tagName,
 		properties: {
 			className: normalizeClassName(properties.class),
+			href: typeof properties.href === "string" ? properties.href : undefined,
 			style: normalizeStyle(properties.style),
 			tabIndex: normalizeTabIndex(properties.tabindex),
 		} satisfies EditorHighlightProperties,
 		children,
 	};
+}
+
+const urlRegex = /(https?:\/\/[^\s"'<>]+)/g;
+
+function injectLinksIntoNode(node: HastNode): Array<HastNode> {
+	if (node.type === "text") {
+		const text = node.value ?? "";
+		const parts = text.split(urlRegex);
+		if (parts.length === 1) return [node];
+
+		const result: Array<HastNode> = [];
+		for (let i = 0; i < parts.length; i++) {
+			const part = parts[i];
+			if (!part) continue;
+			if (i % 2 === 1) {
+				result.push({
+					type: "element",
+					tagName: "a",
+					properties: { href: part },
+					children: [{ type: "text", value: part }],
+				});
+			} else {
+				result.push({ type: "text", value: part });
+			}
+		}
+		return result;
+	}
+
+	if (node.children) {
+		node.children = node.children.flatMap(injectLinksIntoNode);
+	}
+
+	return [node];
+}
+
+function injectLinks(hast: HastNode): HastNode {
+	if (hast.children) {
+		hast.children = hast.children.flatMap(injectLinksIntoNode);
+	}
+	return hast;
 }
 
 export async function highlightEditorFile(fileName: string) {
@@ -101,7 +143,7 @@ export async function highlightEditorFile(fileName: string) {
 	}
 
 	const highlighter = await highlighterPromise;
-	const hast = highlighter.codeToHast(file.content, {
+	const rawHast = highlighter.codeToHast(file.content, {
 		lang: file.language,
 		themes: {
 			light: "github-light-default",
@@ -109,10 +151,11 @@ export async function highlightEditorFile(fileName: string) {
 		},
 	}) as HastNode;
 
+	const hast = injectLinks(rawHast);
+
 	const preNode = hast.children?.find(
 		(child): child is HastNode => child.type === "element" && child.tagName === "pre",
 	);
-
 	const nodes = (hast.children ?? [])
 		.map((child) => normalizeHastNode(child))
 		.filter((node) => node !== null);
