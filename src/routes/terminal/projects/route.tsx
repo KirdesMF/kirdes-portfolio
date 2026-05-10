@@ -30,8 +30,8 @@ function RouteComponent() {
 				))}
 			</div>
 			<p className="text-muted-foreground">
-				see <span className="text-primary">cat README.md</span> for details,
-				or open the <span className="text-primary">.json</span> files for each project.
+				see <span className="text-primary">cat README.md</span> for details, or open the{" "}
+				<span className="text-primary">.json</span> files for each project.
 			</p>
 		</div>
 	);

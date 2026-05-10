@@ -1,8 +1,17 @@
-import { Braces, FileText, FileType, List, type LucideIcon, X } from "lucide-react";
+import {
+	Braces,
+	FileText,
+	FileType,
+	List,
+	type LucideIcon,
+	Maximize2,
+	Minimize2,
+	X,
+} from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "#/design-system/cn";
-import { editorFiles } from "#/editor/editor-files";
 import { Menu, MenuContent, MenuItem, MenuTrigger } from "#/design-system/Menu";
+import { editorFiles } from "#/editor/editor-files";
 
 const fileExtensionIcon: Record<string, LucideIcon> = {
 	json: Braces,
@@ -28,15 +37,19 @@ function EditorBody({ highlightedEditorFile }: { highlightedEditorFile: ReactNod
 
 function renderEditorTabs({
 	activeFileName,
+	isMaximized,
 	onCloseEditor,
 	onCloseFile,
 	onSelectFile,
+	onToggleMaximize,
 	openFileNames,
 }: {
 	activeFileName?: string;
+	isMaximized?: boolean;
 	onCloseEditor: () => void;
 	onCloseFile: (fileName: string) => void;
 	onSelectFile: (fileName: string) => void;
+	onToggleMaximize: () => void;
 	openFileNames: Array<string>;
 }) {
 	const MAX_VISIBLE_TABS = 3;
@@ -44,68 +57,78 @@ function renderEditorTabs({
 	const overflowCount = openFileNames.length - MAX_VISIBLE_TABS;
 
 	return (
-		<div className="flex h-8 shrink-0 items-center overflow-x-auto border-b border-border bg-background/60">
-			{visibleFiles.map((fileName) => (
-				<div
-					className={cn(
-						"flex h-full max-w-40 shrink-0 items-center border-r border-border text-tiny text-muted-foreground hover:bg-muted/30 hover:text-foreground",
-						activeFileName === fileName && "bg-muted/40 text-foreground",
-					)}
-					key={fileName}
+		<div className="flex h-8 w-full shrink-0 items-center justify-between border-b border-border bg-background/60">
+			<div className="flex min-w-0 flex-1 items-center overflow-x-auto self-stretch">
+				{visibleFiles.map((fileName) => (
+					<div
+						className={cn(
+							"flex h-full max-w-40 shrink-0 items-center border-r border-border text-tiny text-muted-foreground hover:bg-muted/30 hover:text-foreground",
+							activeFileName === fileName && "bg-muted/40 text-foreground",
+						)}
+						key={fileName}
+					>
+						<button
+							className="flex h-full min-w-0 items-center gap-1.5 pl-3 pr-2"
+							type="button"
+							onClick={() => onSelectFile(fileName)}
+						>
+							{(() => {
+								const Icon = getFileIcon(fileName);
+								return Icon ? <Icon className="size-3 shrink-0" /> : null;
+							})()}
+							<span className="truncate">{fileName}</span>
+						</button>
+						<button
+							aria-label={`Close ${fileName}`}
+							className="h-full px-2 text-muted-foreground hover:text-foreground"
+							type="button"
+							onClick={() => onCloseFile(fileName)}
+						>
+							<X className="size-3" />
+						</button>
+					</div>
+				))}
+				{overflowCount > 0 ? (
+					<Menu>
+						<MenuTrigger
+							aria-label="All open files"
+							className="flex h-full shrink-0 items-center gap-1 border-r border-border px-2 text-tiny text-muted-foreground/70 hover:text-foreground"
+						>
+							<List className="size-3" />
+							<span className="tabular-nums">+{overflowCount}</span>
+						</MenuTrigger>
+						<MenuContent align="start" side="bottom" sideOffset={0}>
+							{openFileNames.map((fileName) => (
+								<MenuItem
+									className={cn(activeFileName === fileName && "text-foreground")}
+									key={fileName}
+									onClick={() => onSelectFile(fileName)}
+								>
+									{fileName}
+								</MenuItem>
+							))}
+						</MenuContent>
+					</Menu>
+				) : null}
+			</div>
+			<div className="flex items-center shrink-0 self-stretch">
+				<button
+					aria-label={isMaximized ? "Minimize panel" : "Maximize panel"}
+					className="flex h-full shrink-0 items-center border-s border-border px-2 text-tiny text-muted-foreground/70 hover:text-foreground"
+					type="button"
+					onClick={onToggleMaximize}
 				>
-					<button
-						className="flex h-full min-w-0 items-center gap-1.5 pl-3 pr-2"
-						type="button"
-						onClick={() => onSelectFile(fileName)}
-					>
-						{(() => {
-							const Icon = getFileIcon(fileName);
-							return Icon ? <Icon className="size-3 shrink-0" /> : null;
-						})()}
-						<span className="truncate">{fileName}</span>
-					</button>
-					<button
-						aria-label={`Close ${fileName}`}
-						className="h-full px-2 text-muted-foreground hover:text-foreground"
-						type="button"
-						onClick={() => onCloseFile(fileName)}
-					>
-						<X className="size-3" />
-					</button>
-				</div>
-			))}
-			{overflowCount > 0 ? (
-				<Menu>
-					<MenuTrigger
-						aria-label="All open files"
-						className="flex h-full shrink-0 items-center gap-1 border-r border-border px-2 text-tiny text-muted-foreground/70 hover:text-foreground"
-					>
-						<List className="size-3" />
-						<span className="tabular-nums">+{overflowCount}</span>
-					</MenuTrigger>
-					<MenuContent align="start" side="bottom" sideOffset={0}>
-						{openFileNames.map((fileName) => (
-							<MenuItem
-								className={cn(
-									activeFileName === fileName && "text-foreground",
-								)}
-								key={fileName}
-								onClick={() => onSelectFile(fileName)}
-							>
-								{fileName}
-							</MenuItem>
-						))}
-					</MenuContent>
-				</Menu>
-			) : null}
-			<button
-				aria-label="Close editor"
-				className="ms-auto flex h-full shrink-0 items-center border-s border-border px-3 text-tiny text-muted-foreground/70 hover:text-foreground"
-				type="button"
-				onClick={onCloseEditor}
-			>
-				<X className="size-3.5" />
-			</button>
+					{isMaximized ? <Minimize2 className="size-3.5" /> : <Maximize2 className="size-3.5" />}
+				</button>
+				<button
+					aria-label="Close editor"
+					className="flex h-full shrink-0 items-center px-3 text-tiny text-muted-foreground/70 hover:text-foreground"
+					type="button"
+					onClick={onCloseEditor}
+				>
+					<X className="size-3.5" />
+				</button>
+			</div>
 		</div>
 	);
 }
@@ -140,27 +163,33 @@ function renderEmptyEditor({ onOpenFile }: { onOpenFile: (fileName: string) => v
 export function ReadOnlyFileEditor({
 	activeFileName,
 	highlightedEditorFile,
+	isMaximized,
 	onCloseEditor,
 	onCloseFile,
 	onOpenFile,
 	onSelectFile,
+	onToggleMaximize,
 	openFileNames,
 }: {
 	activeFileName?: string;
 	highlightedEditorFile: ReactNode | null;
+	isMaximized?: boolean;
 	onCloseEditor: () => void;
 	onCloseFile: (fileName: string) => void;
 	onOpenFile: (fileName: string) => void;
 	onSelectFile: (fileName: string) => void;
+	onToggleMaximize: () => void;
 	openFileNames: Array<string>;
 }) {
 	return (
-		<section className="relative flex h-full min-h-0 flex-col border-border text-xs">
+		<section className="relative flex h-full w-full min-h-0 flex-col border-border text-xs">
 			{renderEditorTabs({
 				activeFileName,
+				isMaximized,
 				onCloseEditor,
 				onCloseFile,
 				onSelectFile,
+				onToggleMaximize,
 				openFileNames,
 			})}
 			{activeFileName ? (

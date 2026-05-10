@@ -1,13 +1,13 @@
-import type { CommandContext, CommandHandler } from "./types";
-import { handleRoute } from "./route";
-import { handleCd } from "./cd";
+import { builtinHandlers } from "./builtins";
 import { handleCat } from "./cat";
-import { handleOpen } from "./open";
+import { handleCd } from "./cd";
 import { handleClose } from "./close";
 import { handleGit } from "./git";
 import { handleMan } from "./man";
+import { handleOpen } from "./open";
 import { handleRm } from "./rm";
-import { builtinHandlers } from "./builtins";
+import { handleRoute } from "./route";
+import type { CommandContext, CommandHandler } from "./types";
 
 /**
  * Middleware chain — each handler checks if it can handle the command.

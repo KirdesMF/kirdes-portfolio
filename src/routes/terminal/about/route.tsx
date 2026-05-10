@@ -12,8 +12,8 @@ function RouteComponent() {
 				<p>product engineer / interface builder</p>
 				<p className="mt-2">
 					see <span className="text-primary">cat README.md</span> for details,
-					<span className="text-primary"> skills.json</span> for skills,
-					and <span className="text-primary">values.md</span> for principles.
+					<span className="text-primary"> skills.json</span> for skills, and{" "}
+					<span className="text-primary">values.md</span> for principles.
 				</p>
 			</div>
 		</div>

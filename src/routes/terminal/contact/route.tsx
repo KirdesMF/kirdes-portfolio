@@ -23,8 +23,8 @@ function RouteComponent() {
 				</div>
 			</div>
 			<p className="text-muted-foreground">
-				see <span className="text-primary">cat links.json</span> for structured data,
-				or <span className="text-primary">contact.md</span> for more info.
+				see <span className="text-primary">cat links.json</span> for structured data, or{" "}
+				<span className="text-primary">contact.md</span> for more info.
 			</p>
 		</div>
 	);

@@ -7,10 +7,7 @@ function formatRouteLabel(label: string): string {
 	return `${label}/`;
 }
 
-function addOpenFile(
-	files: ReadonlyArray<string>,
-	fileName: string,
-): Array<string> {
+function addOpenFile(files: ReadonlyArray<string>, fileName: string): Array<string> {
 	if (files.includes(fileName)) return [...files, fileName];
 
 	return [...files, fileName];

@@ -111,7 +111,7 @@ export const aboutFiles: ReadonlyArray<EditorFileInput> = [
 			"",
 			"- **simplicity** — code is a liability; ship less, mean more.",
 			"- **craft** — sweat the details that users feel.",
-			"- **curiosity** — the best solutions come from asking \"why not?\"",
+			'- **curiosity** — the best solutions come from asking "why not?"',
 			"- **openness** — share what you learn; good ideas compound.",
 		),
 	},
@@ -204,8 +204,7 @@ export const projectFiles: ReadonlyArray<EditorFileInput> = [
 			name: "UI Kit",
 			stack: ["Design Tokens", "React", "Tailwind CSS"],
 			status: "in progress",
-			description:
-				"Component library and design system for consistent, scalable UIs.",
+			description: "Component library and design system for consistent, scalable UIs.",
 		}),
 	},
 	{
@@ -217,7 +216,7 @@ export const projectFiles: ReadonlyArray<EditorFileInput> = [
 			"",
 			"- portfolio needs a dark mode toggle that feels good",
 			"- ui-kit should ship with a playground",
-			"- write more about the \"why\" not just the \"what\"",
+			'- write more about the "why" not just the "what"',
 			"- maybe add a guestbook? low priority.",
 		),
 	},

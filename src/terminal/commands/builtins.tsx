@@ -33,9 +33,7 @@ function handleLs(ctx: CommandContext): boolean {
 function handlePwd(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "pwd") return false;
 	const cwd =
-		ctx.currentRoute === "/terminal"
-			? "~"
-			: `~/${ctx.currentRoute.replace("/terminal/", "")}`;
+		ctx.currentRoute === "/terminal" ? "~" : `~/${ctx.currentRoute.replace("/terminal/", "")}`;
 	ctx.pushHistory(cwd);
 	return true;
 }
@@ -61,9 +59,7 @@ function handleHistory(ctx: CommandContext): boolean {
 		return true;
 	}
 
-	const lines = cmdHistory
-		.map((cmd, i) => `${String(i + 1).padStart(4)}  ${cmd}`)
-		.join("\n");
+	const lines = cmdHistory.map((cmd, i) => `${String(i + 1).padStart(4)}  ${cmd}`).join("\n");
 	ctx.pushHistory(<pre className="text-muted-foreground">{lines}</pre>);
 	return true;
 }

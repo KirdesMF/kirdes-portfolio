@@ -27,9 +27,7 @@ function buildEntry(input: EditorFileInput): EditorFileEntry {
 }
 
 function buildAllFiles(): ReadonlyArray<EditorFileEntry> {
-	return fileGroupedByFolder.flatMap((group) =>
-		group.files.map(buildEntry),
-	);
+	return fileGroupedByFolder.flatMap((group) => group.files.map(buildEntry));
 }
 
 // ─── Exports ──────────────────────────────────────────────────────────────────
@@ -73,10 +71,7 @@ export function isEditorFileName(id: string): id is EditorFileName {
  * 3. Falls back to root (`~`).
  * 4. Searches all folders as a last resort.
  */
-export function resolveFile(
-	name: string,
-	currentRoute?: string,
-): EditorFileEntry | null {
+export function resolveFile(name: string, currentRoute?: string): EditorFileEntry | null {
 	const normalized = name.trim();
 
 	// Absolute path: /about/README.md → folder="about", name="README.md"
@@ -87,9 +82,7 @@ export function resolveFile(
 			const folder = parts[0]?.toLowerCase();
 			const fileName = parts.slice(1).join("/");
 			return (
-				editorFiles.find(
-					(f) => f.folder.toLowerCase() === folder && f.name === fileName,
-				) ?? null
+				editorFiles.find((f) => f.folder.toLowerCase() === folder && f.name === fileName) ?? null
 			);
 		}
 		return null;
@@ -114,9 +107,7 @@ export function resolveFile(
 	if (root) return root;
 
 	// Global search
-	return (
-		editorFiles.find((f) => f.name.toLowerCase() === normalized.toLowerCase()) ?? null
-	);
+	return editorFiles.find((f) => f.name.toLowerCase() === normalized.toLowerCase()) ?? null;
 }
 
 /**
@@ -149,9 +140,11 @@ export function lsFiles(currentRoute?: string): {
 export function getVisibleFileNames(currentRoute?: string): ReadonlyArray<string> {
 	const { files } = lsFiles(currentRoute);
 	const seen = new Set<string>();
-	return files.filter((f) => {
-		if (seen.has(f.name)) return false;
-		seen.add(f.name);
-		return true;
-	}).map((f) => f.name);
+	return files
+		.filter((f) => {
+			if (seen.has(f.name)) return false;
+			seen.add(f.name);
+			return true;
+		})
+		.map((f) => f.name);
 }

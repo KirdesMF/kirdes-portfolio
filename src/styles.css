@@ -76,8 +76,6 @@ body {
 	--spacing: 0.25rem;
 }
 
-
-
 .dark {
 	--background: oklch(0.1763 0.014 258.3572);
 	--foreground: oklch(0.9425 0.0111 243.6566);

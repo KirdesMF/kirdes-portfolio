@@ -8,3 +8,11 @@ export function parseTerminalPanelName(value: unknown): TerminalPanelName {
 
 	return "terminal";
 }
+
+export type MaximizedPanel = "route" | "editor";
+
+export function parseMaximized(value: unknown): MaximizedPanel | undefined {
+	if (value === "route" || value === "editor") return value;
+
+	return undefined;
+}

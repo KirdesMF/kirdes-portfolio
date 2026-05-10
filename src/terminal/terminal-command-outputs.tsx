@@ -1,15 +1,18 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { TerminalRouteList } from "./TerminalRouteList";
-import { terminalRoutes } from "./terminal-routes";
 import type { EditorFileEntry, FolderRoute } from "../editor/editor-files";
 import { editorFiles, folderRoutes as folderRoutesData } from "../editor/editor-files";
+import { TerminalRouteList } from "./TerminalRouteList";
+import { terminalRoutes } from "./terminal-routes";
 
 export function HelpOutput(): ReactNode {
 	return (
 		<div>
 			<p>available routes: {terminalRoutes.join(" ")}</p>
-			<p>commands: cat cd clear close date email git github help history ls man music open pwd reload rm tree whoami</p>
+			<p>
+				commands: cat cd clear close date email git github help history ls man music open pwd reload
+				rm tree whoami
+			</p>
 		</div>
 	);
 }
@@ -49,12 +52,7 @@ export function LsOutput({
 	files: ReadonlyArray<EditorFileEntry>;
 	folders: ReadonlyArray<FolderRoute>;
 }): ReactNode {
-	return (
-		<TerminalRouteList
-			files={files}
-			folders={folders}
-		/>
-	);
+	return <TerminalRouteList files={files} folders={folders} />;
 }
 
 // ─── Manual pages ─────────────────────────────────────────────────────
@@ -112,9 +110,9 @@ function gitBranch(): ReactNode {
 	return (
 		<div className="flex flex-col whitespace-pre-wrap font-mono text-muted-foreground">
 			<p className="text-primary">* feature/kirdes-app</p>
-			<p>  main</p>
-			<p>  feat/ascii-title</p>
-			<p>  experiments/touch-type</p>
+			<p> main</p>
+			<p> feat/ascii-title</p>
+			<p> experiments/touch-type</p>
 		</div>
 	);
 }
@@ -122,15 +120,15 @@ function gitBranch(): ReactNode {
 function gitLog(): ReactNode {
 	return (
 		<div className="flex flex-col whitespace-pre-wrap font-mono text-muted-foreground">
-			<p>commit a1b2c3d4 (HEAD {'->'} feature/kirdes-app)</p>
-			<p>Date:   {new Date().toLocaleDateString()}</p>
-			<p className="pl-4">    refactor terminal for the third time</p>
+			<p>commit a1b2c3d4 (HEAD {"->"} feature/kirdes-app)</p>
+			<p>Date: {new Date().toLocaleDateString()}</p>
+			<p className="pl-4"> refactor terminal for the third time</p>
 			<p className="mt-1">commit e5f6g7h8</p>
-			<p>Date:   yesterday</p>
-			<p className="pl-4">    add more commands nobody asked for</p>
+			<p>Date: yesterday</p>
+			<p className="pl-4"> add more commands nobody asked for</p>
 			<p className="mt-1">commit 9a0b1c2d</p>
-			<p>Date:   last week</p>
-			<p className="pl-4">    initial commit (it was better then)</p>
+			<p>Date: last week</p>
+			<p className="pl-4"> initial commit (it was better then)</p>
 		</div>
 	);
 }
@@ -157,9 +155,11 @@ export function GitOutput({ subcommand }: { subcommand: string }): ReactNode {
 		default:
 			return (
 				<div className="flex flex-col whitespace-pre-wrap font-mono text-muted-foreground">
-					<p>usage: git {'<command>'}</p>
+					<p>usage: git {"<command>"}</p>
 					<p className="mt-1">available: status, branch, log, commit</p>
-					<p className="text-muted-foreground/50">(not a real git repo — the branch is for aesthetic purposes)</p>
+					<p className="text-muted-foreground/50">
+						(not a real git repo — the branch is for aesthetic purposes)
+					</p>
 				</div>
 			);
 	}

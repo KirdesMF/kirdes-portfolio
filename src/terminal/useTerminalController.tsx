@@ -1,14 +1,10 @@
 import { useRouter } from "@tanstack/react-router";
-import { useRef, useState } from "react";
 import type { ReactNode } from "react";
-import {
-	type EditorFileName,
-	resolveFile,
-	lsFiles,
-} from "../editor/editor-files";
-import { createHistoryEntry, createInitialHistory } from "./terminal-history";
-import type { CommandContext } from "./commands/types";
+import { useRef, useState } from "react";
+import { type EditorFileName, lsFiles, resolveFile } from "../editor/editor-files";
 import { dispatch } from "./commands/dispatch";
+import type { CommandContext } from "./commands/types";
+import { createHistoryEntry, createInitialHistory } from "./terminal-history";
 import type { TerminalPanelName } from "./terminal-panel-types";
 import type { TerminalRoutePath } from "./terminal-routes";
 
@@ -69,7 +65,7 @@ export function useTerminalController({
 	}
 
 	function navigate(to: string, search?: Record<string, unknown>) {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// biome-ignore lint/suspicious/noExplicitAny: router.navigate generics are too strict for dynamic routes
 		void (router.navigate as any)({
 			to,
 			search: (previous: Record<string, unknown>) => ({

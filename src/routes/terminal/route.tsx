@@ -19,7 +19,7 @@ export const Route = createFileRoute("/terminal")({
 
 function RouteComponent() {
 	const { HighlightedEditorFile } = Route.useLoaderData();
-	const { activeFile, dialog, editor, files, panel } = Route.useSearch();
+	const { activeFile, dialog, editor, files, maximized, panel } = Route.useSearch();
 
 	return (
 		<TerminalLayout
@@ -28,6 +28,7 @@ function RouteComponent() {
 			activeFileName={activeFile}
 			activePanel={panel}
 			highlightedEditorFile={HighlightedEditorFile}
+			maximized={maximized}
 			openFileNames={files}
 		>
 			<Outlet />

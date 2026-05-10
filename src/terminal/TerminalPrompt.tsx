@@ -36,10 +36,7 @@ function buildCommandSuggestions(currentRoute?: string): ReadonlyArray<string> {
 	] as const;
 }
 
-function findSuggestion(
-	input: string,
-	suggestions: ReadonlyArray<string>,
-): string | undefined {
+function findSuggestion(input: string, suggestions: ReadonlyArray<string>): string | undefined {
 	if (!input) return undefined;
 	const lower = input.toLowerCase();
 	return suggestions.find((name) => {
@@ -161,7 +158,6 @@ export function TerminalPrompt({
 				) : null}
 				<input
 					autoComplete="off"
-					autoFocus
 					className="relative w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/70"
 					id={inputId}
 					placeholder="type a command..."
