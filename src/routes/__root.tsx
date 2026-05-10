@@ -1,11 +1,4 @@
-import type { QueryClient } from "@tanstack/react-query";
-import {
-	createRootRouteWithContext,
-	HeadContent,
-	Outlet,
-	ScriptOnce,
-	Scripts,
-} from "@tanstack/react-router";
+import { createRootRoute, HeadContent, Outlet, ScriptOnce, Scripts } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { ThemeProvider } from "#/theme/ThemeProvider";
 import { getInitialThemePreference } from "#/theme/theme.functions";
@@ -13,7 +6,7 @@ import { themeBootScript } from "#/theme/themeBootScript";
 import { defaultResolvedTheme, resolveThemePreference } from "#/theme/themeTypes";
 import appCss from "../styles.css?url";
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+export const Route = createRootRoute({
 	loader: () => getInitialThemePreference(),
 	head: () => ({
 		meta: [

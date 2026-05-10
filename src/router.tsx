@@ -1,6 +1,4 @@
-import { QueryClient } from "@tanstack/react-query";
-import { createRouter as createTanStackRouter, defaultParseSearch } from "@tanstack/react-router";
-import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
+import { createRouter, defaultParseSearch } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 
 function stringifySearch(search: Record<string, unknown>): string {
@@ -24,11 +22,8 @@ function stringifySearch(search: Record<string, unknown>): string {
 }
 
 export function getRouter() {
-	const queryClient = new QueryClient();
-
-	const router = createTanStackRouter({
+	const router = createRouter({
 		routeTree,
-		context: { queryClient },
 		scrollRestoration: true,
 		parseSearch: defaultParseSearch,
 		stringifySearch,
@@ -36,8 +31,6 @@ export function getRouter() {
 		defaultPreloadStaleTime: 0,
 		defaultNotFoundComponent: () => <div>Not Found</div>,
 	});
-
-	setupRouterSsrQueryIntegration({ router, queryClient });
 
 	return router;
 }
