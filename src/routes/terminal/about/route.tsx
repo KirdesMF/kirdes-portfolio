@@ -10,7 +10,11 @@ function RouteComponent() {
 			<div className="text-muted-foreground">── about ──</div>
 			<div className="flex flex-col gap-1 text-muted-foreground">
 				<p>product engineer / interface builder</p>
-				<p className="mt-2">skills and description coming soon.</p>
+				<p className="mt-2">
+					see <span className="text-primary">cat README.md</span> for details,
+					<span className="text-primary"> skills.json</span> for skills,
+					and <span className="text-primary">values.md</span> for principles.
+				</p>
 			</div>
 		</div>
 	);

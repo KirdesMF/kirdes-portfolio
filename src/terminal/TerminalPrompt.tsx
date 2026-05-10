@@ -1,45 +1,63 @@
 import { type SubmitEvent, useId, useState } from "react";
-import { editorFiles } from "#/editor/editor-files";
+import { getVisibleFileNames } from "#/editor/editor-files";
 import { commandNames, terminalNavigationItems } from "#/terminal/terminal-routes";
 
-const cdSuggestions = terminalNavigationItems.flatMap(({ command, label }) => {
-	if (label === "~") return ["cd ~", "cd /"];
+const cdSuggestions = [
+	"cd ..",
+	...terminalNavigationItems.flatMap(({ command, label }) => {
+		if (label === "~") return ["cd ~", "cd /"];
 
-	return [`cd ${label}`, `cd ${command}`];
-});
-
-const fileCommandSuggestions = editorFiles.flatMap(({ name }) => [
-	`cat ${name}`,
-	`close ${name}`,
-	`open ${name}`,
-]);
+		return [`cd ${label}`, `cd ${command}`];
+	}),
+];
 
 const editorCommandSuggestions = ["close all", "close editor", "open editor"] as const;
 
-const commandSuggestions = [
-	...commandNames,
-	...cdSuggestions,
-	...fileCommandSuggestions,
-	...editorCommandSuggestions,
-] as const;
+function buildCommandSuggestions(currentRoute?: string): ReadonlyArray<string> {
+	const fileNames = getVisibleFileNames(currentRoute);
 
-function findSuggestion(input: string): string | undefined {
+	const fileCommandSuggestions = fileNames.flatMap((name) => [
+		`cat ${name}`,
+		`close ${name}`,
+		`open ${name}`,
+	]);
+
+	return [
+		...commandNames,
+		...cdSuggestions,
+		...fileCommandSuggestions,
+		...editorCommandSuggestions,
+	] as const;
+}
+
+function findSuggestion(
+	input: string,
+	suggestions: ReadonlyArray<string>,
+): string | undefined {
 	if (!input) return undefined;
 	const lower = input.toLowerCase();
-	return commandSuggestions.find((name) => {
+	return suggestions.find((name) => {
 		const nameLower = name.toLowerCase();
 		return nameLower.startsWith(lower) && nameLower !== lower;
 	});
 }
 
-export function TerminalPrompt({ onSubmit }: { onSubmit: (command: string) => void }) {
+export function TerminalPrompt({
+	currentRoute,
+	onSubmit,
+}: {
+	currentRoute?: string;
+	onSubmit: (command: string) => void;
+}) {
 	const [value, setValue] = useState("");
 	const [suggestion, setSuggestion] = useState<string | undefined>();
 	const inputId = useId();
 
+	const suggestions = buildCommandSuggestions(currentRoute);
+
 	function handleChange(nextValue: string) {
 		setValue(nextValue);
-		setSuggestion(findSuggestion(nextValue));
+		setSuggestion(findSuggestion(nextValue, suggestions));
 	}
 
 	function acceptSuggestion() {

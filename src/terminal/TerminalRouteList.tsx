@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { type EditorFileName, editorFiles } from "../editor/editor-files";
-import { terminalNavigationItems } from "./terminal-routes";
+import type { EditorFileEntry, FolderRoute } from "../editor/editor-files";
 
 function formatRouteLabel(label: string): string {
 	if (label === "~") return "~/";
@@ -9,25 +8,31 @@ function formatRouteLabel(label: string): string {
 }
 
 function addOpenFile(
-	files: Array<EditorFileName>,
-	fileName: EditorFileName,
-): Array<EditorFileName> {
-	if (files.includes(fileName)) return files;
+	files: ReadonlyArray<string>,
+	fileName: string,
+): Array<string> {
+	if (files.includes(fileName)) return [...files, fileName];
 
 	return [...files, fileName];
 }
 
-export function TerminalRouteList() {
+export function TerminalRouteList({
+	files,
+	folders,
+}: {
+	files: ReadonlyArray<EditorFileEntry>;
+	folders: ReadonlyArray<FolderRoute>;
+}) {
 	return (
 		<div className="flex flex-col gap-2">
 			<div className="flex flex-wrap gap-x-4 gap-y-1">
 				<span className="w-10 text-muted-foreground/60">dirs</span>
-				{terminalNavigationItems.map(({ command, label, to }) => (
+				{folders.map(({ folder, label, route }) => (
 					<Link
 						activeOptions={{ exact: true }}
 						activeProps={{ className: "text-primary" }}
 						className="text-muted-foreground underline-offset-2 hover:text-primary hover:underline"
-						key={command}
+						key={folder}
 						search={(previous) => ({
 							activeFile: previous.activeFile,
 							dialog: previous.dialog,
@@ -35,7 +40,7 @@ export function TerminalRouteList() {
 							files: previous.files ?? [],
 							panel: "route",
 						})}
-						to={to}
+						to={route}
 					>
 						{formatRouteLabel(label)}
 					</Link>
@@ -43,20 +48,20 @@ export function TerminalRouteList() {
 			</div>
 			<div className="flex flex-wrap gap-x-4 gap-y-1">
 				<span className="w-10 text-muted-foreground/60">files</span>
-				{editorFiles.map(({ name }) => (
+				{files.map((file) => (
 					<Link
 						className="text-muted-foreground underline-offset-2 hover:text-primary hover:underline"
-						key={name}
+						key={file.id}
 						search={(previous) => ({
-							activeFile: name,
+							activeFile: file.id,
 							dialog: previous.dialog,
 							editor: "open",
-							files: addOpenFile(previous.files ?? [], name),
+							files: addOpenFile(previous.files ?? [], file.id),
 							panel: "editor",
 						})}
 						to="."
 					>
-						{name}
+						{file.name}
 					</Link>
 				))}
 			</div>

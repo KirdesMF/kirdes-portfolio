@@ -1,97 +1,157 @@
-function lines(values: ReadonlyArray<string>): string {
-	return values.join("\n");
+import { fileGroupedByFolder } from "./editor-files.content";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+export type EditorFileInput = {
+	readonly name: string;
+	readonly folder: string;
+	readonly language: string;
+	readonly content: string;
+};
+
+export type EditorFileEntry = EditorFileInput & {
+	/** Unique identifier, e.g. "~/README.md", "about/skills.json" */
+	readonly id: string;
+};
+
+export type FolderRoute = {
+	readonly folder: string;
+	readonly label: string;
+	readonly route: string;
+};
+
+// ─── Build unique entries ─────────────────────────────────────────────────────
+
+function buildEntry(input: EditorFileInput): EditorFileEntry {
+	return { ...input, id: `${input.folder}/${input.name}` };
 }
 
-const stack = {
-	framework: "TanStack Start",
-	runtime: "Cloudflare Workers",
-	ui: ["React", "Tailwind CSS"],
-	language: "TypeScript",
-} as const;
-
-export const editorFiles = [
-	{
-		name: "README.md",
-		language: "markdown",
-		content: lines([
-			"# kirdes portfolio",
-			"",
-			"Terminal-first portfolio interface built with TanStack Start, React, and Tailwind CSS.",
-			"",
-			"Use commands to explore:",
-			"",
-			"- ls: list routes and files",
-			"- cd work: navigate sections",
-			"- cat README.md: print file contents",
-			"- open README.md: open read-only editor",
-			"- close: close editor",
-		]),
-	},
-	{
-		name: "TODO.md",
-		language: "markdown",
-		content: lines([
-			"# TODO",
-			"",
-			"- [ ] get hired",
-			"- [ ] being rich",
-			"- [ ] learn to touch type properly (jk i'm fine)",
-			"- [ ] fix all the bugs (or rename them features)",
-			"- [ ] finally sort that one drawer at home",
-			"- [ ] write a readme that's longer than the codebase",
-			"- [ ] find the perfect coffee-to-code ratio",
-			"- [ ] achieve inbox zero (impossible, next)",
-		]),
-	},
-	{
-		name: "stack.json",
-		language: "json",
-		content: JSON.stringify(stack, null, 2),
-	},
-	{
-		name: "About.tsx",
-		language: "tsx",
-		content: lines([
-			"export function About() {",
-			"	return (",
-			"		<section>",
-			"			<h1>kirdes</h1>",
-			"			<p>product engineer -  interface builder</p>",
-			"			<p>",
-			"				building things for the web — frontend architecture,",
-			"				design systems, and developer tooling that clicks.",
-			"			</p>",
-			"			<p>",
-			"				currently exploring TanStack Start, Cloudflare Workers,",
-			"				and the intersection of DX and UX.",
-			"			</p>",
-			"			<a href='https://github.com/kirdes'>github</a>",
-			"		</section>",
-			"	);",
-			"}",
-			"",
-		]),
-	},
-	{
-		name: "profile.ts",
-		language: "typescript",
-		content: lines([
-			"export const profile = {",
-			'  name: "kirdes",',
-			'  role: "product engineer / interface builder",',
-			'  focus: ["frontend architecture", "design systems", "developer tooling"],',
-			"} as const",
-		]),
-	},
-] as const;
-
-export type EditorFileName = (typeof editorFiles)[number]["name"];
-
-export function findEditorFile(name: string) {
-	const normalized = name.trim().toLowerCase();
-	return editorFiles.find((file) => file.name.toLowerCase() === normalized) ?? null;
+function buildAllFiles(): ReadonlyArray<EditorFileEntry> {
+	return fileGroupedByFolder.flatMap((group) =>
+		group.files.map(buildEntry),
+	);
 }
 
-export function isEditorFileName(name: string): name is EditorFileName {
-	return findEditorFile(name) !== null;
+// ─── Exports ──────────────────────────────────────────────────────────────────
+
+export const editorFiles = buildAllFiles();
+
+export type EditorFileName = (typeof editorFiles)[number]["id"];
+
+export const folderRoutes: ReadonlyArray<FolderRoute> = fileGroupedByFolder.map(
+	({ folder, label, route }) => ({ folder, label, route }),
+);
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function getFolderForRoute(route: string): string {
+	if (!route || route === "/terminal") return "~";
+
+	const parts = route.split("/");
+	return parts[parts.length - 1] ?? "~";
+}
+
+function getFilesInFolder(folder: string): ReadonlyArray<EditorFileEntry> {
+	return editorFiles.filter((f) => f.folder === folder);
+}
+
+/** Direct lookup by full id (e.g. "about/README.md"). */
+export function findEditorFile(id: string): EditorFileEntry | null {
+	return editorFiles.find((f) => f.id.toLowerCase() === id.trim().toLowerCase()) ?? null;
+}
+
+/** Check if a string is a valid file id. */
+export function isEditorFileName(id: string): id is EditorFileName {
+	return findEditorFile(id) !== null;
+}
+
+/**
+ * Context-aware file resolution.
+ *
+ * 1. Absolute paths like `/about/README.md` resolve directly.
+ * 2. Looks in the current route's folder first.
+ * 3. Falls back to root (`~`).
+ * 4. Searches all folders as a last resort.
+ */
+export function resolveFile(
+	name: string,
+	currentRoute?: string,
+): EditorFileEntry | null {
+	const normalized = name.trim();
+
+	// Absolute path: /about/README.md → folder="about", name="README.md"
+	if (normalized.startsWith("/")) {
+		const parts = normalized.split("/").filter(Boolean);
+		if (parts.length >= 2) {
+			// Could be /about/README.md or /about with no file
+			const folder = parts[0]?.toLowerCase();
+			const fileName = parts.slice(1).join("/");
+			return (
+				editorFiles.find(
+					(f) => f.folder.toLowerCase() === folder && f.name === fileName,
+				) ?? null
+			);
+		}
+		return null;
+	}
+
+	// Direct id lookup (supports passing full ids like "about/README.md")
+	const byId = findEditorFile(normalized);
+	if (byId) return byId;
+
+	const currentFolder = currentRoute ? getFolderForRoute(currentRoute) : "~";
+
+	// Look in current folder
+	const local = editorFiles.find(
+		(f) => f.folder === currentFolder && f.name.toLowerCase() === normalized.toLowerCase(),
+	);
+	if (local) return local;
+
+	// Fallback to root
+	const root = editorFiles.find(
+		(f) => f.folder === "~" && f.name.toLowerCase() === normalized.toLowerCase(),
+	);
+	if (root) return root;
+
+	// Global search
+	return (
+		editorFiles.find((f) => f.name.toLowerCase() === normalized.toLowerCase()) ?? null
+	);
+}
+
+/**
+ * Returns folders and files visible from a given route context.
+ *
+ * - Root (`~`): shows all route folders + root files
+ * - Other routes: shows all folders + local files + root files
+ */
+export function lsFiles(currentRoute?: string): {
+	folders: ReadonlyArray<FolderRoute>;
+	files: ReadonlyArray<EditorFileEntry>;
+} {
+	const folders = folderRoutes;
+
+	if (!currentRoute || currentRoute === "/terminal") {
+		// At root: show root files only
+		return { folders, files: getFilesInFolder("~") };
+	}
+
+	const currentFolder = getFolderForRoute(currentRoute);
+	const localFiles = getFilesInFolder(currentFolder);
+	const rootFilesList = getFilesInFolder("~").filter(
+		(rf) => !localFiles.some((lf) => lf.name === rf.name),
+	);
+
+	return { folders, files: [...localFiles, ...rootFilesList] };
+}
+
+/** Get unique file basenames visible from the current route (for suggestions). */
+export function getVisibleFileNames(currentRoute?: string): ReadonlyArray<string> {
+	const { files } = lsFiles(currentRoute);
+	const seen = new Set<string>();
+	return files.filter((f) => {
+		if (seen.has(f.name)) return false;
+		seen.add(f.name);
+		return true;
+	}).map((f) => f.name);
 }

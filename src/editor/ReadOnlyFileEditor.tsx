@@ -10,6 +10,9 @@ const fileExtensionIcon: Record<string, LucideIcon> = {
 	tsx: FileType,
 };
 
+// Only root files in the empty editor (globally accessible)
+const rootEditorFiles = editorFiles.filter((f) => f.folder === "~");
+
 function getFileIcon(fileName: string): LucideIcon | null {
 	const extension = fileName.split(".").pop()?.toLowerCase();
 	if (!extension) return null;
@@ -88,14 +91,18 @@ function renderEmptyEditor({ onOpenFile }: { onOpenFile: (fileName: string) => v
 				<div className="text-foreground">No file open</div>
 				<div className="text-muted-foreground">Open a file to inspect portfolio source.</div>
 				<div className="flex flex-wrap justify-center gap-2">
-					{editorFiles.map(({ name }) => (
+					<p className="text-muted-foreground/60">
+						root files — use <kbd className="rounded border border-border px-1">cd</kbd> to navigate
+						to a folder for its files
+					</p>
+					{rootEditorFiles.map((file) => (
 						<button
 							className="rounded border border-border px-2 py-1 text-muted-foreground hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
-							key={name}
+							key={file.id}
 							type="button"
-							onClick={() => onOpenFile(name)}
+							onClick={() => onOpenFile(file.id)}
 						>
-							{name}
+							{file.name}
 						</button>
 					))}
 				</div>

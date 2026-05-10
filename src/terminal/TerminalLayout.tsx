@@ -60,6 +60,7 @@ export function TerminalLayout({
 				<div className="flex min-h-0 flex-1">
 					<TerminalPane
 						className={cn(mobilePanel === "terminal" ? "flex" : "hidden", "md:flex")}
+						currentRoute={currentTerminalRoute}
 						hasRightPanel={hasRightPanel}
 						history={terminal.history}
 						onSubmit={terminal.handleSubmit}

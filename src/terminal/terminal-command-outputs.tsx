@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { TerminalRouteList } from "./TerminalRouteList";
 import { terminalRoutes } from "./terminal-routes";
+import type { EditorFileEntry, FolderRoute } from "../editor/editor-files";
 
 export function HelpOutput(): ReactNode {
 	return (
@@ -39,6 +40,17 @@ export function WhoamiOutput(): ReactNode {
 	);
 }
 
-export function RoutesOutput(): ReactNode {
-	return <TerminalRouteList />;
+export function LsOutput({
+	files,
+	folders,
+}: {
+	files: ReadonlyArray<EditorFileEntry>;
+	folders: ReadonlyArray<FolderRoute>;
+}): ReactNode {
+	return (
+		<TerminalRouteList
+			files={files}
+			folders={folders}
+		/>
+	);
 }

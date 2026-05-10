@@ -1,10 +1,20 @@
 import { useRouter } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { type EditorFileName, findEditorFile } from "../editor/editor-files";
+import {
+	type EditorFileEntry,
+	type EditorFileName,
+	resolveFile,
+	lsFiles,
+} from "../editor/editor-files";
 import { parseTerminalCommand } from "./terminal-commands";
 import { createHistoryEntry, createInitialHistory } from "./terminal-history";
-import { EmailOutput, HelpOutput, RoutesOutput, WhoamiOutput } from "./terminal-command-outputs";
+import {
+	EmailOutput,
+	HelpOutput,
+	LsOutput,
+	WhoamiOutput,
+} from "./terminal-command-outputs";
 import type { TerminalPanelName } from "./terminal-panel-types";
 import type { TerminalRoutePath } from "./terminal-routes";
 import { parseTerminalRoute, parseTerminalRouteTarget } from "./terminal-routes";
@@ -18,7 +28,10 @@ function addOpenFile(
 	return [...files, fileName];
 }
 
-function removeOpenFile(files: Array<EditorFileName>, fileName: string): Array<EditorFileName> {
+function removeOpenFile(
+	files: Array<EditorFileName>,
+	fileName: EditorFileName,
+): Array<EditorFileName> {
 	return files.filter((openFileName) => openFileName !== fileName);
 }
 
@@ -111,16 +124,16 @@ export function useTerminalController({
 	}
 
 	function closeFile(fileName: string) {
-		const fileToClose = findEditorFile(fileName);
-		if (fileToClose === null) return;
+		const file = resolveFile(fileName, currentTerminalRoute);
+		if (file === null) return;
 
-		const files = removeOpenFile(openFileNames, fileToClose.name);
+		const files = removeOpenFile(openFileNames, file.id);
 
 		void router.navigate({
 			search: {
 				activeFile: getNextActiveFile({
 					activeFileName,
-					closedFileName: fileToClose.name,
+					closedFileName: file.id,
 					files: openFileNames,
 				}),
 				dialog: undefined,
@@ -146,15 +159,15 @@ export function useTerminalController({
 	}
 
 	function openFile(name: string): boolean {
-		const file = findEditorFile(name);
+		const file = resolveFile(name, currentTerminalRoute);
 		if (file === null) return false;
 
 		void router.navigate({
 			search: {
-				activeFile: file.name,
+				activeFile: file.id,
 				dialog: undefined,
 				editor: "open",
-				files: addOpenFile(openFileNames, file.name),
+				files: addOpenFile(openFileNames, file.id),
 				panel: "editor",
 			},
 			to: currentTerminalRoute,
@@ -163,19 +176,23 @@ export function useTerminalController({
 	}
 
 	function selectFile(fileName: string) {
-		const file = findEditorFile(fileName);
+		const file = resolveFile(fileName, currentTerminalRoute);
 		if (file === null) return;
 
 		void router.navigate({
 			search: {
-				activeFile: file.name,
+				activeFile: file.id,
 				dialog: undefined,
 				editor: "open",
-				files: addOpenFile(openFileNames, file.name),
+				files: addOpenFile(openFileNames, file.id),
 				panel: "editor",
 			},
 			to: currentTerminalRoute,
 		});
+	}
+
+	function catFile(name: string): EditorFileEntry | null {
+		return resolveFile(name, currentTerminalRoute);
 	}
 
 	function handleSubmit(command: string) {
@@ -198,9 +215,26 @@ export function useTerminalController({
 		const normalizedCommand = command.trim().toLowerCase();
 		if (normalizedCommand === "cd" || normalizedCommand.startsWith("cd ")) {
 			const target = normalizedCommand.slice(2).trim();
+
+			// cd with no args or cd .. → go home
+			if (!target || target === "..") {
+				pushHistory(command, "opening ~");
+				void router.navigate({
+					search: (previous) => ({
+						activeFile: previous.activeFile,
+						dialog: previous.dialog,
+						editor: previous.editor,
+						files: previous.files ?? [],
+						panel: "route",
+					}),
+					to: "/terminal",
+				});
+				return;
+			}
+
 			const targetRoute = parseTerminalRouteTarget(target);
 			if (targetRoute) {
-				pushHistory(command, `opening ${target || "~"}`);
+				pushHistory(command, `opening ${target}`);
 				void router.navigate({
 					search: (previous) => ({
 						activeFile: previous.activeFile,
@@ -220,7 +254,7 @@ export function useTerminalController({
 
 		if (normalizedCommand.startsWith("cat ")) {
 			const target = normalizedCommand.slice(3).trim();
-			const file = findEditorFile(target);
+			const file = catFile(target);
 			if (file) {
 				pushHistory(command, file.content);
 				return;
@@ -268,13 +302,13 @@ export function useTerminalController({
 
 		if (normalizedCommand.startsWith("close ")) {
 			const target = normalizedCommand.slice(5).trim();
-			const file = findEditorFile(target);
+			const file = resolveFile(target, currentTerminalRoute);
 			if (file === null) {
 				pushHistory(command, `file not found: ${target}`);
 				return;
 			}
 
-			closeFile(file.name);
+			closeFile(file.id);
 			return;
 		}
 
@@ -300,7 +334,14 @@ export function useTerminalController({
 		}
 
 		if (terminalCommand === "ls") {
-			pushHistory(command, <RoutesOutput />);
+			const { folders, files } = lsFiles(currentTerminalRoute);
+			pushHistory(
+				command,
+				<LsOutput
+					files={files}
+					folders={folders}
+				/>,
+			);
 			return;
 		}
 

@@ -6,11 +6,13 @@ import type { TerminalHistoryEntry } from "./terminal-history";
 
 export function TerminalPane({
 	className,
+	currentRoute,
 	hasRightPanel,
 	history,
 	onSubmit,
 }: {
 	className?: string;
+	currentRoute?: string;
 	hasRightPanel: boolean;
 	history: Array<TerminalHistoryEntry>;
 	onSubmit: (command: string) => void;
@@ -38,7 +40,7 @@ export function TerminalPane({
 				<div className="px-3 py-1 text-tiny text-muted-foreground/70">
 					TIP: type help for commands -- / to navigate
 				</div>
-				<TerminalPrompt onSubmit={onSubmit} />
+				<TerminalPrompt currentRoute={currentRoute} onSubmit={onSubmit} />
 				<TerminalFooter />
 			</div>
 		</div>

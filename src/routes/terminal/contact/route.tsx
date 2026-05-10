@@ -22,6 +22,10 @@ function RouteComponent() {
 					<span>github.com/kirdesmf</span>
 				</div>
 			</div>
+			<p className="text-muted-foreground">
+				see <span className="text-primary">cat links.json</span> for structured data,
+				or <span className="text-primary">contact.md</span> for more info.
+			</p>
 		</div>
 	);
 }

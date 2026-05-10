@@ -28,6 +28,10 @@ function RouteComponent() {
 					</div>
 				))}
 			</div>
+			<p className="text-muted-foreground">
+				see <span className="text-primary">cat experience.json</span> for	details
+				and <span className="text-primary">freelance.md</span> for availability.
+			</p>
 		</div>
 	);
 }
