@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { createTimeline } from "animejs";
-import { scrambleText } from "animejs/text";
 import { useEffect, useRef } from "react";
 
 const bootLines = ["initializing shell", "loading profile", "mounting terminal"] as const;
@@ -22,7 +21,7 @@ function RouteComponent() {
 		const cursor = cursorRef.current;
 
 		const tl = createTimeline({
-			defaults: { duration: 2000 },
+			defaults: { duration: 400, ease: "out" },
 			onComplete: () => {
 				navigate({
 					replace: true,
@@ -37,28 +36,16 @@ function RouteComponent() {
 			},
 		});
 
-		lines.forEach((line, index) => {
-			tl.add(
-				line,
-				{
-					modifier: scrambleText({
-						text: bootLines[index],
-						chars: "░▒▓█",
-						cursor: "░▒▓█",
-						revealRate: 50,
-						settleDuration: 400,
-					}) as unknown as (value: number) => string,
-				},
-				index === 0 ? 0 : "-=1200",
-			);
+		lines.forEach((line) => {
+			tl.add(line, { opacity: [0, 1], translateY: [4, 0] }, "+=600");
 		});
 
 		if (cursor) {
 			tl.add(
 				cursor,
 				{
-					duration: 600,
-					opacity: [1, 0],
+					duration: 1000,
+					opacity: [1, 0, 1],
 					ease: "steps(2)",
 					loop: true,
 				},
@@ -81,7 +68,7 @@ function RouteComponent() {
 				{bootLines.map((text) => (
 					<div className="flex gap-2" key={text}>
 						<span className="text-primary">›</span>
-						<span data-boot-line />
+						<span data-boot-line>{text}</span>
 					</div>
 				))}
 				<span ref={cursorRef} className="text-primary">
