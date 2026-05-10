@@ -83,6 +83,7 @@ export function TerminalPrompt({ onSubmit }: { onSubmit: (command: string) => vo
 				) : null}
 				<input
 					autoComplete="off"
+					autoFocus
 					className="relative w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/70"
 					id={inputId}
 					placeholder="type a command..."

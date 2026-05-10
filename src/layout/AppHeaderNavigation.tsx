@@ -39,7 +39,7 @@ export function AppHeaderNavigation() {
 						})}
 						to={to}
 					>
-						{label === "~" ? label : `/${label}`}
+						{label === "~" ? label : `${label}/`}
 					</Link>
 				))}
 			</div>

@@ -6,7 +6,7 @@ export function HelpOutput(): ReactNode {
 	return (
 		<div>
 			<p>available routes: {terminalRoutes.join(" ")}</p>
-			<p>commands: cat cd clear close help ls music open reload whoami</p>
+			<p>commands: cat cd clear close email help ls music open reload whoami</p>
 		</div>
 	);
 }
@@ -16,6 +16,15 @@ export function WelcomeOutput(): ReactNode {
 		<div className="flex flex-col gap-0.5">
 			<p>Welcome to kirdes terminal.</p>
 			<p className="text-muted-foreground">Type help to list available commands.</p>
+		</div>
+	);
+}
+
+export function EmailOutput(): ReactNode {
+	return (
+		<div className="flex flex-col gap-0.5">
+			<p>cedric@kirdes.dev</p>
+			<p className="text-muted-foreground">copied to clipboard</p>
 		</div>
 	);
 }

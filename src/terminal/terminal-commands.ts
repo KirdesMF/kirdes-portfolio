@@ -3,6 +3,7 @@ export const terminalCommands = [
 	"cd",
 	"clear",
 	"close",
+	"email",
 	"help",
 	"ls",
 	"music",
