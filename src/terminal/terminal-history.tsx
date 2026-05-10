@@ -41,6 +41,7 @@ export function WhoamiOutput(): ReactNode {
 		<div className="flex flex-col gap-0.5">
 			<p>kirdes</p>
 			<p className="text-muted-foreground">product engineer / interface builder</p>
+			<p className="mt-1 text-muted-foreground/70">for more, visit /about</p>
 		</div>
 	);
 }

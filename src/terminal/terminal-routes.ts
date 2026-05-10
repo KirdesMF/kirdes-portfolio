@@ -4,7 +4,7 @@ export const terminalNavigationItems = [
 	{ command: "/home", label: "~", to: "/terminal" },
 	{ command: "/contact", label: "contact", to: "/terminal/contact" },
 	{ command: "/work", label: "work", to: "/terminal/work" },
-	{ command: "/skill", label: "skill", to: "/terminal/skill" },
+	{ command: "/about", label: "about", to: "/terminal/about" },
 	{ command: "/projects", label: "projects", to: "/terminal/projects" },
 ] as const;
 

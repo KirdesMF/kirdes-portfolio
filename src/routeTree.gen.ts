@@ -12,9 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TerminalRouteRouteImport } from './routes/terminal/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TerminalWorkRouteRouteImport } from './routes/terminal/work/route'
-import { Route as TerminalSkillRouteRouteImport } from './routes/terminal/skill/route'
 import { Route as TerminalProjectsRouteRouteImport } from './routes/terminal/projects/route'
 import { Route as TerminalContactRouteRouteImport } from './routes/terminal/contact/route'
+import { Route as TerminalAboutRouteRouteImport } from './routes/terminal/about/route'
 
 const TerminalRouteRoute = TerminalRouteRouteImport.update({
   id: '/terminal',
@@ -31,11 +31,6 @@ const TerminalWorkRouteRoute = TerminalWorkRouteRouteImport.update({
   path: '/work',
   getParentRoute: () => TerminalRouteRoute,
 } as any)
-const TerminalSkillRouteRoute = TerminalSkillRouteRouteImport.update({
-  id: '/skill',
-  path: '/skill',
-  getParentRoute: () => TerminalRouteRoute,
-} as any)
 const TerminalProjectsRouteRoute = TerminalProjectsRouteRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -46,30 +41,35 @@ const TerminalContactRouteRoute = TerminalContactRouteRouteImport.update({
   path: '/contact',
   getParentRoute: () => TerminalRouteRoute,
 } as any)
+const TerminalAboutRouteRoute = TerminalAboutRouteRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => TerminalRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/terminal': typeof TerminalRouteRouteWithChildren
+  '/terminal/about': typeof TerminalAboutRouteRoute
   '/terminal/contact': typeof TerminalContactRouteRoute
   '/terminal/projects': typeof TerminalProjectsRouteRoute
-  '/terminal/skill': typeof TerminalSkillRouteRoute
   '/terminal/work': typeof TerminalWorkRouteRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/terminal': typeof TerminalRouteRouteWithChildren
+  '/terminal/about': typeof TerminalAboutRouteRoute
   '/terminal/contact': typeof TerminalContactRouteRoute
   '/terminal/projects': typeof TerminalProjectsRouteRoute
-  '/terminal/skill': typeof TerminalSkillRouteRoute
   '/terminal/work': typeof TerminalWorkRouteRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/terminal': typeof TerminalRouteRouteWithChildren
+  '/terminal/about': typeof TerminalAboutRouteRoute
   '/terminal/contact': typeof TerminalContactRouteRoute
   '/terminal/projects': typeof TerminalProjectsRouteRoute
-  '/terminal/skill': typeof TerminalSkillRouteRoute
   '/terminal/work': typeof TerminalWorkRouteRoute
 }
 export interface FileRouteTypes {
@@ -77,25 +77,25 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/terminal'
+    | '/terminal/about'
     | '/terminal/contact'
     | '/terminal/projects'
-    | '/terminal/skill'
     | '/terminal/work'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/terminal'
+    | '/terminal/about'
     | '/terminal/contact'
     | '/terminal/projects'
-    | '/terminal/skill'
     | '/terminal/work'
   id:
     | '__root__'
     | '/'
     | '/terminal'
+    | '/terminal/about'
     | '/terminal/contact'
     | '/terminal/projects'
-    | '/terminal/skill'
     | '/terminal/work'
   fileRoutesById: FileRoutesById
 }
@@ -127,13 +127,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TerminalWorkRouteRouteImport
       parentRoute: typeof TerminalRouteRoute
     }
-    '/terminal/skill': {
-      id: '/terminal/skill'
-      path: '/skill'
-      fullPath: '/terminal/skill'
-      preLoaderRoute: typeof TerminalSkillRouteRouteImport
-      parentRoute: typeof TerminalRouteRoute
-    }
     '/terminal/projects': {
       id: '/terminal/projects'
       path: '/projects'
@@ -148,20 +141,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TerminalContactRouteRouteImport
       parentRoute: typeof TerminalRouteRoute
     }
+    '/terminal/about': {
+      id: '/terminal/about'
+      path: '/about'
+      fullPath: '/terminal/about'
+      preLoaderRoute: typeof TerminalAboutRouteRouteImport
+      parentRoute: typeof TerminalRouteRoute
+    }
   }
 }
 
 interface TerminalRouteRouteChildren {
+  TerminalAboutRouteRoute: typeof TerminalAboutRouteRoute
   TerminalContactRouteRoute: typeof TerminalContactRouteRoute
   TerminalProjectsRouteRoute: typeof TerminalProjectsRouteRoute
-  TerminalSkillRouteRoute: typeof TerminalSkillRouteRoute
   TerminalWorkRouteRoute: typeof TerminalWorkRouteRoute
 }
 
 const TerminalRouteRouteChildren: TerminalRouteRouteChildren = {
+  TerminalAboutRouteRoute: TerminalAboutRouteRoute,
   TerminalContactRouteRoute: TerminalContactRouteRoute,
   TerminalProjectsRouteRoute: TerminalProjectsRouteRoute,
-  TerminalSkillRouteRoute: TerminalSkillRouteRoute,
   TerminalWorkRouteRoute: TerminalWorkRouteRoute,
 }
 
