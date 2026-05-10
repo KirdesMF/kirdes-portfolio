@@ -1,30 +1,22 @@
 import { useRouter } from "@tanstack/react-router";
+import { useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { useState } from "react";
 import {
-	type EditorFileEntry,
 	type EditorFileName,
 	resolveFile,
 	lsFiles,
 } from "../editor/editor-files";
-import { parseTerminalCommand } from "./terminal-commands";
 import { createHistoryEntry, createInitialHistory } from "./terminal-history";
-import {
-	EmailOutput,
-	HelpOutput,
-	LsOutput,
-	WhoamiOutput,
-} from "./terminal-command-outputs";
+import type { CommandContext } from "./commands/types";
+import { dispatch } from "./commands/dispatch";
 import type { TerminalPanelName } from "./terminal-panel-types";
 import type { TerminalRoutePath } from "./terminal-routes";
-import { parseTerminalRoute, parseTerminalRouteTarget } from "./terminal-routes";
 
 function addOpenFile(
 	files: Array<EditorFileName>,
 	fileName: EditorFileName,
 ): Array<EditorFileName> {
 	if (files.includes(fileName)) return files;
-
 	return [...files, fileName];
 }
 
@@ -65,10 +57,30 @@ export function useTerminalController({
 }) {
 	const router = useRouter();
 	const [history, setHistory] = useState(createInitialHistory);
+	const commandHistoryRef = useRef<Array<string>>([]);
 
 	function pushHistory(input: string, output: ReactNode) {
 		const entry = createHistoryEntry(input, output);
 		setHistory((previous) => [...previous, entry]);
+
+		if (input !== "welcome" && input !== "whoami") {
+			commandHistoryRef.current.push(input);
+		}
+	}
+
+	function navigate(to: string, search?: Record<string, unknown>) {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		void (router.navigate as any)({
+			to,
+			search: (previous: Record<string, unknown>) => ({
+				activeFile: previous.activeFile,
+				dialog: previous.dialog,
+				editor: previous.editor,
+				files: previous.files ?? [],
+				panel: previous.panel ?? "terminal",
+				...search,
+			}),
+		});
 	}
 
 	function openDialog(dialogName: "music") {
@@ -191,183 +203,32 @@ export function useTerminalController({
 		});
 	}
 
-	function catFile(name: string): EditorFileEntry | null {
-		return resolveFile(name, currentTerminalRoute);
+	function clearHistory() {
+		setHistory([]);
 	}
 
 	function handleSubmit(command: string) {
-		const route = parseTerminalRoute(command);
-		if (route) {
-			pushHistory(command, `opening ${command}`);
-			void router.navigate({
-				search: (previous) => ({
-					activeFile: previous.activeFile,
-					dialog: previous.dialog,
-					editor: previous.editor,
-					files: previous.files ?? [],
-					panel: "route",
-				}),
-				to: route,
-			});
-			return;
-		}
+		const ctx: CommandContext = {
+			raw: command,
+			normalized: command.trim().toLowerCase(),
+			pushHistory: (output) => pushHistory(command, output),
+			navigate,
+			currentRoute: currentTerminalRoute,
+			isHomeRoute,
+			activeFileName,
+			openFileNames,
+			openFile,
+			closeFile,
+			closeEditor,
+			openEditor,
+			resolveFile,
+			lsFiles,
+			commandHistory: commandHistoryRef.current,
+			clearHistory,
+			openDialog,
+		};
 
-		const normalizedCommand = command.trim().toLowerCase();
-		if (normalizedCommand === "cd" || normalizedCommand.startsWith("cd ")) {
-			const target = normalizedCommand.slice(2).trim();
-
-			// cd with no args or cd .. → go home
-			if (!target || target === "..") {
-				pushHistory(command, "opening ~");
-				void router.navigate({
-					search: (previous) => ({
-						activeFile: previous.activeFile,
-						dialog: previous.dialog,
-						editor: previous.editor,
-						files: previous.files ?? [],
-						panel: "route",
-					}),
-					to: "/terminal",
-				});
-				return;
-			}
-
-			const targetRoute = parseTerminalRouteTarget(target);
-			if (targetRoute) {
-				pushHistory(command, `opening ${target}`);
-				void router.navigate({
-					search: (previous) => ({
-						activeFile: previous.activeFile,
-						dialog: previous.dialog,
-						editor: previous.editor,
-						files: previous.files ?? [],
-						panel: "route",
-					}),
-					to: targetRoute,
-				});
-				return;
-			}
-
-			pushHistory(command, `directory not found: ${target}`);
-			return;
-		}
-
-		if (normalizedCommand.startsWith("cat ")) {
-			const target = normalizedCommand.slice(3).trim();
-			const file = catFile(target);
-			if (file) {
-				pushHistory(command, file.content);
-				return;
-			}
-
-			pushHistory(command, `file not found: ${target}`);
-			return;
-		}
-
-		if (normalizedCommand === "open editor") {
-			openEditor();
-			pushHistory(command, "opening editor");
-			return;
-		}
-
-		if (normalizedCommand.startsWith("open ")) {
-			const target = normalizedCommand.slice(4).trim();
-			if (openFile(target)) {
-				pushHistory(command, `opening ${target}`);
-				return;
-			}
-
-			pushHistory(command, `file not found: ${target}`);
-			return;
-		}
-
-		if (normalizedCommand === "close editor") {
-			closeEditor();
-			return;
-		}
-
-		if (normalizedCommand === "close all") {
-			void router.navigate({
-				search: {
-					activeFile: undefined,
-					dialog: undefined,
-					editor: "open",
-					files: [],
-					panel: "editor",
-				},
-				to: currentTerminalRoute,
-			});
-			return;
-		}
-
-		if (normalizedCommand.startsWith("close ")) {
-			const target = normalizedCommand.slice(5).trim();
-			const file = resolveFile(target, currentTerminalRoute);
-			if (file === null) {
-				pushHistory(command, `file not found: ${target}`);
-				return;
-			}
-
-			closeFile(file.id);
-			return;
-		}
-
-		const terminalCommand = parseTerminalCommand(command);
-		if (terminalCommand === "clear") {
-			setHistory([]);
-			return;
-		}
-
-		if (terminalCommand === "close") {
-			if (activeFileName) {
-				closeFile(activeFileName);
-				return;
-			}
-
-			closeEditor();
-			return;
-		}
-
-		if (terminalCommand === "help") {
-			pushHistory(command, <HelpOutput />);
-			return;
-		}
-
-		if (terminalCommand === "ls") {
-			const { folders, files } = lsFiles(currentTerminalRoute);
-			pushHistory(
-				command,
-				<LsOutput
-					files={files}
-					folders={folders}
-				/>,
-			);
-			return;
-		}
-
-		if (terminalCommand === "music") {
-			pushHistory(command, "opening music player");
-			openDialog("music");
-			return;
-		}
-
-		if (terminalCommand === "reload") {
-			void router.navigate({ to: "/" });
-			return;
-		}
-
-		if (terminalCommand === "whoami") {
-			pushHistory(command, <WhoamiOutput />);
-			return;
-		}
-
-		if (terminalCommand === "email") {
-			pushHistory(command, <EmailOutput />);
-			navigator.clipboard.writeText("cedric@kirdes.dev");
-			return;
-		}
-
-		pushHistory(command, `command not found: ${command}`);
+		dispatch(ctx);
 	}
 
 	return {

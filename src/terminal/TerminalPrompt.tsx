@@ -1,6 +1,12 @@
-import { type SubmitEvent, useId, useState } from "react";
+import { type SubmitEvent, useId, useRef, useState } from "react";
 import { getVisibleFileNames } from "#/editor/editor-files";
 import { commandNames, terminalNavigationItems } from "#/terminal/terminal-routes";
+
+function formatPromptCwd(route: string): string {
+	if (route === "/terminal") return "~";
+
+	return `~/${route.replace("/terminal/", "")}`;
+}
 
 const cdSuggestions = [
 	"cd ..",
@@ -50,6 +56,9 @@ export function TerminalPrompt({
 	onSubmit: (command: string) => void;
 }) {
 	const [value, setValue] = useState("");
+	const historyRef = useRef<Array<string>>([]);
+	const historyIndexRef = useRef<number>(-1);
+	const savedValueRef = useRef<string>("");
 	const [suggestion, setSuggestion] = useState<string | undefined>();
 	const inputId = useId();
 
@@ -58,6 +67,11 @@ export function TerminalPrompt({
 	function handleChange(nextValue: string) {
 		setValue(nextValue);
 		setSuggestion(findSuggestion(nextValue, suggestions));
+		// User is typing — reset history navigation
+		if (historyIndexRef.current !== -1) {
+			historyIndexRef.current = -1;
+			savedValueRef.current = "";
+		}
 	}
 
 	function acceptSuggestion() {
@@ -73,6 +87,13 @@ export function TerminalPrompt({
 		if (!trimmed) return;
 
 		onSubmit(trimmed);
+
+		// Push to command history, keep most recent last
+		if (historyRef.current.at(-1) !== trimmed) {
+			historyRef.current.push(trimmed);
+		}
+		historyIndexRef.current = -1;
+
 		setValue("");
 		setSuggestion(undefined);
 	}
@@ -81,6 +102,43 @@ export function TerminalPrompt({
 		if (event.key === "Tab") {
 			event.preventDefault();
 			acceptSuggestion();
+			return;
+		}
+
+		if (event.key === "ArrowUp") {
+			event.preventDefault();
+			const history = historyRef.current;
+			if (history.length === 0) return;
+
+			// Save current value when first navigating
+			if (historyIndexRef.current === -1) {
+				savedValueRef.current = value;
+			}
+
+			const nextIndex = Math.min(historyIndexRef.current + 1, history.length - 1);
+			historyIndexRef.current = nextIndex;
+			setValue(history[history.length - 1 - nextIndex]);
+			setSuggestion(undefined);
+			return;
+		}
+
+		if (event.key === "ArrowDown") {
+			event.preventDefault();
+			const history = historyRef.current;
+			if (historyIndexRef.current === -1) return;
+
+			const nextIndex = historyIndexRef.current - 1;
+			if (nextIndex < 0) {
+				// Restore saved value
+				historyIndexRef.current = -1;
+				setValue(savedValueRef.current);
+				savedValueRef.current = "";
+			} else {
+				historyIndexRef.current = nextIndex;
+				setValue(history[history.length - 1 - nextIndex]);
+			}
+			setSuggestion(undefined);
+			return;
 		}
 	}
 
@@ -90,7 +148,9 @@ export function TerminalPrompt({
 			onSubmit={handleSubmit}
 		>
 			<label className="flex shrink-0 items-center gap-2 text-xs" htmlFor={inputId}>
-				<span className="shrink-0 text-primary">~</span>
+				<span className="shrink-0 text-primary">
+					{currentRoute ? formatPromptCwd(currentRoute) : "~"}
+				</span>
 				<span className="shrink-0 text-muted-foreground">$</span>
 			</label>
 			<div className="relative flex-1 flex items-center">

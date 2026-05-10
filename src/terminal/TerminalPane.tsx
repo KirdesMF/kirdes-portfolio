@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { cn } from "#/design-system/cn";
 import { TerminalFooter } from "./TerminalFooter";
 import { TerminalPrompt } from "./TerminalPrompt";
@@ -17,6 +18,15 @@ export function TerminalPane({
 	history: Array<TerminalHistoryEntry>;
 	onSubmit: (command: string) => void;
 }) {
+	const scrollRef = useRef<HTMLDivElement>(null);
+
+	// Auto-scroll to bottom when history grows
+	useEffect(() => {
+		const el = scrollRef.current;
+		if (!el) return;
+		el.scrollTop = el.scrollHeight;
+	}, [history]);
+
 	return (
 		<div
 			className={cn(
@@ -26,7 +36,10 @@ export function TerminalPane({
 			)}
 		>
 			<TerminalSessionHeader />
-			<div className="min-h-0 flex-1 overflow-y-auto p-3 text-xs">
+			<div
+				className="min-h-0 flex-1 overflow-y-auto p-3 text-xs"
+				ref={scrollRef}
+			>
 				{history.map((entry) => (
 					<div className="mb-4 last:mb-0" key={entry.id}>
 						<div className="text-muted-foreground">
