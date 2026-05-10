@@ -15,8 +15,8 @@ function formatUptime(seconds: number): string {
 	return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-// Capture boot time at module level — available immediately on first render
-const bootTimeMs = Math.round(performance.now());
+// Capture boot time at module level — clamp to 500ms max
+const bootTimeMs = Math.min(Math.round(performance.now()), 500);
 
 export function TerminalSessionHeader() {
 	const pathname = useRouterState({ select: (state) => state.location.pathname });
@@ -34,23 +34,25 @@ export function TerminalSessionHeader() {
 
 	return (
 		<div className="flex shrink-0 flex-col gap-px border-b border-border px-3 py-1.5 font-mono text-tiny text-muted-foreground">
-			<div className="flex items-center gap-6">
+			<div className="flex items-center">
 				<span>
 					SESSION: <span className="text-primary">{formatUptime(uptime)}</span>
 				</span>
-				<span>
+				<span className="ms-auto">
 					VERSION: <span className="text-primary">kish v1.0.0</span>
 				</span>
-				<span className="ms-auto">
-					STATUS: <span className="text-green-500">200</span>
-				</span>
 			</div>
-			<div className="flex items-center gap-6">
+			<div className="flex items-center">
 				<span>
 					BOOT: <span className="text-primary">{bootTimeMs}ms</span>
 				</span>
-				<span>
+				<span className="ms-auto">
 					HOST: <span className="text-primary">kirdes.dev</span>
+				</span>
+			</div>
+			<div className="flex items-center">
+				<span>
+					STATUS: <span className="text-green-500">200</span>
 				</span>
 				<span className="ms-auto">
 					CWD: <span className="text-primary">{cwd}</span>
