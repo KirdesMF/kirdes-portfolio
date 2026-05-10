@@ -3,13 +3,8 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 import { type EditorFileName, findEditorFile } from "../editor/editor-files";
 import { parseTerminalCommand } from "./terminal-commands";
-import {
-	createHistoryEntry,
-	createInitialHistory,
-	HelpOutput,
-	RoutesOutput,
-	WhoamiOutput,
-} from "./terminal-history";
+import { createHistoryEntry, createInitialHistory } from "./terminal-history";
+import { HelpOutput, RoutesOutput, WhoamiOutput } from "./terminal-command-outputs";
 import type { TerminalPanelName } from "./terminal-panel-types";
 import type { TerminalRoutePath } from "./terminal-routes";
 import { parseTerminalRoute, parseTerminalRouteTarget } from "./terminal-routes";
