@@ -158,6 +158,8 @@ export function TerminalPrompt({
 				) : null}
 				<input
 					autoComplete="off"
+					/* biome-ignore lint/a11y/noAutofocus: intentional for terminal UX */
+					autoFocus
 					className="relative w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/70"
 					id={inputId}
 					placeholder="type a command..."
