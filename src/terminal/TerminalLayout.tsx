@@ -15,14 +15,18 @@ import { useTerminalController } from "./useTerminalController";
 export function TerminalLayout({
 	activeDialog,
 	activeEditor,
+	activeFileName,
 	activePanel,
 	children,
+	highlightedEditorFile,
 	openFileNames,
 }: {
 	activeDialog: "music" | undefined;
 	activeEditor: "open" | undefined;
+	activeFileName?: EditorFileName;
 	activePanel: TerminalPanelName;
 	children: ReactNode;
+	highlightedEditorFile: ReactNode | null;
 	openFileNames: Array<EditorFileName>;
 }) {
 	const currentTerminalRoute = useRouterState({
@@ -31,7 +35,6 @@ export function TerminalLayout({
 	const isHomeRoute = useRouterState({
 		select: (state) => state.matches.at(-1)?.routeId === "/terminal",
 	});
-	const activeFileName = openFileNames.at(0);
 	const hasEditorPanel = activeEditor === "open";
 	const hasRightPanel = !isHomeRoute || hasEditorPanel;
 	const mobilePanel = getMobilePanel(activePanel, hasEditorPanel, isHomeRoute);
@@ -81,6 +84,7 @@ export function TerminalLayout({
 								<EditorPane
 									activeFileName={activeFileName}
 									className={cn(mobilePanel === "editor" ? "block" : "hidden", "md:block")}
+									highlightedEditorFile={highlightedEditorFile}
 									onCloseEditor={terminal.closeEditor}
 									onCloseFile={terminal.closeFile}
 									onOpenFile={(fileName) => {

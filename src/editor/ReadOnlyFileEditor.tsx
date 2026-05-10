@@ -1,17 +1,7 @@
-import { useServerFn } from "@tanstack/react-start";
 import { Braces, FileText, FileType, type LucideIcon, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { cn } from "#/design-system/cn";
 import { editorFiles } from "#/editor/editor-files";
-import { getHighlightedEditorFile } from "./editor-file-highlight.functions";
-
-type HighlightedFileState =
-	| { status: "idle" | "loading" }
-	| { status: "success"; fileName: string; html: string; language: string }
-	| { status: "not-found"; fileName: string }
-	| { status: "error"; message: string };
-
-const highlightedFileCache = new Map<string, HighlightedFileState>();
 
 const fileExtensionIcon: Record<string, LucideIcon> = {
 	json: Braces,
@@ -26,69 +16,8 @@ function getFileIcon(fileName: string): LucideIcon | null {
 	return fileExtensionIcon[extension] ?? null;
 }
 
-function EditorBody({ fileName }: { fileName: string }) {
-	const getHighlightedFile = useServerFn(getHighlightedEditorFile);
-	const [fileState, setFileState] = useState<HighlightedFileState>({ status: "idle" });
-
-	useEffect(() => {
-		const cached = highlightedFileCache.get(fileName);
-		if (cached) {
-			setFileState(cached);
-			return;
-		}
-
-		let isActive = true;
-		setFileState({ status: "loading" });
-
-		async function load() {
-			try {
-				const result = await getHighlightedFile({ data: { fileName } });
-				if (!isActive) return;
-
-				const nextState: HighlightedFileState = result.found
-					? {
-							fileName: result.fileName,
-							html: result.html,
-							language: result.language,
-							status: "success",
-						}
-					: { fileName: result.fileName, status: "not-found" };
-
-				highlightedFileCache.set(fileName, nextState);
-				if (!isActive) return;
-				setFileState(nextState);
-			} catch (error) {
-				if (!isActive) return;
-				setFileState({
-					status: "error",
-					message: error instanceof Error ? error.message : "highlighting failed",
-				});
-			}
-		}
-
-		void load();
-
-		return () => {
-			isActive = false;
-		};
-	}, [fileName, getHighlightedFile]);
-
-	if (fileState.status === "success") {
-		return (
-			<div className="shiki min-h-0 flex-1 overflow-auto p-2">
-				{/* biome-ignore lint/security/noDangerouslySetInnerHtml: shiki output is server-generated, not user input */}
-				<div dangerouslySetInnerHTML={{ __html: fileState.html }} />
-			</div>
-		);
-	}
-
-	if (fileState.status === "not-found") {
-		return <div className="p-3 text-muted-foreground">unable to open {fileState.fileName}</div>;
-	}
-
-	if (fileState.status === "error") {
-		return <div className="p-3 text-muted-foreground">{fileState.message}</div>;
-	}
+function EditorBody({ highlightedEditorFile }: { highlightedEditorFile: ReactNode | null }) {
+	if (highlightedEditorFile) return highlightedEditorFile;
 
 	return <div className="p-3 text-muted-foreground">highlighting file...</div>;
 }
@@ -177,6 +106,7 @@ function EmptyEditor({ onOpenFile }: { onOpenFile: (fileName: string) => void })
 
 export function ReadOnlyFileEditor({
 	activeFileName,
+	highlightedEditorFile,
 	onCloseEditor,
 	onCloseFile,
 	onOpenFile,
@@ -184,6 +114,7 @@ export function ReadOnlyFileEditor({
 	openFileNames,
 }: {
 	activeFileName?: string;
+	highlightedEditorFile: ReactNode | null;
 	onCloseEditor: () => void;
 	onCloseFile: (fileName: string) => void;
 	onOpenFile: (fileName: string) => void;
@@ -200,7 +131,7 @@ export function ReadOnlyFileEditor({
 				openFileNames={openFileNames}
 			/>
 			{activeFileName ? (
-				<EditorBody fileName={activeFileName} key={activeFileName} />
+				<EditorBody highlightedEditorFile={highlightedEditorFile} key={activeFileName} />
 			) : (
 				<EmptyEditor onOpenFile={onOpenFile} />
 			)}

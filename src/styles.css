@@ -76,44 +76,65 @@ body {
 	--spacing: 0.25rem;
 }
 
-.shiki {
-	/* biome-ignore lint/complexity/noImportantStyles: shiki inline styles from light theme must be overridden for dark mode */
-	background-color: transparent !important;
+.editor-code pre.shiki {
+	background-color: transparent;
+	color: var(--shiki-light, inherit);
+	font: inherit;
+	line-height: 1.35;
+	margin: 0;
+	min-width: max-content;
+	tab-size: 2;
 }
 
-.dark .shiki span {
-	/* biome-ignore lint/complexity/noImportantStyles: shiki inline styles from light theme must be overridden for dark mode */
-	color: var(--shiki-dark) !important;
+.editor-code pre.shiki span {
+	color: var(--shiki-light, inherit);
 }
 
-.shiki code {
+.dark .editor-code pre.shiki {
+	color: var(--shiki-dark, inherit);
+}
+
+.dark .editor-code pre.shiki span {
+	color: var(--shiki-dark, inherit);
+}
+
+.editor-code code {
+	display: block;
 	counter-reset: line;
 }
 
-.shiki .line {
-	display: block;
-	position: relative;
+.editor-code .line {
+	display: inline-block;
+	min-height: 1lh;
+	min-width: 100%;
 	padding-left: 2.5rem;
+	position: relative;
+	vertical-align: top;
 }
 
-.shiki .line::before {
+.editor-code .line:empty::after {
+	content: " ";
+}
+
+.editor-code .line::before {
 	content: counter(line);
 	counter-increment: line;
-	position: absolute;
+	font-variant-numeric: tabular-nums;
 	left: 0;
-	width: 2rem;
-	text-align: right;
-	color: var(--muted-foreground);
 	opacity: 0.35;
+	position: absolute;
+	text-align: right;
 	user-select: none;
+	width: 2rem;
+	color: var(--muted-foreground);
 }
 
-.shiki .line:hover {
+.editor-code .line:hover {
 	background: color-mix(in oklch, var(--muted) 35%, transparent);
 	border-radius: var(--radius);
 }
 
-.shiki .line:hover::before {
+.editor-code .line:hover::before {
 	opacity: 0.7;
 }
 

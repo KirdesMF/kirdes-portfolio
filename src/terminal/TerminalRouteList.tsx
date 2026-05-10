@@ -12,7 +12,9 @@ function addOpenFile(
 	files: Array<EditorFileName>,
 	fileName: EditorFileName,
 ): Array<EditorFileName> {
-	return [fileName, ...files.filter((openFileName) => openFileName !== fileName)];
+	if (files.includes(fileName)) return files;
+
+	return [...files, fileName];
 }
 
 export function TerminalRouteList() {
@@ -27,6 +29,7 @@ export function TerminalRouteList() {
 						className="text-muted-foreground underline-offset-2 hover:text-primary hover:underline"
 						key={command}
 						search={(previous) => ({
+							activeFile: previous.activeFile,
 							dialog: previous.dialog,
 							editor: previous.editor,
 							files: previous.files ?? [],
@@ -45,6 +48,7 @@ export function TerminalRouteList() {
 						className="text-muted-foreground underline-offset-2 hover:text-primary hover:underline"
 						key={name}
 						search={(previous) => ({
+							activeFile: name,
 							dialog: previous.dialog,
 							editor: "open",
 							files: addOpenFile(previous.files ?? [], name),

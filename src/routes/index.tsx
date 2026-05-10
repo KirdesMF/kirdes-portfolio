@@ -13,7 +13,7 @@ function RouteComponent() {
 	const handleAnimationComplete = () => {
 		navigate({
 			replace: true,
-			search: { editor: undefined, files: [], panel: "terminal" },
+			search: { activeFile: undefined, editor: undefined, files: [], panel: "terminal" },
 			to: "/terminal",
 		});
 	};

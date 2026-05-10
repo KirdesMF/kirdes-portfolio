@@ -4,6 +4,7 @@ import type { TerminalDialogName } from "../music/music.types";
 import { parseTerminalPanelName, type TerminalPanelName } from "./terminal-panel-types";
 
 const RawTerminalSearch = v.object({
+	activeFile: v.optional(v.string()),
 	dialog: v.optional(v.string()),
 	editor: v.optional(v.string()),
 	files: v.optional(v.union([v.array(v.string()), v.string()]), ""),
@@ -31,6 +32,7 @@ function normalizeFiles(files: string | Array<string>): Array<EditorFileName> {
 const dialogNames = ["music"] as const;
 
 export type TerminalSearch = {
+	activeFile?: EditorFileName;
 	dialog?: TerminalDialogName;
 	editor?: "open";
 	files: Array<EditorFileName>;
@@ -41,16 +43,18 @@ export function parseTerminalSearch(search: Record<string, unknown>): TerminalSe
 	const result = v.safeParse(RawTerminalSearch, search);
 	const rawSearch = result.success
 		? result.output
-		: { dialog: undefined, editor: undefined, files: "", panel: "terminal" };
+		: { activeFile: undefined, dialog: undefined, editor: undefined, files: "", panel: "terminal" };
 	const dialog =
 		rawSearch.dialog && (dialogNames as ReadonlyArray<string>).includes(rawSearch.dialog)
 			? (rawSearch.dialog as TerminalDialogName)
 			: undefined;
 	const editor = rawSearch.editor === "open" ? "open" : undefined;
 	const files = editor === "open" ? normalizeFiles(rawSearch.files) : [];
+	const activeFile = files.find((fileName) => fileName === rawSearch.activeFile) ?? files.at(0);
 	const panel = parseTerminalPanelName(rawSearch.panel);
 
 	return {
+		activeFile,
 		dialog,
 		editor,
 		files,

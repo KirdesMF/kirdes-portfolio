@@ -26,6 +26,7 @@ export async function highlightToHtml(fileName: string): Promise<HighlightResult
 
 	const highlighter = await highlighterPromise;
 	const html = highlighter.codeToHtml(file.content, {
+		defaultColor: false,
 		lang: file.language,
 		themes: {
 			light: "github-light-default",

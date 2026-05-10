@@ -18,11 +18,30 @@ function addOpenFile(
 	files: Array<EditorFileName>,
 	fileName: EditorFileName,
 ): Array<EditorFileName> {
-	return [fileName, ...files.filter((openFileName) => openFileName !== fileName)];
+	if (files.includes(fileName)) return files;
+
+	return [...files, fileName];
 }
 
 function removeOpenFile(files: Array<EditorFileName>, fileName: string): Array<EditorFileName> {
 	return files.filter((openFileName) => openFileName !== fileName);
+}
+
+function getNextActiveFile({
+	activeFileName,
+	closedFileName,
+	files,
+}: {
+	activeFileName?: EditorFileName;
+	closedFileName: EditorFileName;
+	files: Array<EditorFileName>;
+}): EditorFileName | undefined {
+	if (activeFileName !== closedFileName) return activeFileName;
+
+	const closedFileIndex = files.indexOf(closedFileName);
+	const remainingFiles = removeOpenFile(files, closedFileName);
+
+	return remainingFiles.at(closedFileIndex) ?? remainingFiles.at(-1);
 }
 
 export function useTerminalController({
@@ -47,6 +66,7 @@ export function useTerminalController({
 	function openDialog(dialogName: "music") {
 		void router.navigate({
 			search: (previous) => ({
+				activeFile: previous.activeFile,
 				dialog: dialogName,
 				editor: previous.editor,
 				files: previous.files ?? [],
@@ -59,6 +79,7 @@ export function useTerminalController({
 	function closeDialog() {
 		void router.navigate({
 			search: (previous) => ({
+				activeFile: previous.activeFile,
 				dialog: undefined,
 				editor: previous.editor,
 				files: previous.files ?? [],
@@ -71,6 +92,7 @@ export function useTerminalController({
 	function setMobilePanel(panel: TerminalPanelName) {
 		void router.navigate({
 			search: (previous) => ({
+				activeFile: previous.activeFile,
 				dialog: previous.dialog,
 				editor: previous.editor,
 				files: previous.files ?? [],
@@ -83,6 +105,7 @@ export function useTerminalController({
 	function closeEditor() {
 		void router.navigate({
 			search: {
+				activeFile: undefined,
 				dialog: undefined,
 				editor: undefined,
 				files: [],
@@ -100,6 +123,11 @@ export function useTerminalController({
 
 		void router.navigate({
 			search: {
+				activeFile: getNextActiveFile({
+					activeFileName,
+					closedFileName: fileToClose.name,
+					files: openFileNames,
+				}),
 				dialog: undefined,
 				editor: "open",
 				files,
@@ -112,6 +140,7 @@ export function useTerminalController({
 	function openEditor() {
 		void router.navigate({
 			search: (previous) => ({
+				activeFile: previous.activeFile,
 				dialog: previous.dialog,
 				editor: "open",
 				files: previous.files ?? [],
@@ -127,6 +156,7 @@ export function useTerminalController({
 
 		void router.navigate({
 			search: {
+				activeFile: file.name,
 				dialog: undefined,
 				editor: "open",
 				files: addOpenFile(openFileNames, file.name),
@@ -143,6 +173,7 @@ export function useTerminalController({
 
 		void router.navigate({
 			search: {
+				activeFile: file.name,
 				dialog: undefined,
 				editor: "open",
 				files: addOpenFile(openFileNames, file.name),
@@ -158,6 +189,7 @@ export function useTerminalController({
 			pushHistory(command, `opening ${command}`);
 			void router.navigate({
 				search: (previous) => ({
+					activeFile: previous.activeFile,
 					dialog: previous.dialog,
 					editor: previous.editor,
 					files: previous.files ?? [],
@@ -176,6 +208,7 @@ export function useTerminalController({
 				pushHistory(command, `opening ${target || "~"}`);
 				void router.navigate({
 					search: (previous) => ({
+						activeFile: previous.activeFile,
 						dialog: previous.dialog,
 						editor: previous.editor,
 						files: previous.files ?? [],
@@ -226,7 +259,13 @@ export function useTerminalController({
 
 		if (normalizedCommand === "close all") {
 			void router.navigate({
-				search: { dialog: undefined, editor: "open", files: [], panel: "editor" },
+				search: {
+					activeFile: undefined,
+					dialog: undefined,
+					editor: "open",
+					files: [],
+					panel: "editor",
+				},
 				to: currentTerminalRoute,
 			});
 			return;
