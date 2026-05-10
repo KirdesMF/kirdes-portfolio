@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Terminal } from "#/terminal/Terminal";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { TerminalLayout } from "#/terminal/TerminalLayout";
 import { parseTerminalSearch } from "#/terminal/terminal-search";
 
 export const Route = createFileRoute("/terminal")({
@@ -8,14 +8,16 @@ export const Route = createFileRoute("/terminal")({
 });
 
 function RouteComponent() {
-	const { dialog, file, files, panel } = Route.useSearch();
+	const { dialog, editor, files, panel } = Route.useSearch();
 
 	return (
-		<Terminal
+		<TerminalLayout
 			activeDialog={dialog}
-			activeFileName={file}
+			activeEditor={editor}
 			activePanel={panel}
 			openFileNames={files}
-		/>
+		>
+			<Outlet />
+		</TerminalLayout>
 	);
 }
