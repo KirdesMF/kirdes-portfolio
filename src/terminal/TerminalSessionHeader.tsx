@@ -33,7 +33,7 @@ export function TerminalSessionHeader() {
 	}, []);
 
 	return (
-		<div className="flex shrink-0 flex-col gap-px border-b border-border px-3 py-1.5 font-mono text-tiny text-muted-foreground">
+		<div className="flex shrink-0 flex-col gap-0.5 border-b border-border px-4 py-2 font-mono text-xs text-muted-foreground">
 			<div className="flex items-center">
 				<span>
 					SESSION: <span className="text-primary">{formatUptime(uptime)}</span>
