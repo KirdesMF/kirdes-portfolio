@@ -22,7 +22,7 @@ function EditorBody({ highlightedEditorFile }: { highlightedEditorFile: ReactNod
 	return <div className="p-3 text-muted-foreground">highlighting file...</div>;
 }
 
-function EditorTabs({
+function renderEditorTabs({
 	activeFileName,
 	onCloseEditor,
 	onCloseFile,
@@ -81,7 +81,7 @@ function EditorTabs({
 	);
 }
 
-function EmptyEditor({ onOpenFile }: { onOpenFile: (fileName: string) => void }) {
+function renderEmptyEditor({ onOpenFile }: { onOpenFile: (fileName: string) => void }) {
 	return (
 		<div className="flex min-h-0 flex-1 items-center justify-center p-4 text-xs">
 			<div className="flex max-w-sm flex-col items-center gap-3 text-center">
@@ -123,17 +123,17 @@ export function ReadOnlyFileEditor({
 }) {
 	return (
 		<section className="flex h-full min-h-0 flex-col border-border text-xs">
-			<EditorTabs
-				activeFileName={activeFileName}
-				onCloseEditor={onCloseEditor}
-				onCloseFile={onCloseFile}
-				onSelectFile={onSelectFile}
-				openFileNames={openFileNames}
-			/>
+			{renderEditorTabs({
+				activeFileName,
+				onCloseEditor,
+				onCloseFile,
+				onSelectFile,
+				openFileNames,
+			})}
 			{activeFileName ? (
 				<EditorBody highlightedEditorFile={highlightedEditorFile} key={activeFileName} />
 			) : (
-				<EmptyEditor onOpenFile={onOpenFile} />
+				renderEmptyEditor({ onOpenFile })
 			)}
 		</section>
 	);
