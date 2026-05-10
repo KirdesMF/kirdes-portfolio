@@ -76,67 +76,7 @@ body {
 	--spacing: 0.25rem;
 }
 
-.editor-code pre.shiki {
-	background-color: transparent;
-	color: var(--shiki-light, inherit);
-	font: inherit;
-	line-height: 1.35;
-	margin: 0;
-	min-width: max-content;
-	tab-size: 2;
-}
 
-.editor-code pre.shiki span {
-	color: var(--shiki-light, inherit);
-}
-
-.dark .editor-code pre.shiki {
-	color: var(--shiki-dark, inherit);
-}
-
-.dark .editor-code pre.shiki span {
-	color: var(--shiki-dark, inherit);
-}
-
-.editor-code code {
-	display: block;
-	counter-reset: line;
-}
-
-.editor-code .line {
-	display: inline-block;
-	min-height: 1lh;
-	min-width: 100%;
-	padding-left: 2.5rem;
-	position: relative;
-	vertical-align: top;
-}
-
-.editor-code .line:empty::after {
-	content: " ";
-}
-
-.editor-code .line::before {
-	content: counter(line);
-	counter-increment: line;
-	font-variant-numeric: tabular-nums;
-	left: 0;
-	opacity: 0.35;
-	position: absolute;
-	text-align: right;
-	user-select: none;
-	width: 2rem;
-	color: var(--muted-foreground);
-}
-
-.editor-code .line:hover {
-	background: color-mix(in oklch, var(--muted) 35%, transparent);
-	border-radius: var(--radius);
-}
-
-.editor-code .line:hover::before {
-	opacity: 0.7;
-}
 
 .dark {
 	--background: oklch(0.1763 0.014 258.3572);
@@ -284,4 +224,66 @@ body {
 	::-webkit-scrollbar-thumb:hover {
 		background: color-mix(in oklch, var(--muted-foreground) 38%, transparent);
 	}
+}
+
+.editor-code pre.shiki {
+	background-color: transparent;
+	color: var(--shiki-light, inherit);
+	font: inherit;
+	line-height: 1.6;
+	margin: 0;
+	min-width: max-content;
+	tab-size: 2;
+}
+
+.editor-code pre.shiki span {
+	color: var(--shiki-light, inherit);
+}
+
+.dark .editor-code pre.shiki {
+	color: var(--shiki-dark, inherit);
+}
+
+.dark .editor-code pre.shiki span {
+	color: var(--shiki-dark, inherit);
+}
+
+.editor-code code {
+	display: block;
+	counter-reset: line;
+}
+
+.editor-code .line {
+	display: inline-block;
+	min-height: 1lh;
+	min-width: 100%;
+	padding-inline-start: 2.5rem;
+	position: relative;
+	vertical-align: top;
+}
+
+.editor-code .line:empty::after {
+	content: " ";
+}
+
+.editor-code .line::before {
+	content: counter(line);
+	counter-increment: line;
+	font-variant-numeric: tabular-nums;
+	left: 0;
+	opacity: 0.35;
+	position: absolute;
+	text-align: right;
+	user-select: none;
+	width: 2rem;
+	color: var(--muted-foreground);
+}
+
+.editor-code .line:hover {
+	background: color-mix(in oklch, var(--muted) 35%, transparent);
+	border-radius: var(--radius);
+}
+
+.editor-code .line:hover::before {
+	opacity: 1;
 }

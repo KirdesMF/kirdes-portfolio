@@ -28,6 +28,22 @@ export const editorFiles = [
 		]),
 	},
 	{
+		name: "TODO.md",
+		language: "markdown",
+		content: lines([
+			"# TODO",
+			"",
+			"- [ ] get hired",
+			"- [ ] being rich",
+			"- [ ] learn to touch type properly (jk i'm fine)",
+			"- [ ] fix all the bugs (or rename them features)",
+			"- [ ] finally sort that one drawer at home",
+			"- [ ] write a readme that's longer than the codebase",
+			"- [ ] find the perfect coffee-to-code ratio",
+			"- [ ] achieve inbox zero (impossible, next)",
+		]),
+	},
+	{
 		name: "stack.json",
 		language: "json",
 		content: JSON.stringify(stack, null, 2),
