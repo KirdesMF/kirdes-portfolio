@@ -1,7 +1,8 @@
-import { Braces, FileText, FileType, type LucideIcon, X } from "lucide-react";
+import { Braces, FileText, FileType, List, type LucideIcon, X } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "#/design-system/cn";
 import { editorFiles } from "#/editor/editor-files";
+import { Menu, MenuContent, MenuItem, MenuTrigger } from "#/design-system/Menu";
 
 const fileExtensionIcon: Record<string, LucideIcon> = {
 	json: Braces,
@@ -38,9 +39,13 @@ function renderEditorTabs({
 	onSelectFile: (fileName: string) => void;
 	openFileNames: Array<string>;
 }) {
+	const MAX_VISIBLE_TABS = 3;
+	const visibleFiles = openFileNames.slice(0, MAX_VISIBLE_TABS);
+	const overflowCount = openFileNames.length - MAX_VISIBLE_TABS;
+
 	return (
 		<div className="flex h-8 shrink-0 items-center overflow-x-auto border-b border-border bg-background/60">
-			{openFileNames.map((fileName) => (
+			{visibleFiles.map((fileName) => (
 				<div
 					className={cn(
 						"flex h-full max-w-40 shrink-0 items-center border-r border-border text-tiny text-muted-foreground hover:bg-muted/30 hover:text-foreground",
@@ -69,17 +74,38 @@ function renderEditorTabs({
 					</button>
 				</div>
 			))}
-			<div className="ms-auto flex h-full shrink-0 items-center gap-2 border-l border-border px-3 text-tiny text-muted-foreground/70">
-				<span>read-only</span>
-				<button
-					aria-label="Close editor"
-					className="rounded text-muted-foreground hover:text-foreground"
-					type="button"
-					onClick={onCloseEditor}
-				>
-					<X className="size-3.5" />
-				</button>
-			</div>
+			{overflowCount > 0 ? (
+				<Menu>
+					<MenuTrigger
+						aria-label="All open files"
+						className="flex h-full shrink-0 items-center gap-1 border-r border-border px-2 text-tiny text-muted-foreground/70 hover:text-foreground"
+					>
+						<List className="size-3" />
+						<span className="tabular-nums">+{overflowCount}</span>
+					</MenuTrigger>
+					<MenuContent align="start" side="bottom" sideOffset={0}>
+						{openFileNames.map((fileName) => (
+							<MenuItem
+								className={cn(
+									activeFileName === fileName && "text-foreground",
+								)}
+								key={fileName}
+								onClick={() => onSelectFile(fileName)}
+							>
+								{fileName}
+							</MenuItem>
+						))}
+					</MenuContent>
+				</Menu>
+			) : null}
+			<button
+				aria-label="Close editor"
+				className="ms-auto flex h-full shrink-0 items-center border-s border-border px-3 text-tiny text-muted-foreground/70 hover:text-foreground"
+				type="button"
+				onClick={onCloseEditor}
+			>
+				<X className="size-3.5" />
+			</button>
 		</div>
 	);
 }
@@ -129,7 +155,7 @@ export function ReadOnlyFileEditor({
 	openFileNames: Array<string>;
 }) {
 	return (
-		<section className="flex h-full min-h-0 flex-col border-border text-xs">
+		<section className="relative flex h-full min-h-0 flex-col border-border text-xs">
 			{renderEditorTabs({
 				activeFileName,
 				onCloseEditor,
@@ -138,7 +164,12 @@ export function ReadOnlyFileEditor({
 				openFileNames,
 			})}
 			{activeFileName ? (
-				<EditorBody highlightedEditorFile={highlightedEditorFile} key={activeFileName} />
+				<>
+					<EditorBody highlightedEditorFile={highlightedEditorFile} key={activeFileName} />
+					<span className="pointer-events-none absolute bottom-1 right-2 rounded border border-border/50 px-1 py-0.5 text-tiny text-muted-foreground/50">
+						read-only
+					</span>
+				</>
 			) : (
 				renderEmptyEditor({ onOpenFile })
 			)}

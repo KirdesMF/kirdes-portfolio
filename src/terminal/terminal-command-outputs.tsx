@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { TerminalRouteList } from "./TerminalRouteList";
 import { terminalRoutes } from "./terminal-routes";
@@ -167,25 +168,54 @@ export function GitOutput({ subcommand }: { subcommand: string }): ReactNode {
 // ─── Tree view ────────────────────────────────────────────────────────
 
 export function TreeOutput(): ReactNode {
-	const lines: Array<string> = [];
-
-	for (const { folder, label } of folderRoutesData) {
-		const folderFiles = editorFiles.filter((f) => f.folder === folder);
-
-		lines.push(`${label}/`);
-
-		for (let i = 0; i < folderFiles.length; i++) {
-			const file = folderFiles[i];
-			const branch = i === folderFiles.length - 1 ? "└── " : "├── ";
-			lines.push(`  ${branch}${file.name}`);
-		}
-	}
-
 	return (
 		<div className="flex flex-col whitespace-pre-wrap font-mono text-muted-foreground">
-			{lines.map((line, i) => (
-				<p key={i}>{line}</p>
-			))}
+			{folderRoutesData.map(({ folder, label, route }) => {
+				const folderFiles = editorFiles.filter((f) => f.folder === folder);
+
+				return (
+					<div key={folder}>
+						<Link
+							activeOptions={{ exact: true }}
+							activeProps={{ className: "text-primary" }}
+							className="underline-offset-2 hover:text-primary hover:underline"
+							search={(previous) => ({
+								activeFile: previous.activeFile,
+								dialog: previous.dialog,
+								editor: previous.editor,
+								files: previous.files ?? [],
+								panel: "route",
+							})}
+							to={route}
+						>
+							{label}/
+						</Link>
+						{folderFiles.map((file, i) => {
+							const branch = i === folderFiles.length - 1 ? "└── " : "├── ";
+							return (
+								<div className="flex items-center gap-1" key={file.id}>
+									<span className="text-muted-foreground/50">{`  ${branch}`}</span>
+									<Link
+										className="underline-offset-2 hover:text-primary hover:underline"
+										search={(previous) => ({
+											activeFile: file.id,
+											dialog: previous.dialog,
+											editor: "open",
+											files: previous.files
+												? [...new Set([...previous.files, file.id])]
+												: [file.id],
+											panel: "editor",
+										})}
+										to="."
+									>
+										{file.name}
+									</Link>
+								</div>
+							);
+						})}
+					</div>
+				);
+			})}
 		</div>
 	);
 }
