@@ -16,10 +16,7 @@ type DialogContentProps = Omit<ComponentProps<typeof BaseDialog.Popup>, "classNa
 type DialogTitleProps = Omit<ComponentProps<typeof BaseDialog.Title>, "className"> & {
 	className?: string;
 };
-type DialogDescriptionProps = Omit<
-	ComponentProps<typeof BaseDialog.Description>,
-	"className"
-> & {
+type DialogDescriptionProps = Omit<ComponentProps<typeof BaseDialog.Description>, "className"> & {
 	className?: string;
 };
 
@@ -53,11 +50,7 @@ export function DialogOverlay({ className, ...props }: DialogOverlayProps): Reac
 	);
 }
 
-export function DialogContent({
-	children,
-	className,
-	...props
-}: DialogContentProps): ReactNode {
+export function DialogContent({ children, className, ...props }: DialogContentProps): ReactNode {
 	return (
 		<DialogPortal>
 			<DialogOverlay />
@@ -77,12 +70,7 @@ export function DialogContent({
 }
 
 export function DialogTitle({ className, ...props }: DialogTitleProps): ReactNode {
-	return (
-		<BaseDialog.Title
-			className={cn("font-medium text-sm", className)}
-			{...props}
-		/>
-	);
+	return <BaseDialog.Title className={cn("font-medium text-sm", className)} {...props} />;
 }
 
 export function DialogDescription({ className, ...props }: DialogDescriptionProps): ReactNode {

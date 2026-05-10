@@ -4,7 +4,12 @@ import { Dialog, DialogClose, DialogContent, DialogTitle } from "#/design-system
 
 export function MusicDialog({ onClose }: { onClose: () => void }) {
 	return (
-		<Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
+		<Dialog
+			open
+			onOpenChange={(open) => {
+				if (!open) onClose();
+			}}
+		>
 			<DialogContent>
 				<div className="flex items-center gap-2">
 					<BoomBox className="size-4" />

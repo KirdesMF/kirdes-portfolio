@@ -12,7 +12,9 @@ export function AppHeaderNavigation() {
 					aria-label="Open editor"
 					className="rounded border border-transparent px-1.5 py-0.5 text-tiny text-muted-foreground transition-colors hover:border-border hover:bg-muted/40 hover:text-foreground"
 					search={(previous) => ({
-						file: previous.file,
+						activeFile: previous.activeFile,
+						dialog: previous.dialog,
+						editor: "open",
 						files: previous.files ?? [],
 						panel: "editor",
 					})}
@@ -29,7 +31,9 @@ export function AppHeaderNavigation() {
 						className="rounded border border-transparent px-1.5 py-0.5 text-tiny text-muted-foreground transition-colors hover:border-border hover:bg-muted/40 hover:text-foreground"
 						key={command}
 						search={(previous) => ({
-							file: previous.file,
+							activeFile: previous.activeFile,
+							dialog: previous.dialog,
+							editor: previous.editor,
 							files: previous.files ?? [],
 							panel: "route",
 						})}

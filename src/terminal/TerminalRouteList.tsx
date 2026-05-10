@@ -1,11 +1,20 @@
 import { Link } from "@tanstack/react-router";
-import { editorFiles } from "../editor/editor-files";
+import { type EditorFileName, editorFiles } from "../editor/editor-files";
 import { terminalNavigationItems } from "./terminal-routes";
 
 function formatRouteLabel(label: string): string {
 	if (label === "~") return "~/";
 
 	return `${label}/`;
+}
+
+function addOpenFile(
+	files: Array<EditorFileName>,
+	fileName: EditorFileName,
+): Array<EditorFileName> {
+	if (files.includes(fileName)) return files;
+
+	return [...files, fileName];
 }
 
 export function TerminalRouteList() {
@@ -20,7 +29,9 @@ export function TerminalRouteList() {
 						className="text-muted-foreground underline-offset-2 hover:text-primary hover:underline"
 						key={command}
 						search={(previous) => ({
-							file: previous.file,
+							activeFile: previous.activeFile,
+							dialog: previous.dialog,
+							editor: previous.editor,
 							files: previous.files ?? [],
 							panel: "route",
 						})}
@@ -37,9 +48,10 @@ export function TerminalRouteList() {
 						className="text-muted-foreground underline-offset-2 hover:text-primary hover:underline"
 						key={name}
 						search={(previous) => ({
-							...previous,
-							file: name,
-							files: [...new Set([...(previous.files ?? []), name])],
+							activeFile: name,
+							dialog: previous.dialog,
+							editor: "open",
+							files: addOpenFile(previous.files ?? [], name),
 							panel: "editor",
 						})}
 						to="."

@@ -65,7 +65,6 @@ export const editorFiles = [
 			'  role: "product engineer / interface builder",',
 			'  focus: ["frontend architecture", "design systems", "developer tooling"],',
 			"} as const",
-			"",
 		]),
 	},
 ] as const;
