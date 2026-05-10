@@ -18,6 +18,7 @@ const fileExtensionIcon: Record<string, LucideIcon> = {
 	md: FileText,
 	ts: FileType,
 	tsx: FileType,
+	txt: FileText,
 };
 
 // Only root files in the empty editor (globally accessible)

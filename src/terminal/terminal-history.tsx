@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { WelcomeOutput, WhoamiOutput } from "./terminal-command-outputs";
+import { StatusOutput, WelcomeOutput, WhoamiOutput } from "./terminal-command-outputs";
 
 export type TerminalHistoryEntry = {
 	id: string;
@@ -21,5 +21,6 @@ export function createInitialHistory(): Array<TerminalHistoryEntry> {
 	return [
 		createHistoryEntry("welcome", <WelcomeOutput />),
 		createHistoryEntry("whoami", <WhoamiOutput />),
+		createHistoryEntry("cat status.txt", <StatusOutput />),
 	];
 }

@@ -69,6 +69,17 @@ export const rootFiles: ReadonlyArray<EditorFileInput> = [
 			"} as const",
 		),
 	},
+	{
+		name: "status.txt",
+		folder: "~",
+		language: "text",
+		content: md(
+			"LOCATION    Paris, France",
+			"FOCUS       frontend architecture — design systems — dev tooling",
+			"CONTACT     cedric@kirdes.dev / github.com/kirdesmf",
+			"STATUS      open for freelance & collaboration",
+		),
+	},
 ];
 
 // ─── About files (/about/) ────────────────────────────────────────────────────
