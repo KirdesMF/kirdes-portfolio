@@ -1,29 +1,60 @@
 import { useRouterState } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
 
-function formatWorkingDirectory(pathname: string): string {
+function formatCwd(pathname: string): string {
 	if (pathname === "/terminal") return "~/";
 	if (!pathname.startsWith("/terminal/")) return "~/";
 
 	return `~/${pathname.replace("/terminal/", "")}`;
 }
 
+function formatUptime(seconds: number): string {
+	const h = Math.floor(seconds / 3600);
+	const m = Math.floor((seconds % 3600) / 60);
+	const s = seconds % 60;
+	return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+// Capture boot time at module level — available immediately on first render
+const bootTimeMs = Math.round(performance.now());
+
 export function TerminalSessionHeader() {
 	const pathname = useRouterState({ select: (state) => state.location.pathname });
-	const workingDirectory = formatWorkingDirectory(pathname);
+	const cwd = formatCwd(pathname);
+	const startTimeRef = useRef(Date.now());
+	const [uptime, setUptime] = useState(0);
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setUptime(Math.floor((Date.now() - startTimeRef.current) / 1000));
+		}, 1000);
+
+		return () => clearInterval(interval);
+	}, []);
 
 	return (
-		<div className="flex h-7 shrink-0 items-center justify-between border-b border-border px-3 text-tiny text-muted-foreground">
-			<div className="flex min-w-0 items-center gap-2">
-				<span className="size-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
-				<span className="shrink-0 text-foreground">portfolio-os v0.1.0</span>
-				<span className="hidden text-muted-foreground/50 sm:inline">·</span>
-				<span className="hidden shrink-0 text-primary sm:inline">access granted</span>
-				<span className="hidden text-muted-foreground/50 md:inline">·</span>
-				<span className="hidden shrink-0 md:inline">status: online</span>
+		<div className="flex shrink-0 flex-col gap-px border-b border-border px-3 py-1.5 font-mono text-tiny text-muted-foreground">
+			<div className="flex items-center gap-6">
+				<span>
+					SESSION: <span className="text-primary">{formatUptime(uptime)}</span>
+				</span>
+				<span>
+					VERSION: <span className="text-primary">kish v1.0.0</span>
+				</span>
+				<span className="ms-auto">
+					STATUS: <span className="text-green-500">200</span>
+				</span>
 			</div>
-			<div className="flex shrink-0 items-center gap-2">
-				<span className="text-muted-foreground/50">cwd</span>
-				<span className="text-primary">{workingDirectory}</span>
+			<div className="flex items-center gap-6">
+				<span>
+					BOOT: <span className="text-primary">{bootTimeMs}ms</span>
+				</span>
+				<span>
+					HOST: <span className="text-primary">kirdes.dev</span>
+				</span>
+				<span className="ms-auto">
+					CWD: <span className="text-primary">{cwd}</span>
+				</span>
 			</div>
 		</div>
 	);
