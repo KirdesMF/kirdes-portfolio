@@ -1,4 +1,6 @@
 import { useRouterState } from "@tanstack/react-router";
+import { animate } from "animejs";
+import { scrambleText } from "animejs/text";
 import { useEffect, useRef, useState } from "react";
 
 function formatCwd(pathname: string): string {
@@ -22,6 +24,7 @@ export function TerminalSessionHeader() {
 	const pathname = useRouterState({ select: (state) => state.location.pathname });
 	const cwd = formatCwd(pathname);
 	const startTimeRef = useRef(Date.now());
+	const versionRef = useRef<HTMLSpanElement>(null);
 	const [uptime, setUptime] = useState(0);
 
 	useEffect(() => {
@@ -32,6 +35,27 @@ export function TerminalSessionHeader() {
 		return () => clearInterval(interval);
 	}, []);
 
+	useEffect(() => {
+		const el = versionRef.current;
+		if (!el) return;
+
+		const anim = animate(el, {
+			duration: 2000,
+			ease: "linear",
+			modifier: scrambleText({
+				text: "kish v1.0.0",
+				chars: "░▒▓█",
+				cursor: "░▒▓█",
+				revealRate: 60,
+				settleDuration: 500,
+			}) as unknown as (value: number) => string,
+		});
+
+		return () => {
+			anim.revert();
+		};
+	}, []);
+
 	return (
 		<div className="flex shrink-0 flex-col gap-0.5 border-b border-border px-4 py-2 font-mono text-xs text-muted-foreground">
 			<div className="flex items-center">
@@ -39,7 +63,7 @@ export function TerminalSessionHeader() {
 					SESSION: <span className="text-primary">{formatUptime(uptime)}</span>
 				</span>
 				<span className="ms-auto">
-					VERSION: <span className="text-primary">kish v1.0.0</span>
+					VERSION: <span ref={versionRef} className="text-primary" />
 				</span>
 			</div>
 			<div className="flex items-center">
