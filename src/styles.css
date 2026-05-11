@@ -163,6 +163,10 @@ body {
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
 
+	--color-status-open: oklch(0.65 0.18 146);
+	--color-status-open-offers: oklch(0.75 0.18 70);
+	--color-status-busy: oklch(0.65 0.2 25);
+
 	--font-sans: var(--font-sans);
 	--font-mono: var(--font-mono);
 	--font-serif: var(--font-serif);
