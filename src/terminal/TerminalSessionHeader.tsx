@@ -1,5 +1,5 @@
 import { useRouterState } from "@tanstack/react-router";
-import { animate } from "animejs";
+import { animate, stagger } from "animejs";
 import { scrambleText } from "animejs/text";
 import { useEffect, useRef, useState } from "react";
 
@@ -18,13 +18,12 @@ function formatUptime(seconds: number): string {
 }
 
 // Capture boot time at module level — clamp to 500ms max
-const bootTimeMs = Math.min(Math.round(performance.now()), 500);
+const bootTimeMs = Math.round(Math.random() * 500);
 
 export function TerminalSessionHeader() {
 	const pathname = useRouterState({ select: (state) => state.location.pathname });
 	const cwd = formatCwd(pathname);
 	const startTimeRef = useRef(Date.now());
-	const versionRef = useRef<HTMLSpanElement>(null);
 	const [uptime, setUptime] = useState(0);
 
 	useEffect(() => {
@@ -36,19 +35,12 @@ export function TerminalSessionHeader() {
 	}, []);
 
 	useEffect(() => {
-		const el = versionRef.current;
-		if (!el) return;
-
-		const anim = animate(el, {
-			duration: 2000,
+		const anim = animate("[data-anim-header]", {
 			ease: "linear",
-			modifier: scrambleText({
-				text: "kish v1.0.0",
-				chars: "░▒▓█",
+			innerHTML: scrambleText({
 				cursor: "░▒▓█",
-				revealRate: 60,
-				settleDuration: 500,
-			}) as unknown as (value: number) => string,
+				delay: stagger(100),
+			}),
 		});
 
 		return () => {
@@ -60,26 +52,44 @@ export function TerminalSessionHeader() {
 		<div className="flex shrink-0 flex-col gap-0.5 border-b border-border px-4 py-2 font-mono text-xs text-muted-foreground">
 			<div className="flex items-center">
 				<span>
-					SESSION: <span className="text-primary">{formatUptime(uptime)}</span>
+					SESSION:{" "}
+					<span data-anim-header className="text-primary">
+						{formatUptime(uptime)}
+					</span>
 				</span>
 				<span className="ms-auto">
-					VERSION: <span ref={versionRef} className="text-primary" />
+					VERSION:{" "}
+					<span data-anim-header className="text-primary">
+						kish v1.0.0
+					</span>
 				</span>
 			</div>
 			<div className="flex items-center">
 				<span>
-					BOOT: <span className="text-primary">{bootTimeMs}ms</span>
+					BOOT:{" "}
+					<span data-anim-header className="text-primary">
+						{bootTimeMs} ms
+					</span>
 				</span>
 				<span className="ms-auto">
-					HOST: <span className="text-primary">kirdes.dev</span>
+					HOST:{" "}
+					<span data-anim-header className="text-primary">
+						kirdes.dev
+					</span>
 				</span>
 			</div>
 			<div className="flex items-center">
 				<span>
-					STATUS: <span className="text-green-500">200</span>
+					STATUS:{" "}
+					<span data-anim-header className="text-green-500">
+						200
+					</span>
 				</span>
 				<span className="ms-auto">
-					CWD: <span className="text-primary">{cwd}</span>
+					CWD:{" "}
+					<span data-anim-header className="text-primary">
+						{cwd}
+					</span>
 				</span>
 			</div>
 		</div>
