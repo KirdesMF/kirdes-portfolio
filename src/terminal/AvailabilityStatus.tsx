@@ -1,5 +1,7 @@
+import { animate, stagger } from "animejs";
+import { scrambleText } from "animejs/text";
 import { MoveRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
 	Popover,
@@ -43,14 +45,32 @@ const STATUS_CONFIG: Record<
 export function AvailabilityStatus({ status }: AvailabilityStatusProps) {
 	const config = STATUS_CONFIG[status];
 	const [open, setOpen] = useState(false);
+	const rootRef = useRef<HTMLButtonElement>(null);
+
+	useEffect(() => {
+		const elements = rootRef.current?.querySelectorAll("[data-anim-item]");
+		if (!elements) return;
+
+		const anim = animate(elements, {
+			ease: "linear",
+			innerHTML: scrambleText({
+				cursor: "░▒▓█",
+				delay: stagger(100),
+			}),
+		});
+
+		return () => {
+			anim.revert();
+		};
+	}, []);
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger className="flex cursor-pointer items-center gap-1.5">
+			<PopoverTrigger ref={rootRef} className="flex cursor-pointer items-center gap-1.5">
 				<span className={`inline-block size-1.5 rounded-full ${config.dotColor}`} />
-				<span>AVAILABLE</span>
+				<span data-anim-item>AVAILABLE</span>
 				<MoveRight className="size-3" />
-				<span>{config.label}</span>
+				<span data-anim-item>{config.label}</span>
 			</PopoverTrigger>
 			<PopoverContent>
 				<PopoverTitle>{config.title}</PopoverTitle>
