@@ -1,5 +1,6 @@
 import { createRootRoute, HeadContent, Outlet, ScriptOnce, Scripts } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { getLocale } from "#/paraglide/runtime";
 import { ThemeProvider } from "#/theme/ThemeProvider";
 import { getInitialThemePreference } from "#/theme/theme.functions";
 import { themeBootScript } from "#/theme/themeBootScript";
@@ -30,7 +31,7 @@ function RootDocument({ children }: { children: ReactNode }) {
 
 	return (
 		<html
-			lang="en"
+			lang={getLocale()}
 			className={serverResolvedTheme}
 			data-theme={initialTheme}
 			style={{ colorScheme: serverResolvedTheme }}

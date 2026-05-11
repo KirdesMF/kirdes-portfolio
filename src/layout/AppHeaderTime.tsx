@@ -1,3 +1,5 @@
+import { ClientOnly } from "@tanstack/react-router";
+import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
 
 function getCurrentTimestamp(): number {
@@ -13,16 +15,24 @@ function formatTime(timestamp: number): string {
 	return `${hours}:${minutes}:${seconds}`;
 }
 
-export function AppHeaderTime() {
+export function AppHeaderTime(): ReactElement {
+	return (
+		<ClientOnly fallback={<span className="text-tiny">--:--:--</span>}>
+			<AppHeaderTimeClient />
+		</ClientOnly>
+	);
+}
+
+function AppHeaderTimeClient(): ReactElement {
 	const [timestamp, setTimestamp] = useState<number>(getCurrentTimestamp);
 
-	useEffect(() => {
-		const intervalId: ReturnType<typeof setInterval> = setInterval(() => {
+	useEffect(function startClock(): () => void {
+		const intervalId = window.setInterval(function updateTimestamp(): void {
 			setTimestamp(getCurrentTimestamp());
 		}, 1000);
 
-		return () => {
-			clearInterval(intervalId);
+		return function cleanup(): void {
+			window.clearInterval(intervalId);
 		};
 	}, []);
 

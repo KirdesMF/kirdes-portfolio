@@ -17,9 +17,6 @@ function formatUptime(seconds: number): string {
 	return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-// Capture boot time at module level — clamp to 500ms max
-const bootTimeMs = Math.round(Math.random() * 500);
-
 export function TerminalSessionHeader() {
 	const pathname = useRouterState({ select: (state) => state.location.pathname });
 	const cwd = formatCwd(pathname);
@@ -68,7 +65,7 @@ export function TerminalSessionHeader() {
 				<span>
 					BOOT_TIME:{" "}
 					<span data-anim-header className="text-primary">
-						{bootTimeMs} ms
+						{getRoundedFakeNumber("boot-time")}ms
 					</span>
 				</span>
 				<span className="ms-auto">
@@ -94,4 +91,23 @@ export function TerminalSessionHeader() {
 			</div>
 		</div>
 	);
+}
+
+function getHashValue(seed: string): number {
+	let hash = 0;
+
+	for (const character of seed) {
+		hash = (hash * 31 + character.charCodeAt(0)) % 100000;
+	}
+
+	return hash;
+}
+
+function getRoundedFakeNumber(seed: string): number {
+	const min = 100;
+	const max = 500;
+	const range = max - min + 1;
+	const hash = getHashValue(seed);
+
+	return min + (hash % range);
 }

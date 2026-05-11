@@ -1,4 +1,5 @@
 import { createRouter, defaultParseSearch } from "@tanstack/react-router";
+import { deLocalizeUrl, localizeUrl } from "./paraglide/runtime";
 import { routeTree } from "./routeTree.gen";
 
 function stringifySearch(search: Record<string, unknown>): string {
@@ -30,6 +31,10 @@ export function getRouter() {
 		defaultPreload: "intent",
 		defaultPreloadStaleTime: 0,
 		defaultNotFoundComponent: () => <div>Not Found</div>,
+		rewrite: {
+			input: ({ url }) => deLocalizeUrl(url),
+			output: ({ url }) => localizeUrl(url),
+		},
 	});
 
 	return router;

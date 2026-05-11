@@ -1,16 +1,8 @@
-import type { Register } from "@tanstack/react-router";
-import type { RequestHandler } from "@tanstack/react-start/server";
-
-type ServerEntry = { fetch: RequestHandler<Register> };
-
-async function createFetchHandler(): Promise<ServerEntry["fetch"]> {
-	const server = await import("@tanstack/react-start/server");
-	return server.createStartHandler(server.defaultStreamHandler);
-}
+import handler from "@tanstack/react-start/server-entry";
+import { paraglideMiddleware } from "./paraglide/server.js";
 
 export default {
-	async fetch(request: Request) {
-		const fetchHandler = await createFetchHandler();
-		return await fetchHandler(request);
+	fetch(req: Request): Promise<Response> {
+		return paraglideMiddleware(req, () => handler.fetch(req));
 	},
-} satisfies ServerEntry;
+};

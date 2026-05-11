@@ -1,8 +1,8 @@
-import { ClientOnly } from "@tanstack/react-router";
 import { Folder } from "lucide-react";
 import { Separator } from "#/design-system/Separator";
 import { AppHeaderNavigation } from "#/layout/AppHeaderNavigation";
 import { AppHeaderTime } from "#/layout/AppHeaderTime";
+import { setLocale } from "#/paraglide/runtime";
 import { ThemeToggle } from "#/theme/ThemeToggle";
 
 export function AppHeader() {
@@ -13,11 +13,17 @@ export function AppHeader() {
 				<AppHeaderNavigation />
 			</div>
 			<div className="flex shrink-0 items-center gap-2">
-				<span className="text-tiny text-muted-foreground">FR | EN</span>
+				<div className="flex text-tiny text-muted-foreground gap-1.5">
+					<button type="button" onClick={() => setLocale("fr")}>
+						FR
+					</button>
+					<span>|</span>
+					<button type="button" onClick={() => setLocale("en")}>
+						EN
+					</button>
+				</div>
 				<Separator orientation="vertical" />
-				<ClientOnly fallback={null}>
-					<AppHeaderTime />
-				</ClientOnly>
+				<AppHeaderTime />
 				<Separator orientation="vertical" />
 				<ThemeToggle />
 			</div>
