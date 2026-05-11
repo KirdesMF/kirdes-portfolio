@@ -66,7 +66,7 @@ export function TerminalSessionHeader() {
 			</div>
 			<div className="flex items-center">
 				<span>
-					BOOT:{" "}
+					BOOT_TIME:{" "}
 					<span data-anim-header className="text-primary">
 						{bootTimeMs} ms
 					</span>
@@ -82,7 +82,7 @@ export function TerminalSessionHeader() {
 				<span>
 					STATUS:{" "}
 					<span data-anim-header className="text-green-500">
-						200
+						OK
 					</span>
 				</span>
 				<span className="ms-auto">

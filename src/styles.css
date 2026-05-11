@@ -224,6 +224,12 @@ body {
 	}
 }
 
+@utility dot-pattern {
+	--dot-color: color-mix(in oklch, var(--color-foreground) 30%, transparent);
+	background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
+	background-size: 2.5px 2.5px;
+}
+
 .editor-code pre.shiki {
 	background-color: transparent;
 	color: var(--shiki-light, inherit);

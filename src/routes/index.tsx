@@ -1,5 +1,5 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { createTimeline, stagger, steps } from "animejs";
+import { createFileRoute } from "@tanstack/react-router";
+import { createTimeline, scrambleText, stagger, steps } from "animejs";
 import { useEffect } from "react";
 
 const bootLines = ["initializing shell", "loading profile", "mounting terminal"] as const;
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({
 });
 
 function RouteComponent() {
-	const navigate = useNavigate();
+	const navigate = Route.useNavigate();
 
 	useEffect(() => {
 		const tl = createTimeline({
@@ -27,21 +27,16 @@ function RouteComponent() {
 				});
 			},
 		});
-		tl.set("[data-boot-line]", { opacity: 0, translateY: 4 });
 		tl.label("cursor");
-		tl.label("lines", 400);
+		tl.add("[data-boot-line]", {
+			innerHTML: scrambleText({ cursor: "░▒▓█", delay: stagger(250) }),
+		});
 		tl.add(
-			"[data-boot-line]",
-			{ opacity: [0, 1], translateY: [4, 0] },
-			stagger(300, { start: "lines" }),
-		);
-		tl.add(
-			"[data-boot-cursor]",
+			"[data-loading-bar]",
 			{
-				duration: 500,
-				opacity: [1, 0, 1],
-				ease: steps(2),
-				loop: 5,
+				duration: 1500,
+				scaleX: [0, 1],
+				ease: steps(10),
 			},
 			"cursor",
 		);
@@ -52,21 +47,23 @@ function RouteComponent() {
 	}, [navigate]);
 
 	return (
-		<div className="flex h-dvh items-center justify-center bg-background font-mono text-xs text-foreground">
+		<main className="flex h-dvh items-center justify-center bg-background font-mono text-xs text-foreground">
 			<div className="flex w-full max-w-md flex-col gap-2 rounded border border-border bg-background/80 p-4">
 				<div className="mb-2 text-muted-foreground">kirdes terminal boot</div>
+
 				{bootLines.map((text) => (
 					<div className="flex gap-2" key={text}>
 						<span className="text-primary">›</span>
-						<span data-boot-line className="opacity-0">
-							{text}
-						</span>
+						<span data-boot-line>{text}</span>
 					</div>
 				))}
-				<span data-boot-cursor className="text-primary">
-					█
-				</span>
+
+				<div className="h-4 dot-pattern mt-4">
+					<svg aria-hidden="true" width="100%" height="100%">
+						<rect data-loading-bar width="100%" height="100%" className="fill-foreground" />
+					</svg>
+				</div>
 			</div>
-		</div>
+		</main>
 	);
 }
