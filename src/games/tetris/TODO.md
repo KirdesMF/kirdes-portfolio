@@ -1,49 +1,72 @@
-# TODO.md — Tetris
+# TODO.md — PixiJS Tetris
 
-## Project setup
+## Pixi project base
 
-- [x] Create the project base.
+- [x] Create the PixiJS project base.
 - [x] Add the main game entry point.
-- [x] Add a visible game area.
+- [x] Display a Pixi canvas.
+- [x] Display a basic game scene.
 - [x] Verify that the project starts without errors.
-- [ ] ~~Review the initial project structure.~~
+- [ ] ~~Review Pixi app startup.~~
 
 ---
 
-## Game grid
+## Game scene layout
 
-- [x] Add the main Tetris grid.
-- [x] Use classic Tetris grid dimensions.
-- [x] Position the grid cleanly on the screen.
-- [x] Verify that the grid is readable.
-- [ ] Review the empty grid state.
+- [x] Create the game scene.
+- [x] Display the grid area.
+- [x] Verify that the layout is stable at startup.
+- [ ] ~~Review the initial scene layout.~~
 
 ---
 
-## Pieces
+## Pixi grid display
+
+- [ ] Display the empty Tetris grid.
+- [ ] Use classic Tetris grid dimensions.
+- [ ] Position the grid cleanly in the scene.
+- [ ] Make empty cells visually readable.
+- [ ] Review grid readability.
+
+---
+
+## Board state rendering
+
+- [ ] Render empty cells from the board state.
+- [ ] Render filled cells from the board state.
+- [ ] Update the visual board when the board state changes.
+- [ ] Verify that rendering matches the current board state.
+- [ ] Review board state rendering.
+
+---
+
+## Tetris pieces
 
 - [ ] Add the 7 classic Tetris pieces.
-- [ ] Display one active piece at the top of the grid.
+- [ ] Spawn one active piece at the top of the grid.
+- [ ] Render the active piece in the Pixi scene.
 - [ ] Verify that each piece shape is correct.
-- [ ] Review all piece shapes individually.
+- [ ] Review all piece shapes visually.
 
 ---
 
-## Automatic falling
+## Game loop
 
+- [ ] Connect the game update loop.
 - [ ] Make the active piece fall automatically.
-- [ ] Keep the piece aligned to the grid.
-- [ ] Verify that the fall timing is stable.
+- [ ] Keep rendering synchronized with game state.
+- [ ] Verify that the game loop is stable.
 - [ ] Review automatic falling behavior.
 
 ---
 
-## Player controls
+## Player input
 
 - [ ] Add left movement.
 - [ ] Add right movement.
 - [ ] Add soft drop.
-- [ ] Prevent movement outside the grid.
+- [ ] Update the Pixi scene after input.
+- [ ] Prevent invalid movement from being displayed.
 - [ ] Review movement near both walls.
 
 ---
@@ -54,8 +77,9 @@
 - [ ] Add collision with the left wall.
 - [ ] Add collision with the right wall.
 - [ ] Add collision with placed blocks.
-- [ ] Reject invalid movements.
+- [ ] Reject invalid movement.
 - [ ] Place the active piece when it can no longer fall.
+- [ ] Verify that rejected moves do not affect rendering.
 - [ ] Review all collision cases.
 
 ---
@@ -63,17 +87,19 @@
 ## Piece spawning
 
 - [ ] Spawn a new piece after placement.
-- [ ] Keep placed blocks on the grid.
+- [ ] Keep placed blocks rendered on the board.
 - [ ] Ensure the game continues after each placement.
+- [ ] Verify that rendering stays consistent between pieces.
 - [ ] Review several consecutive placements.
 
 ---
 
-## Rotation
+## Piece rotation
 
 - [ ] Add piece rotation.
 - [ ] Reject invalid rotations.
-- [ ] Keep pieces aligned after rotation.
+- [ ] Keep the rendered piece aligned to the grid after rotation.
+- [ ] Prevent visual glitches after invalid rotations.
 - [ ] Test rotation in open space.
 - [ ] Test rotation near walls.
 - [ ] Test rotation near the floor.
@@ -88,6 +114,7 @@
 - [ ] Clear one complete line.
 - [ ] Move upper lines down after clearing.
 - [ ] Support multiple-line clears.
+- [ ] Update the Pixi board after clearing.
 - [ ] Test single line clear.
 - [ ] Test double line clear.
 - [ ] Test triple line clear.
@@ -96,51 +123,57 @@
 
 ---
 
-## Score
+## Score display
 
-- [ ] Display the score.
+- [ ] Display the score in the Pixi scene.
 - [ ] Increase the score after clearing lines.
 - [ ] Reward multiple-line clears more than single-line clears.
-- [ ] Verify score values.
+- [ ] Update the displayed score immediately.
+- [ ] Verify that displayed score matches gameplay events.
 - [ ] Review score behavior.
 
 ---
 
-## Game over
+## Game over state
 
 - [ ] Detect when a new piece cannot spawn.
-- [ ] Display the game over state.
-- [ ] Stop gameplay after game over.
+- [ ] Display the game over state in the Pixi scene.
+- [ ] Stop gameplay input after game over.
+- [ ] Keep the final board visible.
 - [ ] Review the game over condition.
 
 ---
 
-## Restart
+## Restart flow
 
 - [ ] Add restart action.
-- [ ] Reset the grid on restart.
+- [ ] Reset the board on restart.
 - [ ] Reset the score on restart.
 - [ ] Reset the active piece on restart.
+- [ ] Return the Pixi scene to a clean gameplay state.
 - [ ] Verify that a new game starts cleanly.
 - [ ] Review restart behavior.
 
 ---
 
-## Next piece
+## Next piece display
 
-- [ ] Display the next piece.
+- [ ] Display the next piece in the side area.
 - [ ] Use the next piece as the following active piece.
 - [ ] Generate a new next piece after each spawn.
+- [ ] Update the side display correctly.
+- [ ] Verify that displayed next piece matches the next active piece.
 - [ ] Review next piece behavior.
 
 ---
 
-## Ghost piece
+## Ghost piece display
 
-- [ ] Display the ghost piece.
+- [ ] Display the ghost piece in the grid.
 - [ ] Update the ghost piece after horizontal movement.
 - [ ] Update the ghost piece after rotation.
 - [ ] Update the ghost piece after soft drop.
+- [ ] Keep the ghost piece visually separate from placed blocks.
 - [ ] Verify that the ghost position matches the landing position.
 - [ ] Review ghost piece behavior.
 
@@ -152,17 +185,18 @@
 - [ ] Move the active piece directly to its landing position.
 - [ ] Place the piece immediately after hard drop.
 - [ ] Spawn a new piece after hard drop.
+- [ ] Update the Pixi scene without intermediate visual errors.
 - [ ] Review hard drop behavior.
 
 ---
 
-## Pause
+## Pause state
 
 - [ ] Add pause action.
 - [ ] Stop falling while paused.
 - [ ] Disable movement while paused.
 - [ ] Disable rotation while paused.
-- [ ] Display the pause state.
+- [ ] Display the pause state in the Pixi scene.
 - [ ] Add resume action.
 - [ ] Review pause and resume behavior.
 
@@ -173,29 +207,43 @@
 - [ ] Add start screen.
 - [ ] Add start action.
 - [ ] Prevent gameplay before start.
+- [ ] Switch cleanly from start screen to gameplay.
 - [ ] Start from a clean game state.
 - [ ] Review start screen behavior.
 
 ---
 
-## Level and speed
+## Level and speed display
 
 - [ ] Display the current level.
 - [ ] Increase level based on progress.
 - [ ] Increase falling speed progressively.
+- [ ] Update the displayed level correctly.
 - [ ] Verify that speed progression remains playable.
 - [ ] Review level and speed behavior.
 
 ---
 
-## Hold
+## Hold piece display
 
 - [ ] Add hold action.
-- [ ] Display held piece.
-- [ ] Allow swapping with held piece.
+- [ ] Display the held piece in the side area.
+- [ ] Allow swapping with the held piece.
 - [ ] Prevent multiple holds for the same active piece.
 - [ ] Reset hold availability after piece placement.
+- [ ] Update the hold display correctly.
 - [ ] Review hold behavior.
+
+---
+
+## Pixi scene cleanup
+
+- [ ] Verify that restart does not duplicate visual objects.
+- [ ] Verify that game over does not leave stale interactive state.
+- [ ] Verify that board updates do not create visual artifacts.
+- [ ] Restart several games in a row.
+- [ ] Confirm that the scene remains clean after repeated restarts.
+- [ ] Review Pixi scene cleanup.
 
 ---
 
@@ -205,8 +253,9 @@
 - [ ] Tune movement responsiveness.
 - [ ] Tune soft drop feel.
 - [ ] Tune hard drop feel.
-- [ ] Improve transition between placed piece and next piece.
+- [ ] Improve piece transition clarity.
 - [ ] Improve line clear readability.
+- [ ] Verify that Pixi rendering remains smooth during normal play.
 - [ ] Review full gameplay flow.
 
 ---
@@ -219,18 +268,20 @@
 - [ ] Place level clearly.
 - [ ] Place next piece clearly.
 - [ ] Place hold piece clearly.
-- [ ] Ensure the layout works during gameplay.
-- [ ] Review visual readability.
+- [ ] Keep the overall presentation visually consistent.
+- [ ] Check readability during actual gameplay.
+- [ ] Review visual polish.
 
 ---
 
-## Sounds
+## Sound feedback
 
 - [ ] Add movement sound.
 - [ ] Add rotation sound.
 - [ ] Add placement sound.
 - [ ] Add line clear sound.
 - [ ] Add game over sound.
+- [ ] Check that sounds support gameplay.
 - [ ] Check that sounds are not distracting.
 - [ ] Review audio feedback.
 
@@ -238,22 +289,28 @@
 
 ## Regression testing
 
+- [ ] Test Pixi app startup.
+- [ ] Test scene layout.
+- [ ] Test board rendering.
+- [ ] Test active piece rendering.
 - [ ] Test wall collisions.
 - [ ] Test floor collisions.
 - [ ] Test collisions with placed blocks.
 - [ ] Test invalid rotations.
 - [ ] Test line clearing.
 - [ ] Test multiple-line clearing.
-- [ ] Test scoring.
-- [ ] Test game over.
+- [ ] Test score display.
+- [ ] Test game over display.
 - [ ] Test restart.
-- [ ] Test next piece.
-- [ ] Test ghost piece.
+- [ ] Test next piece display.
+- [ ] Test ghost piece display.
 - [ ] Test hard drop.
 - [ ] Test pause and resume.
 - [ ] Test hold.
+- [ ] Confirm that visual state stays synchronized with game state.
 - [ ] List remaining known bugs.
 - [ ] Fix blocking bugs.
+- [ ] Review regression testing results.
 
 ---
 
@@ -261,6 +318,7 @@
 
 - [ ] Run the final build.
 - [ ] Verify that the build completes without errors.
+- [ ] Verify that the Pixi canvas works in the built version.
 - [ ] Test the built version.
 - [ ] Confirm that the main game flow works.
 - [ ] Confirm that no blocking bugs remain.
@@ -270,11 +328,13 @@
 
 ## Done checklist
 
+- [ ] The Pixi application starts reliably.
 - [ ] A full game can be played from start to game over.
 - [ ] Pieces move correctly.
 - [ ] Pieces rotate correctly.
 - [ ] Pieces fall correctly.
 - [ ] Pieces place correctly.
+- [ ] The Pixi scene always reflects the current game state.
 - [ ] Lines clear correctly.
 - [ ] Score works.
 - [ ] Level works.
@@ -283,4 +343,5 @@
 - [ ] Hold works.
 - [ ] Pause works.
 - [ ] Restart works.
-- [ ] The final build is stable.
+- [ ] Repeated restarts do not break the Pixi scene.
+- [ ] The final build is stable and playable.

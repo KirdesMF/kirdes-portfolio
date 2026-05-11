@@ -1,72 +1,80 @@
-import { useState } from "react";
+import { Application, Container, Graphics } from "pixi.js";
+import { useEffect, useRef } from "react";
 
-import { PIECE_DEFINITIONS, type PieceType, randomPieceType } from "./pieces";
-
+const CELL_SIZE = 28;
 const GRID_COLS = 10;
 const GRID_ROWS = 20;
-const CELL_SIZE = 28;
 
-type ActivePiece = {
-	type: PieceType;
-	row: number;
-	col: number;
-};
+const GRID_WIDTH = GRID_COLS * CELL_SIZE;
+const GRID_HEIGHT = GRID_ROWS * CELL_SIZE;
 
-// Spawn a piece centered at the top of the grid.
-function spawnPiece(type: PieceType): ActivePiece {
-	const shape = PIECE_DEFINITIONS[type].shape;
-	const maxCol = Math.max(...shape.map(([, c]) => c));
-	const col = Math.floor((GRID_COLS - (maxCol + 1)) / 2);
-	const minRow = Math.min(...shape.map(([r]) => r));
+function createScene() {
+	const gridArea = new Container();
 
-	return { type, row: -minRow, col };
-}
+	// Grid background and border
+	const gridBg = new Graphics();
+	gridBg.rect(0, 0, GRID_WIDTH, GRID_HEIGHT);
+	gridBg.fill({ color: 0x16213e, alpha: 0.5 });
+	gridBg.stroke({ width: 1, color: 0x334155 });
+	gridArea.addChild(gridBg);
 
-// Compute the set of "row-col" keys the piece occupies.
-function buildOccupiedSet(piece: ActivePiece): Set<string> {
-	const set = new Set<string>();
-	const def = PIECE_DEFINITIONS[piece.type];
-
-	for (const [dr, dc] of def.shape) {
-		set.add(`${piece.row + dr}-${piece.col + dc}`);
-	}
-
-	return set;
+	return { gridArea };
 }
 
 export function TetrisGame() {
-	const [active] = useState<ActivePiece>(() => spawnPiece(randomPieceType()));
+	const containerRef = useRef<HTMLDivElement>(null);
+	const canvasRef = useRef<HTMLCanvasElement>(null);
 
-	const occupied = buildOccupiedSet(active);
+	useEffect(() => {
+		let app: Application | null = null;
+		let cancelled = false;
+
+		async function setupPixi() {
+			const canvas = canvasRef.current;
+			const host = containerRef.current;
+			if (!canvas || !host) return;
+
+			const pixApp = new Application();
+			await pixApp.init({
+				resizeTo: host,
+				backgroundAlpha: 0,
+				antialias: true,
+				autoDensity: true,
+				resolution: window.devicePixelRatio,
+				canvas,
+			});
+
+			if (cancelled) {
+				pixApp.destroy({ removeView: true, releaseGlobalResources: true }, { children: true });
+				return;
+			}
+
+			const { gridArea } = createScene();
+			pixApp.stage.addChild(gridArea);
+
+			app = pixApp;
+		}
+
+		setupPixi();
+
+		return () => {
+			cancelled = true;
+			if (app) {
+				app.destroy(
+					{ removeView: true, releaseGlobalResources: true },
+					{ children: true, texture: true, textureSource: true },
+				);
+			}
+		};
+	}, []);
 
 	return (
-		<div className="flex h-dvh items-center justify-center bg-background">
-			<div
-				className="grid border border-border bg-background"
-				style={{
-					gridTemplateColumns: `repeat(${GRID_COLS}, ${CELL_SIZE}px)`,
-					gridTemplateRows: `repeat(${GRID_ROWS}, ${CELL_SIZE}px)`,
-				}}
-			>
-				{Array.from({ length: GRID_ROWS }, (_, y) =>
-					Array.from({ length: GRID_COLS }, (_, x) => {
-						const key = `${y}-${x}`;
-						const isOccupied = occupied.has(key);
-
-						return (
-							<div
-								key={key}
-								className={isOccupied ? "" : "border-r border-b border-border/30"}
-								style={{
-									width: CELL_SIZE,
-									height: CELL_SIZE,
-									backgroundColor: isOccupied ? PIECE_DEFINITIONS[active.type].color : undefined,
-								}}
-							/>
-						);
-					}),
-				)}
-			</div>
+		<div
+			ref={containerRef}
+			className="bg-background"
+			style={{ width: GRID_WIDTH, height: GRID_HEIGHT }}
+		>
+			<canvas ref={canvasRef} />
 		</div>
 	);
 }
