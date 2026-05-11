@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { animate, createTimeline, stagger } from "animejs";
-import { useEffect, useRef } from "react";
+import { createTimeline, stagger, steps } from "animejs";
+import { useEffect } from "react";
 
 const bootLines = ["initializing shell", "loading profile", "mounting terminal"] as const;
 
@@ -10,50 +10,40 @@ export const Route = createFileRoute("/")({
 
 function RouteComponent() {
 	const navigate = useNavigate();
-	const progressRef = useRef<HTMLDivElement>(null);
-	const percentRef = useRef<HTMLSpanElement>(null);
 
 	useEffect(() => {
 		const tl = createTimeline({
 			defaults: { ease: "out" },
 			onComplete: () => {
-				// Start progress bar animation after boot lines resolve
-				const progressEl = progressRef.current;
-				const percentEl = percentRef.current;
-				if (!progressEl || !percentEl) return;
-
-				animate(progressEl, {
-					width: ["0%", "100%"],
-					duration: 1500,
-					ease: "inOut",
-					onUpdate: () => {
-						// progressEl width reflects current value, derive percentage from inline style
-						const pct = Math.round(parseFloat(progressEl.style.width) || 0);
-						percentEl.textContent = `${pct}%`;
+				navigate({
+					replace: true,
+					search: {
+						activeFile: undefined,
+						editor: undefined,
+						files: [],
+						panel: "terminal",
 					},
-					onComplete: () => {
-						percentEl.textContent = "100%";
-						navigate({
-							replace: true,
-							search: {
-								activeFile: undefined,
-								editor: undefined,
-								files: [],
-								panel: "terminal",
-							},
-							to: "/terminal",
-						});
-					},
+					to: "/terminal",
 				});
 			},
 		});
-
 		tl.set("[data-boot-line]", { opacity: 0, translateY: 4 });
+		tl.label("cursor");
 		tl.label("lines", 400);
 		tl.add(
 			"[data-boot-line]",
 			{ opacity: [0, 1], translateY: [4, 0] },
 			stagger(300, { start: "lines" }),
+		);
+		tl.add(
+			"[data-boot-cursor]",
+			{
+				duration: 500,
+				opacity: [1, 0, 1],
+				ease: steps(2),
+				loop: 5,
+			},
+			"cursor",
 		);
 
 		return () => {
@@ -73,14 +63,9 @@ function RouteComponent() {
 						</span>
 					</div>
 				))}
-				<div className="mt-2 flex items-center gap-2">
-					<div className="h-4 flex-1 overflow-hidden rounded border border-border bg-background/60">
-						<div ref={progressRef} className="h-full w-0 bg-primary/60" />
-					</div>
-					<span ref={percentRef} className="w-8 text-right tabular-nums text-muted-foreground">
-						0%
-					</span>
-				</div>
+				<span data-boot-cursor className="text-primary">
+					█
+				</span>
 			</div>
 		</div>
 	);
