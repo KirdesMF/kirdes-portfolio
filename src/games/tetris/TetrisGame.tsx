@@ -339,6 +339,8 @@ export function TetrisGame() {
 			let lockAccumulator = 0;
 			let isLocking = false;
 			let gameOver = false;
+			let isHardDropping = false;
+			let hardDropTarget = 0;
 			const board: Board = createEmptyBoard();
 			const piece: ActivePiece = spawnPiece(randomPieceType());
 			let nextType: PieceType = randomPieceType();
@@ -358,8 +360,54 @@ export function TetrisGame() {
 
 			updateGhost();
 
+			function doLock() {
+				placePiece(piece, board);
+				const lines = clearLines(board);
+
+				if (lines > 0) {
+					score += getLineScore(lines);
+					scoreText.text = `SCORE: ${score}`;
+				}
+
+				drawBoard(boardGraphics, board, CELL_SIZE);
+				pieceGraphics.clear();
+
+				const next = spawnPiece(nextType);
+				piece.type = next.type;
+				piece.row = next.row;
+				piece.col = next.col;
+				piece.rotation = next.rotation;
+				nextType = randomPieceType();
+				drawPreview(previewGraphics, nextType, PREVIEW_CELL_SIZE);
+
+				if (checkGameOver(piece, board)) {
+					gameOver = true;
+					gameOverText.visible = true;
+				}
+
+				drawPiece(pieceGraphics, piece, CELL_SIZE);
+				updateGhost();
+
+				dropAccumulator = 0;
+				isLocking = false;
+				lockAccumulator = 0;
+			}
+
 			pixApp.ticker.add((ticker) => {
 				if (gameOver) return;
+
+				if (isHardDropping) {
+					piece.row++;
+					drawPiece(pieceGraphics, piece, CELL_SIZE);
+					updateGhost();
+
+					if (piece.row >= hardDropTarget || !canMove(piece, 1, 0, board)) {
+						isHardDropping = false;
+						doLock();
+					}
+
+					return;
+				}
 
 				const canFall = canMove(piece, 1, 0, board);
 
@@ -384,37 +432,7 @@ export function TetrisGame() {
 					lockAccumulator += ticker.deltaMS;
 
 					if (lockAccumulator >= LOCK_DELAY_MS) {
-						placePiece(piece, board);
-						const lines = clearLines(board);
-
-						if (lines > 0) {
-							score += getLineScore(lines);
-							scoreText.text = `SCORE: ${score}`;
-						}
-
-						drawBoard(boardGraphics, board, CELL_SIZE);
-						pieceGraphics.clear();
-
-						// Advance next piece
-						const next = spawnPiece(nextType);
-						piece.type = next.type;
-						piece.row = next.row;
-						piece.col = next.col;
-						piece.rotation = next.rotation;
-						nextType = randomPieceType();
-						drawPreview(previewGraphics, nextType, PREVIEW_CELL_SIZE);
-
-						if (checkGameOver(piece, board)) {
-							gameOver = true;
-							gameOverText.visible = true;
-						}
-
-						drawPiece(pieceGraphics, piece, CELL_SIZE);
-						updateGhost();
-
-						dropAccumulator = 0;
-						isLocking = false;
-						lockAccumulator = 0;
+						doLock();
 					}
 				}
 			});
@@ -497,6 +515,14 @@ export function TetrisGame() {
 								isLocking = false;
 								lockAccumulator = 0;
 							}
+						}
+						break;
+
+					case " ":
+						e.preventDefault();
+						if (!isHardDropping) {
+							isHardDropping = true;
+							hardDropTarget = getGhostRow(piece, board);
 						}
 						break;
 				}

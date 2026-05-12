@@ -181,12 +181,12 @@
 
 ## Hard drop
 
-- [ ] Add hard drop action.
-- [ ] Move the active piece directly to its landing position.
-- [ ] Place the piece immediately after hard drop.
-- [ ] Spawn a new piece after hard drop.
-- [ ] Update the Pixi scene without intermediate visual errors.
-- [ ] Review hard drop behavior.
+- [x] Add hard drop action.
+- [x] Move the active piece directly to its landing position.
+- [x] Place the piece immediately after hard drop.
+- [x] Spawn a new piece after hard drop.
+- [x] Update the Pixi scene without intermediate visual errors.
+- [ ] ~~Review hard drop behavior.~~
 
 ---
 
