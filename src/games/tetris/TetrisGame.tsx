@@ -1,14 +1,14 @@
 import { Application, Container, Graphics } from "pixi.js";
 import { useEffect, useRef } from "react";
 
-import { type Board, createEmptyBoard, drawBoard } from "./board";
+import { type Board, type BoardCell, createEmptyBoard, drawBoard } from "./board";
 import { PIECE_DEFINITIONS, type PieceType, randomPieceType, type Shape } from "./pieces";
 
 const CELL_SIZE = 28;
 const GRID_COLS = 10;
 const GRID_ROWS = 20;
 const DROP_INTERVAL_MS = 1000;
-const LOCK_DELAY_MS = 500;
+const LOCK_DELAY_MS = 300;
 
 const GRID_WIDTH = GRID_COLS * CELL_SIZE;
 const GRID_HEIGHT = GRID_ROWS * CELL_SIZE;
@@ -59,6 +59,24 @@ function canRotate(piece: ActivePiece, newRotation: number, board: Board): numbe
 	if (canPlace(piece, newRotation, 0, 1, board)) return 1;
 
 	return null;
+}
+
+// Remove full rows and shift everything above down. Returns number of lines cleared.
+function clearLines(board: Board): number {
+	let cleared = 0;
+
+	for (let r = GRID_ROWS - 1; r >= 0; r--) {
+		const isFull = board[r].every((cell) => cell !== null);
+
+		if (isFull) {
+			board.splice(r, 1);
+			board.unshift(Array<BoardCell>(GRID_COLS).fill(null));
+			cleared++;
+			r++; // Re-check this row index after shift
+		}
+	}
+
+	return cleared;
 }
 
 // Write the piece's cells onto the board.
@@ -181,26 +199,30 @@ export function TetrisGame() {
 			drawPiece(pieceGraphics, piece, CELL_SIZE);
 
 			pixApp.ticker.add((ticker) => {
-				dropAccumulator += ticker.deltaMS;
+				const canFall = canMove(piece, 1, 0, board);
 
-				if (dropAccumulator >= DROP_INTERVAL_MS) {
-					dropAccumulator -= DROP_INTERVAL_MS;
+				if (canFall) {
+					isLocking = false;
+					lockAccumulator = 0;
 
-					if (canMove(piece, 1, 0, board)) {
+					dropAccumulator += ticker.deltaMS;
+
+					if (dropAccumulator >= DROP_INTERVAL_MS) {
+						dropAccumulator -= DROP_INTERVAL_MS;
 						piece.row++;
 						drawPiece(pieceGraphics, piece, CELL_SIZE);
-						isLocking = false;
-						lockAccumulator = 0;
-					} else {
-						isLocking = true;
 					}
-				}
+				} else {
+					if (!isLocking) {
+						isLocking = true;
+						lockAccumulator = 0;
+					}
 
-				if (isLocking) {
 					lockAccumulator += ticker.deltaMS;
 
 					if (lockAccumulator >= LOCK_DELAY_MS) {
 						placePiece(piece, board);
+						clearLines(board);
 						drawBoard(boardGraphics, board, CELL_SIZE);
 						pieceGraphics.clear();
 

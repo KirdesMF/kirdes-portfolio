@@ -110,16 +110,16 @@
 
 ## Line clearing
 
-- [ ] Detect complete lines.
-- [ ] Clear one complete line.
-- [ ] Move upper lines down after clearing.
-- [ ] Support multiple-line clears.
-- [ ] Update the Pixi board after clearing.
-- [ ] Test single line clear.
-- [ ] Test double line clear.
-- [ ] Test triple line clear.
-- [ ] Test four-line clear.
-- [ ] Review line clearing behavior.
+- [x] Detect complete lines.
+- [x] Clear one complete line.
+- [x] Move upper lines down after clearing.
+- [x] Support multiple-line clears.
+- [x] Update the Pixi board after clearing.
+- [x] Test single line clear.
+- [x] Test double line clear.
+- [x] Test triple line clear.
+- [x] Test four-line clear.
+- [ ] ~~Review line clearing behavior.~~
 
 ---
 
