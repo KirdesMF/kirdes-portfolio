@@ -158,12 +158,12 @@
 
 ## Next piece display
 
-- [ ] Display the next piece in the side area.
-- [ ] Use the next piece as the following active piece.
-- [ ] Generate a new next piece after each spawn.
-- [ ] Update the side display correctly.
-- [ ] Verify that displayed next piece matches the next active piece.
-- [ ] Review next piece behavior.
+- [x] Display the next piece in the side area.
+- [x] Use the next piece as the following active piece.
+- [x] Generate a new next piece after each spawn.
+- [x] Update the side display correctly.
+- [x] Verify that displayed next piece matches the next active piece.
+- [ ] ~~Review next piece behavior.~~
 
 ---
 

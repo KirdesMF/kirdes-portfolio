@@ -13,6 +13,13 @@ const LOCK_DELAY_MS = 300;
 const GRID_WIDTH = GRID_COLS * CELL_SIZE;
 const GRID_HEIGHT = GRID_ROWS * CELL_SIZE;
 
+const GAP = 16;
+const SIDE_PANEL_WIDTH = 100;
+const PREVIEW_CELL_SIZE = 16;
+
+const CANVAS_WIDTH = GRID_WIDTH + GAP + SIDE_PANEL_WIDTH;
+const CANVAS_HEIGHT = GRID_HEIGHT;
+
 const GRID_BG_COLOR = 0x16213e;
 const GRID_BORDER_COLOR = 0x334155;
 const GRID_LINE_COLOR = 0x334155;
@@ -51,32 +58,11 @@ function canMove(piece: ActivePiece, dRow: number, dCol: number, board: Board): 
 
 // Check if the piece can rotate to the given rotation (with wall kicks).
 function canRotate(piece: ActivePiece, newRotation: number, board: Board): number | null {
-	// Try the rotation at current position first.
 	if (canPlace(piece, newRotation, 0, 0, board)) return 0;
-
-	// Wall kick: try shifting left or right by 1.
 	if (canPlace(piece, newRotation, 0, -1, board)) return -1;
 	if (canPlace(piece, newRotation, 0, 1, board)) return 1;
 
 	return null;
-}
-
-// Remove full rows and shift everything above down. Returns number of lines cleared.
-function clearLines(board: Board): number {
-	let cleared = 0;
-
-	for (let r = GRID_ROWS - 1; r >= 0; r--) {
-		const isFull = board[r].every((cell) => cell !== null);
-
-		if (isFull) {
-			board.splice(r, 1);
-			board.unshift(Array<BoardCell>(GRID_COLS).fill(null));
-			cleared++;
-			r++; // Re-check this row index after shift
-		}
-	}
-
-	return cleared;
 }
 
 // Check if the newly spawned piece overlaps with placed blocks.
@@ -104,6 +90,22 @@ function placePiece(piece: ActivePiece, board: Board): void {
 	}
 }
 
+// Remove full rows and shift everything above down.
+function clearLines(board: Board): number {
+	let cleared = 0;
+
+	for (let r = GRID_ROWS - 1; r >= 0; r--) {
+		if (board[r].every((cell) => cell !== null)) {
+			board.splice(r, 1);
+			board.unshift(Array<BoardCell>(GRID_COLS).fill(null));
+			cleared++;
+			r++;
+		}
+	}
+
+	return cleared;
+}
+
 function spawnPiece(type: PieceType): ActivePiece {
 	const shape: Shape = PIECE_DEFINITIONS[type].shapes[0];
 	const maxCol = Math.max(...shape.map(([, c]) => c));
@@ -123,6 +125,17 @@ function drawPiece(g: Graphics, piece: ActivePiece, cellSize: number): void {
 		const y = (piece.row + dr) * cellSize;
 		g.rect(x, y, cellSize, cellSize);
 		g.fill(def.color);
+	}
+}
+
+function drawPreview(g: Graphics, type: PieceType, cellSize: number): void {
+	g.clear();
+	const shape: Shape = PIECE_DEFINITIONS[type].shapes[0];
+	const color = PIECE_DEFINITIONS[type].color;
+
+	for (const [dr, dc] of shape) {
+		g.rect(dc * cellSize, dr * cellSize, cellSize, cellSize);
+		g.fill(color);
 	}
 }
 
@@ -170,6 +183,19 @@ function createScoreText(): Text {
 	return text;
 }
 
+function createNextLabel(): Text {
+	return new Text({
+		text: "NEXT",
+		style: {
+			fontFamily: "monospace",
+			fontSize: 12,
+			fill: 0x94a3b8,
+		},
+		x: 8,
+		y: 8,
+	});
+}
+
 function createGameOverText(): Text {
 	const text = new Text({
 		text: "GAME OVER",
@@ -200,6 +226,7 @@ function getLineScore(count: number): number {
 
 function createScene() {
 	const gridArea = new Container();
+	const sideArea = new Container();
 
 	const boardLayer = new Container();
 	const boardGraphics = new Graphics();
@@ -213,14 +240,25 @@ function createScene() {
 	const gameOverText = createGameOverText();
 	gameOverText.visible = false;
 
+	const nextLabel = createNextLabel();
+	const previewGraphics = new Graphics();
+	previewGraphics.y = 28;
+	previewGraphics.x = 8;
+	sideArea.addChild(nextLabel);
+	sideArea.addChild(previewGraphics);
+
+	sideArea.x = GRID_WIDTH + GAP;
+	sideArea.y = 0;
+
 	gridArea.addChild(createGridBackground());
 	gridArea.addChild(createGridLines());
 	gridArea.addChild(boardLayer);
 	gridArea.addChild(activePieceLayer);
 	gridArea.addChild(scoreText);
 	gridArea.addChild(gameOverText);
+	gridArea.addChild(sideArea);
 
-	return { gridArea, pieceGraphics, boardGraphics, scoreText, gameOverText };
+	return { gridArea, pieceGraphics, boardGraphics, scoreText, gameOverText, previewGraphics };
 }
 
 export function TetrisGame() {
@@ -249,7 +287,8 @@ export function TetrisGame() {
 
 			if (cancelled) return;
 
-			const { gridArea, pieceGraphics, boardGraphics, scoreText, gameOverText } = createScene();
+			const { gridArea, pieceGraphics, boardGraphics, scoreText, gameOverText, previewGraphics } =
+				createScene();
 			pixApp.stage.addChild(gridArea);
 
 			// Game state (mutable, driven by ticker and input)
@@ -260,8 +299,10 @@ export function TetrisGame() {
 			let gameOver = false;
 			const board: Board = createEmptyBoard();
 			const piece: ActivePiece = spawnPiece(randomPieceType());
+			let nextType: PieceType = randomPieceType();
 
 			drawPiece(pieceGraphics, piece, CELL_SIZE);
+			drawPreview(previewGraphics, nextType, PREVIEW_CELL_SIZE);
 
 			pixApp.ticker.add((ticker) => {
 				if (gameOver) return;
@@ -299,19 +340,21 @@ export function TetrisGame() {
 						drawBoard(boardGraphics, board, CELL_SIZE);
 						pieceGraphics.clear();
 
-						const next = spawnPiece(randomPieceType());
+						// Advance next piece
+						const next = spawnPiece(nextType);
 						piece.type = next.type;
 						piece.row = next.row;
 						piece.col = next.col;
 						piece.rotation = next.rotation;
+						nextType = randomPieceType();
+						drawPreview(previewGraphics, nextType, PREVIEW_CELL_SIZE);
 
 						if (checkGameOver(piece, board)) {
 							gameOver = true;
 							gameOverText.visible = true;
-							pieceGraphics.clear();
-						} else {
-							drawPiece(pieceGraphics, piece, CELL_SIZE);
 						}
+
+						drawPiece(pieceGraphics, piece, CELL_SIZE);
 
 						dropAccumulator = 0;
 						isLocking = false;
@@ -319,6 +362,28 @@ export function TetrisGame() {
 					}
 				}
 			});
+
+			function restartGame() {
+				Object.assign(board, createEmptyBoard());
+				score = 0;
+				dropAccumulator = 0;
+				lockAccumulator = 0;
+				isLocking = false;
+				gameOver = false;
+
+				boardGraphics.clear();
+				gameOverText.visible = false;
+				scoreText.text = "SCORE: 0";
+
+				const next = spawnPiece(randomPieceType());
+				piece.type = next.type;
+				piece.row = next.row;
+				piece.col = next.col;
+				piece.rotation = next.rotation;
+				nextType = randomPieceType();
+				drawPiece(pieceGraphics, piece, CELL_SIZE);
+				drawPreview(previewGraphics, nextType, PREVIEW_CELL_SIZE);
+			}
 
 			function onKeyDown(e: KeyboardEvent) {
 				if (gameOver) {
@@ -376,29 +441,6 @@ export function TetrisGame() {
 				}
 			}
 
-			function restartGame() {
-				// Reset state
-				Object.assign(board, createEmptyBoard());
-				score = 0;
-				dropAccumulator = 0;
-				lockAccumulator = 0;
-				isLocking = false;
-				gameOver = false;
-
-				// Reset visuals
-				boardGraphics.clear();
-				gameOverText.visible = false;
-				scoreText.text = "SCORE: 0";
-
-				// Spawn new piece
-				const next = spawnPiece(randomPieceType());
-				piece.type = next.type;
-				piece.row = next.row;
-				piece.col = next.col;
-				piece.rotation = next.rotation;
-				drawPiece(pieceGraphics, piece, CELL_SIZE);
-			}
-
 			window.addEventListener("keydown", onKeyDown);
 			removeKeyboard = () => window.removeEventListener("keydown", onKeyDown);
 
@@ -423,7 +465,7 @@ export function TetrisGame() {
 		<div
 			ref={containerRef}
 			className="bg-background"
-			style={{ width: GRID_WIDTH, height: GRID_HEIGHT }}
+			style={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
 		>
 			<canvas ref={canvasRef} />
 		</div>
