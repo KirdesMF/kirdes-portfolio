@@ -249,31 +249,41 @@
 
 ## Gameplay polish
 
-- [ ] Review control feel.
-- [ ] Tune soft drop feel.
-- [ ] Tune hard drop feel.
-- [ ] Improve piece transition clarity.
-- [ ] Improve line clear readability.
-- [ ] Verify that Pixi rendering remains smooth during normal play.
-- [ ] Review full gameplay flow.
+- [x] Review control feel.
+- [x] Tune soft drop feel.
+- [x] Tune hard drop feel.
+- [x] Improve piece transition clarity.
+- [x] Improve line clear readability.
+- [x] Verify that Pixi rendering remains smooth during normal play.
+- [ ] ~~Review full gameplay flow.~~
 
 ---
 
 ## Minimal visual polish
 
-- [ ] Make blocks visually distinct.
-- [ ] Improve grid readability.
-- [ ] Place score clearly.
-- [ ] Place level clearly.
-- [ ] Place next piece clearly.
-- [ ] Place hold piece clearly.
-- [ ] Keep the overall presentation visually consistent.
-- [ ] Check readability during actual gameplay.
-- [ ] Review visual polish.
+- [x] Make blocks visually distinct.
+- [x] Improve grid readability.
+- [x] Place score clearly.
+- [x] Place level clearly.
+- [x] Place next piece clearly.
+- [x] Place hold piece clearly.
+- [x] Keep the overall presentation visually consistent.
+- [x] Check readability during actual gameplay.
+- [ ] ~~Review visual polish.~~
 
 ---
 
-## Sound feedback
+## Theme color support
+
+- [ ] Make grid background and border adapt to theme.
+- [ ] Make text colors adapt to theme.
+- [ ] Ensure block colors work in both light and dark modes.
+- [ ] Apply theme changes immediately.
+- [ ] Review theme behavior.
+
+---
+
+## Sound feedback (bonus)
 
 - [ ] Add movement sound.
 - [ ] Add rotation sound.

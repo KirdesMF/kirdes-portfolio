@@ -479,11 +479,30 @@ Check readability during actual gameplay, not only while idle.
 
 ---
 
-## Step 25 — Sound feedback
+## Step 25 — Theme color support
 
 ### Goal
 
-Add minimal audio feedback.
+Make the game visually adapt to light and dark color themes.
+
+### Deliverable
+
+- Grid background and border colors adapt to the current theme.
+- Text colors (score, game over, labels) adapt to the current theme.
+- Block colors stay vibrant in both light and dark modes.
+- Theme changes apply immediately without restarting the game.
+
+### Review
+
+Toggle between light and dark mode and verify that all visual elements are readable.
+
+---
+
+## Step 26 — Sound feedback (bonus)
+
+### Goal
+
+Add optional audio feedback.
 
 ### Deliverable
 
@@ -500,7 +519,7 @@ Check that audio supports the gameplay flow without becoming intrusive.
 
 ---
 
-## Step 26 — Regression testing
+## Step 27 — Regression testing
 
 ### Goal
 
@@ -584,9 +603,10 @@ Test the built version like an end user.
 20. Pixi scene cleanup
 21. Gameplay polish
 22. Visual polish
-23. Sound feedback
-24. Regression testing
-25. Final build
+23. Theme color support
+24. Sound feedback (bonus)
+25. Regression testing
+26. Final build
 
 ---
 
