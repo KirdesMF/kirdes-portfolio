@@ -321,7 +321,10 @@ export function TetrisGame() {
 			});
 
 			function onKeyDown(e: KeyboardEvent) {
-				if (gameOver) return;
+				if (gameOver) {
+					if (e.key === "Enter") restartGame();
+					return;
+				}
 
 				switch (e.key) {
 					case "ArrowLeft":
@@ -371,6 +374,29 @@ export function TetrisGame() {
 						}
 						break;
 				}
+			}
+
+			function restartGame() {
+				// Reset state
+				Object.assign(board, createEmptyBoard());
+				score = 0;
+				dropAccumulator = 0;
+				lockAccumulator = 0;
+				isLocking = false;
+				gameOver = false;
+
+				// Reset visuals
+				boardGraphics.clear();
+				gameOverText.visible = false;
+				scoreText.text = "SCORE: 0";
+
+				// Spawn new piece
+				const next = spawnPiece(randomPieceType());
+				piece.type = next.type;
+				piece.row = next.row;
+				piece.col = next.col;
+				piece.rotation = next.rotation;
+				drawPiece(pieceGraphics, piece, CELL_SIZE);
 			}
 
 			window.addEventListener("keydown", onKeyDown);

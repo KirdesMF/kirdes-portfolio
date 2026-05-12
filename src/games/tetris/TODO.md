@@ -146,13 +146,13 @@
 
 ## Restart flow
 
-- [ ] Add restart action.
-- [ ] Reset the board on restart.
-- [ ] Reset the score on restart.
-- [ ] Reset the active piece on restart.
-- [ ] Return the Pixi scene to a clean gameplay state.
-- [ ] Verify that a new game starts cleanly.
-- [ ] Review restart behavior.
+- [x] Add restart action.
+- [x] Reset the board on restart.
+- [x] Reset the score on restart.
+- [x] Reset the active piece on restart.
+- [x] Return the Pixi scene to a clean gameplay state.
+- [x] Verify that a new game starts cleanly.
+- [ ] ~~Review restart behavior.~~
 
 ---
 
