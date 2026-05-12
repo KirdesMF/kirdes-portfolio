@@ -204,12 +204,12 @@
 
 ## Start screen
 
-- [ ] Add start screen.
-- [ ] Add start action.
-- [ ] Prevent gameplay before start.
-- [ ] Switch cleanly from start screen to gameplay.
-- [ ] Start from a clean game state.
-- [ ] Review start screen behavior.
+- [x] Add start screen.
+- [x] Add start action.
+- [x] Prevent gameplay before start.
+- [x] Switch cleanly from start screen to gameplay.
+- [x] Start from a clean game state.
+- [ ] ~~Review start screen behavior.~~
 
 ---
 

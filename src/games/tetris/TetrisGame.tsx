@@ -220,6 +220,39 @@ function createNextLabel(): Text {
 	});
 }
 
+function createStartText(): Text {
+	const text = new Text({
+		text: "TETRIS",
+		style: {
+			fontFamily: "monospace",
+			fontSize: 36,
+			fill: 0x00bcd4,
+			fontWeight: "bold",
+		},
+		anchor: { x: 0.5, y: 0.5 },
+		x: GRID_WIDTH / 2,
+		y: GRID_HEIGHT / 2 - 20,
+	});
+
+	return text;
+}
+
+function createStartSubText(): Text {
+	const text = new Text({
+		text: "PRESS ENTER TO START",
+		style: {
+			fontFamily: "monospace",
+			fontSize: 12,
+			fill: 0x94a3b8,
+		},
+		anchor: { x: 0.5, y: 0.5 },
+		x: GRID_WIDTH / 2,
+		y: GRID_HEIGHT / 2 + 14,
+	});
+
+	return text;
+}
+
 function createPauseText(): Text {
 	const text = new Text({
 		text: "PAUSED",
@@ -286,6 +319,9 @@ function createScene() {
 	const pauseText = createPauseText();
 	pauseText.visible = false;
 
+	const startText = createStartText();
+	const startSubText = createStartSubText();
+
 	const nextLabel = createNextLabel();
 	const previewGraphics = new Graphics();
 	previewGraphics.y = 28;
@@ -304,6 +340,8 @@ function createScene() {
 	gridArea.addChild(scoreText);
 	gridArea.addChild(gameOverText);
 	gridArea.addChild(pauseText);
+	gridArea.addChild(startText);
+	gridArea.addChild(startSubText);
 	gridArea.addChild(sideArea);
 
 	return {
@@ -313,6 +351,8 @@ function createScene() {
 		scoreText,
 		gameOverText,
 		pauseText,
+		startText,
+		startSubText,
 		previewGraphics,
 		ghostGraphics,
 	};
@@ -351,6 +391,8 @@ export function TetrisGame() {
 				scoreText,
 				gameOverText,
 				pauseText,
+				startText,
+				startSubText,
 				previewGraphics,
 				ghostGraphics,
 			} = createScene();
@@ -364,6 +406,7 @@ export function TetrisGame() {
 			let gameOver = false;
 			let isHardDropping = false;
 			let hardDropTarget = 0;
+			let started = false;
 			let paused = false;
 			const board: Board = createEmptyBoard();
 			const piece: ActivePiece = spawnPiece(randomPieceType());
@@ -418,7 +461,7 @@ export function TetrisGame() {
 			}
 
 			pixApp.ticker.add((ticker) => {
-				if (gameOver || paused) return;
+				if (gameOver || paused || !started) return;
 
 				if (isHardDropping) {
 					piece.row++;
@@ -484,7 +527,18 @@ export function TetrisGame() {
 				drawPreview(previewGraphics, nextType, PREVIEW_CELL_SIZE);
 			}
 
+			function startGame() {
+				started = true;
+				startText.visible = false;
+				startSubText.visible = false;
+			}
+
 			function onKeyDown(e: KeyboardEvent) {
+				if (!started) {
+					if (e.key === "Enter") startGame();
+					return;
+				}
+
 				if (gameOver) {
 					if (e.key === "Enter") restartGame();
 					return;
