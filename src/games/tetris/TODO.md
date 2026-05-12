@@ -73,24 +73,24 @@
 
 ## Collisions
 
-- [ ] Add collision with the floor.
-- [ ] Add collision with the left wall.
-- [ ] Add collision with the right wall.
-- [ ] Add collision with placed blocks.
-- [ ] Reject invalid movement.
-- [ ] Place the active piece when it can no longer fall.
-- [ ] Verify that rejected moves do not affect rendering.
-- [ ] Review all collision cases.
+- [x] Add collision with the floor.
+- [x] Add collision with the left wall.
+- [x] Add collision with the right wall.
+- [x] Add collision with placed blocks.
+- [x] Reject invalid movement.
+- [x] Place the active piece when it can no longer fall.
+- [x] Verify that rejected moves do not affect rendering.
+- [ ] ~~Review all collision cases.~~
 
 ---
 
 ## Piece spawning
 
-- [ ] Spawn a new piece after placement.
-- [ ] Keep placed blocks rendered on the board.
-- [ ] Ensure the game continues after each placement.
-- [ ] Verify that rendering stays consistent between pieces.
-- [ ] Review several consecutive placements.
+- [x] Spawn a new piece after placement.
+- [x] Keep placed blocks rendered on the board.
+- [x] Ensure the game continues after each placement.
+- [x] Verify that rendering stays consistent between pieces.
+- [ ] ~~Review several consecutive placements.~~
 
 ---
 

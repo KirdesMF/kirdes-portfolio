@@ -1,12 +1,14 @@
 import { Application, Container, Graphics } from "pixi.js";
 import { useEffect, useRef } from "react";
 
+import { type Board, createEmptyBoard, drawBoard } from "./board";
 import { PIECE_DEFINITIONS, type PieceType, randomPieceType } from "./pieces";
 
 const CELL_SIZE = 28;
 const GRID_COLS = 10;
 const GRID_ROWS = 20;
 const DROP_INTERVAL_MS = 1000;
+const LOCK_DELAY_MS = 500;
 
 const GRID_WIDTH = GRID_COLS * CELL_SIZE;
 const GRID_HEIGHT = GRID_ROWS * CELL_SIZE;
@@ -21,22 +23,29 @@ type ActivePiece = {
 	col: number;
 };
 
-// Return the furthest row offset a cell of this piece type can reach.
-function getMaxRowOffset(type: PieceType): number {
-	return Math.max(...PIECE_DEFINITIONS[type].shape.map(([r]) => r));
-}
-
-// Check if the piece can move by (dRow, dCol) without leaving the grid.
-function canMove(piece: ActivePiece, dRow: number, dCol: number): boolean {
+// Check if the piece can move by (dRow, dCol) without leaving the grid or overlapping placed blocks.
+function canMove(piece: ActivePiece, dRow: number, dCol: number, board: Board): boolean {
 	const def = PIECE_DEFINITIONS[piece.type];
 
 	for (const [dr, dc] of def.shape) {
 		const r = piece.row + dr + dRow;
 		const c = piece.col + dc + dCol;
 		if (r < 0 || r >= GRID_ROWS || c < 0 || c >= GRID_COLS) return false;
+		if (board[r][c] !== null) return false;
 	}
 
 	return true;
+}
+
+// Write the piece's cells onto the board.
+function placePiece(piece: ActivePiece, board: Board): void {
+	const def = PIECE_DEFINITIONS[piece.type];
+
+	for (const [dr, dc] of def.shape) {
+		const r = piece.row + dr;
+		const c = piece.col + dc;
+		board[r][c] = def.color;
+	}
 }
 
 function spawnPiece(type: PieceType): ActivePiece {
@@ -104,7 +113,7 @@ function createScene() {
 	gridArea.addChild(boardLayer);
 	gridArea.addChild(activePieceLayer);
 
-	return { gridArea, pieceGraphics };
+	return { gridArea, pieceGraphics, boardGraphics };
 }
 
 export function TetrisGame() {
@@ -133,11 +142,14 @@ export function TetrisGame() {
 
 			if (cancelled) return;
 
-			const { gridArea, pieceGraphics } = createScene();
+			const { gridArea, pieceGraphics, boardGraphics } = createScene();
 			pixApp.stage.addChild(gridArea);
 
 			// Game state (mutable, driven by ticker and input)
 			let dropAccumulator = 0;
+			let lockAccumulator = 0;
+			let isLocking = false;
+			const board: Board = createEmptyBoard();
 			const piece: ActivePiece = spawnPiece(randomPieceType());
 
 			drawPiece(pieceGraphics, piece, CELL_SIZE);
@@ -148,10 +160,34 @@ export function TetrisGame() {
 				if (dropAccumulator >= DROP_INTERVAL_MS) {
 					dropAccumulator -= DROP_INTERVAL_MS;
 
-					const maxRow = GRID_ROWS - 1 - getMaxRowOffset(piece.type);
-					if (piece.row < maxRow) {
+					if (canMove(piece, 1, 0, board)) {
 						piece.row++;
 						drawPiece(pieceGraphics, piece, CELL_SIZE);
+						isLocking = false;
+						lockAccumulator = 0;
+					} else {
+						isLocking = true;
+					}
+				}
+
+				if (isLocking) {
+					lockAccumulator += ticker.deltaMS;
+
+					if (lockAccumulator >= LOCK_DELAY_MS) {
+						placePiece(piece, board);
+						drawBoard(boardGraphics, board, CELL_SIZE);
+						pieceGraphics.clear();
+
+						// Spawn next piece
+						const next = spawnPiece(randomPieceType());
+						piece.type = next.type;
+						piece.row = next.row;
+						piece.col = next.col;
+						drawPiece(pieceGraphics, piece, CELL_SIZE);
+
+						dropAccumulator = 0;
+						isLocking = false;
+						lockAccumulator = 0;
 					}
 				}
 			});
@@ -160,26 +196,32 @@ export function TetrisGame() {
 				switch (e.key) {
 					case "ArrowLeft":
 						e.preventDefault();
-						if (canMove(piece, 0, -1)) {
+						if (canMove(piece, 0, -1, board)) {
 							piece.col--;
 							drawPiece(pieceGraphics, piece, CELL_SIZE);
+							isLocking = false;
+							lockAccumulator = 0;
 						}
 						break;
 
 					case "ArrowRight":
 						e.preventDefault();
-						if (canMove(piece, 0, 1)) {
+						if (canMove(piece, 0, 1, board)) {
 							piece.col++;
 							drawPiece(pieceGraphics, piece, CELL_SIZE);
+							isLocking = false;
+							lockAccumulator = 0;
 						}
 						break;
 
 					case "ArrowDown":
 						e.preventDefault();
-						if (canMove(piece, 1, 0)) {
+						if (canMove(piece, 1, 0, board)) {
 							piece.row++;
 							dropAccumulator = 0;
 							drawPiece(pieceGraphics, piece, CELL_SIZE);
+							isLocking = false;
+							lockAccumulator = 0;
 						}
 						break;
 				}
