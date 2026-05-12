@@ -401,11 +401,6 @@ function createScene() {
 	const pauseText = createPauseText();
 	pauseText.visible = false;
 
-	const pauseOverlay = new Graphics();
-	pauseOverlay.rect(0, 0, CANVAS_WIDTH, GRID_HEIGHT);
-	pauseOverlay.fill({ color: 0x000000, alpha: 0.6 });
-	pauseOverlay.visible = false;
-
 	const startText = createStartText();
 	const startSubText = createStartSubText();
 	const countdownText = createCountdownText();
@@ -632,17 +627,17 @@ export function TetrisGame() {
 				gridLineGraphics.stroke({ width: 0.5, color: GRID_LINE_COLOR, alpha: 0.5 });
 
 				// Update only the fill property, preserve rest of style
-				(scoreText.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
-				(pauseText.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
-				(holdLabel.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
-				(nextLabel.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
-				(levelLabel.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
-				(linesLabel.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
-				(startText.style as Record<string, unknown>).fill = PIECE_COLOR;
-				(startSubText.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
-				(levelText.style as Record<string, unknown>).fill = TETRIS_TEXT_BRIGHT;
-				(linesText.style as Record<string, unknown>).fill = TETRIS_TEXT_BRIGHT;
-				(gameOverText.style as Record<string, unknown>).fill = TETRIS_OVER_COLOR;
+				scoreText.style.fill = TETRIS_TEXT_MUTED;
+				pauseText.style.fill = TETRIS_TEXT_MUTED;
+				holdLabel.style.fill = TETRIS_TEXT_MUTED;
+				nextLabel.style.fill = TETRIS_TEXT_MUTED;
+				levelLabel.style.fill = TETRIS_TEXT_MUTED;
+				linesLabel.style.fill = TETRIS_TEXT_MUTED;
+				startText.style.fill = PIECE_COLOR;
+				startSubText.style.fill = TETRIS_TEXT_MUTED;
+				levelText.style.fill = TETRIS_TEXT_BRIGHT;
+				linesText.style.fill = TETRIS_TEXT_BRIGHT;
+				gameOverText.style.fill = TETRIS_OVER_COLOR;
 			}
 
 			applyThemeColors();
@@ -820,8 +815,6 @@ export function TetrisGame() {
 			function restartGame() {
 				paused = false;
 				pauseText.visible = false;
-
-				gridArea.addChildAt(gameContent, 0);
 				Object.assign(board, createEmptyBoard());
 				score = 0;
 				combo = 0;
@@ -868,7 +861,7 @@ export function TetrisGame() {
 				let cdIndex = 0;
 
 				countdownText.visible = true;
-				(countdownText.style as Record<string, unknown>).fill = PIECE_COLOR;
+				(countdownText.style as unknown as Record<string, unknown>).fill = PIECE_COLOR;
 
 				function tickCountdown() {
 					if (cancelled) return;
@@ -904,13 +897,6 @@ export function TetrisGame() {
 					e.preventDefault();
 					paused = !paused;
 					pauseText.visible = paused;
-
-					if (paused) {
-						gridArea.removeChild(gameContent);
-					} else {
-						gridArea.addChildAt(gameContent, 0);
-					}
-
 					return;
 				}
 
