@@ -96,15 +96,15 @@
 
 ## Piece rotation
 
-- [ ] Add piece rotation.
-- [ ] Reject invalid rotations.
-- [ ] Keep the rendered piece aligned to the grid after rotation.
-- [ ] Prevent visual glitches after invalid rotations.
-- [ ] Test rotation in open space.
-- [ ] Test rotation near walls.
-- [ ] Test rotation near the floor.
-- [ ] Test rotation near placed blocks.
-- [ ] Review rotation behavior.
+- [x] Add piece rotation.
+- [x] Reject invalid rotations.
+- [x] Keep the rendered piece aligned to the grid after rotation.
+- [x] Prevent visual glitches after invalid rotations.
+- [x] Test rotation in open space.
+- [x] Test rotation near walls.
+- [x] Test rotation near the floor.
+- [x] Test rotation near placed blocks.
+- [ ] ~~Review rotation behavior.~~
 
 ---
 

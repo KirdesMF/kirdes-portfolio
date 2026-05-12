@@ -2,7 +2,7 @@ import { Application, Container, Graphics } from "pixi.js";
 import { useEffect, useRef } from "react";
 
 import { type Board, createEmptyBoard, drawBoard } from "./board";
-import { PIECE_DEFINITIONS, type PieceType, randomPieceType } from "./pieces";
+import { PIECE_DEFINITIONS, type PieceType, randomPieceType, type Shape } from "./pieces";
 
 const CELL_SIZE = 28;
 const GRID_COLS = 10;
@@ -21,13 +21,20 @@ type ActivePiece = {
 	type: PieceType;
 	row: number;
 	col: number;
+	rotation: number;
 };
 
-// Check if the piece can move by (dRow, dCol) without leaving the grid or overlapping placed blocks.
-function canMove(piece: ActivePiece, dRow: number, dCol: number, board: Board): boolean {
-	const def = PIECE_DEFINITIONS[piece.type];
+// Check if the piece at a given rotation and offset would be valid.
+function canPlace(
+	piece: ActivePiece,
+	rotation: number,
+	dRow: number,
+	dCol: number,
+	board: Board,
+): boolean {
+	const shape: Shape = PIECE_DEFINITIONS[piece.type].shapes[rotation];
 
-	for (const [dr, dc] of def.shape) {
+	for (const [dr, dc] of shape) {
 		const r = piece.row + dr + dRow;
 		const c = piece.col + dc + dCol;
 		if (r < 0 || r >= GRID_ROWS || c < 0 || c >= GRID_COLS) return false;
@@ -37,31 +44,50 @@ function canMove(piece: ActivePiece, dRow: number, dCol: number, board: Board): 
 	return true;
 }
 
+// Check if the piece can move by (dRow, dCol) in its current rotation.
+function canMove(piece: ActivePiece, dRow: number, dCol: number, board: Board): boolean {
+	return canPlace(piece, piece.rotation, dRow, dCol, board);
+}
+
+// Check if the piece can rotate to the given rotation (with wall kicks).
+function canRotate(piece: ActivePiece, newRotation: number, board: Board): number | null {
+	// Try the rotation at current position first.
+	if (canPlace(piece, newRotation, 0, 0, board)) return 0;
+
+	// Wall kick: try shifting left or right by 1.
+	if (canPlace(piece, newRotation, 0, -1, board)) return -1;
+	if (canPlace(piece, newRotation, 0, 1, board)) return 1;
+
+	return null;
+}
+
 // Write the piece's cells onto the board.
 function placePiece(piece: ActivePiece, board: Board): void {
-	const def = PIECE_DEFINITIONS[piece.type];
+	const shape: Shape = PIECE_DEFINITIONS[piece.type].shapes[piece.rotation];
+	const color = PIECE_DEFINITIONS[piece.type].color;
 
-	for (const [dr, dc] of def.shape) {
+	for (const [dr, dc] of shape) {
 		const r = piece.row + dr;
 		const c = piece.col + dc;
-		board[r][c] = def.color;
+		board[r][c] = color;
 	}
 }
 
 function spawnPiece(type: PieceType): ActivePiece {
-	const shape = PIECE_DEFINITIONS[type].shape;
+	const shape: Shape = PIECE_DEFINITIONS[type].shapes[0];
 	const maxCol = Math.max(...shape.map(([, c]) => c));
 	const col = Math.floor((GRID_COLS - (maxCol + 1)) / 2);
 	const minRow = Math.min(...shape.map(([r]) => r));
 
-	return { type, row: -minRow, col };
+	return { type, row: -minRow, col, rotation: 0 };
 }
 
 function drawPiece(g: Graphics, piece: ActivePiece, cellSize: number): void {
 	g.clear();
 	const def = PIECE_DEFINITIONS[piece.type];
+	const shape: Shape = def.shapes[piece.rotation];
 
-	for (const [dr, dc] of def.shape) {
+	for (const [dr, dc] of shape) {
 		const x = (piece.col + dc) * cellSize;
 		const y = (piece.row + dr) * cellSize;
 		g.rect(x, y, cellSize, cellSize);
@@ -178,11 +204,11 @@ export function TetrisGame() {
 						drawBoard(boardGraphics, board, CELL_SIZE);
 						pieceGraphics.clear();
 
-						// Spawn next piece
 						const next = spawnPiece(randomPieceType());
 						piece.type = next.type;
 						piece.row = next.row;
 						piece.col = next.col;
+						piece.rotation = next.rotation;
 						drawPiece(pieceGraphics, piece, CELL_SIZE);
 
 						dropAccumulator = 0;
@@ -222,6 +248,22 @@ export function TetrisGame() {
 							drawPiece(pieceGraphics, piece, CELL_SIZE);
 							isLocking = false;
 							lockAccumulator = 0;
+						}
+						break;
+
+					case "ArrowUp":
+						e.preventDefault();
+						{
+							const newRotation = (piece.rotation + 1) % 4;
+							const kick = canRotate(piece, newRotation, board);
+
+							if (kick !== null) {
+								piece.rotation = newRotation;
+								piece.col += kick;
+								drawPiece(pieceGraphics, piece, CELL_SIZE);
+								isLocking = false;
+								lockAccumulator = 0;
+							}
 						}
 						break;
 				}
