@@ -46,6 +46,12 @@ body {
 	--chart-3: oklch(0.4455 0.0374 257.2808);
 	--chart-4: oklch(0.5544 0.0407 257.4166);
 	--chart-5: oklch(0.7107 0.0351 256.7878);
+	--tetris-grid-bg: #f1f5f9;
+	--tetris-grid-border: #cbd5e1;
+	--tetris-grid-line: #cbd5e1;
+	--tetris-text-muted: #64748b;
+	--tetris-text-bright: #0f172a;
+	--tetris-over: #dc2626;
 	--sidebar: oklch(0.9842 0.0034 247.8575);
 	--sidebar-foreground: oklch(0.2795 0.0368 260.031);
 	--sidebar-primary: oklch(0.2795 0.0368 260.031);

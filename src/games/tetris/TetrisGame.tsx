@@ -19,9 +19,17 @@ const PREVIEW_CELL_SIZE = 16;
 const CANVAS_WIDTH = GRID_WIDTH + GAP + SIDE_PANEL_WIDTH;
 const CANVAS_HEIGHT = GRID_HEIGHT;
 
-const GRID_BG_COLOR = 0x16213e;
-const GRID_BORDER_COLOR = 0x334155;
-const GRID_LINE_COLOR = 0x334155;
+function getCSSColor(variable: string): number {
+	const value = getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
+	return parseInt(value.slice(1), 16);
+}
+
+let GRID_BG_COLOR = 0x0f1720;
+let GRID_BORDER_COLOR = 0x334155;
+let GRID_LINE_COLOR = 0x334155;
+let TETRIS_TEXT_MUTED = 0x94a3b8;
+let TETRIS_TEXT_BRIGHT = 0xf8fafc;
+let TETRIS_OVER_COLOR = 0xef4444;
 
 type ActivePiece = {
 	type: PieceType;
@@ -322,6 +330,9 @@ function createScene() {
 	const ghostGraphics = new Graphics();
 
 	const scoreText = createScoreText();
+	const gridBgGraphics = createGridBackground();
+	const gridLineGraphics = createGridLines();
+
 	const gameOverText = createGameOverText();
 	gameOverText.visible = false;
 
@@ -410,8 +421,8 @@ function createScene() {
 	sideArea.x = GRID_WIDTH + GAP;
 	sideArea.y = 0;
 
-	gridArea.addChild(createGridBackground());
-	gridArea.addChild(createGridLines());
+	gridArea.addChild(gridBgGraphics);
+	gridArea.addChild(gridLineGraphics);
 	gridArea.addChild(boardLayer);
 	gridArea.addChild(ghostGraphics);
 	gridArea.addChild(activePieceLayer);
@@ -436,6 +447,12 @@ function createScene() {
 		linesText,
 		holdGraphics,
 		ghostGraphics,
+		gridBgGraphics,
+		gridLineGraphics,
+		holdLabel,
+		nextLabel,
+		levelLabel,
+		linesLabel,
 	};
 }
 
@@ -447,6 +464,7 @@ export function TetrisGame() {
 		let app: Application | null = null;
 		let cancelled = false;
 		let removeKeyboard: (() => void) | null = null;
+		let themeObserver: MutationObserver | null = null;
 
 		async function setupPixi() {
 			const canvas = canvasRef.current;
@@ -479,6 +497,12 @@ export function TetrisGame() {
 				linesText,
 				holdGraphics,
 				ghostGraphics,
+				gridBgGraphics,
+				gridLineGraphics,
+				holdLabel,
+				nextLabel,
+				levelLabel,
+				linesLabel,
 			} = createScene();
 			pixApp.stage.addChild(gridArea);
 
@@ -503,6 +527,55 @@ export function TetrisGame() {
 
 			drawPiece(pieceGraphics, piece, CELL_SIZE);
 			drawPreview(previewGraphics, nextType, PREVIEW_CELL_SIZE);
+
+			function applyThemeColors() {
+				GRID_BG_COLOR = getCSSColor("--tetris-grid-bg");
+				GRID_BORDER_COLOR = getCSSColor("--tetris-grid-border");
+				GRID_LINE_COLOR = getCSSColor("--tetris-grid-line");
+				TETRIS_TEXT_MUTED = getCSSColor("--tetris-text-muted");
+				TETRIS_TEXT_BRIGHT = getCSSColor("--tetris-text-bright");
+				TETRIS_OVER_COLOR = getCSSColor("--tetris-over");
+
+				gridBgGraphics.clear();
+				gridBgGraphics.rect(0, 0, GRID_WIDTH, GRID_HEIGHT);
+				gridBgGraphics.fill({ color: GRID_BG_COLOR, alpha: 0.5 });
+				gridBgGraphics.stroke({ width: 1, color: GRID_BORDER_COLOR });
+
+				gridLineGraphics.clear();
+				for (let x = CELL_SIZE; x < GRID_WIDTH; x += CELL_SIZE) {
+					gridLineGraphics.moveTo(x, 0);
+					gridLineGraphics.lineTo(x, GRID_HEIGHT);
+				}
+				for (let y = CELL_SIZE; y < GRID_HEIGHT; y += CELL_SIZE) {
+					gridLineGraphics.moveTo(0, y);
+					gridLineGraphics.lineTo(GRID_WIDTH, y);
+				}
+				gridLineGraphics.stroke({ width: 0.5, color: GRID_LINE_COLOR, alpha: 0.5 });
+
+				// Update only the fill property, preserve rest of style
+				(scoreText.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
+				(pauseText.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
+				(holdLabel.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
+				(nextLabel.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
+				(levelLabel.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
+				(linesLabel.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
+				(startText.style as Record<string, unknown>).fill = GRID_BORDER_COLOR;
+				(startSubText.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
+				(levelText.style as Record<string, unknown>).fill = TETRIS_TEXT_BRIGHT;
+				(linesText.style as Record<string, unknown>).fill = TETRIS_TEXT_BRIGHT;
+				(gameOverText.style as Record<string, unknown>).fill = TETRIS_OVER_COLOR;
+			}
+
+			applyThemeColors();
+
+			themeObserver = new MutationObserver(() => {
+				if (cancelled) return;
+				applyThemeColors();
+			});
+			themeObserver.observe(document.documentElement, {
+				attributes: true,
+				attributeFilter: ["class"],
+			});
 
 			function updateGhost() {
 				if (gameOver) {
@@ -781,6 +854,7 @@ export function TetrisGame() {
 		return () => {
 			cancelled = true;
 			removeKeyboard?.();
+			themeObserver?.disconnect();
 			if (app) {
 				app.destroy(
 					{ removeView: true, releaseGlobalResources: true },
