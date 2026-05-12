@@ -1,4 +1,4 @@
-import { Application, Container, Graphics } from "pixi.js";
+import { Application, Container, Graphics, Text } from "pixi.js";
 import { useEffect, useRef } from "react";
 
 import { type Board, type BoardCell, createEmptyBoard, drawBoard } from "./board";
@@ -141,6 +141,33 @@ function createGridLines(): Graphics {
 	return g;
 }
 
+function createScoreText(): Text {
+	const text = new Text({
+		text: "SCORE: 0",
+		style: {
+			fontFamily: "monospace",
+			fontSize: 12,
+			fill: 0x94a3b8,
+		},
+		anchor: { x: 1, y: 0 },
+		x: GRID_WIDTH - 8,
+		y: 8,
+	});
+
+	return text;
+}
+
+const LINE_SCORES: Record<number, number> = {
+	1: 100,
+	2: 300,
+	3: 500,
+	4: 800,
+};
+
+function getLineScore(count: number): number {
+	return LINE_SCORES[count] ?? 0;
+}
+
 function createScene() {
 	const gridArea = new Container();
 
@@ -152,12 +179,15 @@ function createScene() {
 	const pieceGraphics = new Graphics();
 	activePieceLayer.addChild(pieceGraphics);
 
+	const scoreText = createScoreText();
+
 	gridArea.addChild(createGridBackground());
 	gridArea.addChild(createGridLines());
 	gridArea.addChild(boardLayer);
 	gridArea.addChild(activePieceLayer);
+	gridArea.addChild(scoreText);
 
-	return { gridArea, pieceGraphics, boardGraphics };
+	return { gridArea, pieceGraphics, boardGraphics, scoreText };
 }
 
 export function TetrisGame() {
@@ -186,10 +216,11 @@ export function TetrisGame() {
 
 			if (cancelled) return;
 
-			const { gridArea, pieceGraphics, boardGraphics } = createScene();
+			const { gridArea, pieceGraphics, boardGraphics, scoreText } = createScene();
 			pixApp.stage.addChild(gridArea);
 
 			// Game state (mutable, driven by ticker and input)
+			let score = 0;
 			let dropAccumulator = 0;
 			let lockAccumulator = 0;
 			let isLocking = false;
@@ -222,7 +253,14 @@ export function TetrisGame() {
 
 					if (lockAccumulator >= LOCK_DELAY_MS) {
 						placePiece(piece, board);
-						clearLines(board);
+						const lines = clearLines(board);
+
+						if (lines > 0) {
+							score += getLineScore(lines);
+							// biome-ignore lint/suspicious/noExplicitAny: PixiJS v8.18 Text.text type missing
+							(scoreText as any).text = `SCORE: ${score}`;
+						}
+
 						drawBoard(boardGraphics, board, CELL_SIZE);
 						pieceGraphics.clear();
 

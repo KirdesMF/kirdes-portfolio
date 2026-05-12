@@ -125,12 +125,12 @@
 
 ## Score display
 
-- [ ] Display the score in the Pixi scene.
-- [ ] Increase the score after clearing lines.
-- [ ] Reward multiple-line clears more than single-line clears.
-- [ ] Update the displayed score immediately.
-- [ ] Verify that displayed score matches gameplay events.
-- [ ] Review score behavior.
+- [x] Display the score in the Pixi scene.
+- [x] Increase the score after clearing lines.
+- [x] Reward multiple-line clears more than single-line clears.
+- [x] Update the displayed score immediately.
+- [x] Verify that displayed score matches gameplay events.
+- [ ] ~~Review score behavior.~~
 
 ---
 
