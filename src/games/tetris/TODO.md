@@ -238,19 +238,18 @@
 
 ## Pixi scene cleanup
 
-- [ ] Verify that restart does not duplicate visual objects.
-- [ ] Verify that game over does not leave stale interactive state.
-- [ ] Verify that board updates do not create visual artifacts.
-- [ ] Restart several games in a row.
-- [ ] Confirm that the scene remains clean after repeated restarts.
-- [ ] Review Pixi scene cleanup.
+- [x] Verify that restart does not duplicate visual objects.
+- [x] Verify that game over does not leave stale interactive state.
+- [x] Verify that board updates do not create visual artifacts.
+- [x] Restart several games in a row.
+- [x] Confirm that the scene remains clean after repeated restarts.
+- [ ] ~~Review Pixi scene cleanup.~~
 
 ---
 
 ## Gameplay polish
 
 - [ ] Review control feel.
-- [ ] Tune movement responsiveness.
 - [ ] Tune soft drop feel.
 - [ ] Tune hard drop feel.
 - [ ] Improve piece transition clarity.

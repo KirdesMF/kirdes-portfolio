@@ -124,6 +124,7 @@ function drawPiece(g: Graphics, piece: ActivePiece, cellSize: number): void {
 		const y = (piece.row + dr) * cellSize;
 		g.rect(x, y, cellSize, cellSize);
 		g.fill(def.color);
+		g.stroke({ width: 1, color: 0xffffff, alpha: 0.1 });
 	}
 }
 
@@ -147,7 +148,8 @@ function drawGhost(g: Graphics, piece: ActivePiece, ghostRow: number, cellSize: 
 		const x = (piece.col + dc) * cellSize;
 		const y = (ghostRow + dr) * cellSize;
 		g.rect(x, y, cellSize, cellSize);
-		g.fill({ color: def.color, alpha: 0.2 });
+		g.fill({ color: def.color, alpha: 0.25 });
+		g.stroke({ width: 1, color: 0xffffff, alpha: 0.03 });
 	}
 }
 
@@ -159,6 +161,7 @@ function drawPreview(g: Graphics, type: PieceType, cellSize: number): void {
 	for (const [dr, dc] of shape) {
 		g.rect(dc * cellSize, dr * cellSize, cellSize, cellSize);
 		g.fill(color);
+		g.stroke({ width: 1, color: 0xffffff, alpha: 0.1 });
 	}
 }
 
@@ -185,7 +188,7 @@ function createGridLines(): Graphics {
 		g.lineTo(GRID_WIDTH, y);
 	}
 
-	g.stroke({ width: 0.5, color: GRID_LINE_COLOR, alpha: 0.4 });
+	g.stroke({ width: 0.5, color: GRID_LINE_COLOR, alpha: 0.5 });
 
 	return g;
 }
@@ -489,6 +492,7 @@ export function TetrisGame() {
 			let gameOver = false;
 			let isHardDropping = false;
 			let hardDropTarget = 0;
+			let lockFlashAccumulator = 0;
 			let started = false;
 			let paused = false;
 			const board: Board = createEmptyBoard();
@@ -530,6 +534,7 @@ export function TetrisGame() {
 					}
 				}
 
+				pieceGraphics.alpha = 1;
 				canHold = true;
 				drawBoard(boardGraphics, board, CELL_SIZE);
 				pieceGraphics.clear();
@@ -576,6 +581,7 @@ export function TetrisGame() {
 				if (canFall) {
 					isLocking = false;
 					lockAccumulator = 0;
+					pieceGraphics.alpha = 1;
 
 					dropAccumulator += ticker.deltaMS;
 
@@ -591,9 +597,17 @@ export function TetrisGame() {
 					if (!isLocking) {
 						isLocking = true;
 						lockAccumulator = 0;
+						lockFlashAccumulator = 0;
 					}
 
 					lockAccumulator += ticker.deltaMS;
+					lockFlashAccumulator += ticker.deltaMS;
+
+					// Flash piece during lock delay
+					if (lockFlashAccumulator >= 150) {
+						lockFlashAccumulator = 0;
+						pieceGraphics.alpha = pieceGraphics.alpha === 1 ? 0.3 : 1;
+					}
 
 					if (lockAccumulator >= LOCK_DELAY_MS) {
 						doLock();
@@ -611,6 +625,7 @@ export function TetrisGame() {
 				dropAccumulator = 0;
 				lockAccumulator = 0;
 				isLocking = false;
+				isHardDropping = false;
 				gameOver = false;
 
 				boardGraphics.clear();
@@ -619,7 +634,6 @@ export function TetrisGame() {
 				heldType = null;
 				canHold = true;
 				holdGraphics.clear();
-				drawPreview(previewGraphics, nextType, PREVIEW_CELL_SIZE);
 
 				const next = spawnPiece(randomPieceType());
 				piece.type = next.type;
@@ -661,6 +675,7 @@ export function TetrisGame() {
 				switch (e.key) {
 					case "ArrowLeft":
 						e.preventDefault();
+						pieceGraphics.alpha = 1;
 						if (canMove(piece, 0, -1, board)) {
 							piece.col--;
 							drawPiece(pieceGraphics, piece, CELL_SIZE);
@@ -672,6 +687,7 @@ export function TetrisGame() {
 
 					case "ArrowRight":
 						e.preventDefault();
+						pieceGraphics.alpha = 1;
 						if (canMove(piece, 0, 1, board)) {
 							piece.col++;
 							drawPiece(pieceGraphics, piece, CELL_SIZE);
@@ -683,6 +699,7 @@ export function TetrisGame() {
 
 					case "ArrowDown":
 						e.preventDefault();
+						pieceGraphics.alpha = 1;
 						if (canMove(piece, 1, 0, board)) {
 							piece.row++;
 							dropAccumulator = 0;
@@ -695,6 +712,7 @@ export function TetrisGame() {
 
 					case "ArrowUp":
 						e.preventDefault();
+						pieceGraphics.alpha = 1;
 						{
 							const newRotation = (piece.rotation + 1) % 4;
 							const kick = canRotate(piece, newRotation, board);

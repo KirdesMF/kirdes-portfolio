@@ -22,6 +22,7 @@ export function drawBoard(g: Graphics, board: Board, cellSize: number): void {
 
 			g.rect(x * cellSize, y * cellSize, cellSize, cellSize);
 			g.fill(color);
+			g.stroke({ width: 1, color: 0xffffff, alpha: 0.1 });
 		}
 	}
 }
