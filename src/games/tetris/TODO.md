@@ -215,12 +215,12 @@
 
 ## Level and speed display
 
-- [ ] Display the current level.
-- [ ] Increase level based on progress.
-- [ ] Increase falling speed progressively.
-- [ ] Update the displayed level correctly.
-- [ ] Verify that speed progression remains playable.
-- [ ] Review level and speed behavior.
+- [x] Display the current level.
+- [x] Increase level based on progress.
+- [x] Increase falling speed progressively.
+- [x] Update the displayed level correctly.
+- [x] Verify that speed progression remains playable.
+- [ ] ~~Review level and speed behavior.~~
 
 ---
 

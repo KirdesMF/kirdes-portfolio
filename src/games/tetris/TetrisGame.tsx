@@ -7,7 +7,6 @@ import { PIECE_DEFINITIONS, type PieceType, randomPieceType, type Shape } from "
 const CELL_SIZE = 28;
 const GRID_COLS = 10;
 const GRID_ROWS = 20;
-const DROP_INTERVAL_MS = 1000;
 const LOCK_DELAY_MS = 300;
 
 const GRID_WIDTH = GRID_COLS * CELL_SIZE;
@@ -298,6 +297,13 @@ function getLineScore(count: number): number {
 	return LINE_SCORES[count] ?? 0;
 }
 
+const LEVEL_SPEEDS = [1000, 800, 650, 500, 370, 250, 160, 100];
+
+function getDropInterval(level: number): number {
+	const idx = Math.min(level - 1, LEVEL_SPEEDS.length - 1);
+	return LEVEL_SPEEDS[idx];
+}
+
 function createScene() {
 	const gridArea = new Container();
 	const sideArea = new Container();
@@ -326,8 +332,59 @@ function createScene() {
 	const previewGraphics = new Graphics();
 	previewGraphics.y = 28;
 	previewGraphics.x = 8;
+
+	const levelLabel = new Text({
+		text: "LEVEL",
+		style: {
+			fontFamily: "monospace",
+			fontSize: 12,
+			fill: 0x94a3b8,
+		},
+		x: 8,
+		y: 110,
+	});
+
+	const levelText = new Text({
+		text: "1",
+		style: {
+			fontFamily: "monospace",
+			fontSize: 16,
+			fill: 0xffffff,
+			fontWeight: "bold",
+		},
+		x: 8,
+		y: 126,
+	});
+
 	sideArea.addChild(nextLabel);
 	sideArea.addChild(previewGraphics);
+	const linesLabel = new Text({
+		text: "LINES",
+		style: {
+			fontFamily: "monospace",
+			fontSize: 12,
+			fill: 0x94a3b8,
+		},
+		x: 8,
+		y: 160,
+	});
+
+	const linesText = new Text({
+		text: "0",
+		style: {
+			fontFamily: "monospace",
+			fontSize: 16,
+			fill: 0xffffff,
+			fontWeight: "bold",
+		},
+		x: 8,
+		y: 176,
+	});
+
+	sideArea.addChild(levelLabel);
+	sideArea.addChild(levelText);
+	sideArea.addChild(linesLabel);
+	sideArea.addChild(linesText);
 
 	sideArea.x = GRID_WIDTH + GAP;
 	sideArea.y = 0;
@@ -354,6 +411,8 @@ function createScene() {
 		startText,
 		startSubText,
 		previewGraphics,
+		levelText,
+		linesText,
 		ghostGraphics,
 	};
 }
@@ -394,12 +453,16 @@ export function TetrisGame() {
 				startText,
 				startSubText,
 				previewGraphics,
+				levelText,
+				linesText,
 				ghostGraphics,
 			} = createScene();
 			pixApp.stage.addChild(gridArea);
 
 			// Game state (mutable, driven by ticker and input)
 			let score = 0;
+			let level = 1;
+			let linesTotal = 0;
 			let dropAccumulator = 0;
 			let lockAccumulator = 0;
 			let isLocking = false;
@@ -434,6 +497,15 @@ export function TetrisGame() {
 				if (lines > 0) {
 					score += getLineScore(lines);
 					scoreText.text = `SCORE: ${score}`;
+
+					linesTotal += lines;
+					linesText.text = String(linesTotal);
+					const newLevel = Math.floor(linesTotal / 10) + 1;
+
+					if (newLevel !== level) {
+						level = newLevel;
+						levelText.text = String(level);
+					}
 				}
 
 				drawBoard(boardGraphics, board, CELL_SIZE);
@@ -484,8 +556,10 @@ export function TetrisGame() {
 
 					dropAccumulator += ticker.deltaMS;
 
-					if (dropAccumulator >= DROP_INTERVAL_MS) {
-						dropAccumulator -= DROP_INTERVAL_MS;
+					const interval = getDropInterval(level);
+
+					if (dropAccumulator >= interval) {
+						dropAccumulator -= interval;
 						piece.row++;
 						drawPiece(pieceGraphics, piece, CELL_SIZE);
 						updateGhost();
@@ -507,6 +581,10 @@ export function TetrisGame() {
 			function restartGame() {
 				Object.assign(board, createEmptyBoard());
 				score = 0;
+				level = 1;
+				linesTotal = 0;
+				levelText.text = "1";
+				linesText.text = "0";
 				dropAccumulator = 0;
 				lockAccumulator = 0;
 				isLocking = false;
