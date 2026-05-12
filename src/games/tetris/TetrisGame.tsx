@@ -128,6 +128,30 @@ function drawPiece(g: Graphics, piece: ActivePiece, cellSize: number): void {
 	}
 }
 
+// Compute the row where the piece would land if dropped straight down.
+function getGhostRow(piece: ActivePiece, board: Board): number {
+	let row = piece.row;
+
+	while (canPlace(piece, piece.rotation, row - piece.row + 1, 0, board)) {
+		row++;
+	}
+
+	return row;
+}
+
+function drawGhost(g: Graphics, piece: ActivePiece, ghostRow: number, cellSize: number): void {
+	g.clear();
+	const def = PIECE_DEFINITIONS[piece.type];
+	const shape: Shape = def.shapes[piece.rotation];
+
+	for (const [dr, dc] of shape) {
+		const x = (piece.col + dc) * cellSize;
+		const y = (ghostRow + dr) * cellSize;
+		g.rect(x, y, cellSize, cellSize);
+		g.fill({ color: def.color, alpha: 0.2 });
+	}
+}
+
 function drawPreview(g: Graphics, type: PieceType, cellSize: number): void {
 	g.clear();
 	const shape: Shape = PIECE_DEFINITIONS[type].shapes[0];
@@ -236,6 +260,8 @@ function createScene() {
 	const pieceGraphics = new Graphics();
 	activePieceLayer.addChild(pieceGraphics);
 
+	const ghostGraphics = new Graphics();
+
 	const scoreText = createScoreText();
 	const gameOverText = createGameOverText();
 	gameOverText.visible = false;
@@ -253,12 +279,21 @@ function createScene() {
 	gridArea.addChild(createGridBackground());
 	gridArea.addChild(createGridLines());
 	gridArea.addChild(boardLayer);
+	gridArea.addChild(ghostGraphics);
 	gridArea.addChild(activePieceLayer);
 	gridArea.addChild(scoreText);
 	gridArea.addChild(gameOverText);
 	gridArea.addChild(sideArea);
 
-	return { gridArea, pieceGraphics, boardGraphics, scoreText, gameOverText, previewGraphics };
+	return {
+		gridArea,
+		pieceGraphics,
+		boardGraphics,
+		scoreText,
+		gameOverText,
+		previewGraphics,
+		ghostGraphics,
+	};
 }
 
 export function TetrisGame() {
@@ -287,8 +322,15 @@ export function TetrisGame() {
 
 			if (cancelled) return;
 
-			const { gridArea, pieceGraphics, boardGraphics, scoreText, gameOverText, previewGraphics } =
-				createScene();
+			const {
+				gridArea,
+				pieceGraphics,
+				boardGraphics,
+				scoreText,
+				gameOverText,
+				previewGraphics,
+				ghostGraphics,
+			} = createScene();
 			pixApp.stage.addChild(gridArea);
 
 			// Game state (mutable, driven by ticker and input)
@@ -303,6 +345,18 @@ export function TetrisGame() {
 
 			drawPiece(pieceGraphics, piece, CELL_SIZE);
 			drawPreview(previewGraphics, nextType, PREVIEW_CELL_SIZE);
+
+			function updateGhost() {
+				if (gameOver) {
+					ghostGraphics.clear();
+					return;
+				}
+
+				const ghostRow = getGhostRow(piece, board);
+				drawGhost(ghostGraphics, piece, ghostRow, CELL_SIZE);
+			}
+
+			updateGhost();
 
 			pixApp.ticker.add((ticker) => {
 				if (gameOver) return;
@@ -319,6 +373,7 @@ export function TetrisGame() {
 						dropAccumulator -= DROP_INTERVAL_MS;
 						piece.row++;
 						drawPiece(pieceGraphics, piece, CELL_SIZE);
+						updateGhost();
 					}
 				} else {
 					if (!isLocking) {
@@ -355,6 +410,7 @@ export function TetrisGame() {
 						}
 
 						drawPiece(pieceGraphics, piece, CELL_SIZE);
+						updateGhost();
 
 						dropAccumulator = 0;
 						isLocking = false;
@@ -382,6 +438,7 @@ export function TetrisGame() {
 				piece.rotation = next.rotation;
 				nextType = randomPieceType();
 				drawPiece(pieceGraphics, piece, CELL_SIZE);
+				updateGhost();
 				drawPreview(previewGraphics, nextType, PREVIEW_CELL_SIZE);
 			}
 
@@ -397,6 +454,7 @@ export function TetrisGame() {
 						if (canMove(piece, 0, -1, board)) {
 							piece.col--;
 							drawPiece(pieceGraphics, piece, CELL_SIZE);
+							updateGhost();
 							isLocking = false;
 							lockAccumulator = 0;
 						}
@@ -407,6 +465,7 @@ export function TetrisGame() {
 						if (canMove(piece, 0, 1, board)) {
 							piece.col++;
 							drawPiece(pieceGraphics, piece, CELL_SIZE);
+							updateGhost();
 							isLocking = false;
 							lockAccumulator = 0;
 						}
@@ -418,6 +477,7 @@ export function TetrisGame() {
 							piece.row++;
 							dropAccumulator = 0;
 							drawPiece(pieceGraphics, piece, CELL_SIZE);
+							updateGhost();
 							isLocking = false;
 							lockAccumulator = 0;
 						}
@@ -433,6 +493,7 @@ export function TetrisGame() {
 								piece.rotation = newRotation;
 								piece.col += kick;
 								drawPiece(pieceGraphics, piece, CELL_SIZE);
+								updateGhost();
 								isLocking = false;
 								lockAccumulator = 0;
 							}

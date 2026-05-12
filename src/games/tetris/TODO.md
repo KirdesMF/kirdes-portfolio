@@ -169,13 +169,13 @@
 
 ## Ghost piece display
 
-- [ ] Display the ghost piece in the grid.
-- [ ] Update the ghost piece after horizontal movement.
-- [ ] Update the ghost piece after rotation.
-- [ ] Update the ghost piece after soft drop.
-- [ ] Keep the ghost piece visually separate from placed blocks.
-- [ ] Verify that the ghost position matches the landing position.
-- [ ] Review ghost piece behavior.
+- [x] Display the ghost piece in the grid.
+- [x] Update the ghost piece after horizontal movement.
+- [x] Update the ghost piece after rotation.
+- [x] Update the ghost piece after soft drop.
+- [x] Keep the ghost piece visually separate from placed blocks.
+- [x] Verify that the ghost position matches the landing position.
+- [ ] ~~Review ghost piece behavior.~~
 
 ---
 
