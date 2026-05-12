@@ -79,6 +79,19 @@ function clearLines(board: Board): number {
 	return cleared;
 }
 
+// Check if the newly spawned piece overlaps with placed blocks.
+function checkGameOver(piece: ActivePiece, board: Board): boolean {
+	const shape: Shape = PIECE_DEFINITIONS[piece.type].shapes[piece.rotation];
+
+	for (const [dr, dc] of shape) {
+		const r = piece.row + dr;
+		const c = piece.col + dc;
+		if (board[r]?.[c] !== null) return true;
+	}
+
+	return false;
+}
+
 // Write the piece's cells onto the board.
 function placePiece(piece: ActivePiece, board: Board): void {
 	const shape: Shape = PIECE_DEFINITIONS[piece.type].shapes[piece.rotation];
@@ -157,6 +170,23 @@ function createScoreText(): Text {
 	return text;
 }
 
+function createGameOverText(): Text {
+	const text = new Text({
+		text: "GAME OVER",
+		style: {
+			fontFamily: "monospace",
+			fontSize: 24,
+			fill: 0xe74c3c,
+			fontWeight: "bold",
+		},
+		anchor: { x: 0.5, y: 0.5 },
+		x: GRID_WIDTH / 2,
+		y: GRID_HEIGHT / 2,
+	});
+
+	return text;
+}
+
 const LINE_SCORES: Record<number, number> = {
 	1: 100,
 	2: 300,
@@ -180,14 +210,17 @@ function createScene() {
 	activePieceLayer.addChild(pieceGraphics);
 
 	const scoreText = createScoreText();
+	const gameOverText = createGameOverText();
+	gameOverText.visible = false;
 
 	gridArea.addChild(createGridBackground());
 	gridArea.addChild(createGridLines());
 	gridArea.addChild(boardLayer);
 	gridArea.addChild(activePieceLayer);
 	gridArea.addChild(scoreText);
+	gridArea.addChild(gameOverText);
 
-	return { gridArea, pieceGraphics, boardGraphics, scoreText };
+	return { gridArea, pieceGraphics, boardGraphics, scoreText, gameOverText };
 }
 
 export function TetrisGame() {
@@ -216,7 +249,7 @@ export function TetrisGame() {
 
 			if (cancelled) return;
 
-			const { gridArea, pieceGraphics, boardGraphics, scoreText } = createScene();
+			const { gridArea, pieceGraphics, boardGraphics, scoreText, gameOverText } = createScene();
 			pixApp.stage.addChild(gridArea);
 
 			// Game state (mutable, driven by ticker and input)
@@ -224,12 +257,15 @@ export function TetrisGame() {
 			let dropAccumulator = 0;
 			let lockAccumulator = 0;
 			let isLocking = false;
+			let gameOver = false;
 			const board: Board = createEmptyBoard();
 			const piece: ActivePiece = spawnPiece(randomPieceType());
 
 			drawPiece(pieceGraphics, piece, CELL_SIZE);
 
 			pixApp.ticker.add((ticker) => {
+				if (gameOver) return;
+
 				const canFall = canMove(piece, 1, 0, board);
 
 				if (canFall) {
@@ -257,8 +293,7 @@ export function TetrisGame() {
 
 						if (lines > 0) {
 							score += getLineScore(lines);
-							// biome-ignore lint/suspicious/noExplicitAny: PixiJS v8.18 Text.text type missing
-							(scoreText as any).text = `SCORE: ${score}`;
+							scoreText.text = `SCORE: ${score}`;
 						}
 
 						drawBoard(boardGraphics, board, CELL_SIZE);
@@ -269,7 +304,14 @@ export function TetrisGame() {
 						piece.row = next.row;
 						piece.col = next.col;
 						piece.rotation = next.rotation;
-						drawPiece(pieceGraphics, piece, CELL_SIZE);
+
+						if (checkGameOver(piece, board)) {
+							gameOver = true;
+							gameOverText.visible = true;
+							pieceGraphics.clear();
+						} else {
+							drawPiece(pieceGraphics, piece, CELL_SIZE);
+						}
 
 						dropAccumulator = 0;
 						isLocking = false;
@@ -279,6 +321,8 @@ export function TetrisGame() {
 			});
 
 			function onKeyDown(e: KeyboardEvent) {
+				if (gameOver) return;
+
 				switch (e.key) {
 					case "ArrowLeft":
 						e.preventDefault();

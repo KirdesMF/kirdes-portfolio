@@ -136,11 +136,11 @@
 
 ## Game over state
 
-- [ ] Detect when a new piece cannot spawn.
-- [ ] Display the game over state in the Pixi scene.
-- [ ] Stop gameplay input after game over.
-- [ ] Keep the final board visible.
-- [ ] Review the game over condition.
+- [x] Detect when a new piece cannot spawn.
+- [x] Display the game over state in the Pixi scene.
+- [x] Stop gameplay input after game over.
+- [x] Keep the final board visible.
+- [ ] ~~Review the game over condition.~~
 
 ---
 
