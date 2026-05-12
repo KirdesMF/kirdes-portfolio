@@ -192,13 +192,13 @@
 
 ## Pause state
 
-- [ ] Add pause action.
-- [ ] Stop falling while paused.
-- [ ] Disable movement while paused.
-- [ ] Disable rotation while paused.
-- [ ] Display the pause state in the Pixi scene.
-- [ ] Add resume action.
-- [ ] Review pause and resume behavior.
+- [x] Add pause action.
+- [x] Stop falling while paused.
+- [x] Disable movement while paused.
+- [x] Disable rotation while paused.
+- [x] Display the pause state in the Pixi scene.
+- [x] Add resume action.
+- [ ] ~~Review pause and resume behavior.~~
 
 ---
 

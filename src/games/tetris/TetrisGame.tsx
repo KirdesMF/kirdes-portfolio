@@ -220,6 +220,23 @@ function createNextLabel(): Text {
 	});
 }
 
+function createPauseText(): Text {
+	const text = new Text({
+		text: "PAUSED",
+		style: {
+			fontFamily: "monospace",
+			fontSize: 24,
+			fill: 0x94a3b8,
+			fontWeight: "bold",
+		},
+		anchor: { x: 0.5, y: 0.5 },
+		x: GRID_WIDTH / 2,
+		y: GRID_HEIGHT / 2,
+	});
+
+	return text;
+}
+
 function createGameOverText(): Text {
 	const text = new Text({
 		text: "GAME OVER",
@@ -266,6 +283,9 @@ function createScene() {
 	const gameOverText = createGameOverText();
 	gameOverText.visible = false;
 
+	const pauseText = createPauseText();
+	pauseText.visible = false;
+
 	const nextLabel = createNextLabel();
 	const previewGraphics = new Graphics();
 	previewGraphics.y = 28;
@@ -283,6 +303,7 @@ function createScene() {
 	gridArea.addChild(activePieceLayer);
 	gridArea.addChild(scoreText);
 	gridArea.addChild(gameOverText);
+	gridArea.addChild(pauseText);
 	gridArea.addChild(sideArea);
 
 	return {
@@ -291,6 +312,7 @@ function createScene() {
 		boardGraphics,
 		scoreText,
 		gameOverText,
+		pauseText,
 		previewGraphics,
 		ghostGraphics,
 	};
@@ -328,6 +350,7 @@ export function TetrisGame() {
 				boardGraphics,
 				scoreText,
 				gameOverText,
+				pauseText,
 				previewGraphics,
 				ghostGraphics,
 			} = createScene();
@@ -341,6 +364,7 @@ export function TetrisGame() {
 			let gameOver = false;
 			let isHardDropping = false;
 			let hardDropTarget = 0;
+			let paused = false;
 			const board: Board = createEmptyBoard();
 			const piece: ActivePiece = spawnPiece(randomPieceType());
 			let nextType: PieceType = randomPieceType();
@@ -394,7 +418,7 @@ export function TetrisGame() {
 			}
 
 			pixApp.ticker.add((ticker) => {
-				if (gameOver) return;
+				if (gameOver || paused) return;
 
 				if (isHardDropping) {
 					piece.row++;
@@ -465,6 +489,15 @@ export function TetrisGame() {
 					if (e.key === "Enter") restartGame();
 					return;
 				}
+
+				if (e.key === "Escape") {
+					e.preventDefault();
+					paused = !paused;
+					pauseText.visible = paused;
+					return;
+				}
+
+				if (paused) return;
 
 				switch (e.key) {
 					case "ArrowLeft":
