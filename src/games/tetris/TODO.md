@@ -275,11 +275,11 @@
 
 ## Theme color support
 
-- [ ] Make grid background and border adapt to theme.
-- [ ] Make text colors adapt to theme.
-- [ ] Ensure block colors work in both light and dark modes.
-- [ ] Apply theme changes immediately.
-- [ ] Review theme behavior.
+- [x] Make grid background and border adapt to theme.
+- [x] Make text colors adapt to theme.
+- [x] Ensure block colors work in both light and dark modes.
+- [x] Apply theme changes immediately.
+- [ ] ~~Review theme behavior.~~
 
 ---
 

@@ -20,8 +20,57 @@ const CANVAS_WIDTH = GRID_WIDTH + GAP + SIDE_PANEL_WIDTH;
 const CANVAS_HEIGHT = GRID_HEIGHT;
 
 function getCSSColor(variable: string): number {
-	const value = getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
-	return parseInt(value.slice(1), 16);
+	const raw = getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
+
+	// Hex value — direct parse
+	if (raw.startsWith("#")) return parseInt(raw.slice(1), 16);
+
+	// Variable reference — resolve via DOM
+	if (raw.startsWith("var(")) {
+		const probe = document.createElement("div");
+		probe.style.position = "absolute";
+		probe.style.pointerEvents = "none";
+		probe.style.opacity = "0";
+		probe.style.setProperty("color", variable, "");
+		document.body.appendChild(probe);
+		const rgb = getComputedStyle(probe).color;
+		document.body.removeChild(probe);
+		const [r, g, b] = rgb.match(/\d+/g)?.map(Number) ?? [0, 0, 0];
+		return (r << 16) | (g << 8) | b;
+	}
+
+	// OKLCH — parse and convert to sRGB
+	const match = raw.match(/oklch\(([\d.]+)\s+([\d.]+)\s+([\d.]+)\)/);
+	if (match) {
+		const l = Number.parseFloat(match[1]);
+		const c = Number.parseFloat(match[2]);
+		const h = Number.parseFloat(match[3]) * (Math.PI / 180);
+
+		// OKLCH → OKLab
+		const a = c * Math.cos(h);
+		const b = c * Math.sin(h);
+
+		// OKLab → linear sRGB
+		const l_ = l + 0.3963377774 * a + 0.2158037573 * b;
+		const m_ = l - 0.1055613458 * a - 0.0638541728 * b;
+		const s_ = l - 0.0894841775 * a - 1.291485548 * b;
+
+		const l_cubed = l_ * l_ * l_;
+		const m_cubed = m_ * m_ * m_;
+		const s_cubed = s_ * s_ * s_;
+
+		const r_ = +4.0767416621 * l_cubed - 3.3077115913 * m_cubed + 0.2309699292 * s_cubed;
+		const g_ = -1.2684380046 * l_cubed + 2.6097574011 * m_cubed - 0.3413193965 * s_cubed;
+		const b_ = -0.0041960863 * l_cubed - 0.7034186147 * m_cubed + 1.707614701 * s_cubed;
+
+		const r8 = Math.round(Math.max(0, Math.min(1, r_)) * 255);
+		const g8 = Math.round(Math.max(0, Math.min(1, g_)) * 255);
+		const b8 = Math.round(Math.max(0, Math.min(1, b_)) * 255);
+
+		return (r8 << 16) | (g8 << 8) | b8;
+	}
+
+	return 0x000000;
 }
 
 let GRID_BG_COLOR = 0x0f1720;
@@ -30,6 +79,8 @@ let GRID_LINE_COLOR = 0x334155;
 let TETRIS_TEXT_MUTED = 0x94a3b8;
 let TETRIS_TEXT_BRIGHT = 0xf8fafc;
 let TETRIS_OVER_COLOR = 0xef4444;
+let PIECE_COLOR = 0x4ade80;
+let PIECE_STROKE_COLOR = 0xffffff;
 
 type ActivePiece = {
 	type: PieceType;
@@ -88,12 +139,11 @@ function checkGameOver(piece: ActivePiece, board: Board): boolean {
 // Write the piece's cells onto the board.
 function placePiece(piece: ActivePiece, board: Board): void {
 	const shape: Shape = PIECE_DEFINITIONS[piece.type].shapes[piece.rotation];
-	const color = PIECE_DEFINITIONS[piece.type].color;
 
 	for (const [dr, dc] of shape) {
 		const r = piece.row + dr;
 		const c = piece.col + dc;
-		board[r][c] = color;
+		board[r][c] = PIECE_COLOR;
 	}
 }
 
@@ -124,15 +174,14 @@ function spawnPiece(type: PieceType): ActivePiece {
 
 function drawPiece(g: Graphics, piece: ActivePiece, cellSize: number): void {
 	g.clear();
-	const def = PIECE_DEFINITIONS[piece.type];
-	const shape: Shape = def.shapes[piece.rotation];
+	const shape: Shape = PIECE_DEFINITIONS[piece.type].shapes[piece.rotation];
 
 	for (const [dr, dc] of shape) {
 		const x = (piece.col + dc) * cellSize;
 		const y = (piece.row + dr) * cellSize;
 		g.rect(x, y, cellSize, cellSize);
-		g.fill(def.color);
-		g.stroke({ width: 1, color: 0xffffff, alpha: 0.1 });
+		g.fill(PIECE_COLOR);
+		g.stroke({ width: 1, color: PIECE_STROKE_COLOR, alpha: 0.3 });
 	}
 }
 
@@ -149,27 +198,24 @@ function getGhostRow(piece: ActivePiece, board: Board): number {
 
 function drawGhost(g: Graphics, piece: ActivePiece, ghostRow: number, cellSize: number): void {
 	g.clear();
-	const def = PIECE_DEFINITIONS[piece.type];
-	const shape: Shape = def.shapes[piece.rotation];
+	const shape: Shape = PIECE_DEFINITIONS[piece.type].shapes[piece.rotation];
 
 	for (const [dr, dc] of shape) {
 		const x = (piece.col + dc) * cellSize;
 		const y = (ghostRow + dr) * cellSize;
 		g.rect(x, y, cellSize, cellSize);
-		g.fill({ color: def.color, alpha: 0.25 });
-		g.stroke({ width: 1, color: 0xffffff, alpha: 0.03 });
+		g.stroke({ width: 1, color: PIECE_STROKE_COLOR, alpha: 0.12 });
 	}
 }
 
 function drawPreview(g: Graphics, type: PieceType, cellSize: number): void {
 	g.clear();
 	const shape: Shape = PIECE_DEFINITIONS[type].shapes[0];
-	const color = PIECE_DEFINITIONS[type].color;
 
 	for (const [dr, dc] of shape) {
 		g.rect(dc * cellSize, dr * cellSize, cellSize, cellSize);
-		g.fill(color);
-		g.stroke({ width: 1, color: 0xffffff, alpha: 0.1 });
+		g.fill(PIECE_COLOR);
+		g.stroke({ width: 1, color: PIECE_STROKE_COLOR, alpha: 0.3 });
 	}
 }
 
@@ -177,7 +223,7 @@ function createGridBackground(): Graphics {
 	const g = new Graphics();
 
 	g.rect(0, 0, GRID_WIDTH, GRID_HEIGHT);
-	g.fill({ color: GRID_BG_COLOR, alpha: 0.5 });
+	g.fill({ color: GRID_BG_COLOR });
 	g.stroke({ width: 1, color: GRID_BORDER_COLOR });
 
 	return g;
@@ -227,6 +273,21 @@ function createNextLabel(): Text {
 		},
 		x: 8,
 		y: 8,
+	});
+}
+
+function createCountdownText(): Text {
+	return new Text({
+		text: "",
+		style: {
+			fontFamily: "monospace",
+			fontSize: 48,
+			fill: 0xffffff,
+			fontWeight: "bold",
+		},
+		anchor: { x: 0.5, y: 0.5 },
+		x: GRID_WIDTH / 2,
+		y: GRID_HEIGHT / 2,
 	});
 }
 
@@ -317,6 +378,7 @@ function getDropInterval(level: number): number {
 
 function createScene() {
 	const gridArea = new Container();
+	const gameContent = new Container();
 	const sideArea = new Container();
 
 	const boardLayer = new Container();
@@ -339,8 +401,15 @@ function createScene() {
 	const pauseText = createPauseText();
 	pauseText.visible = false;
 
+	const pauseOverlay = new Graphics();
+	pauseOverlay.rect(0, 0, CANVAS_WIDTH, GRID_HEIGHT);
+	pauseOverlay.fill({ color: 0x000000, alpha: 0.6 });
+	pauseOverlay.visible = false;
+
 	const startText = createStartText();
 	const startSubText = createStartSubText();
+	const countdownText = createCountdownText();
+	countdownText.visible = false;
 
 	const holdLabel = new Text({
 		text: "HOLD",
@@ -421,17 +490,20 @@ function createScene() {
 	sideArea.x = GRID_WIDTH + GAP;
 	sideArea.y = 0;
 
-	gridArea.addChild(gridBgGraphics);
-	gridArea.addChild(gridLineGraphics);
-	gridArea.addChild(boardLayer);
-	gridArea.addChild(ghostGraphics);
-	gridArea.addChild(activePieceLayer);
-	gridArea.addChild(scoreText);
-	gridArea.addChild(gameOverText);
+	gameContent.addChild(gridBgGraphics);
+	gameContent.addChild(gridLineGraphics);
+	gameContent.addChild(boardLayer);
+	gameContent.addChild(ghostGraphics);
+	gameContent.addChild(activePieceLayer);
+	gameContent.addChild(scoreText);
+	gameContent.addChild(gameOverText);
+	gameContent.addChild(sideArea);
+
+	gridArea.addChild(gameContent);
 	gridArea.addChild(pauseText);
 	gridArea.addChild(startText);
 	gridArea.addChild(startSubText);
-	gridArea.addChild(sideArea);
+	gridArea.addChild(countdownText);
 
 	return {
 		gridArea,
@@ -442,6 +514,7 @@ function createScene() {
 		pauseText,
 		startText,
 		startSubText,
+		countdownText,
 		previewGraphics,
 		levelText,
 		linesText,
@@ -492,6 +565,7 @@ export function TetrisGame() {
 				pauseText,
 				startText,
 				startSubText,
+				countdownText,
 				previewGraphics,
 				levelText,
 				linesText,
@@ -524,9 +598,12 @@ export function TetrisGame() {
 			let nextType: PieceType = randomPieceType();
 			let heldType: PieceType | null = null;
 			let canHold = true;
-
-			drawPiece(pieceGraphics, piece, CELL_SIZE);
-			drawPreview(previewGraphics, nextType, PREVIEW_CELL_SIZE);
+			let combo = 0;
+			const popups: Array<{
+				text: Text;
+				birth: number;
+				y: number;
+			}> = [];
 
 			function applyThemeColors() {
 				GRID_BG_COLOR = getCSSColor("--tetris-grid-bg");
@@ -535,10 +612,12 @@ export function TetrisGame() {
 				TETRIS_TEXT_MUTED = getCSSColor("--tetris-text-muted");
 				TETRIS_TEXT_BRIGHT = getCSSColor("--tetris-text-bright");
 				TETRIS_OVER_COLOR = getCSSColor("--tetris-over");
+				PIECE_COLOR = getCSSColor("--tetris-piece");
+				PIECE_STROKE_COLOR = getCSSColor("--tetris-piece-stroke");
 
 				gridBgGraphics.clear();
 				gridBgGraphics.rect(0, 0, GRID_WIDTH, GRID_HEIGHT);
-				gridBgGraphics.fill({ color: GRID_BG_COLOR, alpha: 0.5 });
+				gridBgGraphics.fill({ color: GRID_BG_COLOR });
 				gridBgGraphics.stroke({ width: 1, color: GRID_BORDER_COLOR });
 
 				gridLineGraphics.clear();
@@ -559,7 +638,7 @@ export function TetrisGame() {
 				(nextLabel.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
 				(levelLabel.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
 				(linesLabel.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
-				(startText.style as Record<string, unknown>).fill = GRID_BORDER_COLOR;
+				(startText.style as Record<string, unknown>).fill = PIECE_COLOR;
 				(startSubText.style as Record<string, unknown>).fill = TETRIS_TEXT_MUTED;
 				(levelText.style as Record<string, unknown>).fill = TETRIS_TEXT_BRIGHT;
 				(linesText.style as Record<string, unknown>).fill = TETRIS_TEXT_BRIGHT;
@@ -567,6 +646,9 @@ export function TetrisGame() {
 			}
 
 			applyThemeColors();
+
+			// Piece not drawn yet — it will be drawn after the countdown
+			drawPreview(previewGraphics, nextType, PREVIEW_CELL_SIZE);
 
 			themeObserver = new MutationObserver(() => {
 				if (cancelled) return;
@@ -587,15 +669,38 @@ export function TetrisGame() {
 				drawGhost(ghostGraphics, piece, ghostRow, CELL_SIZE);
 			}
 
-			updateGhost();
+			// Ghost not drawn here — it will be drawn after the countdown
 
 			function doLock() {
 				placePiece(piece, board);
 				const lines = clearLines(board);
 
 				if (lines > 0) {
-					score += getLineScore(lines);
+					combo = Math.min(combo + 1, 10);
+					const lineScore = getLineScore(lines);
+					const totalAdd = lineScore * combo;
+
+					score += totalAdd;
 					scoreText.text = `SCORE: ${score}`;
+
+					// Show floating popup
+					const popupText = combo > 1 ? `+${totalAdd}x${combo}` : `+${totalAdd}`;
+
+					const popup = new Text({
+						text: popupText,
+						style: {
+							fontFamily: "monospace",
+							fontSize: 16,
+							fill: TETRIS_TEXT_BRIGHT,
+							fontWeight: "bold",
+						},
+						anchor: { x: 0.5, y: 0.5 },
+						x: GRID_WIDTH / 2,
+						y: GRID_HEIGHT / 2,
+					});
+
+					gridArea.addChild(popup);
+					popups.push({ text: popup, birth: performance.now(), y: GRID_HEIGHT / 2 });
 
 					linesTotal += lines;
 					linesText.text = String(linesTotal);
@@ -605,11 +710,16 @@ export function TetrisGame() {
 						level = newLevel;
 						levelText.text = String(level);
 					}
+				} else {
+					combo = 0;
 				}
 
 				pieceGraphics.alpha = 1;
 				canHold = true;
-				drawBoard(boardGraphics, board, CELL_SIZE);
+				drawBoard(boardGraphics, board, CELL_SIZE, {
+					strokeColor: PIECE_STROKE_COLOR,
+					strokeAlpha: 0.3,
+				});
 				pieceGraphics.clear();
 
 				const next = spawnPiece(nextType);
@@ -635,6 +745,25 @@ export function TetrisGame() {
 
 			pixApp.ticker.add((ticker) => {
 				if (gameOver || paused || !started) return;
+
+				// Animate popups
+				const now = performance.now();
+				for (let i = popups.length - 1; i >= 0; i--) {
+					const p = popups[i];
+					const elapsed = now - p.birth;
+					const duration = 800;
+
+					if (elapsed >= duration) {
+						gridArea.removeChild(p.text);
+						p.text.destroy();
+						popups.splice(i, 1);
+						continue;
+					}
+
+					const t = elapsed / duration;
+					p.text.y = p.y - t * 60;
+					p.text.alpha = 1 - t;
+				}
 
 				if (isHardDropping) {
 					piece.row++;
@@ -689,8 +818,13 @@ export function TetrisGame() {
 			});
 
 			function restartGame() {
+				paused = false;
+				pauseText.visible = false;
+
+				gridArea.addChildAt(gameContent, 0);
 				Object.assign(board, createEmptyBoard());
 				score = 0;
+				combo = 0;
 				level = 1;
 				linesTotal = 0;
 				levelText.text = "1";
@@ -700,6 +834,13 @@ export function TetrisGame() {
 				isLocking = false;
 				isHardDropping = false;
 				gameOver = false;
+
+				// Remove any active popups
+				for (const p of popups) {
+					gridArea.removeChild(p.text);
+					p.text.destroy();
+				}
+				popups.length = 0;
 
 				boardGraphics.clear();
 				gameOverText.visible = false;
@@ -720,9 +861,32 @@ export function TetrisGame() {
 			}
 
 			function startGame() {
-				started = true;
 				startText.visible = false;
 				startSubText.visible = false;
+
+				const countdown = ["3", "2", "1", "0"];
+				let cdIndex = 0;
+
+				countdownText.visible = true;
+				(countdownText.style as Record<string, unknown>).fill = PIECE_COLOR;
+
+				function tickCountdown() {
+					if (cancelled) return;
+
+					countdownText.text = countdown[cdIndex];
+					cdIndex++;
+
+					if (cdIndex < countdown.length) {
+						setTimeout(tickCountdown, 800);
+					} else {
+						countdownText.visible = false;
+						drawPiece(pieceGraphics, piece, CELL_SIZE);
+						updateGhost();
+						started = true;
+					}
+				}
+
+				tickCountdown();
 			}
 
 			function onKeyDown(e: KeyboardEvent) {
@@ -740,6 +904,13 @@ export function TetrisGame() {
 					e.preventDefault();
 					paused = !paused;
 					pauseText.visible = paused;
+
+					if (paused) {
+						gridArea.removeChild(gameContent);
+					} else {
+						gridArea.addChildAt(gameContent, 0);
+					}
+
 					return;
 				}
 
