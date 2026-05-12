@@ -328,9 +328,25 @@ function createScene() {
 	const startText = createStartText();
 	const startSubText = createStartSubText();
 
+	const holdLabel = new Text({
+		text: "HOLD",
+		style: {
+			fontFamily: "monospace",
+			fontSize: 12,
+			fill: 0x94a3b8,
+		},
+		x: 8,
+		y: 0,
+	});
+
+	const holdGraphics = new Graphics();
+	holdGraphics.x = 8;
+	holdGraphics.y = 20;
+
 	const nextLabel = createNextLabel();
 	const previewGraphics = new Graphics();
-	previewGraphics.y = 28;
+	nextLabel.y = 78;
+	previewGraphics.y = 96;
 	previewGraphics.x = 8;
 
 	const levelLabel = new Text({
@@ -341,7 +357,7 @@ function createScene() {
 			fill: 0x94a3b8,
 		},
 		x: 8,
-		y: 110,
+		y: 170,
 	});
 
 	const levelText = new Text({
@@ -353,11 +369,9 @@ function createScene() {
 			fontWeight: "bold",
 		},
 		x: 8,
-		y: 126,
+		y: 186,
 	});
 
-	sideArea.addChild(nextLabel);
-	sideArea.addChild(previewGraphics);
 	const linesLabel = new Text({
 		text: "LINES",
 		style: {
@@ -366,7 +380,7 @@ function createScene() {
 			fill: 0x94a3b8,
 		},
 		x: 8,
-		y: 160,
+		y: 228,
 	});
 
 	const linesText = new Text({
@@ -378,9 +392,13 @@ function createScene() {
 			fontWeight: "bold",
 		},
 		x: 8,
-		y: 176,
+		y: 244,
 	});
 
+	sideArea.addChild(holdLabel);
+	sideArea.addChild(holdGraphics);
+	sideArea.addChild(nextLabel);
+	sideArea.addChild(previewGraphics);
 	sideArea.addChild(levelLabel);
 	sideArea.addChild(levelText);
 	sideArea.addChild(linesLabel);
@@ -413,6 +431,7 @@ function createScene() {
 		previewGraphics,
 		levelText,
 		linesText,
+		holdGraphics,
 		ghostGraphics,
 	};
 }
@@ -455,6 +474,7 @@ export function TetrisGame() {
 				previewGraphics,
 				levelText,
 				linesText,
+				holdGraphics,
 				ghostGraphics,
 			} = createScene();
 			pixApp.stage.addChild(gridArea);
@@ -474,6 +494,8 @@ export function TetrisGame() {
 			const board: Board = createEmptyBoard();
 			const piece: ActivePiece = spawnPiece(randomPieceType());
 			let nextType: PieceType = randomPieceType();
+			let heldType: PieceType | null = null;
+			let canHold = true;
 
 			drawPiece(pieceGraphics, piece, CELL_SIZE);
 			drawPreview(previewGraphics, nextType, PREVIEW_CELL_SIZE);
@@ -508,6 +530,7 @@ export function TetrisGame() {
 					}
 				}
 
+				canHold = true;
 				drawBoard(boardGraphics, board, CELL_SIZE);
 				pieceGraphics.clear();
 
@@ -593,6 +616,10 @@ export function TetrisGame() {
 				boardGraphics.clear();
 				gameOverText.visible = false;
 				scoreText.text = "SCORE: 0";
+				heldType = null;
+				canHold = true;
+				holdGraphics.clear();
+				drawPreview(previewGraphics, nextType, PREVIEW_CELL_SIZE);
 
 				const next = spawnPiece(randomPieceType());
 				piece.type = next.type;
@@ -688,6 +715,38 @@ export function TetrisGame() {
 						if (!isHardDropping) {
 							isHardDropping = true;
 							hardDropTarget = getGhostRow(piece, board);
+						}
+						break;
+
+					case "c":
+						e.preventDefault();
+						if (canHold) {
+							canHold = false;
+							isHardDropping = false;
+							isLocking = false;
+							lockAccumulator = 0;
+
+							if (heldType === null) {
+								heldType = piece.type;
+								const newPiece = spawnPiece(randomPieceType());
+								piece.type = newPiece.type;
+								piece.row = newPiece.row;
+								piece.col = newPiece.col;
+								piece.rotation = newPiece.rotation;
+							} else {
+								const swapType = heldType;
+								heldType = piece.type;
+								const newPiece = spawnPiece(swapType);
+								piece.type = newPiece.type;
+								piece.row = newPiece.row;
+								piece.col = newPiece.col;
+								piece.rotation = newPiece.rotation;
+							}
+
+							drawPiece(pieceGraphics, piece, CELL_SIZE);
+							updateGhost();
+							drawPreview(holdGraphics, heldType, PREVIEW_CELL_SIZE);
+							dropAccumulator = 0;
 						}
 						break;
 				}

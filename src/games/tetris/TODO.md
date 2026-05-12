@@ -226,13 +226,13 @@
 
 ## Hold piece display
 
-- [ ] Add hold action.
-- [ ] Display the held piece in the side area.
-- [ ] Allow swapping with the held piece.
-- [ ] Prevent multiple holds for the same active piece.
-- [ ] Reset hold availability after piece placement.
-- [ ] Update the hold display correctly.
-- [ ] Review hold behavior.
+- [x] Add hold action.
+- [x] Display the held piece in the side area.
+- [x] Allow swapping with the held piece.
+- [x] Prevent multiple holds for the same active piece.
+- [x] Reset hold availability after piece placement.
+- [x] Update the hold display correctly.
+- [ ] ~~Review hold behavior.~~
 
 ---
 
