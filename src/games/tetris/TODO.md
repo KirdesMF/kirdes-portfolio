@@ -32,21 +32,21 @@
 
 ## Board state rendering
 
-- [ ] Render empty cells from the board state.
-- [ ] Render filled cells from the board state.
-- [ ] Update the visual board when the board state changes.
-- [ ] Verify that rendering matches the current board state.
-- [ ] Review board state rendering.
+- [x] Render empty cells from the board state.
+- [x] Render filled cells from the board state.
+- [x] Update the visual board when the board state changes.
+- [x] Verify that rendering matches the current board state.
+- [ ] ~~Review board state rendering.~~
 
 ---
 
 ## Tetris pieces
 
-- [ ] Add the 7 classic Tetris pieces.
-- [ ] Spawn one active piece at the top of the grid.
-- [ ] Render the active piece in the Pixi scene.
-- [ ] Verify that each piece shape is correct.
-- [ ] Review all piece shapes visually.
+- [x] Add the 7 classic Tetris pieces.
+- [x] Spawn one active piece at the top of the grid.
+- [x] Render the active piece in the Pixi scene.
+- [x] Verify that each piece shape is correct.
+- [ ] ~~Review all piece shapes visually.~~
 
 ---
 

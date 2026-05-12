@@ -5,7 +5,7 @@ type Shape = Array<[number, number]>;
 
 type PieceDefinition = {
 	shape: Shape;
-	color: string;
+	color: number;
 };
 
 export const PIECE_DEFINITIONS: Record<PieceType, PieceDefinition> = {
@@ -16,7 +16,7 @@ export const PIECE_DEFINITIONS: Record<PieceType, PieceDefinition> = {
 			[0, 2],
 			[0, 3],
 		],
-		color: "oklch(0.7 0.18 200)",
+		color: 0x00bcd4,
 	},
 	O: {
 		shape: [
@@ -25,7 +25,7 @@ export const PIECE_DEFINITIONS: Record<PieceType, PieceDefinition> = {
 			[1, 0],
 			[1, 1],
 		],
-		color: "oklch(0.82 0.16 95)",
+		color: 0xf5cd47,
 	},
 	T: {
 		shape: [
@@ -34,7 +34,7 @@ export const PIECE_DEFINITIONS: Record<PieceType, PieceDefinition> = {
 			[0, 2],
 			[1, 1],
 		],
-		color: "oklch(0.6 0.18 300)",
+		color: 0x9b59b6,
 	},
 	S: {
 		shape: [
@@ -43,7 +43,7 @@ export const PIECE_DEFINITIONS: Record<PieceType, PieceDefinition> = {
 			[1, 0],
 			[1, 1],
 		],
-		color: "oklch(0.65 0.18 145)",
+		color: 0x2ecc71,
 	},
 	Z: {
 		shape: [
@@ -52,7 +52,7 @@ export const PIECE_DEFINITIONS: Record<PieceType, PieceDefinition> = {
 			[1, 1],
 			[1, 2],
 		],
-		color: "oklch(0.65 0.2 25)",
+		color: 0xe74c3c,
 	},
 	L: {
 		shape: [
@@ -61,7 +61,7 @@ export const PIECE_DEFINITIONS: Record<PieceType, PieceDefinition> = {
 			[0, 2],
 			[1, 0],
 		],
-		color: "oklch(0.7 0.18 65)",
+		color: 0xf39c12,
 	},
 	J: {
 		shape: [
@@ -70,7 +70,7 @@ export const PIECE_DEFINITIONS: Record<PieceType, PieceDefinition> = {
 			[0, 2],
 			[1, 2],
 		],
-		color: "oklch(0.6 0.17 255)",
+		color: 0x3498db,
 	},
 };
 
