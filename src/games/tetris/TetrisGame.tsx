@@ -6,6 +6,7 @@ import { PIECE_DEFINITIONS, type PieceType, randomPieceType } from "./pieces";
 const CELL_SIZE = 28;
 const GRID_COLS = 10;
 const GRID_ROWS = 20;
+const DROP_INTERVAL_MS = 1000;
 
 const GRID_WIDTH = GRID_COLS * CELL_SIZE;
 const GRID_HEIGHT = GRID_ROWS * CELL_SIZE;
@@ -19,6 +20,11 @@ type ActivePiece = {
 	row: number;
 	col: number;
 };
+
+// Return the furthest row offset a cell of this piece type can reach.
+function getMaxRowOffset(type: PieceType): number {
+	return Math.max(...PIECE_DEFINITIONS[type].shape.map(([r]) => r));
+}
 
 function spawnPiece(type: PieceType): ActivePiece {
 	const shape = PIECE_DEFINITIONS[type].shape;
@@ -116,9 +122,25 @@ export function TetrisGame() {
 			const { gridArea, pieceGraphics } = createScene();
 			pixApp.stage.addChild(gridArea);
 
-			// Spawn and render a random piece
-			const piece = spawnPiece(randomPieceType());
+			// Game state (mutable, driven by ticker)
+			let dropAccumulator = 0;
+			const piece: ActivePiece = spawnPiece(randomPieceType());
+
 			drawPiece(pieceGraphics, piece, CELL_SIZE);
+
+			pixApp.ticker.add((ticker) => {
+				dropAccumulator += ticker.deltaMS;
+
+				if (dropAccumulator >= DROP_INTERVAL_MS) {
+					dropAccumulator -= DROP_INTERVAL_MS;
+
+					const maxRow = GRID_ROWS - 1 - getMaxRowOffset(piece.type);
+					if (piece.row < maxRow) {
+						piece.row++;
+						drawPiece(pieceGraphics, piece, CELL_SIZE);
+					}
+				}
+			});
 
 			app = pixApp;
 		}

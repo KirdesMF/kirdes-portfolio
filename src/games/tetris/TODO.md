@@ -52,11 +52,11 @@
 
 ## Game loop
 
-- [ ] Connect the game update loop.
-- [ ] Make the active piece fall automatically.
-- [ ] Keep rendering synchronized with game state.
-- [ ] Verify that the game loop is stable.
-- [ ] Review automatic falling behavior.
+- [x] Connect the game update loop.
+- [x] Make the active piece fall automatically.
+- [x] Keep rendering synchronized with game state.
+- [x] Verify that the game loop is stable.
+- [ ] ~~Review automatic falling behavior.~~
 
 ---
 
