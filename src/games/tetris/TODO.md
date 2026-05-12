@@ -22,11 +22,11 @@
 
 ## Pixi grid display
 
-- [ ] Display the empty Tetris grid.
-- [ ] Use classic Tetris grid dimensions.
-- [ ] Position the grid cleanly in the scene.
-- [ ] Make empty cells visually readable.
-- [ ] Review grid readability.
+- [x] Display the empty Tetris grid.
+- [x] Use classic Tetris grid dimensions.
+- [x] Position the grid cleanly in the scene.
+- [x] Make empty cells visually readable.
+- [ ] ~~Review grid readability.~~
 
 ---
 
@@ -62,12 +62,12 @@
 
 ## Player input
 
-- [ ] Add left movement.
-- [ ] Add right movement.
-- [ ] Add soft drop.
-- [ ] Update the Pixi scene after input.
-- [ ] Prevent invalid movement from being displayed.
-- [ ] Review movement near both walls.
+- [x] Add left movement.
+- [x] Add right movement.
+- [x] Add soft drop.
+- [x] Update the Pixi scene after input.
+- [x] Prevent invalid movement from being displayed.
+- [ ] ~~Review movement near both walls.~~
 
 ---
 

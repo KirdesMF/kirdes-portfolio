@@ -26,6 +26,19 @@ function getMaxRowOffset(type: PieceType): number {
 	return Math.max(...PIECE_DEFINITIONS[type].shape.map(([r]) => r));
 }
 
+// Check if the piece can move by (dRow, dCol) without leaving the grid.
+function canMove(piece: ActivePiece, dRow: number, dCol: number): boolean {
+	const def = PIECE_DEFINITIONS[piece.type];
+
+	for (const [dr, dc] of def.shape) {
+		const r = piece.row + dr + dRow;
+		const c = piece.col + dc + dCol;
+		if (r < 0 || r >= GRID_ROWS || c < 0 || c >= GRID_COLS) return false;
+	}
+
+	return true;
+}
+
 function spawnPiece(type: PieceType): ActivePiece {
 	const shape = PIECE_DEFINITIONS[type].shape;
 	const maxCol = Math.max(...shape.map(([, c]) => c));
@@ -101,6 +114,7 @@ export function TetrisGame() {
 	useEffect(() => {
 		let app: Application | null = null;
 		let cancelled = false;
+		let removeKeyboard: (() => void) | null = null;
 
 		async function setupPixi() {
 			const canvas = canvasRef.current;
@@ -122,7 +136,7 @@ export function TetrisGame() {
 			const { gridArea, pieceGraphics } = createScene();
 			pixApp.stage.addChild(gridArea);
 
-			// Game state (mutable, driven by ticker)
+			// Game state (mutable, driven by ticker and input)
 			let dropAccumulator = 0;
 			const piece: ActivePiece = spawnPiece(randomPieceType());
 
@@ -142,6 +156,38 @@ export function TetrisGame() {
 				}
 			});
 
+			function onKeyDown(e: KeyboardEvent) {
+				switch (e.key) {
+					case "ArrowLeft":
+						e.preventDefault();
+						if (canMove(piece, 0, -1)) {
+							piece.col--;
+							drawPiece(pieceGraphics, piece, CELL_SIZE);
+						}
+						break;
+
+					case "ArrowRight":
+						e.preventDefault();
+						if (canMove(piece, 0, 1)) {
+							piece.col++;
+							drawPiece(pieceGraphics, piece, CELL_SIZE);
+						}
+						break;
+
+					case "ArrowDown":
+						e.preventDefault();
+						if (canMove(piece, 1, 0)) {
+							piece.row++;
+							dropAccumulator = 0;
+							drawPiece(pieceGraphics, piece, CELL_SIZE);
+						}
+						break;
+				}
+			}
+
+			window.addEventListener("keydown", onKeyDown);
+			removeKeyboard = () => window.removeEventListener("keydown", onKeyDown);
+
 			app = pixApp;
 		}
 
@@ -149,6 +195,7 @@ export function TetrisGame() {
 
 		return () => {
 			cancelled = true;
+			removeKeyboard?.();
 			if (app) {
 				app.destroy(
 					{ removeView: true, releaseGlobalResources: true },
