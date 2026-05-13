@@ -1,21 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { AboutPage } from "#/pages/About";
 
 export const Route = createFileRoute("/terminal/about")({
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-	return (
-		<div className="flex flex-1 flex-col gap-3 p-4 text-xs">
-			<div className="text-muted-foreground">── about ──</div>
-			<div className="flex flex-col gap-1 text-muted-foreground">
-				<p>product engineer / interface builder</p>
-				<p className="mt-2">
-					see <span className="text-primary">cat README.md</span> for details,
-					<span className="text-primary"> skills.json</span> for skills, and{" "}
-					<span className="text-primary">values.md</span> for principles.
-				</p>
-			</div>
-		</div>
-	);
+	return <AboutPage />;
 }

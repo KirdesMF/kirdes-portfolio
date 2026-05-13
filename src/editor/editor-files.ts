@@ -1,4 +1,4 @@
-import { fileGroupedByFolder } from "./editor-files.content";
+import { fileGroupedByFolder, sourceFiles } from "./editor-files.content";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -27,7 +27,9 @@ function buildEntry(input: EditorFileInput): EditorFileEntry {
 }
 
 function buildAllFiles(): ReadonlyArray<EditorFileEntry> {
-	return fileGroupedByFolder.flatMap((group) => group.files.map(buildEntry));
+	const contentFiles = fileGroupedByFolder.flatMap((group) => group.files.map(buildEntry));
+	const sourceFileEntries = sourceFiles.map(buildEntry);
+	return [...contentFiles, ...sourceFileEntries];
 }
 
 // ─── Exports ──────────────────────────────────────────────────────────────────

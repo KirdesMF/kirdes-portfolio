@@ -11,7 +11,7 @@ export function HelpOutput(): ReactNode {
 			<p>available routes: {terminalRoutes.join(" ")}</p>
 			<p>
 				commands: cat cd clear close date email git github help history ls man music open pwd reload
-				rm tree whoami
+				rm source tree whoami
 			</p>
 		</div>
 	);
@@ -118,7 +118,9 @@ const manPages: Record<string, string> = {
 	pwd: "pwd — print working directory (current folder).",
 	reload: "reload — reload the portfolio (go to splash screen).",
 	rm: "rm [file] — pretend to remove files.\n  This is not a real terminal — all files are read-only.\n  Nice try though.",
-	tree: "tree — display folder structure as a tree.",
+	source:
+		"source [path] — show route, content files, and renderer for a section.\n  Without arguments, uses the current route.\n  Examples:\n    source about\n    source /work\n    source",
+	tree: "tree — display folder structure as a tree.\n  Aliases and flags:\n    tree --all — show full tree including src/ page renderers.",
 	whoami: "whoami — display current user info.",
 };
 
@@ -205,6 +207,119 @@ export function GitOutput({ subcommand }: { subcommand: string }): ReactNode {
 				</div>
 			);
 	}
+}
+
+// ─── Source output ─────────────────────────────────────────────────
+
+export function SourceOutput({
+	meta,
+}: {
+	meta: {
+		route: string;
+		folder: string;
+		label: string;
+		renderer: string;
+		contentFiles: Array<string>;
+	};
+}): ReactNode {
+	return (
+		<div className="flex flex-col gap-1 whitespace-pre-wrap">
+			<p className="text-primary">source</p>
+			<div className="flex flex-col gap-0.5 text-muted-foreground">
+				<p>route:</p>
+				<p className="pl-4">{meta.route}</p>
+				<p>content:</p>
+				{meta.contentFiles.map((f) => (
+					<p className="pl-4" key={f}>
+						{meta.folder}/{f}
+					</p>
+				))}
+				<p>renderer:</p>
+				<p className="pl-4">{meta.renderer}</p>
+			</div>
+		</div>
+	);
+}
+
+// ─── Tree all view (includes src/) ────────────────────────────────────
+
+export function TreeAllOutput(): ReactNode {
+	return (
+		<div className="flex flex-col whitespace-pre-wrap font-mono text-muted-foreground">
+			{folderRoutesData.map(({ folder, label, route }) => {
+				const folderFiles = editorFiles.filter((f) => f.folder === folder);
+
+				return (
+					<div key={folder}>
+						<Link
+							activeOptions={{ exact: true }}
+							activeProps={{ className: "text-primary" }}
+							className="underline-offset-2 hover:text-primary hover:underline"
+							search={(previous) => ({
+								activeFile: previous.activeFile,
+								dialog: previous.dialog,
+								editor: previous.editor,
+								files: previous.files ?? [],
+								panel: "route",
+							})}
+							to={route}
+						>
+							{label}/
+						</Link>
+						{folderFiles.map((file, i) => {
+							const branch = i === folderFiles.length - 1 ? "└── " : "├── ";
+							return (
+								<div className="flex items-center gap-1" key={file.id}>
+									<span className="text-muted-foreground/50">{`  ${branch}`}</span>
+									<Link
+										className="underline-offset-2 hover:text-primary hover:underline"
+										search={(previous) => ({
+											activeFile: file.id,
+											dialog: previous.dialog,
+											editor: "open",
+											files: previous.files
+												? [...new Set([...previous.files, file.id])]
+												: [file.id],
+											panel: "editor",
+										})}
+										to="."
+									>
+										{file.name}
+									</Link>
+								</div>
+							);
+						})}
+					</div>
+				);
+			})}
+			<div>
+				<span className="text-muted-foreground/70">src/</span>
+				{editorFiles
+					.filter((f) => f.folder === "src/pages")
+					.map((file, i, arr) => {
+						const branch = i === arr.length - 1 ? "└── " : "├── ";
+						return (
+							<div className="flex items-center gap-1" key={file.id}>
+								<span className="text-muted-foreground/50">{`    ${branch}`}</span>
+								<Link
+									className="underline-offset-2 hover:text-primary hover:underline"
+									search={(previous) => ({
+										activeFile: file.id,
+										dialog: previous.dialog,
+										editor: "open",
+										files: previous.files ? [...new Set([...previous.files, file.id])] : [file.id],
+										panel: "editor",
+									})}
+									to="."
+								>
+									{file.name}
+								</Link>
+							</div>
+						);
+					})}
+			</div>
+		</div>
+	);
 }
 
 // ─── Tree view ────────────────────────────────────────────────────────

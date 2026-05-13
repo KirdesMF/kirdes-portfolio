@@ -16,6 +16,7 @@ export const terminalCommands = [
 	"pwd",
 	"reload",
 	"rm",
+	"source",
 	"tree",
 	"whoami",
 ] as const;

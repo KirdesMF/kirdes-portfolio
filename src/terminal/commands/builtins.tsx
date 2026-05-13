@@ -2,6 +2,7 @@ import {
 	EmailOutput,
 	HelpOutput,
 	LsOutput,
+	TreeAllOutput,
 	TreeOutput,
 	WhoamiOutput,
 } from "../terminal-command-outputs";
@@ -65,6 +66,11 @@ function handleHistory(ctx: CommandContext): boolean {
 }
 
 function handleTree(ctx: CommandContext): boolean {
+	if (ctx.normalized === "tree --all") {
+		ctx.pushHistory(<TreeAllOutput />);
+		return true;
+	}
+
 	if (ctx.normalized !== "tree") return false;
 	ctx.pushHistory(<TreeOutput />);
 	return true;

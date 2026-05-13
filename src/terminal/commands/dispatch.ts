@@ -7,6 +7,7 @@ import { handleMan } from "./man";
 import { handleOpen } from "./open";
 import { handleRm } from "./rm";
 import { handleRoute } from "./route";
+import { handleSource } from "./source";
 import type { CommandContext, CommandHandler } from "./types";
 
 /**
@@ -16,6 +17,7 @@ import type { CommandContext, CommandHandler } from "./types";
 const pipeline: ReadonlyArray<CommandHandler> = [
 	handleRoute,
 	handleCd,
+	handleSource,
 	handleCat,
 	handleOpen,
 	handleClose,
