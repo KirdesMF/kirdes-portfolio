@@ -20,12 +20,12 @@ export function TerminalPane({
 }) {
 	const scrollRef = useRef<HTMLDivElement>(null);
 
-	// Auto-scroll to bottom when history grows
+	// Auto-scroll to bottom when new output is added
 	useEffect(() => {
 		const el = scrollRef.current;
 		if (!el) return;
 		el.scrollTop = el.scrollHeight;
-	}, []);
+	}, [history.length]);
 
 	return (
 		<div
