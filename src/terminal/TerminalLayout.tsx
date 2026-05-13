@@ -4,7 +4,6 @@ import { cn } from "#/design-system/cn";
 import { DialogHost } from "#/dialogs/DialogHost";
 import { EditorPane } from "#/editor/EditorPane";
 import { AppHeader } from "#/layout/AppHeader";
-import { HomePage } from "#/pages/Home";
 import type { EditorFileName } from "../editor/editor-files";
 import { getMobilePanel, TerminalMobilePanels } from "./TerminalMobilePanels";
 import { TerminalPane } from "./TerminalPane";
@@ -40,8 +39,8 @@ export function TerminalLayout({
 		select: (state) => state.matches.at(-1)?.routeId === "/terminal",
 	});
 	const hasEditorPanel = activeEditor === "open";
-	const hasRightPanel = true;
-	const mobilePanel = getMobilePanel(activePanel, hasEditorPanel);
+	const hasRightPanel = !isHomeRoute || hasEditorPanel;
+	const mobilePanel = getMobilePanel(activePanel, hasEditorPanel, isHomeRoute);
 	const terminal = useTerminalController({
 		activeFileName,
 		currentTerminalRoute,
@@ -78,6 +77,7 @@ export function TerminalLayout({
 					activeFileName={activeFileName}
 					activePanel={activePanel}
 					hasEditorPanel={hasEditorPanel}
+					isHomeRoute={isHomeRoute}
 					onSelectPanel={terminal.setMobilePanel}
 				/>
 				<div className="flex min-h-0 flex-1">
@@ -99,23 +99,25 @@ export function TerminalLayout({
 								"md:grid",
 								mobilePanel === "terminal" ? "hidden md:grid" : "grid",
 								!isTerminalHidden && "md:w-1/2 md:flex-none",
-								hasEditorPanel && !isRouteMaximized && !isEditorMaximized
+								hasEditorPanel && !isHomeRoute && !isRouteMaximized && !isEditorMaximized
 									? "md:grid-rows-2"
 									: "md:grid-rows-1",
 							)}
 						>
-							<TerminalRoutePane
-								className={cn(
-									mobilePanel === "route" ? "flex" : "hidden",
-									"md:flex",
-									isEditorMaximized && "md:hidden",
-								)}
-								hasEditorPanel={hasEditorPanel && !isEditorMaximized}
-								isMaximized={isRouteMaximized}
-								onToggleMaximize={() => toggleMaximize("route")}
-							>
-								{isHomeRoute ? <HomePage /> : children}
-							</TerminalRoutePane>
+							{isHomeRoute ? null : (
+								<TerminalRoutePane
+									className={cn(
+										mobilePanel === "route" ? "flex" : "hidden",
+										"md:flex",
+										isEditorMaximized && "md:hidden",
+									)}
+									hasEditorPanel={hasEditorPanel && !isEditorMaximized}
+									isMaximized={isRouteMaximized}
+									onToggleMaximize={() => toggleMaximize("route")}
+								>
+									{children}
+								</TerminalRoutePane>
+							)}
 							{hasEditorPanel ? (
 								<EditorPane
 									activeFileName={activeFileName}

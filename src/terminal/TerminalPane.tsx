@@ -21,6 +21,7 @@ export function TerminalPane({
 	const scrollRef = useRef<HTMLDivElement>(null);
 
 	// Auto-scroll to bottom when new output is added
+	// biome-ignore lint/correctness/useExhaustiveDependencies: history.length triggers scroll on new entries
 	useEffect(() => {
 		const el = scrollRef.current;
 		if (!el) return;

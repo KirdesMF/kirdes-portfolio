@@ -5,9 +5,10 @@ import type { TerminalPanelName } from "./terminal-panel-types";
 export function getMobilePanel(
 	activePanel: TerminalPanelName,
 	hasEditorPanel: boolean,
+	isHomeRoute: boolean,
 ): TerminalPanelName {
 	if (activePanel === "editor" && hasEditorPanel) return "editor";
-	if (activePanel === "route") return "route";
+	if (activePanel === "route" && !isHomeRoute) return "route";
 
 	return "terminal";
 }
@@ -16,14 +17,16 @@ export function TerminalMobilePanels({
 	activeFileName,
 	activePanel,
 	hasEditorPanel,
+	isHomeRoute,
 	onSelectPanel,
 }: {
 	activeFileName?: EditorFileName;
 	activePanel: TerminalPanelName;
 	hasEditorPanel: boolean;
+	isHomeRoute: boolean;
 	onSelectPanel: (panel: TerminalPanelName) => void;
 }) {
-	const panel = getMobilePanel(activePanel, hasEditorPanel);
+	const panel = getMobilePanel(activePanel, hasEditorPanel, isHomeRoute);
 
 	return (
 		<div className="flex shrink-0 items-center gap-1 border-b border-border px-2 py-1 md:hidden">
@@ -37,16 +40,18 @@ export function TerminalMobilePanels({
 			>
 				terminal
 			</button>
-			<button
-				className={cn(
-					"rounded border border-transparent px-2 py-1 text-tiny text-muted-foreground",
-					panel === "route" && "border-primary/40 bg-primary/10 text-primary",
-				)}
-				type="button"
-				onClick={() => onSelectPanel("route")}
-			>
-				route
-			</button>
+			{isHomeRoute ? null : (
+				<button
+					className={cn(
+						"rounded border border-transparent px-2 py-1 text-tiny text-muted-foreground",
+						panel === "route" && "border-primary/40 bg-primary/10 text-primary",
+					)}
+					type="button"
+					onClick={() => onSelectPanel("route")}
+				>
+					route
+				</button>
+			)}
 			{hasEditorPanel ? (
 				<button
 					className={cn(
