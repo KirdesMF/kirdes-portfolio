@@ -2,10 +2,9 @@ import { terminalCommands } from "./terminal-commands";
 
 export const terminalNavigationItems = [
 	{ command: "/home", label: "~", to: "/terminal" },
-	{ command: "/contact", label: "contact", to: "/terminal/contact" },
-	{ command: "/work", label: "work", to: "/terminal/work" },
 	{ command: "/about", label: "about", to: "/terminal/about" },
-	{ command: "/projects", label: "projects", to: "/terminal/projects" },
+	{ command: "/work", label: "work", to: "/terminal/work" },
+	{ command: "/contact", label: "contact", to: "/terminal/contact" },
 ] as const;
 
 export const terminalRoutes = terminalNavigationItems.map(({ command }) => command);

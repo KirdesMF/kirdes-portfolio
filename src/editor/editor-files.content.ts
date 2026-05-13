@@ -176,63 +176,6 @@ export const workFiles: ReadonlyArray<EditorFileInput> = [
 	},
 ];
 
-// ─── Projects files (/projects/) ──────────────────────────────────────────────
-
-export const projectFiles: ReadonlyArray<EditorFileInput> = [
-	{
-		name: "README.md",
-		folder: "projects",
-		language: "markdown",
-		content: md(
-			"# /projects",
-			"",
-			"Selected projects and side quests.",
-			"",
-			"Open individual `.json` files for details.",
-		),
-	},
-	{
-		name: "kirdes-portfolio.json",
-		folder: "projects",
-		language: "json",
-		content: json({
-			name: "kirdes portfolio",
-			stack: ["TanStack Start", "React", "Tailwind CSS", "TypeScript"],
-			status: "live",
-			url: "https://kirdes.dev",
-			highlights: [
-				"terminal-first interface",
-				"server-rendered syntax highlighting",
-				"context-aware command routing",
-			],
-		}),
-	},
-	{
-		name: "ui-kit.json",
-		folder: "projects",
-		language: "json",
-		content: json({
-			name: "UI Kit",
-			stack: ["Design Tokens", "React", "Tailwind CSS"],
-			status: "in progress",
-			description: "Component library and design system for consistent, scalable UIs.",
-		}),
-	},
-	{
-		name: "notes.md",
-		folder: "projects",
-		language: "markdown",
-		content: md(
-			"# project notes",
-			"",
-			"- portfolio needs a dark mode toggle that feels good",
-			"- ui-kit should ship with a playground",
-			'- write more about the "why" not just the "what"',
-			"- maybe add a guestbook? low priority.",
-		),
-	},
-];
-
 // ─── Contact files (/contact/) ────────────────────────────────────────────────
 
 export const contactFiles: ReadonlyArray<EditorFileInput> = [
@@ -286,12 +229,6 @@ export const fileGroupedByFolder: ReadonlyArray<{
 	{ folder: "~", label: "~", route: "/terminal", files: rootFiles },
 	{ folder: "about", label: "about", route: "/terminal/about", files: aboutFiles },
 	{ folder: "work", label: "work", route: "/terminal/work", files: workFiles },
-	{
-		folder: "projects",
-		label: "projects",
-		route: "/terminal/projects",
-		files: projectFiles,
-	},
 	{
 		folder: "contact",
 		label: "contact",
