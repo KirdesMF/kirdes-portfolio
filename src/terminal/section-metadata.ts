@@ -7,13 +7,6 @@ export type SectionMetadata = {
 };
 
 export const sectionMetadata: Record<string, SectionMetadata> = {
-	"/terminal": {
-		route: "/terminal",
-		folder: "~",
-		label: "~",
-		renderer: "src/pages/Home.tsx",
-		contentFiles: ["README.md", "TODO.md", "stack.json", "profile.ts", "status.txt"],
-	},
 	"/terminal/about": {
 		route: "/terminal/about",
 		folder: "about",
