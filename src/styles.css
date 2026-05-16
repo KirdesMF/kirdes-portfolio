@@ -270,8 +270,8 @@ body::before {
 	background-image: repeating-linear-gradient(
 		-45deg,
 		var(--line) 0,
-		var(--line) 2px,
-		transparent 2px,
+		var(--line) 4px,
+		transparent 4px,
 		transparent 8px
 	);
 }
