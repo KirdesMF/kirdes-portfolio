@@ -7,7 +7,7 @@ const meta = sectionMetadata["/terminal/about"];
 export function AboutPage(): ReactNode {
 	return (
 		<div className="flex flex-1 flex-col gap-3 p-4 text-xs">
-			<div className="text-muted-foreground">── about ──</div>
+			<div className="text-muted-foreground">{"/* about */"}</div>
 			<div className="flex flex-col gap-1 text-muted-foreground">
 				<p>product engineer / interface builder</p>
 				<p className="mt-2">

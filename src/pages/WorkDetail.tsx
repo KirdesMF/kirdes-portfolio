@@ -1,31 +1,53 @@
 import { Link } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
 import { sectionMetadata } from "#/terminal/section-metadata";
+import { projects, statusColors } from "./work.data";
 
-const meta = sectionMetadata["/terminal/contact"];
+const meta = sectionMetadata["/terminal/work"];
 
-export function ContactPage(): ReactNode {
+export function WorkDetailPage({ project }: { project: string }): ReactNode {
+	const entry = projects.find((p) => p.name === project);
+
+	if (!entry) {
+		return (
+			<div className="flex flex-1 flex-col gap-3 p-4 text-xs">
+				<div className="text-muted-foreground">{"/* work */"}</div>
+				<p>
+					project <span className="text-primary">{project}</span> not found.
+				</p>
+				<Link className="flex items-center gap-1 text-primary hover:underline" to="/terminal/work">
+					<ArrowLeft className="size-3" />
+					back to projects
+				</Link>
+			</div>
+		);
+	}
+
 	return (
 		<div className="flex flex-1 flex-col gap-3 p-4 text-xs">
-			<div className="text-muted-foreground">{"/* contacts */"}</div>
-			<div className="flex flex-col gap-2">
-				<div className="flex gap-4">
-					<span className="text-primary">twitter</span>
-					<span>@kirdesmf</span>
-				</div>
-				<div className="flex gap-4">
-					<span className="text-primary">email</span>
-					<span>cedric@kirdes.dev</span>
-				</div>
-				<div className="flex gap-4">
-					<span className="text-primary">github</span>
-					<span>github.com/kirdesmf</span>
-				</div>
+			<div className="flex items-center gap-2 text-muted-foreground">
+				<Link
+					className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+					to="/terminal/work"
+				>
+					<ArrowLeft className="size-3" />
+					work
+				</Link>
+				<span>/</span>
+				<span className="text-primary">{entry.name}</span>
 			</div>
-			<p className="text-muted-foreground">
-				see <span className="text-primary">cat links.json</span> for structured data, or{" "}
-				<span className="text-primary">contact.md</span> for more info.
-			</p>
+
+			<div className="flex items-center gap-3">
+				<span className="text-lg font-semibold text-foreground">{entry.name}</span>
+				<span className="text-tiny text-muted-foreground">{entry.version}</span>
+				<span className={`text-tiny ${statusColors[entry.status]}`}>{entry.status}</span>
+			</div>
+
+			<p className="text-muted-foreground">{entry.description}</p>
+
+			{entry.detail}
+
 			{meta ? <SourceLinks meta={meta} /> : null}
 		</div>
 	);
@@ -47,7 +69,7 @@ function SourceLinks({ meta: m }: { meta: NonNullable<(typeof sectionMetadata)[s
 							files: prev.files ? [...new Set([...prev.files, m.renderer])] : [m.renderer],
 							panel: "editor" as const,
 						})}
-						to="."
+						to="/terminal/work"
 					>
 						{m.renderer}
 					</Link>
@@ -68,7 +90,7 @@ function SourceLinks({ meta: m }: { meta: NonNullable<(typeof sectionMetadata)[s
 										panel: "editor" as const,
 									};
 								}}
-								to="."
+								to="/terminal/work"
 							>
 								{file}
 							</Link>

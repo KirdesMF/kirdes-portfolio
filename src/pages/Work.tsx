@@ -1,37 +1,54 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { ScrambleTitle } from "#/design-system/ScrambleTitle";
 import { sectionMetadata } from "#/terminal/section-metadata";
-
-type WorkEntry = {
-	name: string;
-	period: string;
-	role: string;
-};
-
-const workEntries: Array<WorkEntry> = [
-	{ name: "kirdes", period: "2023 → now", role: "freelance product engineer" },
-	{ name: "indie", period: "2021 → now", role: "building tools and ui systems" },
-];
+import { projects, statusColors } from "./work.data";
 
 const meta = sectionMetadata["/terminal/work"];
 
 export function WorkPage(): ReactNode {
 	return (
 		<div className="flex flex-1 flex-col gap-3 p-4 text-xs">
-			<div className="text-muted-foreground">── work ──</div>
-			<div className="flex flex-col gap-2">
-				{workEntries.map(({ name, period, role }) => (
-					<div className="flex gap-4" key={name}>
-						<span className="text-primary">{name}</span>
-						<span>{period}</span>
-						<span className="text-muted-foreground">{role}</span>
-					</div>
-				))}
-			</div>
+			<div className="text-muted-foreground">{"/* work */"}</div>
+
+			<table className="w-full border-collapse">
+				<thead>
+					<tr className="border-b border-border text-left text-tiny text-muted-foreground/70">
+						<th className="whitespace-nowrap pb-1.5 pr-4 font-medium">NAME</th>
+						<th className="whitespace-nowrap pb-1.5 pr-4 font-medium">VERSION</th>
+						<th className="whitespace-nowrap pb-1.5 pr-4 font-medium">STATUS</th>
+						<th className="pb-1.5 font-medium">DESCRIPTION</th>
+					</tr>
+				</thead>
+				<tbody>
+					{projects.map((entry) => (
+						<tr key={entry.name} className="border-b border-border/50 last:border-none">
+							<td className="whitespace-nowrap py-1.5 pr-4">
+								<Link
+									className="text-primary underline-offset-2 hover:underline"
+									to="/terminal/work/$project"
+									params={{ project: entry.name }}
+								>
+									<ScrambleTitle>{entry.name}</ScrambleTitle>
+								</Link>
+							</td>
+							<td className="whitespace-nowrap py-1.5 pr-4 text-muted-foreground">
+								{entry.version}
+							</td>
+							<td className={`whitespace-nowrap py-1.5 pr-4 ${statusColors[entry.status]}`}>
+								{entry.status}
+							</td>
+							<td className="py-1.5 text-muted-foreground">{entry.description}</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+
 			<p className="text-muted-foreground">
-				see <span className="text-primary">cat experience.json</span> for details and{" "}
-				<span className="text-primary">freelance.md</span> for availability.
+				click a project name for details. see{" "}
+				<span className="text-primary">cat projects.json</span> for structured data.
 			</p>
+
 			{meta ? <SourceLinks meta={meta} /> : null}
 		</div>
 	);
@@ -53,7 +70,7 @@ function SourceLinks({ meta: m }: { meta: NonNullable<(typeof sectionMetadata)[s
 							files: prev.files ? [...new Set([...prev.files, m.renderer])] : [m.renderer],
 							panel: "editor" as const,
 						})}
-						to="."
+						to="/terminal/work"
 					>
 						{m.renderer}
 					</Link>
@@ -74,7 +91,7 @@ function SourceLinks({ meta: m }: { meta: NonNullable<(typeof sectionMetadata)[s
 										panel: "editor" as const,
 									};
 								}}
-								to="."
+								to="/terminal/work"
 							>
 								{file}
 							</Link>

@@ -1,10 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { WorkPage } from "#/pages/Work";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/terminal/work")({
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-	return <WorkPage />;
+	return <Outlet />;
 }
