@@ -36,3 +36,4 @@
 
 - [ ] `router.tsx` stringify params
 - [ ] url search params
+- [ ] use new tailwind scrollbar utilities
