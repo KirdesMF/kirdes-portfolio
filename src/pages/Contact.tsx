@@ -21,6 +21,10 @@ export function ContactPage(): ReactNode {
 					<span className="text-primary">github</span>
 					<span>github.com/kirdesmf</span>
 				</div>
+				<div className="flex gap-4">
+					<span className="text-primary">linkedin</span>
+					<span>linkedin.com/in/kirdesmf</span>
+				</div>
 			</div>
 			<p className="text-muted-foreground">
 				see <span className="text-primary">cat links.json</span> for structured data, or{" "}

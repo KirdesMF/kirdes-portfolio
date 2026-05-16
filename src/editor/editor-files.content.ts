@@ -202,6 +202,7 @@ export const contactFiles: ReadonlyArray<EditorFileInput> = [
 		content: json({
 			twitter: "@kirdesmf",
 			github: "github.com/kirdesmf",
+			linkedin: "linkedin.com/in/kirdesmf",
 			email: "cedric@kirdes.dev",
 			website: "https://kirdes.dev",
 		}),
@@ -216,6 +217,7 @@ export const contactFiles: ReadonlyArray<EditorFileInput> = [
 			"**email** — cedric@kirdes.dev (fastest)",
 			"**twitter** — @kirdesmf",
 			"**github** — github.com/kirdesmf",
+			"**linkedin** — linkedin.com/in/kirdesmf",
 			"",
 			"Prefer async communication. I'll get back to you within a day.",
 		),
