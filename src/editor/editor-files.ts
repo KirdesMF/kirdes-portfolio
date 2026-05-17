@@ -1,24 +1,7 @@
-import { fileGroupedByFolder, sourceFiles } from "./editor-files.content";
+import { fileGroupedByFolder, sourceFiles } from "./editor-file-registry";
+import type { EditorFileEntry, EditorFileInput, FolderRoute } from "./editor-files.types";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-export type EditorFileInput = {
-	readonly name: string;
-	readonly folder: string;
-	readonly language: string;
-	readonly content: string;
-};
-
-export type EditorFileEntry = EditorFileInput & {
-	/** Unique identifier, e.g. "~/README.md", "about/skills.json" */
-	readonly id: string;
-};
-
-export type FolderRoute = {
-	readonly folder: string;
-	readonly label: string;
-	readonly route: string;
-};
+export type { EditorFileEntry, FolderRoute };
 
 // ─── Build unique entries ─────────────────────────────────────────────────────
 

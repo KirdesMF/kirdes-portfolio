@@ -70,17 +70,17 @@ Goal: remove `src/pages` without changing behavior.
 
 Goal: put file definitions next to owning sections while keeping editor mechanics in editor.
 
-- [ ] Create `src/editor/editor-files.types.ts`.
-- [ ] Move editor file types from `editor-files.ts` to `editor-files.types.ts`.
-- [ ] Create `src/portfolio/root.files.ts`.
-- [ ] Create `src/portfolio/about/about.files.ts`.
-- [ ] Create `src/portfolio/work/work.files.tsx`.
-- [ ] Create `src/portfolio/contact/contact.files.ts`.
-- [ ] Move matching file definitions out of `src/editor/editor-files.content.ts`.
-- [ ] Create `src/editor/editor-file-registry.ts`.
-- [ ] Ensure `editor-file-registry.ts` creates a concrete runtime registry; no re-export-only barrel.
-- [ ] Keep resolver behavior unchanged.
-- [ ] Run validation.
+- [x] Create `src/editor/editor-files.types.ts`.
+- [x] Move editor file types from `editor-files.ts` to `editor-files.types.ts`.
+- [x] Create `src/portfolio/root.files.ts`.
+- [x] Create `src/portfolio/about/about.files.ts`.
+- [x] Create `src/portfolio/work/work.files.tsx`.
+- [x] Create `src/portfolio/contact/contact.files.ts`.
+- [x] Move matching file definitions out of `src/editor/editor-files.content.ts`.
+- [x] Create `src/editor/editor-file-registry.ts`.
+- [x] Ensure `editor-file-registry.ts` creates a concrete runtime registry; no re-export-only barrel.
+- [x] Keep resolver behavior unchanged.
+- [x] Run validation.
 - [ ] Commit.
 
 ## Phase 4 — SourceLinks extraction
