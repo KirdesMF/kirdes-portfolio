@@ -3,8 +3,6 @@ import { getTerminalFolder } from "#/terminal/terminal-path";
 import { fileGroupedByFolder } from "./editor-file-registry";
 import type { EditorFileEntry, EditorFileInput, FolderRoute } from "./editor-files.types";
 
-export type { EditorFileEntry, FolderRoute };
-
 // ─── Build unique entries ─────────────────────────────────────────────────────
 
 function buildEntry(input: EditorFileInput): EditorFileEntry {

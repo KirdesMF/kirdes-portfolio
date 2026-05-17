@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import type { EditorFileEntry, FolderRoute } from "#/editor/editor-files";
 import { editorFiles, folderRoutes as folderRoutesData } from "#/editor/editor-files";
+import type { EditorFileEntry, FolderRoute } from "#/editor/editor-files.types";
 import { TerminalRouteList } from "./TerminalRouteList";
 import { terminalCommands } from "./terminal-commands";
 import { terminalRoutes } from "./terminal-routes";

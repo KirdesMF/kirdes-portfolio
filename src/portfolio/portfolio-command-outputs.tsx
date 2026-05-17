@@ -55,7 +55,7 @@ export function EmailOutput(): ReactNode {
 	return (
 		<div className="flex flex-col gap-0.5">
 			<p>cedric@kirdes.dev</p>
-			<p className="text-muted-foreground">copied to clipboard</p>
+			<p className="text-muted-foreground">copy requested</p>
 		</div>
 	);
 }

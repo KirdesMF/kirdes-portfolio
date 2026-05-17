@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { EditorFileEntry } from "#/editor/editor-files";
+import type { EditorFileEntry } from "#/editor/editor-files.types";
 
 export type CommandHandler = (ctx: CommandContext) => boolean;
 

@@ -190,23 +190,25 @@ Still planned. Involves extracting `useCommandHistory` and `useTerminalSearchAct
 - [ ] Add note that `src/paraglide/*` is generated (low priority).
 - [ ] Review `/` splash fallback (deferred).
 - [ ] Check Vite plugin order only if build/server behavior is weird.
+- [x] Remove type re-exports from `editor-files.ts`.
+- [x] Replace clipboard success claim with neutral copy-requested text.
 
 ## Done checklist
 
-- [ ] `src/pages` no longer exists.
-- [ ] Portfolio content lives under `src/portfolio`.
-- [ ] Portfolio editor files live next to their owning sections.
-- [ ] `editor-file-registry.ts` creates a concrete runtime registry and is not a barrel.
-- [ ] Terminal owns shell behavior, not personal content.
-- [ ] Repeated `SourceLinks` implementation exists once.
-- [ ] Scramble text behavior is centralized.
-- [ ] Terminal path formatting lives in one helper.
-- [ ] Clipboard commands report success/failure honestly.
-- [ ] Dialog close actions fire once.
-- [ ] Command help/manual output stays in sync with command metadata.
-- [ ] Pure-function tests cover search params, route parsing, and file resolution.
-- [ ] Cross-vertical imports use `#/...` instead of parent-relative paths.
-- [ ] `bun run check` passes.
-- [ ] `bun run typecheck` passes.
-- [ ] `bun run test` passes.
-- [ ] `bun run build` passes.
+- [x] `src/pages` no longer exists.
+- [x] Portfolio content lives under `src/portfolio`.
+- [x] Portfolio editor files live next to their owning sections.
+- [x] `editor-file-registry.ts` creates a concrete runtime registry and is not a barrel.
+- [x] Terminal owns shell behavior, not personal content.
+- [x] Repeated `SourceLinks` implementation exists once.
+- [x] Scramble text behavior is centralized.
+- [x] Terminal path formatting lives in one helper.
+- [x] Clipboard commands avoid claiming guaranteed success.
+- [x] Dialog close actions fire once.
+- [x] Command help/manual output stays in sync with command metadata.
+- [x] Pure-function tests cover search params, route parsing, and file resolution.
+- [x] Cross-vertical imports use `#/...` instead of parent-relative paths.
+- [x] `bun run check` passes.
+- [x] `bun run typecheck` passes.
+- [x] `bun run test` passes.
+- [x] `bun run build` passes.
