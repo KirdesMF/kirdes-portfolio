@@ -1,6 +1,6 @@
 import { copyToClipboard } from "#/design-system/clipboard";
-import { EmailOutput, WhoamiOutput } from "#/portfolio/portfolio-command-outputs";
 import { formatTerminalCwd } from "#/terminal/terminal-path";
+import { EmailOutput, WhoamiOutput } from "#/terminal/terminal-profile-outputs";
 import { HelpOutput, LsOutput, TreeAllOutput, TreeOutput } from "../terminal-command-outputs";
 import type { CommandContext, CommandHandler } from "./types";
 

@@ -21,10 +21,13 @@ type FormatOptions = {
 /**
  * Format a terminal route as a cwd string, e.g. "/terminal/about" → "~/about".
  *
+ * Works for nested routes too: "/terminal/work/tetris" → "~/work/tetris".
+ *
  * ```ts
  * formatTerminalCwd("/terminal")        // "~"
  * formatTerminalCwd("/terminal/about")  // "~/about"
- * formatTerminalCwd("/terminal/about", { trailingSlash: true }) // "~/about/"
+ * formatTerminalCwd("/terminal/work/tetris")  // "~/work/tetris"
+ * formatTerminalCwd("/terminal", { trailingSlash: true }) // "~/"
  * ```
  */
 export function formatTerminalCwd(
@@ -35,8 +38,9 @@ export function formatTerminalCwd(
 		return options?.trailingSlash ? "~/" : "~";
 	}
 
-	const folder = getTerminalFolder(route) ?? "";
+	// Replace /terminal/ prefix to preserve full subpath (including nested routes)
+	const subpath = route.replace("/terminal/", "");
 	const suffix = options?.trailingSlash ? "/" : "";
 
-	return `~/${folder}${suffix}`;
+	return `~/${subpath}${suffix}`;
 }

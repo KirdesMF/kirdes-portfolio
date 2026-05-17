@@ -5,15 +5,15 @@ export function StatusOutput(): ReactNode {
 	return (
 		<div className="flex flex-col gap-0.5 whitespace-pre-wrap font-mono text-foreground/90">
 			<div>
-				<span className="text-muted-foreground/60">LOCATION </span>
+				<span className="text-muted-foreground/60">LOCATION :: </span>
 				<span>Paris, France</span>
 			</div>
 			<div>
-				<span className="text-muted-foreground/60">FOCUS </span>
+				<span className="text-muted-foreground/60">FOCUS :: </span>
 				<span>frontend architecture — design systems — dev tooling</span>
 			</div>
 			<div>
-				<span className="text-muted-foreground/60">CONTACT </span>
+				<span className="text-muted-foreground/60">CONTACT :: </span>
 				<button
 					className="underline-offset-2 hover:text-primary hover:underline"
 					type="button"
@@ -34,7 +34,7 @@ export function StatusOutput(): ReactNode {
 				</a>
 			</div>
 			<div>
-				<span className="text-muted-foreground/60">STATUS </span>
+				<span className="text-muted-foreground/60">STATUS :: </span>
 				<span>open for freelance &amp; collaboration</span>
 			</div>
 		</div>

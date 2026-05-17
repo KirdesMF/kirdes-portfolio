@@ -28,6 +28,13 @@ describe("formatTerminalCwd", () => {
 		expect(formatTerminalCwd("/terminal/work")).toBe("~/work");
 	});
 
+	it("formats nested sub-routes", () => {
+		expect(formatTerminalCwd("/terminal/work/tetris")).toBe("~/work/tetris");
+		expect(formatTerminalCwd("/terminal/work/tetris", { trailingSlash: true })).toBe(
+			"~/work/tetris/",
+		);
+	});
+
 	it("formats sub-route with trailing slash", () => {
 		expect(formatTerminalCwd("/terminal/about", { trailingSlash: true })).toBe("~/about/");
 	});

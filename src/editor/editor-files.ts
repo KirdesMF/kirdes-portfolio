@@ -1,6 +1,6 @@
+import { portfolioFileGroups } from "#/portfolio/portfolio-file-registry";
 import { portfolioSourceSnapshots } from "#/portfolio/portfolio-source-snapshots";
 import { getTerminalFolder } from "#/terminal/terminal-path";
-import { fileGroupedByFolder } from "./editor-file-registry";
 import type { EditorFileEntry, EditorFileInput, FolderRoute } from "./editor-files.types";
 
 // ─── Build unique entries ─────────────────────────────────────────────────────
@@ -10,7 +10,7 @@ function buildEntry(input: EditorFileInput): EditorFileEntry {
 }
 
 function buildAllFiles(): ReadonlyArray<EditorFileEntry> {
-	const contentFiles = fileGroupedByFolder.flatMap((group) => group.files.map(buildEntry));
+	const contentFiles = portfolioFileGroups.flatMap((group) => group.files.map(buildEntry));
 	const sourceFileEntries = portfolioSourceSnapshots.map(buildEntry);
 	return [...contentFiles, ...sourceFileEntries];
 }
@@ -21,7 +21,7 @@ export const editorFiles = buildAllFiles();
 
 export type EditorFileName = (typeof editorFiles)[number]["id"];
 
-export const folderRoutes: ReadonlyArray<FolderRoute> = fileGroupedByFolder.map(
+export const folderRoutes: ReadonlyArray<FolderRoute> = portfolioFileGroups.map(
 	({ folder, label, route }) => ({ folder, label, route }),
 );
 

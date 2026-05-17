@@ -153,7 +153,7 @@ export function TerminalPrompt({
 					autoComplete="off"
 					/* biome-ignore lint/a11y/noAutofocus: intentional for terminal UX */
 					autoFocus
-					className="relative w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/70"
+					className="relative w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/70 [caret-shape:block]"
 					id={inputId}
 					placeholder="type a command..."
 					spellCheck={false}
