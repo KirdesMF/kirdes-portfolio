@@ -29,25 +29,25 @@ If a phase touches only docs, validation can be skipped or limited.
 
 Goal: protect current URL/search/file behavior before moving code.
 
-- [ ] Add tests for `src/terminal/terminal-search.ts`.
-- [ ] Add tests for `src/terminal/terminal-routes.ts`.
-- [ ] Add tests for `src/editor/editor-files.ts`.
-- [ ] Cover invalid search normalization.
-- [ ] Cover `files` query dedupe and unknown-file removal.
-- [ ] Cover active-file fallback to first open file.
-- [ ] Cover terminal route parsing: `/about`, `about`, `~`, `/`.
-- [ ] Cover file resolver priority: current folder, root, global.
-- [ ] Run validation.
+- [x] Add tests for `src/terminal/terminal-search.ts`.
+- [x] Add tests for `src/terminal/terminal-routes.ts`.
+- [x] Add tests for `src/editor/editor-files.ts`.
+- [x] Cover invalid search normalization.
+- [x] Cover `files` query dedupe and unknown-file removal.
+- [x] Cover active-file fallback to first open file.
+- [x] Cover terminal route parsing for current behavior.
+- [x] Cover file resolver priority: current folder, root, global.
+- [x] Run validation.
 - [ ] Commit.
 
 ## Phase 1 — Import cleanup
 
 Goal: make vertical boundaries visible before moving files.
 
-- [ ] Replace cross-vertical parent-relative imports with `#/...`.
-- [ ] Keep `./...` imports for same-folder files.
-- [ ] Do not move files in this phase.
-- [ ] Run validation.
+- [x] Replace cross-vertical parent-relative imports with `#/...`.
+- [x] Keep `./...` imports for same-folder files.
+- [x] Do not move files in this phase.
+- [x] Run validation.
 - [ ] Commit.
 
 ## Phase 2 — Portfolio vertical base

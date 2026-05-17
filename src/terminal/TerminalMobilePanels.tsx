@@ -1,5 +1,5 @@
 import { cn } from "#/design-system/cn";
-import type { EditorFileName } from "../editor/editor-files";
+import type { EditorFileName } from "#/editor/editor-files";
 import type { TerminalPanelName } from "./terminal-panel-types";
 
 export function getMobilePanel(

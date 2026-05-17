@@ -1,7 +1,7 @@
 import { useRouter } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useRef, useState } from "react";
-import { type EditorFileName, lsFiles, resolveFile } from "../editor/editor-files";
+import { type EditorFileName, lsFiles, resolveFile } from "#/editor/editor-files";
 import { dispatch } from "./commands/dispatch";
 import type { CommandContext } from "./commands/types";
 import { createHistoryEntry, createInitialHistory } from "./terminal-history";

@@ -1,6 +1,6 @@
 import * as v from "valibot";
-import { type EditorFileName, isEditorFileName } from "../editor/editor-files";
-import type { TerminalDialogName } from "../music/music.types";
+import { type EditorFileName, isEditorFileName } from "#/editor/editor-files";
+import type { TerminalDialogName } from "#/music/music.types";
 import {
 	type MaximizedPanel,
 	parseMaximized,

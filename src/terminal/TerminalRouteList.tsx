@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import type { EditorFileEntry, FolderRoute } from "../editor/editor-files";
+import type { EditorFileEntry, FolderRoute } from "#/editor/editor-files";
 
 function formatRouteLabel(label: string): string {
 	if (label === "~") return "~/";

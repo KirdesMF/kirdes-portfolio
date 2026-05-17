@@ -16,7 +16,18 @@ export function WorkDetailPage({ project }: { project: string }): ReactNode {
 				<p>
 					project <span className="text-primary">{project}</span> not found.
 				</p>
-				<Link className="flex items-center gap-1 text-primary hover:underline" to="/terminal/work">
+				<Link
+					className="flex items-center gap-1 text-primary hover:underline"
+					to="/terminal/work"
+					search={(previous) => ({
+						activeFile: previous.activeFile,
+						dialog: previous.dialog,
+						editor: previous.editor,
+						files: previous.files ?? [],
+						maximized: previous.maximized,
+						panel: previous.panel ?? "route",
+					})}
+				>
 					<ArrowLeft className="size-3" />
 					back to projects
 				</Link>
@@ -30,6 +41,14 @@ export function WorkDetailPage({ project }: { project: string }): ReactNode {
 				<Link
 					className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
 					to="/terminal/work"
+					search={(previous) => ({
+						activeFile: previous.activeFile,
+						dialog: previous.dialog,
+						editor: previous.editor,
+						files: previous.files ?? [],
+						maximized: previous.maximized,
+						panel: previous.panel ?? "route",
+					})}
 				>
 					<ArrowLeft className="size-3" />
 					work

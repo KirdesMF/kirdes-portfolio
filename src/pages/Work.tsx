@@ -28,6 +28,14 @@ export function WorkPage(): ReactNode {
 									className="text-primary underline-offset-2 hover:underline"
 									to="/terminal/work/$project"
 									params={{ project: entry.name }}
+									search={(previous) => ({
+										activeFile: previous.activeFile,
+										dialog: previous.dialog,
+										editor: previous.editor,
+										files: previous.files ?? [],
+										maximized: previous.maximized,
+										panel: previous.panel ?? "route",
+									})}
 								>
 									<ScrambleTitle>{entry.name}</ScrambleTitle>
 								</Link>
