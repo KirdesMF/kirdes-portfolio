@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import type { SectionMetadata } from "#/terminal/section-metadata";
+import type { SectionMetadata } from "#/portfolio/portfolio-sections";
 
 type SourceLinksProps = {
 	meta: SectionMetadata;

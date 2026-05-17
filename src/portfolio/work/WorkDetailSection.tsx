@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
+import { sectionMetadata } from "#/portfolio/portfolio-sections";
 import { SourceLinks } from "#/portfolio/SourceLinks";
-import { sectionMetadata } from "#/terminal/section-metadata";
 import { projects, statusColors } from "./work.data";
 
 const meta = sectionMetadata["/terminal/work"];

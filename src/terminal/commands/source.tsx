@@ -2,7 +2,7 @@ import {
 	getSectionByFolder,
 	getSectionByLabel,
 	getSectionByRoute,
-} from "#/terminal/section-metadata";
+} from "#/portfolio/portfolio-sections";
 import { SourceOutput } from "../terminal-command-outputs";
 import type { CommandHandler } from "./types";
 

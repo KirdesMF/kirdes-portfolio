@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
+import { sectionMetadata } from "#/portfolio/portfolio-sections";
 import { SourceLinks } from "#/portfolio/SourceLinks";
-import { sectionMetadata } from "#/terminal/section-metadata";
 
 const meta = sectionMetadata["/terminal/about"];
 

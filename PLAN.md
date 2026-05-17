@@ -97,10 +97,10 @@ Goal: remove duplicated portfolio-specific source link UI.
 
 Goal: move portfolio metadata out of terminal ownership.
 
-- [ ] Move `src/terminal/section-metadata.ts` to `src/portfolio/portfolio-sections.ts`.
-- [ ] Fix imports.
-- [ ] Optional: rename symbols only if small and mechanical.
-- [ ] Run validation.
+- [x] Move `src/terminal/section-metadata.ts` to `src/portfolio/portfolio-sections.ts`.
+- [x] Fix imports.
+- [x] Optional: rename symbols only if small and mechanical.
+- [x] Run validation.
 - [ ] Commit.
 
 ## Phase 6 — Command output ownership
