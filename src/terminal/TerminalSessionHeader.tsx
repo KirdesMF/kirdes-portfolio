@@ -1,10 +1,11 @@
 import { useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useScrambleRef } from "#/design-system/useScrambleRef";
+import { formatTerminalCwd } from "#/terminal/terminal-path";
 
 export function TerminalSessionHeader() {
 	const pathname = useRouterState({ select: (state) => state.location.pathname });
-	const cwd = formatCwd(pathname);
+	const cwd = formatTerminalCwd(pathname, { trailingSlash: true });
 	const startTimeRef = useRef(Date.now());
 	const [uptime, setUptime] = useState(0);
 	const rootRef = useScrambleRef<HTMLDivElement>({ selector: "[data-anim-header]", staggerMs: 75 });
@@ -66,13 +67,6 @@ export function TerminalSessionHeader() {
 			</div>
 		</div>
 	);
-}
-
-function formatCwd(pathname: string): string {
-	if (pathname === "/terminal") return "~/";
-	if (!pathname.startsWith("/terminal/")) return "~/";
-
-	return `~/${pathname.replace("/terminal/", "")}`;
 }
 
 function formatUptime(seconds: number): string {

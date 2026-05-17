@@ -1,4 +1,5 @@
 import { portfolioSourceSnapshots } from "#/portfolio/portfolio-source-snapshots";
+import { getTerminalFolder } from "#/terminal/terminal-path";
 import { fileGroupedByFolder } from "./editor-file-registry";
 import type { EditorFileEntry, EditorFileInput, FolderRoute } from "./editor-files.types";
 
@@ -29,10 +30,7 @@ export const folderRoutes: ReadonlyArray<FolderRoute> = fileGroupedByFolder.map(
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getFolderForRoute(route: string): string {
-	if (!route || route === "/terminal") return "~";
-
-	const parts = route.split("/");
-	return parts[parts.length - 1] ?? "~";
+	return getTerminalFolder(route) ?? "~";
 }
 
 function getFilesInFolder(folder: string): ReadonlyArray<EditorFileEntry> {

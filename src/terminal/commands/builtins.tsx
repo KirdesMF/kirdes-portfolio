@@ -1,4 +1,5 @@
 import { EmailOutput, WhoamiOutput } from "#/portfolio/portfolio-command-outputs";
+import { formatTerminalCwd } from "#/terminal/terminal-path";
 import { HelpOutput, LsOutput, TreeAllOutput, TreeOutput } from "../terminal-command-outputs";
 import type { CommandContext, CommandHandler } from "./types";
 
@@ -27,9 +28,7 @@ function handleLs(ctx: CommandContext): boolean {
 
 function handlePwd(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "pwd") return false;
-	const cwd =
-		ctx.currentRoute === "/terminal" ? "~" : `~/${ctx.currentRoute.replace("/terminal/", "")}`;
-	ctx.pushHistory(cwd);
+	ctx.pushHistory(formatTerminalCwd(ctx.currentRoute));
 	return true;
 }
 

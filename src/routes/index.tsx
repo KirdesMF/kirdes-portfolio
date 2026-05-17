@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createTimeline, scrambleText, stagger, steps } from "animejs";
+import { createTimeline, steps } from "animejs";
 import { useEffect } from "react";
+import { useScrambleRef } from "#/design-system/useScrambleRef";
 
 const bootLines = ["initializing shell", "loading profile", "mounting terminal"] as const;
 
@@ -10,6 +11,10 @@ export const Route = createFileRoute("/")({
 
 function RouteComponent() {
 	const navigate = Route.useNavigate();
+	const rootRef = useScrambleRef<HTMLDivElement>({
+		selector: "[data-boot-line]",
+		staggerMs: 250,
+	});
 
 	useEffect(() => {
 		const tl = createTimeline({
@@ -27,18 +32,14 @@ function RouteComponent() {
 				});
 			},
 		});
-		tl.label("cursor");
-		tl.add("[data-boot-line]", {
-			innerHTML: scrambleText({ cursor: "░▒▓█", delay: stagger(250) }),
-		});
 		tl.add(
 			"[data-loading-bar]",
+
 			{
 				duration: 1500,
 				scaleX: [0, 1],
 				ease: steps(10),
 			},
-			"cursor",
 		);
 
 		return () => {
@@ -48,7 +49,10 @@ function RouteComponent() {
 
 	return (
 		<main className="flex h-dvh items-center justify-center bg-background font-mono text-xs text-foreground">
-			<div className="flex w-full max-w-md flex-col gap-2 rounded border border-border bg-background/80 p-4">
+			<div
+				ref={rootRef}
+				className="flex w-full max-w-md flex-col gap-2 rounded border border-border bg-background/80 p-4"
+			>
 				<div className="mb-2 text-muted-foreground">kirdes terminal boot</div>
 
 				{bootLines.map((text) => (

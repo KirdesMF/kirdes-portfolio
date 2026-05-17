@@ -376,14 +376,14 @@ Current `ScrambleTitle` issues:
 - Name is too narrow; it animates text, not only titles.
 - It accepts `ReactNode`, but implementation mutates `innerHTML`; this should be string-only unless intentionally supporting markup.
 - It has no reduced-motion guard.
-- It cannot animate characters with stagger.
-- It does not rerun when text changes.
+- It does not centralize grouped scramble animation.
+- It does not handle reduced-motion.
 
 Recommended direction:
 
 ```txt
 src/design-system/ScrambleText.tsx
-src/design-system/useScrambleText.ts
+src/design-system/useScrambleRef.ts
 ```
 
 Keep this in `design-system` because the effect is intended for route/page content too, not only the terminal shell. Keep API generic; terminal-specific defaults can still live near terminal usage if needed.
@@ -392,19 +392,34 @@ Suggested component API:
 
 ```tsx
 <ScrambleText text={entry.name} />
-<ScrambleText text={entry.name} by="char" staggerMs={35} />
 ```
 
-Suggested props:
+Suggested hook API for grouped/staggered labels:
+
+```tsx
+const rootRef = useScrambleRef<HTMLDivElement>({
+  selector: "[data-scramble]",
+  staggerMs: 75,
+});
+```
+
+Suggested component props:
 
 ```ts
 type ScrambleTextProps = {
   text: string;
   className?: string;
   cursor?: string;
-  delayMs?: number;
+};
+```
+
+Suggested hook options:
+
+```ts
+type UseScrambleRefOptions = {
+  selector: string;
   staggerMs?: number;
-  by?: "element" | "char";
+  cursor?: string;
 };
 ```
 
@@ -412,8 +427,8 @@ Use cases:
 
 - Replace `ScrambleTitle` in work list.
 - Use for project title in `WorkDetailSection` if visual consistency is desired.
-- Replace direct repeated animation in `TerminalSessionHeader`, `AvailabilityStatus`, and `TerminalFooter` where a component fits.
-- For grouped header/footer labels, prefer a hook or group component that animates `[data-scramble]` children with `stagger()`.
+- Replace direct repeated grouped animation in `TerminalSessionHeader`, `AvailabilityStatus`, and `TerminalFooter` with `useScrambleRef`.
+- `ScrambleText` does not need per-character stagger; grouped stagger is handled by selecting multiple elements.
 
 Do not overuse it. Scramble should highlight identity/interactive text, not every label.
 
@@ -846,7 +861,7 @@ src/
 
   design-system/
     ScrambleText.tsx
-    useScrambleText.ts
+    useScrambleRef.ts
   dialogs/
   music/
   theme/

@@ -1,12 +1,7 @@
 import { type SubmitEvent, useId, useRef, useState } from "react";
 import { getVisibleFileNames } from "#/editor/editor-files";
+import { formatTerminalCwd } from "#/terminal/terminal-path";
 import { commandNames, terminalNavigationItems } from "#/terminal/terminal-routes";
-
-function formatPromptCwd(route: string): string {
-	if (route === "/terminal") return "~";
-
-	return `~/${route.replace("/terminal/", "")}`;
-}
 
 const cdSuggestions = [
 	"cd ..",
@@ -145,9 +140,7 @@ export function TerminalPrompt({
 			onSubmit={handleSubmit}
 		>
 			<label className="flex shrink-0 items-center gap-2 text-xs" htmlFor={inputId}>
-				<span className="shrink-0 text-primary">
-					{currentRoute ? formatPromptCwd(currentRoute) : "~"}
-				</span>
+				<span className="shrink-0 text-primary">{formatTerminalCwd(currentRoute)}</span>
 				<span className="shrink-0 text-muted-foreground">$</span>
 			</label>
 			<div className="relative flex-1 flex items-center">

@@ -144,12 +144,12 @@ Goal: centralize scramble effect and add stagger support.
 
 Goal: remove duplicated terminal path string manipulation.
 
-- [ ] Create `src/terminal/terminal-path.ts`.
-- [ ] Add `formatTerminalCwd(pathname: string)`.
-- [ ] Add `getTerminalFolder(pathname: string)`.
-- [ ] Replace duplicated `route.replace("/terminal/", "")` usage.
-- [ ] Add/extend tests.
-- [ ] Run validation.
+- [x] Create `src/terminal/terminal-path.ts`.
+- [x] Add `formatTerminalCwd` with `trailingSlash` option.
+- [x] Add `getTerminalFolder` for folder extraction.
+- [x] Replace duplicated `route.replace("/terminal/", "")` usage in SessionHeader, Prompt, builtins, editor-files.
+- [x] Add tests.
+- [x] Run validation.
 - [ ] Commit.
 
 ## Phase 10 — Clipboard handling
