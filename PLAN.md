@@ -54,16 +54,16 @@ Goal: make vertical boundaries visible before moving files.
 
 Goal: remove `src/pages` without changing behavior.
 
-- [ ] Create `src/portfolio`.
-- [ ] Move `src/pages/work.data.tsx` to `src/portfolio/work/work.data.tsx`.
-- [ ] Move `src/pages/About.tsx` to `src/portfolio/about/AboutSection.tsx`.
-- [ ] Move `src/pages/Contact.tsx` to `src/portfolio/contact/ContactSection.tsx`.
-- [ ] Move `src/pages/Work.tsx` to `src/portfolio/work/WorkSection.tsx`.
-- [ ] Move `src/pages/WorkDetail.tsx` to `src/portfolio/work/WorkDetailSection.tsx`.
-- [ ] Fix route imports.
-- [ ] Keep component behavior unchanged.
-- [ ] Remove `src/pages` once empty.
-- [ ] Run validation.
+- [x] Create `src/portfolio`.
+- [x] Move `src/pages/work.data.tsx` to `src/portfolio/work/work.data.tsx`.
+- [x] Move `src/pages/About.tsx` to `src/portfolio/about/AboutSection.tsx`.
+- [x] Move `src/pages/Contact.tsx` to `src/portfolio/contact/ContactSection.tsx`.
+- [x] Move `src/pages/Work.tsx` to `src/portfolio/work/WorkSection.tsx`.
+- [x] Move `src/pages/WorkDetail.tsx` to `src/portfolio/work/WorkDetailSection.tsx`.
+- [x] Fix route imports.
+- [x] Keep component behavior unchanged.
+- [x] Remove `src/pages` once empty.
+- [x] Run validation.
 - [ ] Commit.
 
 ## Phase 3 — Portfolio-owned editor files

@@ -6,7 +6,7 @@ import { projects, statusColors } from "./work.data";
 
 const meta = sectionMetadata["/terminal/work"];
 
-export function WorkPage(): ReactNode {
+export function WorkSection(): ReactNode {
 	return (
 		<div className="flex flex-1 flex-col gap-3 p-4 text-xs">
 			<div className="text-muted-foreground">{"/* work */"}</div>

@@ -6,7 +6,7 @@ import { projects, statusColors } from "./work.data";
 
 const meta = sectionMetadata["/terminal/work"];
 
-export function WorkDetailPage({ project }: { project: string }): ReactNode {
+export function WorkDetailSection({ project }: { project: string }): ReactNode {
 	const entry = projects.find((p) => p.name === project);
 
 	if (!entry) {

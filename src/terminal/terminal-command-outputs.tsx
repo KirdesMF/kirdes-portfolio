@@ -293,9 +293,9 @@ export function TreeAllOutput(): ReactNode {
 				);
 			})}
 			<div>
-				<span className="text-muted-foreground/70">src/</span>
+				<span className="text-muted-foreground/70">src/portfolio/</span>
 				{editorFiles
-					.filter((f) => f.folder === "src/pages")
+					.filter((f) => f.folder.startsWith("src/portfolio/"))
 					.map((file, i, arr) => {
 						const branch = i === arr.length - 1 ? "└── " : "├── ";
 						return (

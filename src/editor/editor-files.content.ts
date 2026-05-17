@@ -224,12 +224,12 @@ export const contactFiles: ReadonlyArray<EditorFileInput> = [
 	},
 ];
 
-// ─── Source page files (src/pages/) ───────────────────────────────────────────
+// ─── Source portfolio files ──────────────────────────────────────────────────
 
 export const sourceFiles: ReadonlyArray<EditorFileInput> = [
 	{
-		name: "About.tsx",
-		folder: "src/pages",
+		name: "AboutSection.tsx",
+		folder: "src/portfolio/about",
 		language: "tsx",
 		content: tsx`import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
@@ -237,7 +237,7 @@ import { sectionMetadata } from "#/terminal/section-metadata";
 
 const meta = sectionMetadata["/terminal/about"];
 
-export function AboutPage(): ReactNode {
+export function AboutSection(): ReactNode {
 	return (
 		<div className="flex flex-1 flex-col gap-3 p-4 text-xs">
 			<div className="text-muted-foreground">── about ──</div>
@@ -306,8 +306,8 @@ function SourceLinks({ meta: m }: { meta: NonNullable<typeof sectionMetadata[str
 `,
 	},
 	{
-		name: "Work.tsx",
-		folder: "src/pages",
+		name: "WorkSection.tsx",
+		folder: "src/portfolio/work",
 		language: "tsx",
 		content: tsx`import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
@@ -326,7 +326,7 @@ const workEntries: Array<WorkEntry> = [
 
 const meta = sectionMetadata["/terminal/work"];
 
-export function WorkPage(): ReactNode {
+export function WorkSection(): ReactNode {
 	return (
 		<div className="flex flex-1 flex-col gap-3 p-4 text-xs">
 			<div className="text-muted-foreground">── work ──</div>
@@ -400,8 +400,8 @@ function SourceLinks({ meta: m }: { meta: NonNullable<typeof sectionMetadata[str
 `,
 	},
 	{
-		name: "Contact.tsx",
-		folder: "src/pages",
+		name: "ContactSection.tsx",
+		folder: "src/portfolio/contact",
 		language: "tsx",
 		content: tsx`import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
@@ -409,7 +409,7 @@ import { sectionMetadata } from "#/terminal/section-metadata";
 
 const meta = sectionMetadata["/terminal/contact"];
 
-export function ContactPage(): ReactNode {
+export function ContactSection(): ReactNode {
 	return (
 		<div className="flex flex-1 flex-col gap-3 p-4 text-xs">
 			<div className="text-muted-foreground">── contacts ──</div>
