@@ -1,4 +1,4 @@
-import { StatusOutput } from "../terminal-command-outputs";
+import { StatusOutput } from "#/portfolio/portfolio-command-outputs";
 import type { CommandHandler } from "./types";
 
 /**

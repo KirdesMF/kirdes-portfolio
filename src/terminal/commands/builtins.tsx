@@ -1,11 +1,5 @@
-import {
-	EmailOutput,
-	HelpOutput,
-	LsOutput,
-	TreeAllOutput,
-	TreeOutput,
-	WhoamiOutput,
-} from "../terminal-command-outputs";
+import { EmailOutput, WhoamiOutput } from "#/portfolio/portfolio-command-outputs";
+import { HelpOutput, LsOutput, TreeAllOutput, TreeOutput } from "../terminal-command-outputs";
 import type { CommandContext, CommandHandler } from "./types";
 
 /**

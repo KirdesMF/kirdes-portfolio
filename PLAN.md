@@ -107,11 +107,11 @@ Goal: move portfolio metadata out of terminal ownership.
 
 Goal: split terminal output mechanics from portfolio content.
 
-- [ ] Split `src/terminal/terminal-command-outputs.tsx`.
-- [ ] Keep shell/manual/list outputs in terminal.
-- [ ] Move profile/contact/status outputs to portfolio.
-- [ ] Keep dispatch behavior unchanged.
-- [ ] Run validation.
+- [x] Split `src/terminal/terminal-command-outputs.tsx`.
+- [x] Keep shell/manual/list outputs in terminal.
+- [x] Move profile/contact/status outputs to portfolio.
+- [x] Keep dispatch behavior unchanged.
+- [x] Run validation.
 - [ ] Commit.
 
 ## Phase 7 — Availability status ownership

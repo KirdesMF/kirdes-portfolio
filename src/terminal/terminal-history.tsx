@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { StatusOutput, WelcomeOutput, WhoamiOutput } from "./terminal-command-outputs";
+import { StatusOutput, WhoamiOutput } from "#/portfolio/portfolio-command-outputs";
+import { WelcomeOutput } from "./terminal-command-outputs";
 
 export type TerminalHistoryEntry = {
 	id: string;
