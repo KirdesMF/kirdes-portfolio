@@ -87,10 +87,10 @@ Goal: put file definitions next to owning sections while keeping editor mechanic
 
 Goal: remove duplicated portfolio-specific source link UI.
 
-- [ ] Create `src/portfolio/SourceLinks.tsx`.
-- [ ] Replace duplicated `SourceLinks` in about/contact/work/detail sections.
-- [ ] Keep search-param behavior unchanged.
-- [ ] Run validation.
+- [x] Create `src/portfolio/SourceLinks.tsx`.
+- [x] Replace duplicated `SourceLinks` in about/contact/work/detail sections.
+- [x] Keep search-param behavior unchanged (added optional `to` prop for work variant).
+- [x] Run validation.
 - [ ] Commit.
 
 ## Phase 5 — Portfolio section metadata

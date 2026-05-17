@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { ScrambleTitle } from "#/design-system/ScrambleTitle";
+import { SourceLinks } from "#/portfolio/SourceLinks";
 import { sectionMetadata } from "#/terminal/section-metadata";
 import { projects, statusColors } from "./work.data";
 
@@ -57,57 +58,7 @@ export function WorkSection(): ReactNode {
 				<span className="text-primary">cat projects.json</span> for structured data.
 			</p>
 
-			{meta ? <SourceLinks meta={meta} /> : null}
-		</div>
-	);
-}
-
-function SourceLinks({ meta: m }: { meta: NonNullable<(typeof sectionMetadata)[string]> }) {
-	return (
-		<div className="mt-4 border-t border-border pt-3 text-muted-foreground/60">
-			<div className="mb-1 text-tiny uppercase tracking-wider">implementation</div>
-			<div className="flex flex-col gap-0.5">
-				<span>
-					renderer:{" "}
-					<Link
-						className="text-primary underline-offset-2 hover:underline"
-						search={(prev) => ({
-							activeFile: m.renderer,
-							dialog: prev.dialog,
-							editor: "open" as const,
-							files: prev.files ? [...new Set([...prev.files, m.renderer])] : [m.renderer],
-							panel: "editor" as const,
-						})}
-						to="/terminal/work"
-					>
-						{m.renderer}
-					</Link>
-				</span>
-				<span>
-					content:{" "}
-					{m.contentFiles.map((file, i) => (
-						<span key={file}>
-							<Link
-								className="text-primary underline-offset-2 hover:underline"
-								search={(prev) => {
-									const id = `${m.folder}/${file}`;
-									return {
-										activeFile: id,
-										dialog: prev.dialog,
-										editor: "open" as const,
-										files: prev.files ? [...new Set([...prev.files, id])] : [id],
-										panel: "editor" as const,
-									};
-								}}
-								to="/terminal/work"
-							>
-								{file}
-							</Link>
-							{i < m.contentFiles.length - 1 ? ", " : ""}
-						</span>
-					))}
-				</span>
-			</div>
+			{meta ? <SourceLinks meta={meta} to="/terminal/work" /> : null}
 		</div>
 	);
 }
