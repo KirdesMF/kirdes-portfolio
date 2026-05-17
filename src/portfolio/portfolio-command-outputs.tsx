@@ -1,8 +1,5 @@
 import type { ReactNode } from "react";
-
-function copyToClipboard(text: string) {
-	navigator.clipboard.writeText(text);
-}
+import { copyToClipboard } from "#/design-system/clipboard";
 
 export function StatusOutput(): ReactNode {
 	return (
@@ -20,7 +17,9 @@ export function StatusOutput(): ReactNode {
 				<button
 					className="underline-offset-2 hover:text-primary hover:underline"
 					type="button"
-					onClick={() => copyToClipboard("cedric@kirdes.dev")}
+					onClick={() => {
+						void copyToClipboard("cedric@kirdes.dev");
+					}}
 				>
 					cedric@kirdes.dev
 				</button>

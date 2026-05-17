@@ -17,10 +17,7 @@ export function MusicDialog({ onClose }: { onClose: () => void }) {
 				</div>
 				<p className="text-muted-foreground text-xs">spotify player coming soon.</p>
 				<div className="mt-2 flex justify-end gap-2">
-					<DialogClose
-						className="rounded border border-border px-3 py-1.5 text-tiny text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-						onClick={onClose}
-					>
+					<DialogClose className="rounded border border-border px-3 py-1.5 text-tiny text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
 						close
 					</DialogClose>
 				</div>

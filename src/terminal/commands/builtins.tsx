@@ -1,3 +1,4 @@
+import { copyToClipboard } from "#/design-system/clipboard";
 import { EmailOutput, WhoamiOutput } from "#/portfolio/portfolio-command-outputs";
 import { formatTerminalCwd } from "#/terminal/terminal-path";
 import { HelpOutput, LsOutput, TreeAllOutput, TreeOutput } from "../terminal-command-outputs";
@@ -72,14 +73,14 @@ function handleTree(ctx: CommandContext): boolean {
 function handleEmail(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "email") return false;
 	ctx.pushHistory(<EmailOutput />);
-	navigator.clipboard.writeText("cedric@kirdes.dev");
+	void copyToClipboard("cedric@kirdes.dev");
 	return true;
 }
 
 function handleGithub(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "github") return false;
 	ctx.pushHistory("https://github.com/kirdesmf");
-	navigator.clipboard.writeText("https://github.com/kirdesmf");
+	void copyToClipboard("https://github.com/kirdesmf");
 	return true;
 }
 

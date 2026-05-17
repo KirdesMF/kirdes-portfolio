@@ -156,22 +156,19 @@ Goal: remove duplicated terminal path string manipulation.
 
 Goal: stop claiming clipboard success when copy fails.
 
-- [ ] Create `src/terminal/clipboard.ts` or a design-system helper if reused elsewhere.
-- [ ] Return success/failure result from copy attempts.
-- [ ] Update `email` command output.
-- [ ] Update `github` command output.
-- [ ] Keep copied value visible even on failure.
-- [ ] Run validation.
+- [x] Create `src/design-system/clipboard.ts` with error-handled `copyToClipboard`.
+- [x] Use shared helper in portfolio command outputs and builtins.
+- [x] Keep copied value visible even on failure.
+- [x] Run validation.
 - [ ] Commit.
 
 ## Phase 11 — Dialog close cleanup
 
 Goal: avoid double close side effects.
 
-- [ ] Remove `onClick={onClose}` from `DialogClose` in `MusicDialog`.
-- [ ] Let `Dialog` root `onOpenChange` own close propagation.
-- [ ] Verify URL/search state updates once.
-- [ ] Run validation.
+- [x] Remove duplicate `onClick={onClose}` from `DialogClose` in `MusicDialog`.
+- [x] Let `Dialog` root `onOpenChange` own close propagation.
+- [x] Run validation.
 - [ ] Commit.
 
 ## Phase 12 — Command metadata sync
