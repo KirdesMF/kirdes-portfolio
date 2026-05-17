@@ -177,33 +177,19 @@ Goal: avoid stale help/manual command text.
 
 - [x] Derive `HelpOutput` command list from `terminalCommands` instead of hardcoded string.
 - [x] Run validation.
-- [ ] Commit.
+- [x] Commit.
 
 ## Phase 13 — Controller/history cleanup
 
-Goal: centralize command history and reduce controller responsibilities.
-
-- [ ] Create or expand `src/terminal/useCommandHistory.ts`.
-- [ ] Move visible terminal history logic there.
-- [ ] Move prompt history navigation there if practical.
-- [ ] Create `src/terminal/useTerminalSearchActions.ts`.
-- [ ] Move editor/dialog/panel URL-state actions there.
-- [ ] Keep `useTerminalController.tsx` as composition layer.
-- [ ] Run validation.
-- [ ] Commit.
+Still planned. Involves extracting `useCommandHistory` and `useTerminalSearchActions` from `useTerminalController`. Highest regression risk — defer if behavior is stable.
 
 ## Phase 14 — Small polish fixes
 
-Goal: low-risk cleanup after structural work.
-
-- [ ] Improve `defaultNotFoundComponent`.
-- [ ] Consider stricter editor-file validation for highlight server function.
-- [ ] Add a short note that `src/paraglide/*` is generated.
-- [ ] Review `/` splash fallback link or timeout.
-- [ ] Pin `latest` TanStack dependencies.
+- [x] Pin `latest` TanStack dependencies to installed versions.
+- [x] Improve `defaultNotFoundComponent` with terminal-themed styling.
+- [ ] Add note that `src/paraglide/*` is generated (low priority).
+- [ ] Review `/` splash fallback (deferred).
 - [ ] Check Vite plugin order only if build/server behavior is weird.
-- [ ] Run validation.
-- [ ] Commit.
 
 ## Done checklist
 

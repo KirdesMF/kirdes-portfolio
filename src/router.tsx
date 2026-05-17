@@ -30,7 +30,11 @@ export function getRouter() {
 		stringifySearch,
 		defaultPreload: "intent",
 		defaultPreloadStaleTime: 0,
-		defaultNotFoundComponent: () => <div>Not Found</div>,
+		defaultNotFoundComponent: () => (
+			<div className="flex h-dvh items-center justify-center bg-background font-mono text-xs text-foreground">
+				route not found
+			</div>
+		),
 		rewrite: {
 			input: ({ url }) => deLocalizeUrl(url),
 			output: ({ url }) => localizeUrl(url),
