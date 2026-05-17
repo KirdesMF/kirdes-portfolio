@@ -128,17 +128,16 @@ Goal: move business status out of terminal.
 
 Goal: centralize scramble effect and add stagger support.
 
-- [ ] Create `src/design-system/useScrambleText.ts`.
-- [ ] Create `src/design-system/ScrambleText.tsx`.
-- [ ] Support string-only text.
-- [ ] Support `by="char"` and `staggerMs`.
-- [ ] Add reduced-motion guard.
-- [ ] Replace `ScrambleTitle` usage.
-- [ ] Replace direct scramble setup in `TerminalSessionHeader` if hook/component fits.
-- [ ] Replace direct scramble setup in `AvailabilityStatus` if hook/component fits.
-- [ ] Replace direct scramble setup in `TerminalFooter` if hook/component fits.
-- [ ] Remove old `ScrambleTitle.tsx` if unused.
-- [ ] Run validation.
+- [x] Create `src/design-system/useScrambleRef.ts`.
+- [x] Create `src/design-system/ScrambleText.tsx` (replaces ScrambleTitle).
+- [x] Support string-only text.
+- [x] Add reduced-motion guard.
+- [x] Replace `ScrambleTitle` usage with `ScrambleText`.
+- [x] Replace direct scramble setup in `TerminalSessionHeader` with `useScrambleRef`.
+- [x] Replace direct scramble setup in `AvailabilityStatus` with `useScrambleRef`.
+- [x] Replace direct scramble setup in `TerminalFooter` with `useScrambleRef`.
+- [x] Remove old `ScrambleTitle.tsx` (now unused).
+- [x] Run validation.
 - [ ] Commit.
 
 ## Phase 9 — Terminal path helper

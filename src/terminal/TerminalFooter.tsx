@@ -1,30 +1,21 @@
 import { Link } from "@tanstack/react-router";
-import { animate, stagger } from "animejs";
-import { scrambleText } from "animejs/text";
 import { BoomBox, FileTerminal, GitBranch } from "lucide-react";
-import { useEffect } from "react";
-
 import { Separator } from "#/design-system/Separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "#/design-system/Tooltip";
+import { useScrambleRef } from "#/design-system/useScrambleRef";
 import { AvailabilityStatus } from "#/portfolio/AvailabilityStatus";
 
 export function TerminalFooter() {
-	useEffect(() => {
-		const anim = animate("[data-anim-footer]", {
-			ease: "linear",
-			innerHTML: scrambleText({
-				cursor: "░▒▓█",
-				delay: stagger(100),
-			}),
-		});
-
-		return () => {
-			anim.revert();
-		};
-	}, []);
+	const rootRef = useScrambleRef<HTMLDivElement>({
+		selector: "[data-anim-footer]",
+		staggerMs: 100,
+	});
 
 	return (
-		<div className="flex shrink-0 items-center justify-between border-t border-border px-3 py-1.5 text-tiny text-muted-foreground">
+		<div
+			ref={rootRef}
+			className="flex shrink-0 items-center justify-between border-t border-border px-3 py-1.5 text-tiny text-muted-foreground"
+		>
 			<div className="flex items-center gap-1.5">
 				<GitBranch className="size-3" />
 				<span data-anim-footer>feature/kirdes-app</span>

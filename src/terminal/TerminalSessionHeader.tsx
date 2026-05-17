@@ -1,14 +1,13 @@
 import { useRouterState } from "@tanstack/react-router";
-import { animate, stagger } from "animejs";
-import { scrambleText } from "animejs/text";
 import { useEffect, useRef, useState } from "react";
+import { useScrambleRef } from "#/design-system/useScrambleRef";
 
 export function TerminalSessionHeader() {
 	const pathname = useRouterState({ select: (state) => state.location.pathname });
 	const cwd = formatCwd(pathname);
 	const startTimeRef = useRef(Date.now());
 	const [uptime, setUptime] = useState(0);
-	const rootRef = useRef<HTMLDivElement>(null);
+	const rootRef = useScrambleRef<HTMLDivElement>({ selector: "[data-anim-header]", staggerMs: 75 });
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -16,22 +15,6 @@ export function TerminalSessionHeader() {
 		}, 1000);
 
 		return () => clearInterval(interval);
-	}, []);
-
-	useEffect(() => {
-		const elements = rootRef.current?.querySelectorAll("[data-anim-header]");
-		if (!elements) return;
-		const anim = animate(elements, {
-			ease: "linear",
-			innerHTML: scrambleText({
-				cursor: "░▒▓█",
-				delay: stagger(75),
-			}),
-		});
-
-		return () => {
-			anim.revert();
-		};
 	}, []);
 
 	return (

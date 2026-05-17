@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { ScrambleTitle } from "#/design-system/ScrambleTitle";
+import { ScrambleText } from "#/design-system/ScrambleText";
 import { sectionMetadata } from "#/portfolio/portfolio-sections";
 import { SourceLinks } from "#/portfolio/SourceLinks";
 import { projects, statusColors } from "./work.data";
@@ -38,7 +38,7 @@ export function WorkSection(): ReactNode {
 										panel: previous.panel ?? "route",
 									})}
 								>
-									<ScrambleTitle>{entry.name}</ScrambleTitle>
+									<ScrambleText text={entry.name} />
 								</Link>
 							</td>
 							<td className="whitespace-nowrap py-1.5 pr-4 text-muted-foreground">

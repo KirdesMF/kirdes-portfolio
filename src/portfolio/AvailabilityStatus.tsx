@@ -1,8 +1,5 @@
-import { animate, stagger } from "animejs";
-import { scrambleText } from "animejs/text";
 import { MoveRight } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-
+import { useState } from "react";
 import {
 	Popover,
 	PopoverContent,
@@ -10,6 +7,7 @@ import {
 	PopoverTitle,
 	PopoverTrigger,
 } from "#/design-system/Popover";
+import { useScrambleRef } from "#/design-system/useScrambleRef";
 
 export type Availability = "open-to-work" | "open-to-offers" | "busy";
 
@@ -45,24 +43,10 @@ const STATUS_CONFIG: Record<
 export function AvailabilityStatus({ status }: AvailabilityStatusProps) {
 	const config = STATUS_CONFIG[status];
 	const [open, setOpen] = useState(false);
-	const rootRef = useRef<HTMLButtonElement>(null);
-
-	useEffect(() => {
-		const elements = rootRef.current?.querySelectorAll("[data-anim-item]");
-		if (!elements) return;
-
-		const anim = animate(elements, {
-			ease: "linear",
-			innerHTML: scrambleText({
-				cursor: "░▒▓█",
-				delay: stagger(100),
-			}),
-		});
-
-		return () => {
-			anim.revert();
-		};
-	}, []);
+	const rootRef = useScrambleRef<HTMLButtonElement>({
+		selector: "[data-anim-item]",
+		staggerMs: 100,
+	});
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
