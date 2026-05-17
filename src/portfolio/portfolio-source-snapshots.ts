@@ -1,11 +1,11 @@
+import { tsx } from "#/editor/editor-file-builders";
 import type { EditorFileInput } from "#/editor/editor-files.types";
-import { tsx } from "#/editor/editor-files.types";
 
 /**
  * Source code snapshots of portfolio section renderers.
  * These are manually curated — update when section components change.
  */
-export const sourceFiles: ReadonlyArray<EditorFileInput> = [
+export const portfolioSourceSnapshots: ReadonlyArray<EditorFileInput> = [
 	{
 		name: "AboutSection.tsx",
 		folder: "src/portfolio/about",

@@ -1,5 +1,5 @@
+import { json, md } from "#/editor/editor-file-builders";
 import type { EditorFileInput } from "#/editor/editor-files.types";
-import { json, md } from "#/editor/editor-files.types";
 
 export const aboutFiles: ReadonlyArray<EditorFileInput> = [
 	{

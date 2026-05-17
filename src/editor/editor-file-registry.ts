@@ -1,6 +1,5 @@
 import { aboutFiles } from "#/portfolio/about/about.files";
 import { contactFiles } from "#/portfolio/contact/contact.files";
-import { sourceFiles } from "#/portfolio/portfolio-source-snapshots";
 import { rootFiles } from "#/portfolio/root.files";
 import { workFiles } from "#/portfolio/work/work.files";
 import type { FileGroup } from "./editor-files.types";
@@ -13,7 +12,3 @@ export const fileGroupedByFolder: ReadonlyArray<FileGroup> = [
 	{ folder: "work", label: "work", route: "/terminal/work", files: workFiles },
 	{ folder: "contact", label: "contact", route: "/terminal/contact", files: contactFiles },
 ] as const;
-
-// ─── Source snapshot files ────────────────────────────────────────────────────
-
-export { sourceFiles };

@@ -272,9 +272,10 @@ src/portfolio/work/work.files.tsx
 src/portfolio/contact/contact.files.ts
 ```
 
-Editor can compose those files into a registry:
+Editor can compose section-owned files into a concrete registry, but never through re-export aliases:
 
 ```txt
+src/editor/editor-file-builders.ts
 src/editor/editor-files.types.ts
 src/editor/editor-file-registry.ts
 src/editor/editor-files.ts
@@ -283,17 +284,25 @@ src/editor/editor-files.ts
 Suggested responsibilities:
 
 ```txt
+editor-file-builders.ts
+  json
+  md
+  tsx
+
 editor-files.types.ts
   EditorFileInput
   EditorFileEntry
   FolderRoute
+  FileGroup
 
 editor-file-registry.ts
   imports concrete section file arrays
-  builds the actual app editor file registry
-  exports editorFileInputs / folderRoutes
+  builds grouped folder registry only
+  exports concrete runtime values it creates itself
 
 editor-files.ts
+  imports grouped folder registry
+  imports source snapshots directly from owning module when needed
   buildEntry
   findEditorFile
   isEditorFileName
@@ -302,21 +311,23 @@ editor-files.ts
   getVisibleFileNames
 ```
 
-Important: `editor-file-registry.ts` is allowed only if it creates a concrete runtime registry. It must not become a barrel file.
+Hard rule: no barrel files, no re-export aliases, no import-then-export aliases.
 
-Allowed aggregation:
+Allowed registry:
 
 ```ts
 import { aboutFiles } from "#/portfolio/about/about.files";
 import { contactFiles } from "#/portfolio/contact/contact.files";
+import { rootFiles } from "#/portfolio/root.files";
 import { workFiles } from "#/portfolio/work/work.files";
-import type { EditorFileInput } from "#/editor/editor-files.types";
+import type { FileGroup } from "./editor-files.types";
 
-export const editorFileInputs = [
-  ...aboutFiles,
-  ...workFiles,
-  ...contactFiles,
-] satisfies ReadonlyArray<EditorFileInput>;
+export const fileGroupedByFolder: ReadonlyArray<FileGroup> = [
+  { folder: "~", label: "~", route: "/terminal", files: rootFiles },
+  { folder: "about", label: "about", route: "/terminal/about", files: aboutFiles },
+  { folder: "work", label: "work", route: "/terminal/work", files: workFiles },
+  { folder: "contact", label: "contact", route: "/terminal/contact", files: contactFiles },
+];
 ```
 
 Not allowed:
@@ -325,6 +336,16 @@ Not allowed:
 export { aboutFiles } from "#/portfolio/about/about.files";
 export { workFiles } from "#/portfolio/work/work.files";
 ```
+
+Also not allowed:
+
+```ts
+import { portfolioSourceSnapshots } from "#/portfolio/portfolio-source-snapshots";
+
+export const editorSourceFiles = portfolioSourceSnapshots;
+```
+
+If a module needs `portfolioSourceSnapshots`, import it directly from the owning module.
 
 Rationale:
 
@@ -838,7 +859,7 @@ Do this incrementally. No big-bang rewrite.
 1. Create `src/portfolio`.
 2. Move `work.data.tsx` first. Fix imports.
 3. Move portfolio-owned editor file definitions next to their sections (`about.files.ts`, `work.files.tsx`, `contact.files.ts`, `root.files.ts`).
-4. Create `src/editor/editor-file-registry.ts` as a real runtime registry, not a barrel.
+4. Create `src/editor/editor-file-registry.ts` as a real runtime registry, not a barrel/re-export alias.
 5. Move page components from `src/pages` to `src/portfolio/*`. Fix route imports.
 6. Move `section-metadata.ts` to `src/portfolio/portfolio-sections.ts`. Fix imports.
 7. Extract `SourceLinks`.
@@ -882,6 +903,7 @@ Important nuance: `terminal -> portfolio` is acceptable here because terminal co
 - Do not move `SourceLinks` to `design-system`.
 - Do not add barrel `index.ts` files.
 - Do not add any file whose only job is re-exporting symbols.
+- Do not add import-then-export aliases (`import { x } ...; export const y = x;`).
 - Aggregation files are allowed only when they create a concrete runtime object, registry, or config used by the app.
 - Do not abstract every command into classes or registries unless command count grows a lot.
 - Do not rewrite routing just to make the tree pretty.
@@ -896,7 +918,7 @@ Refactor is successful if:
 - Terminal owns shell behavior, not personal content.
 - Repeated `SourceLinks` implementation exists once.
 - Portfolio editor files live next to their owning sections.
-- `editor-file-registry.ts` creates a concrete runtime registry and is not a barrel.
+- `editor-file-registry.ts` creates a concrete runtime registry and is not a barrel or alias layer.
 - Scramble text behavior is centralized; `TerminalSessionHeader` no longer duplicates raw `animate(... scrambleText(...))` setup.
 - Terminal path formatting lives in one helper.
 - Clipboard commands report success/failure honestly.

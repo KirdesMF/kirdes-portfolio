@@ -1,4 +1,5 @@
-import { fileGroupedByFolder, sourceFiles } from "./editor-file-registry";
+import { portfolioSourceSnapshots } from "#/portfolio/portfolio-source-snapshots";
+import { fileGroupedByFolder } from "./editor-file-registry";
 import type { EditorFileEntry, EditorFileInput, FolderRoute } from "./editor-files.types";
 
 export type { EditorFileEntry, FolderRoute };
@@ -11,7 +12,7 @@ function buildEntry(input: EditorFileInput): EditorFileEntry {
 
 function buildAllFiles(): ReadonlyArray<EditorFileEntry> {
 	const contentFiles = fileGroupedByFolder.flatMap((group) => group.files.map(buildEntry));
-	const sourceFileEntries = sourceFiles.map(buildEntry);
+	const sourceFileEntries = portfolioSourceSnapshots.map(buildEntry);
 	return [...contentFiles, ...sourceFileEntries];
 }
 
