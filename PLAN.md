@@ -181,7 +181,12 @@ Goal: avoid stale help/manual command text.
 
 ## Phase 13 — Controller/history cleanup
 
-Still planned. Involves extracting `useCommandHistory` and `useTerminalSearchActions` from `useTerminalController`. Highest regression risk — defer if behavior is stable.
+- [x] Extract visible command history into `src/terminal/useCommandHistory.ts`.
+- [x] Extract editor/dialog/panel URL-state actions into `src/terminal/useTerminalSearchActions.ts`.
+- [x] Keep `useTerminalController.tsx` as composition layer.
+- [x] Keep prompt-local ArrowUp / ArrowDown history unchanged to reduce regression risk.
+- [x] Run validation.
+- [ ] Commit.
 
 ## Phase 14 — Small polish fixes
 
