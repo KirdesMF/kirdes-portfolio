@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 import { Separator } from "#/design-system/Separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "#/design-system/Tooltip";
-import { AvailabilityStatus } from "#/terminal/AvailabilityStatus";
+import { AvailabilityStatus } from "#/portfolio/AvailabilityStatus";
 
 export function TerminalFooter() {
 	useEffect(() => {

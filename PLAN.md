@@ -118,10 +118,10 @@ Goal: split terminal output mechanics from portfolio content.
 
 Goal: move business status out of terminal.
 
-- [ ] Move `src/terminal/AvailabilityStatus.tsx` to `src/portfolio/AvailabilityStatus.tsx`.
-- [ ] Fix footer import.
-- [ ] Keep rendered UI unchanged.
-- [ ] Run validation.
+- [x] Move `src/terminal/AvailabilityStatus.tsx` to `src/portfolio/AvailabilityStatus.tsx`.
+- [x] Fix footer import.
+- [x] Keep rendered UI unchanged.
+- [x] Run validation.
 - [ ] Commit.
 
 ## Phase 8 — Scramble animation consolidation
