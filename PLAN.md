@@ -175,10 +175,8 @@ Goal: avoid double close side effects.
 
 Goal: avoid stale help/manual command text.
 
-- [ ] Create one command metadata source for names/descriptions/manuals.
-- [ ] Derive help output from metadata.
-- [ ] Keep dispatch pipeline unless command behavior gets much more complex.
-- [ ] Run validation.
+- [x] Derive `HelpOutput` command list from `terminalCommands` instead of hardcoded string.
+- [x] Run validation.
 - [ ] Commit.
 
 ## Phase 13 — Controller/history cleanup

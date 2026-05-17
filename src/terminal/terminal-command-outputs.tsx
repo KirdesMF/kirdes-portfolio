@@ -3,16 +3,14 @@ import type { ReactNode } from "react";
 import type { EditorFileEntry, FolderRoute } from "#/editor/editor-files";
 import { editorFiles, folderRoutes as folderRoutesData } from "#/editor/editor-files";
 import { TerminalRouteList } from "./TerminalRouteList";
+import { terminalCommands } from "./terminal-commands";
 import { terminalRoutes } from "./terminal-routes";
 
 export function HelpOutput(): ReactNode {
 	return (
 		<div>
 			<p>available routes: {terminalRoutes.join(" ")}</p>
-			<p>
-				commands: cat cd clear close date email git github help history ls man music open pwd reload
-				rm source tree whoami
-			</p>
+			<p>commands: {terminalCommands.join(" ")}</p>
 		</div>
 	);
 }
