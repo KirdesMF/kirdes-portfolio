@@ -9,6 +9,8 @@ export const terminalCommands = [
 	"github",
 	"help",
 	"history",
+	"lang",
+	"linkedin",
 	"ls",
 	"man",
 	"music",
@@ -16,9 +18,11 @@ export const terminalCommands = [
 	"pwd",
 	"reload",
 	"rm",
+	"social",
 	"source",
 	"tree",
 	"whoami",
+	"x",
 ] as const;
 
 export type TerminalCommandName = (typeof terminalCommands)[number];

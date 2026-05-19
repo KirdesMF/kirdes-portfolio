@@ -6,11 +6,44 @@ import { TerminalRouteList } from "./TerminalRouteList";
 import { terminalCommands } from "./terminal-commands";
 import { terminalRoutes } from "./terminal-routes";
 
+const routeDescriptions: Record<string, string> = {
+	"/home": "home — portfolio root",
+	"/about": "about — background, values, and philosophy",
+	"/work": "work — projects and professional experience",
+	"/contact": "contact — get in touch with me",
+};
+
 export function HelpOutput(): ReactNode {
 	return (
-		<div>
-			<p>available routes: {terminalRoutes.join(" ")}</p>
-			<p>commands: {terminalCommands.join(" ")}</p>
+		<div className="flex flex-col gap-3 whitespace-pre-wrap">
+			<p className="text-primary">Usage: man &lt;command&gt; for details</p>
+
+			<div className="flex flex-col gap-1">
+				<p className="font-semibold text-primary/80">Routes</p>
+				{terminalRoutes.map((route) => (
+					<p key={route} className="text-muted-foreground">
+						<span className="text-primary">{route}</span>
+						<span className="text-muted-foreground/70">
+							{" — "}
+							{routeDescriptions[route]?.split(" — ")[1] ?? ""}
+						</span>
+					</p>
+				))}
+			</div>
+
+			<div className="flex flex-col gap-1">
+				<p className="font-semibold text-primary/80">Commands</p>
+				{terminalCommands.map((cmd) => {
+					const parts = manPages[cmd]?.split(" — ");
+					const desc = parts?.[1]?.split("\n")[0];
+					return (
+						<p key={cmd} className="text-muted-foreground">
+							<span className="font-medium text-foreground">{cmd}</span>
+							{desc && <span className="text-muted-foreground/70"> — {desc}</span>}
+						</p>
+					);
+				})}
+			</div>
 		</div>
 	);
 }
@@ -45,7 +78,11 @@ const manPages: Record<string, string> = {
 	date: "date — display current date and time.",
 	email: "email — copy cedric@kirdes.dev to clipboard.",
 	git: "git [command] — fake git operations.\n  Not a real git repo — the branch is for aesthetic purposes.\n  Subcommands: status, branch, log, commit",
-	github: "github — open github.com/kirdesmf in your browser.",
+	github: "github — open github.com/kirdesmf in a new window.",
+	lang: "lang [--en|--fr] — get or set the display language.",
+	linkedin: "linkedin — open linkedin.com/in/kirdesmf in a new window.",
+	social: "social — list all social media links.",
+	x: "x — open x.com/kirdesmf in a new window.",
 	help: "help — list available routes and commands.",
 	history: "history — show command history.",
 	ls: "ls — list directories and files.\n  Context-aware: shows current folder's files + root files.\n  At root (~), shows all route folders + root files.",

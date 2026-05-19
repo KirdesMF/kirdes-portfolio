@@ -1,4 +1,6 @@
 import { copyToClipboard } from "#/design-system/clipboard";
+import { Separator } from "#/design-system/Separator";
+import { getLocale, setLocale } from "#/paraglide/runtime";
 import { formatTerminalCwd } from "#/terminal/terminal-path";
 import { EmailOutput, WhoamiOutput } from "#/terminal/terminal-profile-outputs";
 import { HelpOutput, LsOutput, TreeAllOutput, TreeOutput } from "../terminal-command-outputs";
@@ -77,10 +79,115 @@ function handleEmail(ctx: CommandContext): boolean {
 	return true;
 }
 
+function openLink(url: string): void {
+	window.open(url, "_blank", "noopener,noreferrer");
+	void copyToClipboard(url);
+}
+
 function handleGithub(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "github") return false;
-	ctx.pushHistory("https://github.com/kirdesmf");
-	void copyToClipboard("https://github.com/kirdesmf");
+	const url = "https://github.com/kirdesmf";
+	openLink(url);
+	ctx.pushHistory(
+		<div className="flex items-center gap-1">
+			<a
+				className="text-primary underline-offset-2 hover:underline"
+				href={url}
+				rel="noopener noreferrer"
+				target="_blank"
+			>
+				{url}
+			</a>
+			<span className="text-muted-foreground/50">↗</span>
+		</div>,
+	);
+	return true;
+}
+
+function handleLinkedin(ctx: CommandContext): boolean {
+	if (ctx.normalized !== "linkedin") return false;
+	const url = "https://linkedin.com/in/kirdesmf";
+	openLink(url);
+	ctx.pushHistory(
+		<div className="flex items-center gap-1">
+			<a
+				className="text-primary underline-offset-2 hover:underline"
+				href={url}
+				rel="noopener noreferrer"
+				target="_blank"
+			>
+				{url}
+			</a>
+			<span className="text-muted-foreground/50">↗</span>
+		</div>,
+	);
+	return true;
+}
+
+function handleX(ctx: CommandContext): boolean {
+	if (ctx.normalized !== "x") return false;
+	const url = "https://x.com/kirdesmf";
+	openLink(url);
+	ctx.pushHistory(
+		<div className="flex items-center gap-1">
+			<a
+				className="text-primary underline-offset-2 hover:underline"
+				href={url}
+				rel="noopener noreferrer"
+				target="_blank"
+			>
+				{url}
+			</a>
+			<span className="text-muted-foreground/50">↗</span>
+		</div>,
+	);
+	return true;
+}
+
+function handleSocial(ctx: CommandContext): boolean {
+	if (ctx.normalized !== "social") return false;
+	ctx.pushHistory(
+		<div className="flex flex-col">
+			<p className="pt-3 font-thin text-muted-foreground/70 uppercase tracking-wider">
+				[SOCIAL MEDIAS]
+			</p>
+			<Separator className="mt-1 mb-2 opacity-50" />
+			<div className="grid grid-cols-[5rem_min-content_min-content] gap-x-2 items-center">
+				<span className="text-muted-foreground/70">github</span>
+				<a
+					className="text-primary underline-offset-2 hover:underline"
+					href="https://github.com/kirdesmf"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					github.com/kirdesmf
+				</a>
+				<span className="text-muted-foreground/50 block">↗</span>
+
+				<span className="text-muted-foreground/70">linkedin</span>
+				<a
+					className="text-primary underline-offset-2 hover:underline"
+					href="https://linkedin.com/in/kirdesmf"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					linkedin.com/in/kirdesmf
+				</a>
+				<span className="text-muted-foreground/50">↗</span>
+
+				<span className="text-muted-foreground/70">x.com</span>
+				<a
+					className="text-primary underline-offset-2 hover:underline"
+					href="https://x.com/kirdesmf"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					x.com/kirdesmf
+				</a>
+				<span className="text-muted-foreground/50">↗</span>
+			</div>
+		</div>,
+	);
 	return true;
 }
 
@@ -89,6 +196,53 @@ function handleMusic(ctx: CommandContext): boolean {
 	ctx.pushHistory("opening music player");
 	ctx.openDialog("music");
 	return true;
+}
+
+function handleLang(ctx: CommandContext): boolean {
+	if (!ctx.normalized.startsWith("lang")) return false;
+
+	const current = getLocale();
+	const available = ["en", "fr"] as const;
+
+	if (ctx.normalized === "lang") {
+		ctx.pushHistory(
+			<div className="flex flex-col gap-0.5 font-mono text-foreground/90">
+				<p className="text-muted-foreground/70">available languages:</p>
+				{available.map((loc) => (
+					<p key={loc}>
+						{loc === current ? (
+							<>
+								<span className="text-primary">* {loc}</span>
+								<span className="text-muted-foreground/50"> (current)</span>
+							</>
+						) : (
+							<span className="text-muted-foreground/70"> {loc}</span>
+						)}
+					</p>
+				))}
+			</div>,
+		);
+		return true;
+	}
+
+	if (ctx.normalized === "lang --en" || ctx.normalized === "lang --fr") {
+		const target = ctx.normalized === "lang --en" ? "en" : "fr";
+
+		if (current === target) {
+			ctx.pushHistory(<p className="text-muted-foreground">lang is already set to {target}</p>);
+			return true;
+		}
+
+		setLocale(target);
+		ctx.pushHistory(
+			<p className="text-muted-foreground">
+				lang set to <span className="text-primary">{target}</span>
+			</p>,
+		);
+		return true;
+	}
+
+	return false;
 }
 
 function handleReload(ctx: CommandContext): boolean {
@@ -109,6 +263,10 @@ export const builtinHandlers: ReadonlyArray<CommandHandler> = [
 	handleTree,
 	handleEmail,
 	handleGithub,
+	handleLang,
+	handleLinkedin,
 	handleMusic,
+	handleSocial,
+	handleX,
 	handleReload,
 ];
