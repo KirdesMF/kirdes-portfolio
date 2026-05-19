@@ -1,4 +1,4 @@
-import { StatusOutput } from "#/terminal/terminal-profile-outputs";
+import { InfosOutput } from "#/terminal/terminal-profile-outputs";
 import type { CommandHandler } from "./types";
 
 /**
@@ -11,8 +11,8 @@ export const handleCat: CommandHandler = (ctx) => {
 	const file = ctx.resolveFile(target, ctx.currentRoute);
 
 	if (file) {
-		if (file.name === "status.txt") {
-			ctx.pushHistory(<StatusOutput />);
+		if (file.name === "infos.txt") {
+			ctx.pushHistory(<InfosOutput />);
 		} else {
 			ctx.pushHistory(
 				<pre className="whitespace-pre-wrap font-mono text-foreground/90">{file.content}</pre>,

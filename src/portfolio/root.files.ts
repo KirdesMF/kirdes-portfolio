@@ -61,7 +61,7 @@ export const rootFiles: ReadonlyArray<EditorFileInput> = [
 		),
 	},
 	{
-		name: "status.txt",
+		name: "infos.txt",
 		folder: "~",
 		language: "text",
 		content: md(

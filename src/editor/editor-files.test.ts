@@ -14,7 +14,7 @@ describe("editor files", () => {
 
 	it("prefers current folder before root and global files", () => {
 		expect(resolveFile("README.md", "/terminal/about")?.id).toBe("about/README.md");
-		expect(resolveFile("status.txt", "/terminal/about")?.id).toBe("~/status.txt");
+		expect(resolveFile("infos.txt", "/terminal/about")?.id).toBe("~/infos.txt");
 		expect(resolveFile("links.json", "/terminal/about")?.id).toBe("contact/links.json");
 	});
 
@@ -36,7 +36,7 @@ describe("editor files", () => {
 		const ids = result.files.map((file) => file.id);
 
 		expect(ids).toContain("work/experience.json");
-		expect(ids).toContain("~/status.txt");
+		expect(ids).toContain("~/infos.txt");
 		expect(ids).not.toContain("~/README.md");
 	});
 
