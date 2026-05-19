@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { MoveRight } from "lucide-react";
 import { useState } from "react";
 import {
@@ -7,6 +8,7 @@ import {
 	PopoverTitle,
 	PopoverTrigger,
 } from "#/design-system/Popover";
+import { Separator } from "#/design-system/Separator";
 import { useScrambleRef } from "#/design-system/useScrambleRef";
 
 export type Availability = "open-to-work" | "open-to-offers" | "busy";
@@ -22,20 +24,20 @@ const STATUS_CONFIG: Record<
 	"open-to-work": {
 		dotColor: "bg-status-open",
 		label: "OPEN",
-		title: "Open to work",
+		title: "[OPEN TO WORK]",
 		description:
 			"Actively looking for new opportunities. Open to full-time, contract, or freelance roles.",
 	},
 	"open-to-offers": {
 		dotColor: "bg-status-open-offers",
 		label: "OFFERS",
-		title: "Open to offers",
+		title: "[OPEN TO OFFERS]",
 		description: "Not actively searching but open to interesting opportunities and conversations.",
 	},
 	busy: {
 		dotColor: "bg-status-busy",
 		label: "BUSY",
-		title: "Busy",
+		title: "[BUSY]",
 		description: "Fully committed to current projects — not available for new work right now.",
 	},
 };
@@ -58,7 +60,16 @@ export function AvailabilityStatus({ status }: AvailabilityStatusProps) {
 			</PopoverTrigger>
 			<PopoverContent>
 				<PopoverTitle>{config.title}</PopoverTitle>
+				<Separator className="my-2 opacity-50" />
 				<PopoverDescription>{config.description}</PopoverDescription>
+				<p className="mt-2 font-mono text-tiny text-muted-foreground/50">
+					<Link
+						className="underline-offset-2 hover:text-primary hover:underline"
+						to="/terminal/contact"
+					>
+						{"/* contact */"}
+					</Link>
+				</p>
 			</PopoverContent>
 		</Popover>
 	);
