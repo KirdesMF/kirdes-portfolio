@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { FileTerminal, GitBranch } from "lucide-react";
+import { FileTerminal } from "lucide-react";
 import { Separator } from "#/design-system/Separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "#/design-system/Tooltip";
 import { useScrambleRef } from "#/design-system/useScrambleRef";
@@ -14,12 +14,9 @@ export function TerminalFooter() {
 	return (
 		<div
 			ref={rootRef}
-			className="flex shrink-0 items-center justify-between border-t border-border px-3 py-1.5 text-tiny text-muted-foreground"
+			className="flex h-6 shrink-0 items-center justify-between border-t border-border px-3 text-tiny text-muted-foreground"
 		>
-			<div className="flex items-center gap-1.5">
-				<GitBranch className="size-3" />
-				<span data-anim-footer>feature/kirdes-app</span>
-			</div>
+			<div />
 			<div className="flex items-center gap-1.5">
 				<AvailabilityStatus status="open-to-work" />
 				<Separator orientation="vertical" />
