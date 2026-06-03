@@ -15,15 +15,15 @@ function formatTime(timestamp: number): string {
 	return `${hours}:${minutes}:${seconds}`;
 }
 
-export function AppHeaderTime(): ReactElement {
+export function Clock(): ReactElement {
 	return (
-		<ClientOnly fallback={<span className="text-tiny">--:--:--</span>}>
-			<AppHeaderTimeClient />
+		<ClientOnly fallback={<span className="text-tiny tabular-nums">--:--:--</span>}>
+			<ClockClient />
 		</ClientOnly>
 	);
 }
 
-function AppHeaderTimeClient(): ReactElement {
+function ClockClient(): ReactElement {
 	const [timestamp, setTimestamp] = useState<number>(getCurrentTimestamp);
 
 	useEffect(function startClock(): () => void {
@@ -36,7 +36,5 @@ function AppHeaderTimeClient(): ReactElement {
 		};
 	}, []);
 
-	return (
-		<span className="text-tiny text-muted-foreground tabular-nums">{formatTime(timestamp)}</span>
-	);
+	return <span className="text-tiny tabular-nums">{formatTime(timestamp)}</span>;
 }

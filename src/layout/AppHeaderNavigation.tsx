@@ -10,9 +10,9 @@ export function AppHeaderNavigation() {
 					<Link
 						activeOptions={{ exact: true }}
 						activeProps={{
-							className: "border-primary/40 bg-primary/10 text-primary",
+							className: "bg-status-primary-foreground/20 text-status-primary-foreground",
 						}}
-						className="rounded border border-transparent px-1.5 py-0.5 text-tiny text-muted-foreground transition-colors hover:border-border hover:bg-muted/40 hover:text-foreground"
+						className="rounded px-1.5 py-0.5 text-status-primary-foreground/75 transition-colors hover:bg-status-primary-foreground/15 hover:text-status-primary-foreground"
 						key={command}
 						search={(previous) => ({
 							activeFile: previous.activeFile,

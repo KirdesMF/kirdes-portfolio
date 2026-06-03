@@ -77,6 +77,11 @@ body::before {
 	--sidebar-accent-foreground: oklch(0.2795 0.0368 260.031);
 	--sidebar-border: oklch(0.9288 0.0126 255.5078);
 	--sidebar-ring: oklch(0.7107 0.0351 256.7878);
+	--status: var(--secondary);
+	--status-primary: var(--primary);
+	--status-primary-foreground: var(--primary-foreground);
+	--status-muted: var(--muted);
+	--status-muted-foreground: var(--muted-foreground);
 	--font-sans: Inter, system-ui, sans-serif;
 	--font-serif: Georgia, serif;
 	--font-mono: Geist Mono, ui-monospace, monospace;
@@ -140,6 +145,11 @@ body::before {
 	--sidebar-accent-foreground: oklch(0.9425 0.0111 243.6566);
 	--sidebar-border: oklch(0.33 0.0149 252.3099);
 	--sidebar-ring: oklch(0.5686 0.2023 259.6677);
+	--status: var(--secondary);
+	--status-primary: var(--primary);
+	--status-primary-foreground: var(--primary-foreground);
+	--status-muted: var(--muted);
+	--status-muted-foreground: var(--muted-foreground);
 	--font-sans: Inter, system-ui, sans-serif;
 	--font-serif: Georgia, serif;
 	--font-mono: Geist Mono, ui-monospace, monospace;
@@ -193,6 +203,11 @@ body::before {
 	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
+	--color-status: var(--status);
+	--color-status-primary: var(--status-primary);
+	--color-status-primary-foreground: var(--status-primary-foreground);
+	--color-status-muted: var(--status-muted);
+	--color-status-muted-foreground: var(--status-muted-foreground);
 
 	--color-status-open: oklch(0.65 0.18 146);
 	--color-status-open-offers: oklch(0.75 0.18 70);

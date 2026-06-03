@@ -65,6 +65,13 @@ export function AvailabilityStatus({ status }: AvailabilityStatusProps) {
 				<p className="mt-2 font-mono text-tiny text-muted-foreground/50">
 					<Link
 						className="underline-offset-2 hover:text-primary hover:underline"
+						search={(previous) => ({
+							activeFile: previous.activeFile,
+							dialog: previous.dialog,
+							editor: previous.editor,
+							files: previous.files ?? [],
+							panel: "route",
+						})}
 						to="/terminal/contact"
 					>
 						{"/* contact */"}

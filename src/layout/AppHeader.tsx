@@ -1,27 +1,69 @@
-import { Folder, MoveRight } from "lucide-react";
-import { Separator } from "#/design-system/Separator";
-import { AppHeaderNavigation } from "#/layout/AppHeaderNavigation";
-import { AppHeaderTime } from "#/layout/AppHeaderTime";
+import { Link } from "@tanstack/react-router";
+import type { ReactNode } from "react";
+import { cn } from "#/design-system/cn";
+import { Clock } from "#/layout/Clock";
 import { setLocale } from "#/paraglide/runtime";
+import { terminalNavigationItems } from "#/terminal/terminal-routes";
 import { ThemeToggle } from "#/theme/ThemeToggle";
 
+type StatusSide = "left" | "right";
+type StatusVariant = "primary" | "muted";
+
+type StatusItem = {
+	id: string;
+	variant: StatusVariant;
+	content: ReactNode;
+};
+
+const variantClass = {
+	primary: {
+		background: "bg-status-primary",
+		foreground: "text-status-primary-foreground",
+		fill: "fill-status-primary",
+	},
+	muted: {
+		background: "bg-status-muted",
+		foreground: "text-status-muted-foreground",
+		fill: "fill-status-muted",
+	},
+} as const;
+
 export function AppHeader() {
-	return (
-		<header className="flex h-10 shrink-0 items-center justify-between border-b border-border px-3">
-			<div className="flex min-w-0 items-center gap-2 text-sm">
-				<Folder className="size-3.5 shrink-0 text-primary" />
-				<AppHeaderNavigation />
-				<Separator orientation="vertical" />
-				<button
-					type="button"
-					className="flex items-center gap-1.5 bg-primary px-3 py-1 text-tiny font-medium text-primary-foreground hover:bg-primary/90"
+	const leftItems: StatusItem[] = terminalNavigationItems.map(({ command, label, to }, index) => {
+		const variant: StatusVariant = index % 2 === 0 ? "primary" : "muted";
+		const linkClassName = getNavigationLinkClassName(variant);
+		const activeLinkClassName = getNavigationActiveLinkClassName(variant);
+
+		return {
+			id: command,
+			variant,
+			content: (
+				<Link
+					activeOptions={{ exact: true }}
+					activeProps={{
+						className: activeLinkClassName,
+					}}
+					className={linkClassName}
+					search={(previous) => ({
+						activeFile: previous.activeFile,
+						dialog: previous.dialog,
+						editor: previous.editor,
+						files: previous.files ?? [],
+						panel: "route",
+					})}
+					to={to}
 				>
-					LET'S BUILD
-					<MoveRight className="size-3.5" />
-				</button>
-			</div>
-			<div className="flex shrink-0 items-center gap-2">
-				<div className="flex text-tiny text-muted-foreground gap-1.5">
+					{label === "~" ? label : `${label}/`}
+				</Link>
+			),
+		};
+	});
+	const rightItems: StatusItem[] = [
+		{
+			id: "language",
+			variant: "muted",
+			content: (
+				<div className="flex items-center gap-1.5">
 					<button type="button" onClick={() => setLocale("fr")}>
 						FR
 					</button>
@@ -30,11 +72,110 @@ export function AppHeader() {
 						EN
 					</button>
 				</div>
-				<Separator orientation="vertical" />
-				<AppHeaderTime />
-				<Separator orientation="vertical" />
-				<ThemeToggle />
-			</div>
+			),
+		},
+		{
+			id: "theme",
+			variant: "primary",
+			content: <ThemeToggle />,
+		},
+		{
+			id: "clock",
+			variant: "muted",
+			content: <Clock />,
+		},
+	];
+
+	return (
+		<header className="flex h-6 shrink-0 items-stretch justify-between border-b border-border bg-status">
+			<StatusGroup items={leftItems} side="left" />
+			<StatusGroup items={rightItems} side="right" />
 		</header>
+	);
+}
+
+function getNavigationLinkClassName(variant: StatusVariant): string {
+	if (variant === "primary") {
+		return "rounded px-1.5 text-status-primary-foreground/75 transition-colors hover:bg-status-primary-foreground/15 hover:text-status-primary-foreground";
+	}
+
+	return "rounded px-1.5 text-status-muted-foreground/75 transition-colors hover:bg-status-muted-foreground/15 hover:text-status-muted-foreground";
+}
+
+function getNavigationActiveLinkClassName(variant: StatusVariant): string {
+	if (variant === "primary") {
+		return "bg-status-primary-foreground/20 text-status-primary-foreground";
+	}
+
+	return "bg-status-muted-foreground/20 text-status-muted-foreground";
+}
+
+function StatusGroup(props: { items: StatusItem[]; side: StatusSide }) {
+	return (
+		<div className="flex min-w-0 items-stretch text-tiny">
+			{props.items.map((item, index) => (
+				<StatusSegment
+					isFirst={index === 0}
+					isLast={index === props.items.length - 1}
+					item={item}
+					key={item.id}
+					side={props.side}
+					stack={props.side === "left" ? props.items.length - index : index + 1}
+				/>
+			))}
+		</div>
+	);
+}
+
+function StatusSegment(props: {
+	isFirst: boolean;
+	isLast: boolean;
+	item: StatusItem;
+	side: StatusSide;
+	stack: number;
+}) {
+	const variant = variantClass[props.item.variant];
+
+	return (
+		<div
+			className={cn(
+				"flex min-w-0 items-stretch",
+				variant.foreground,
+				props.side === "left" && !props.isFirst && "-ms-2.5",
+				props.side === "right" && !props.isLast && "-me-2.5",
+			)}
+			style={{ zIndex: props.stack }}
+		>
+			{props.side === "right" && <Chevron direction="left" variant={props.item.variant} />}
+
+			<div
+				className={cn(
+					"flex min-w-0 items-center gap-2",
+					variant.background,
+					props.side === "left" && props.isFirst && "ps-2 pe-4",
+					props.side === "left" && !props.isFirst && "pe-4 ps-5",
+					props.side === "right" && "ps-3",
+					props.side === "right" && !props.isLast && "pe-5",
+					props.side === "right" && props.isLast && "pe-4",
+				)}
+			>
+				{props.item.content}
+			</div>
+
+			{props.side === "left" && <Chevron direction="right" variant={props.item.variant} />}
+		</div>
+	);
+}
+
+function Chevron(props: { direction: "left" | "right"; variant: StatusVariant }) {
+	return (
+		<svg
+			aria-hidden="true"
+			className={cn("h-full w-2.5 shrink-0", variantClass[props.variant].fill)}
+			preserveAspectRatio="none"
+			viewBox="0 0 16 20"
+		>
+			<polygon points={props.direction === "left" ? "16,0 0,10 16,20" : "0,0 16,10 0,20"} />
+		</svg>
 	);
 }
