@@ -5,7 +5,6 @@ describe("parseTerminalSearch", () => {
 	it("returns defaults for invalid search", () => {
 		expect(parseTerminalSearch({ files: 123, panel: 456 })).toEqual({
 			activeFile: undefined,
-			dialog: undefined,
 			editor: undefined,
 			files: [],
 			maximized: undefined,
@@ -23,7 +22,6 @@ describe("parseTerminalSearch", () => {
 			}),
 		).toEqual({
 			activeFile: "work/experience.json",
-			dialog: undefined,
 			editor: "open",
 			files: ["about/README.md", "work/experience.json"],
 			maximized: undefined,
@@ -57,11 +55,8 @@ describe("parseTerminalSearch", () => {
 		});
 	});
 
-	it("keeps known dialog and maximized values", () => {
-		expect(
-			parseTerminalSearch({ dialog: "music", maximized: "route", panel: "route" }),
-		).toMatchObject({
-			dialog: "music",
+	it("keeps known maximized values", () => {
+		expect(parseTerminalSearch({ maximized: "route", panel: "route" })).toMatchObject({
 			maximized: "route",
 			panel: "route",
 		});

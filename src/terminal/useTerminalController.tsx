@@ -42,14 +42,12 @@ export function useTerminalController({
 			lsFiles,
 			commandHistory,
 			clearHistory,
-			openDialog: actions.openDialog,
 		};
 
 		dispatch(ctx);
 	}
 
 	return {
-		closeDialog: actions.closeDialog,
 		closeEditor: actions.closeEditor,
 		closeFile: actions.closeFile,
 		handleSubmit,

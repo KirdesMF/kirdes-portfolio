@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { ClockIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "#/design-system/cn";
 import { Clock } from "#/layout/Clock";
@@ -46,7 +47,6 @@ export function AppHeader() {
 					className={linkClassName}
 					search={(previous) => ({
 						activeFile: previous.activeFile,
-						dialog: previous.dialog,
 						editor: previous.editor,
 						files: previous.files ?? [],
 						panel: "route",
@@ -82,7 +82,12 @@ export function AppHeader() {
 		{
 			id: "clock",
 			variant: "muted",
-			content: <Clock />,
+			content: (
+				<>
+					<ClockIcon className="size-3" />
+					<Clock />
+				</>
+			),
 		},
 	];
 

@@ -48,7 +48,4 @@ export type CommandContext = {
 	commandHistory: Array<string>;
 	/** Clear terminal display history */
 	clearHistory: () => void;
-
-	/** Open a dialog by name */
-	openDialog: (name: "music") => void;
 };

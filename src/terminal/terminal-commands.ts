@@ -13,7 +13,6 @@ export const terminalCommands = [
 	"linkedin",
 	"ls",
 	"man",
-	"music",
 	"open",
 	"pwd",
 	"reload",

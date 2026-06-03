@@ -15,7 +15,6 @@ export const handleClose: CommandHandler = (ctx) => {
 	if (ctx.normalized === "close all") {
 		ctx.navigate(ctx.currentRoute, {
 			activeFile: undefined,
-			dialog: undefined,
 			editor: "open",
 			files: [],
 			panel: "editor",

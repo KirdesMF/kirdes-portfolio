@@ -31,7 +31,6 @@ export function WorkSection(): ReactNode {
 									params={{ project: entry.name }}
 									search={(previous) => ({
 										activeFile: previous.activeFile,
-										dialog: previous.dialog,
 										editor: previous.editor,
 										files: previous.files ?? [],
 										maximized: previous.maximized,

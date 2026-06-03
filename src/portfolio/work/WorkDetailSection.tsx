@@ -22,7 +22,6 @@ export function WorkDetailSection({ project }: { project: string }): ReactNode {
 					to="/terminal/work"
 					search={(previous) => ({
 						activeFile: previous.activeFile,
-						dialog: previous.dialog,
 						editor: previous.editor,
 						files: previous.files ?? [],
 						maximized: previous.maximized,
@@ -44,7 +43,6 @@ export function WorkDetailSection({ project }: { project: string }): ReactNode {
 					to="/terminal/work"
 					search={(previous) => ({
 						activeFile: previous.activeFile,
-						dialog: previous.dialog,
 						editor: previous.editor,
 						files: previous.files ?? [],
 						maximized: previous.maximized,

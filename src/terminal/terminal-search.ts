@@ -1,6 +1,5 @@
 import * as v from "valibot";
 import { type EditorFileName, isEditorFileName } from "#/editor/editor-files";
-import type { TerminalDialogName } from "#/music/music.types";
 import {
 	type MaximizedPanel,
 	parseMaximized,
@@ -10,7 +9,6 @@ import {
 
 const RawTerminalSearch = v.object({
 	activeFile: v.optional(v.string()),
-	dialog: v.optional(v.string()),
 	editor: v.optional(v.string()),
 	files: v.optional(v.union([v.array(v.string()), v.string()]), ""),
 	maximized: v.optional(v.string()),
@@ -35,11 +33,8 @@ function normalizeFiles(files: string | Array<string>): Array<EditorFileName> {
 	return dedupeFiles(splitFiles(files));
 }
 
-const dialogNames = ["music"] as const;
-
 export type TerminalSearch = {
 	activeFile?: EditorFileName;
-	dialog?: TerminalDialogName;
 	editor?: "open";
 	files: Array<EditorFileName>;
 	maximized?: MaximizedPanel;
@@ -52,16 +47,11 @@ export function parseTerminalSearch(search: Record<string, unknown>): TerminalSe
 		? result.output
 		: {
 				activeFile: undefined,
-				dialog: undefined,
 				editor: undefined,
 				files: "",
 				maximized: undefined,
 				panel: "terminal",
 			};
-	const dialog =
-		rawSearch.dialog && (dialogNames as ReadonlyArray<string>).includes(rawSearch.dialog)
-			? (rawSearch.dialog as TerminalDialogName)
-			: undefined;
 	const editor = rawSearch.editor === "open" ? "open" : undefined;
 	const files = editor === "open" ? normalizeFiles(rawSearch.files) : [];
 	const activeFile = files.find((fileName) => fileName === rawSearch.activeFile) ?? files.at(0);
@@ -70,7 +60,6 @@ export function parseTerminalSearch(search: Record<string, unknown>): TerminalSe
 
 	return {
 		activeFile,
-		dialog,
 		editor,
 		files,
 		maximized,

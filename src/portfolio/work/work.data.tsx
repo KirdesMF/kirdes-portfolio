@@ -39,7 +39,7 @@ export const projects: Array<Project> = [
 			<div className="flex flex-col gap-2">
 				<p>
 					A terminal-themed portfolio built with TanStack Start, React, and TypeScript. Features a
-					fully interactive shell, inline code editor, music player, and a tetris game.
+					fully interactive shell, inline code editor, and a tetris game.
 				</p>
 				<p className="text-muted-foreground">
 					design philosophy: every interaction should feel like working in a real terminal — fast,

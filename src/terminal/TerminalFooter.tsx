@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { BoomBox, FileTerminal, GitBranch } from "lucide-react";
+import { FileTerminal, GitBranch } from "lucide-react";
 import { Separator } from "#/design-system/Separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "#/design-system/Tooltip";
 import { useScrambleRef } from "#/design-system/useScrambleRef";
@@ -32,7 +32,6 @@ export function TerminalFooter() {
 							className="transition-colors hover:text-foreground"
 							search={(previous) => ({
 								activeFile: previous.activeFile,
-								dialog: previous.dialog,
 								editor: "open",
 								files: previous.files ?? [],
 								panel: "editor",
@@ -44,8 +43,6 @@ export function TerminalFooter() {
 					</TooltipTrigger>
 					<TooltipContent>Editor</TooltipContent>
 				</Tooltip>
-				<Separator orientation="vertical" />
-				<BoomBox className="size-3" />
 			</div>
 		</div>
 	);

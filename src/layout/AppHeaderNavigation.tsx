@@ -16,7 +16,6 @@ export function AppHeaderNavigation() {
 						key={command}
 						search={(previous) => ({
 							activeFile: previous.activeFile,
-							dialog: previous.dialog,
 							editor: previous.editor,
 							files: previous.files ?? [],
 							panel: "route",

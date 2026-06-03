@@ -67,7 +67,6 @@ export function AvailabilityStatus({ status }: AvailabilityStatusProps) {
 						className="underline-offset-2 hover:text-primary hover:underline"
 						search={(previous) => ({
 							activeFile: previous.activeFile,
-							dialog: previous.dialog,
 							editor: previous.editor,
 							files: previous.files ?? [],
 							panel: "route",

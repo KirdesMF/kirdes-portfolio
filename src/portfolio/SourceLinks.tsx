@@ -18,7 +18,6 @@ export function SourceLinks({ meta: m, to = "." }: SourceLinksProps) {
 						className="text-primary underline-offset-2 hover:underline"
 						search={(prev) => ({
 							activeFile: m.renderer,
-							dialog: prev.dialog,
 							editor: "open" as const,
 							files: prev.files ? [...new Set([...prev.files, m.renderer])] : [m.renderer],
 							panel: "editor" as const,
@@ -38,7 +37,6 @@ export function SourceLinks({ meta: m, to = "." }: SourceLinksProps) {
 									const id = `${m.folder}/${file}`;
 									return {
 										activeFile: id,
-										dialog: prev.dialog,
 										editor: "open" as const,
 										files: prev.files ? [...new Set([...prev.files, id])] : [id],
 										panel: "editor" as const,

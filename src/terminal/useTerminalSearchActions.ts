@@ -54,7 +54,6 @@ export function useTerminalSearchActions({
 			to,
 			search: (previous: Record<string, unknown>) => ({
 				activeFile: previous.activeFile,
-				dialog: previous.dialog,
 				editor: previous.editor,
 				files: previous.files ?? [],
 				panel: previous.panel ?? "terminal",
@@ -63,37 +62,10 @@ export function useTerminalSearchActions({
 		});
 	}
 
-	function openDialog(dialogName: "music"): void {
-		void router.navigate({
-			search: (previous) => ({
-				activeFile: previous.activeFile,
-				dialog: dialogName,
-				editor: previous.editor,
-				files: previous.files ?? [],
-				panel: previous.panel as TerminalPanelName,
-			}),
-			to: currentTerminalRoute,
-		});
-	}
-
-	function closeDialog(): void {
-		void router.navigate({
-			search: (previous) => ({
-				activeFile: previous.activeFile,
-				dialog: undefined,
-				editor: previous.editor,
-				files: previous.files ?? [],
-				panel: previous.panel as TerminalPanelName,
-			}),
-			to: currentTerminalRoute,
-		});
-	}
-
 	function setMobilePanel(panel: TerminalPanelName): void {
 		void router.navigate({
 			search: (previous) => ({
 				activeFile: previous.activeFile,
-				dialog: previous.dialog,
 				editor: previous.editor,
 				files: previous.files ?? [],
 				panel,
@@ -106,7 +78,6 @@ export function useTerminalSearchActions({
 		void router.navigate({
 			search: {
 				activeFile: undefined,
-				dialog: undefined,
 				editor: undefined,
 				files: [],
 				panel: isHomeRoute ? "terminal" : "route",
@@ -128,7 +99,6 @@ export function useTerminalSearchActions({
 					closedFileName: file.id,
 					files: openFileNames,
 				}),
-				dialog: undefined,
 				editor: "open",
 				files,
 				panel: "editor",
@@ -141,7 +111,6 @@ export function useTerminalSearchActions({
 		void router.navigate({
 			search: (previous) => ({
 				activeFile: previous.activeFile,
-				dialog: previous.dialog,
 				editor: "open",
 				files: previous.files ?? [],
 				panel: "editor",
@@ -157,7 +126,6 @@ export function useTerminalSearchActions({
 		void router.navigate({
 			search: {
 				activeFile: file.id,
-				dialog: undefined,
 				editor: "open",
 				files: addOpenFile(openFileNames, file.id),
 				panel: "editor",
@@ -174,7 +142,6 @@ export function useTerminalSearchActions({
 		void router.navigate({
 			search: {
 				activeFile: file.id,
-				dialog: undefined,
 				editor: "open",
 				files: addOpenFile(openFileNames, file.id),
 				panel: "editor",
@@ -184,11 +151,9 @@ export function useTerminalSearchActions({
 	}
 
 	return {
-		closeDialog,
 		closeEditor,
 		closeFile,
 		navigate,
-		openDialog,
 		openEditor,
 		openFile,
 		selectFile,

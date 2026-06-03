@@ -191,13 +191,6 @@ function handleSocial(ctx: CommandContext): boolean {
 	return true;
 }
 
-function handleMusic(ctx: CommandContext): boolean {
-	if (ctx.normalized !== "music") return false;
-	ctx.pushHistory("opening music player");
-	ctx.openDialog("music");
-	return true;
-}
-
 function handleLang(ctx: CommandContext): boolean {
 	if (!ctx.normalized.startsWith("lang")) return false;
 
@@ -265,7 +258,6 @@ export const builtinHandlers: ReadonlyArray<CommandHandler> = [
 	handleGithub,
 	handleLang,
 	handleLinkedin,
-	handleMusic,
 	handleSocial,
 	handleX,
 	handleReload,

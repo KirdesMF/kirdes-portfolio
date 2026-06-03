@@ -87,7 +87,6 @@ const manPages: Record<string, string> = {
 	history: "history — show command history.",
 	ls: "ls — list directories and files.\n  Context-aware: shows current folder's files + root files.\n  At root (~), shows all route folders + root files.",
 	man: "man <command> — show the manual page for a command.\n  Examples:\n    man ls\n    man cat\n    man cd",
-	music: "music — open the music player.",
 	open: "open <file> — open a file in the read-only editor.\n  Resolves relative to current folder, falls back to root.\n  Examples:\n    open README.md\n    open /about/values.md",
 	pwd: "pwd — print working directory (current folder).",
 	reload: "reload — reload the portfolio (go to splash screen).",
@@ -231,7 +230,6 @@ export function TreeAllOutput(): ReactNode {
 							className="underline-offset-2 hover:text-primary hover:underline"
 							search={(previous) => ({
 								activeFile: previous.activeFile,
-								dialog: previous.dialog,
 								editor: previous.editor,
 								files: previous.files ?? [],
 								panel: "route",
@@ -249,7 +247,6 @@ export function TreeAllOutput(): ReactNode {
 										className="underline-offset-2 hover:text-primary hover:underline"
 										search={(previous) => ({
 											activeFile: file.id,
-											dialog: previous.dialog,
 											editor: "open",
 											files: previous.files
 												? [...new Set([...previous.files, file.id])]
@@ -279,7 +276,6 @@ export function TreeAllOutput(): ReactNode {
 									className="underline-offset-2 hover:text-primary hover:underline"
 									search={(previous) => ({
 										activeFile: file.id,
-										dialog: previous.dialog,
 										editor: "open",
 										files: previous.files ? [...new Set([...previous.files, file.id])] : [file.id],
 										panel: "editor",
@@ -312,7 +308,6 @@ export function TreeOutput(): ReactNode {
 							className="underline-offset-2 hover:text-primary hover:underline"
 							search={(previous) => ({
 								activeFile: previous.activeFile,
-								dialog: previous.dialog,
 								editor: previous.editor,
 								files: previous.files ?? [],
 								panel: "route",
@@ -330,7 +325,6 @@ export function TreeOutput(): ReactNode {
 										className="underline-offset-2 hover:text-primary hover:underline"
 										search={(previous) => ({
 											activeFile: file.id,
-											dialog: previous.dialog,
 											editor: "open",
 											files: previous.files
 												? [...new Set([...previous.files, file.id])]

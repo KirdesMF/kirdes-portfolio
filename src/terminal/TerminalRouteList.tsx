@@ -32,7 +32,6 @@ export function TerminalRouteList({
 						key={folder}
 						search={(previous) => ({
 							activeFile: previous.activeFile,
-							dialog: previous.dialog,
 							editor: previous.editor,
 							files: previous.files ?? [],
 							panel: "route",
@@ -51,7 +50,6 @@ export function TerminalRouteList({
 						key={file.id}
 						search={(previous) => ({
 							activeFile: file.id,
-							dialog: previous.dialog,
 							editor: "open",
 							files: addOpenFile(previous.files ?? [], file.id),
 							panel: "editor",
