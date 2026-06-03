@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ClockIcon } from "lucide-react";
+import { ClockIcon, FileTerminal } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "#/design-system/cn";
 import { Clock } from "#/layout/Clock";
@@ -57,6 +57,31 @@ export function AppHeader() {
 				</Link>
 			),
 		};
+	});
+	const editorVariant: StatusVariant = leftItems.length % 2 === 0 ? "primary" : "muted";
+	leftItems.push({
+		id: "editor",
+		variant: editorVariant,
+		content: (
+			<Link
+				activeOptions={{ includeSearch: true }}
+				activeProps={{ className: getNavigationActiveLinkClassName(editorVariant) }}
+				aria-label="Open editor"
+				className={getNavigationLinkClassName(editorVariant)}
+				search={(previous) => ({
+					activeFile: previous.activeFile,
+					editor: "open",
+					files: previous.files ?? [],
+					panel: "editor",
+				})}
+				to="."
+			>
+				<span className="flex items-center gap-1">
+					<FileTerminal className="size-3" />
+					<span className="sr-only">editor</span>
+				</span>
+			</Link>
+		),
 	});
 	const rightItems: StatusItem[] = [
 		{

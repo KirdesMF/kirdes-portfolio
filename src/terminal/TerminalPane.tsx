@@ -48,9 +48,6 @@ export function TerminalPane({
 				))}
 			</div>
 			<div className="shrink-0">
-				<div className="px-3 py-1 text-tiny text-muted-foreground/70">
-					TIP: type help for commands -- / to navigate
-				</div>
 				<TerminalPrompt currentRoute={currentRoute} onSubmit={onSubmit} />
 				<TerminalFooter />
 			</div>

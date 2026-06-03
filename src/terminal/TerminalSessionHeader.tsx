@@ -1,4 +1,5 @@
 import { useRouterState } from "@tanstack/react-router";
+import { animate, createScope } from "animejs";
 import { useEffect, useRef, useState } from "react";
 import { useScrambleRef } from "#/design-system/useScrambleRef";
 import { formatTerminalCwd } from "#/terminal/terminal-path";
@@ -9,6 +10,7 @@ export function TerminalSessionHeader() {
 	const startTimeRef = useRef(Date.now());
 	const [uptime, setUptime] = useState(0);
 	const rootRef = useScrambleRef<HTMLDivElement>({ selector: "[data-anim-header]", staggerMs: 75 });
+	const statusShineRef = useRef<HTMLSpanElement>(null);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -16,6 +18,30 @@ export function TerminalSessionHeader() {
 		}, 1000);
 
 		return () => clearInterval(interval);
+	}, []);
+
+	useEffect(() => {
+		const el = statusShineRef.current;
+		if (!el) return;
+
+		const scope = createScope({
+			mediaQueries: {
+				reduceMotion: "(prefers-reduced-motion)",
+			},
+		}).add((self) => {
+			const reduceMotion = self?.matches.reduceMotion ?? false;
+
+			animate(el, {
+				backgroundPosition: ["200%", "-200%"],
+				duration: reduceMotion ? 0 : 4000,
+				ease: "linear",
+				loop: true,
+			});
+		});
+
+		return () => {
+			scope.revert();
+		};
 	}, []);
 
 	return (
@@ -52,10 +78,13 @@ export function TerminalSessionHeader() {
 				</span>
 			</div>
 			<div className="flex items-center justify-between">
-				<span>
-					STATUS:{" "}
-					<span data-anim-header className="text-green-500">
-						OK
+				<span className="inline-flex items-baseline gap-1">
+					STATUS:
+					<span
+						className="inline-block bg-linear-to-r from-status-open from-35% via-primary-foreground via-60% to-status-open to-55% bg-size-[200%_100%] bg-clip-text leading-none text-transparent"
+						ref={statusShineRef}
+					>
+						AVAILABLE
 					</span>
 				</span>
 				<span>
