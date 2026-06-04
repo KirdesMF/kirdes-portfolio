@@ -1,0 +1,146 @@
+import { CheckIcon, MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
+import { cn } from "#/design-system/cn";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+} from "#/design-system/dialog";
+import { useTheme } from "#/theme/ThemeProvider";
+import {
+	appearanceModes,
+	type AppearanceMode,
+	darkThemeOptions,
+	type DarkThemeId,
+	lightThemeOptions,
+	type LightThemeId,
+	themeLabels,
+	type ThemeId,
+} from "#/theme/themeTypes";
+
+const modeLabels = {
+	light: "Light",
+	dark: "Dark",
+	system: "Auto",
+} satisfies Record<AppearanceMode, string>;
+
+const modeIcons = {
+	light: SunIcon,
+	dark: MoonIcon,
+	system: MonitorIcon,
+} satisfies Record<AppearanceMode, typeof SunIcon>;
+
+const themePaletteSwatches = ["bg-background", "bg-primary", "bg-input", "bg-foreground"] as const;
+
+type SettingsDialogProps = {
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+};
+
+export function SettingsDialog(props: SettingsDialogProps) {
+	const { appearance, setAppearance } = useTheme();
+
+	return (
+		<Dialog open={props.open} onOpenChange={props.onOpenChange}>
+			<DialogContent className="space-y-5 p-4">
+				<div className="space-y-1">
+					<DialogTitle>Settings</DialogTitle>
+					<DialogDescription>Configure color mode and IDE themes.</DialogDescription>
+				</div>
+
+				<section className="space-y-2">
+					<h2 className="font-medium text-sm">Mode</h2>
+					<div className="grid gap-2 sm:grid-cols-3">
+						{appearanceModes.map((mode) => {
+							const ModeIcon = modeIcons[mode];
+							const selected = appearance.mode === mode;
+
+							return (
+								<button
+									type="button"
+									className={cn(
+										"flex items-center justify-between gap-2 rounded border border-border px-2 py-1.5 text-sm",
+										selected && "bg-primary text-primary-foreground",
+									)}
+									aria-pressed={selected}
+									key={mode}
+									onClick={() => setAppearance({ ...appearance, mode })}
+								>
+									<span className="flex items-center gap-2">
+										<ModeIcon className="size-3.5" />
+										{modeLabels[mode]}
+									</span>
+									{selected && <CheckIcon className="size-3.5" />}
+								</button>
+							);
+						})}
+					</div>
+				</section>
+
+				<section className="space-y-3">
+					<h2 className="font-medium text-sm">IDE themes</h2>
+					<ThemeList
+						label="Light themes"
+						selectedTheme={appearance.lightTheme}
+						themes={lightThemeOptions}
+						onSelect={(lightTheme) => setAppearance({ ...appearance, lightTheme })}
+					/>
+					<ThemeList
+						label="Dark themes"
+						selectedTheme={appearance.darkTheme}
+						themes={darkThemeOptions}
+						onSelect={(darkTheme) => setAppearance({ ...appearance, darkTheme })}
+					/>
+				</section>
+			</DialogContent>
+		</Dialog>
+	);
+}
+
+function ThemeList<TTheme extends LightThemeId | DarkThemeId>(props: {
+	label: string;
+	onSelect: (theme: TTheme) => void;
+	selectedTheme: TTheme;
+	themes: readonly { label: string; value: TTheme }[];
+}) {
+	return (
+		<div className="space-y-1.5">
+			<h3 className="text-muted-foreground text-xs">{props.label}</h3>
+			<div className="grid gap-2">
+				{props.themes.map((theme) => {
+					const selected = props.selectedTheme === theme.value;
+
+					return (
+						<button
+							type="button"
+							className={cn(
+								"flex items-center justify-between gap-3 rounded border border-border px-2 py-2 text-left text-sm",
+								selected && "bg-accent text-accent-foreground",
+							)}
+							aria-label={`Select ${themeLabels[theme.value]}`}
+							aria-pressed={selected}
+							key={theme.value}
+							onClick={() => props.onSelect(theme.value)}
+						>
+							<span className="flex min-w-0 items-center gap-3">
+								<ThemePalette theme={theme.value} />
+								<span className="truncate">{theme.label}</span>
+							</span>
+							{selected && <span className="rounded border border-border px-1.5 py-0.5 text-xs">current</span>}
+						</button>
+					);
+				})}
+			</div>
+		</div>
+	);
+}
+
+function ThemePalette(props: { theme: ThemeId }) {
+	return (
+		<span className="flex overflow-hidden rounded border border-border" data-theme={props.theme} aria-hidden="true">
+			{themePaletteSwatches.map((className) => (
+				<span className={cn("size-4", className)} key={className} />
+			))}
+		</span>
+	);
+}

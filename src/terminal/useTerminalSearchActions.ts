@@ -53,6 +53,7 @@ export function useTerminalSearchActions({
 		void (router.navigate as any)({
 			to,
 			search: (previous: Record<string, unknown>) => ({
+				...previous,
 				activeFile: previous.activeFile,
 				editor: previous.editor,
 				files: previous.files ?? [],
@@ -65,6 +66,7 @@ export function useTerminalSearchActions({
 	function setMobilePanel(panel: TerminalPanelName): void {
 		void router.navigate({
 			search: (previous) => ({
+				...previous,
 				activeFile: previous.activeFile,
 				editor: previous.editor,
 				files: previous.files ?? [],
@@ -76,12 +78,13 @@ export function useTerminalSearchActions({
 
 	function closeEditor(): void {
 		void router.navigate({
-			search: {
+			search: (previous) => ({
+				...previous,
 				activeFile: undefined,
 				editor: undefined,
 				files: [],
 				panel: isHomeRoute ? "terminal" : "route",
-			},
+			}),
 			to: currentTerminalRoute,
 		});
 	}
@@ -93,7 +96,8 @@ export function useTerminalSearchActions({
 		const files = removeOpenFile(openFileNames, file.id);
 
 		void router.navigate({
-			search: {
+			search: (previous) => ({
+				...previous,
 				activeFile: getNextActiveFile({
 					activeFileName,
 					closedFileName: file.id,
@@ -102,7 +106,7 @@ export function useTerminalSearchActions({
 				editor: "open",
 				files,
 				panel: "editor",
-			},
+			}),
 			to: currentTerminalRoute,
 		});
 	}
@@ -110,6 +114,7 @@ export function useTerminalSearchActions({
 	function openEditor(): void {
 		void router.navigate({
 			search: (previous) => ({
+				...previous,
 				activeFile: previous.activeFile,
 				editor: "open",
 				files: previous.files ?? [],
@@ -124,12 +129,13 @@ export function useTerminalSearchActions({
 		if (file === null) return false;
 
 		void router.navigate({
-			search: {
+			search: (previous) => ({
+				...previous,
 				activeFile: file.id,
 				editor: "open",
 				files: addOpenFile(openFileNames, file.id),
 				panel: "editor",
-			},
+			}),
 			to: currentTerminalRoute,
 		});
 		return true;
@@ -140,12 +146,13 @@ export function useTerminalSearchActions({
 		if (file === null) return;
 
 		void router.navigate({
-			search: {
+			search: (previous) => ({
+				...previous,
 				activeFile: file.id,
 				editor: "open",
 				files: addOpenFile(openFileNames, file.id),
 				panel: "editor",
-			},
+			}),
 			to: currentTerminalRoute,
 		});
 	}

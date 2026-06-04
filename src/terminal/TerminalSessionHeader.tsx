@@ -83,7 +83,7 @@ export function TerminalSessionHeader() {
 				<span className="inline-flex items-baseline gap-1">
 					STATUS:
 					<span
-						className="inline-block bg-linear-to-r from-status-open from-35% via-primary-foreground via-60% to-status-open to-55% bg-size-[200%_100%] bg-clip-text leading-none text-transparent"
+						className="inline-block bg-linear-to-r from-status-open from-35% via-status-shimmer via-60% to-status-open to-55% bg-size-[200%_100%] bg-clip-text leading-none text-transparent"
 						ref={statusShineRef}
 					>
 						AVAILABLE

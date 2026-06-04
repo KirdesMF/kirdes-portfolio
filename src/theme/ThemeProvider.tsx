@@ -1,20 +1,22 @@
 import type { ReactNode } from "react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
+import { setAppearanceSettings } from "./theme.functions";
 import {
-	defaultResolvedTheme,
-	isThemePreference,
-	type ResolvedTheme,
-	resolveThemePreference,
-	THEME_COOKIE_MAX_AGE_SECONDS,
-	THEME_COOKIE_NAME,
-	type ThemePreference,
+	type AppearanceSettings,
+	defaultResolvedMode,
+	type ResolvedMode,
+	resolveAppearanceMode,
+	resolveThemeForMode,
+	sanitizeAppearanceSettings,
+	type ThemeId,
 } from "./themeTypes";
 
 type ThemeContextValue = {
-	theme: ThemePreference;
-	resolvedTheme: ResolvedTheme;
-	setTheme: (theme: ThemePreference) => void;
+	appearance: AppearanceSettings;
+	activeTheme: ThemeId;
+	resolvedMode: ResolvedMode;
+	setAppearance: (appearance: AppearanceSettings) => void;
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -23,69 +25,73 @@ function getPrefersDark() {
 	return window.matchMedia("(prefers-color-scheme: dark)").matches;
 }
 
-function applyTheme(preference: ThemePreference) {
-	const resolvedTheme = resolveThemePreference(preference, getPrefersDark());
+function applyAppearance(appearance: AppearanceSettings) {
+	const resolvedMode = resolveAppearanceMode(appearance.mode, getPrefersDark());
+	const activeTheme = resolveThemeForMode(appearance, resolvedMode);
 	const root = document.documentElement;
 
 	root.classList.remove("light", "dark");
-	root.classList.add(resolvedTheme);
-	root.dataset.theme = preference;
-	root.style.colorScheme = resolvedTheme;
+	root.classList.add(resolvedMode);
+	root.dataset.mode = appearance.mode;
+	root.dataset.theme = activeTheme;
+	root.style.colorScheme = resolvedMode;
 
-	return resolvedTheme;
+	return { activeTheme, resolvedMode };
 }
 
-function persistTheme(preference: ThemePreference) {
-	// biome-ignore lint/suspicious/noDocumentCookie: Theme cookie must be visible to SSR on the next request.
-	document.cookie = `${THEME_COOKIE_NAME}=${encodeURIComponent(
-		preference,
-	)}; Path=/; Max-Age=${THEME_COOKIE_MAX_AGE_SECONDS}; SameSite=Lax`;
+function getInitialResolved(appearance: AppearanceSettings) {
+	const resolvedMode = appearance.mode === "system" ? defaultResolvedMode : appearance.mode;
+	return {
+		activeTheme: resolveThemeForMode(appearance, resolvedMode),
+		resolvedMode,
+	};
 }
 
 export function ThemeProvider({
 	children,
-	initialTheme,
+	initialAppearance,
 }: {
 	children: ReactNode;
-	initialTheme: ThemePreference;
+	initialAppearance: AppearanceSettings;
 }) {
-	const safeInitialTheme = isThemePreference(initialTheme) ? initialTheme : "system";
-	const [theme, setThemeState] = useState<ThemePreference>(safeInitialTheme);
-	const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() =>
-		safeInitialTheme === "system" ? defaultResolvedTheme : safeInitialTheme,
-	);
+	const safeInitialAppearance = sanitizeAppearanceSettings(initialAppearance);
+	const [appearance, setAppearanceState] = useState<AppearanceSettings>(safeInitialAppearance);
+	const [resolved, setResolved] = useState(() => getInitialResolved(safeInitialAppearance));
 
 	useEffect(() => {
-		setResolvedTheme(applyTheme(theme));
-	}, [theme]);
+		setResolved(applyAppearance(appearance));
+	}, [appearance]);
 
 	useEffect(() => {
-		if (theme !== "system") {
+		if (appearance.mode !== "system") {
 			return;
 		}
 
 		const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 		const handleChange = () => {
-			setResolvedTheme(applyTheme("system"));
+			setResolved(applyAppearance(appearance));
 		};
 
 		mediaQuery.addEventListener("change", handleChange);
 		return () => mediaQuery.removeEventListener("change", handleChange);
-	}, [theme]);
+	}, [appearance]);
 
-	const setTheme = useCallback((nextTheme: ThemePreference) => {
-		if (!isThemePreference(nextTheme)) {
-			return;
-		}
+	const setAppearance = useCallback((nextAppearance: AppearanceSettings) => {
+		const safeAppearance = sanitizeAppearanceSettings(nextAppearance);
 
-		setResolvedTheme(applyTheme(nextTheme));
-		setThemeState(nextTheme);
-		persistTheme(nextTheme);
+		setResolved(applyAppearance(safeAppearance));
+		setAppearanceState(safeAppearance);
+		setAppearanceSettings({ data: safeAppearance });
 	}, []);
 
 	const value = useMemo(
-		() => ({ theme, resolvedTheme, setTheme }),
-		[theme, resolvedTheme, setTheme],
+		() => ({
+			appearance,
+			activeTheme: resolved.activeTheme,
+			resolvedMode: resolved.resolvedMode,
+			setAppearance,
+		}),
+		[appearance, resolved, setAppearance],
 	);
 
 	return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;

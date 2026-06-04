@@ -51,6 +51,7 @@ export function TerminalLayout({
 		router.navigate({
 			to: currentTerminalRoute,
 			search: (previous) => ({
+				...previous,
 				activeFile: previous.activeFile,
 				editor: previous.editor,
 				files: previous.files ?? [],

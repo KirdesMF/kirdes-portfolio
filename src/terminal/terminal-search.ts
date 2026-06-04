@@ -11,6 +11,7 @@ const RawTerminalSearch = v.object({
 	activeFile: v.optional(v.string()),
 	editor: v.optional(v.string()),
 	files: v.optional(v.union([v.array(v.string()), v.string()]), ""),
+	dialog: v.optional(v.string()),
 	maximized: v.optional(v.string()),
 	panel: v.optional(v.string(), "terminal"),
 });
@@ -37,6 +38,7 @@ export type TerminalSearch = {
 	activeFile?: EditorFileName;
 	editor?: "open";
 	files: Array<EditorFileName>;
+	dialog?: "settings";
 	maximized?: MaximizedPanel;
 	panel: TerminalPanelName;
 };
@@ -47,6 +49,7 @@ export function parseTerminalSearch(search: Record<string, unknown>): TerminalSe
 		? result.output
 		: {
 				activeFile: undefined,
+				dialog: undefined,
 				editor: undefined,
 				files: "",
 				maximized: undefined,
@@ -57,9 +60,11 @@ export function parseTerminalSearch(search: Record<string, unknown>): TerminalSe
 	const activeFile = files.find((fileName) => fileName === rawSearch.activeFile) ?? files.at(0);
 	const panel = parseTerminalPanelName(rawSearch.panel);
 	const maximized = parseMaximized(rawSearch.maximized);
+	const dialog = rawSearch.dialog === "settings" ? "settings" : undefined;
 
 	return {
 		activeFile,
+		dialog,
 		editor,
 		files,
 		maximized,

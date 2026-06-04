@@ -2,13 +2,13 @@ import { createRootRoute, HeadContent, Outlet, ScriptOnce, Scripts } from "@tans
 import type { ReactNode } from "react";
 import { getLocale } from "#/paraglide/runtime";
 import { ThemeProvider } from "#/theme/ThemeProvider";
-import { getInitialThemePreference } from "#/theme/theme.functions";
+import { getInitialAppearanceSettings } from "#/theme/theme.functions";
 import { themeBootScript } from "#/theme/themeBootScript";
-import { defaultResolvedTheme, resolveThemePreference } from "#/theme/themeTypes";
+import { defaultResolvedMode, resolveAppearanceMode, resolveThemeForMode } from "#/theme/themeTypes";
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
-	loader: () => getInitialThemePreference(),
+	loader: () => getInitialAppearanceSettings(),
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
@@ -26,15 +26,20 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: ReactNode }) {
-	const initialTheme = Route.useLoaderData();
-	const serverResolvedTheme = resolveThemePreference(initialTheme, defaultResolvedTheme === "dark");
+	const initialAppearance = Route.useLoaderData();
+	const serverResolvedMode = resolveAppearanceMode(
+		initialAppearance.mode,
+		defaultResolvedMode === "dark",
+	);
+	const serverTheme = resolveThemeForMode(initialAppearance, serverResolvedMode);
 
 	return (
 		<html
 			lang={getLocale()}
-			className={serverResolvedTheme}
-			data-theme={initialTheme}
-			style={{ colorScheme: serverResolvedTheme }}
+			className={serverResolvedMode}
+			data-mode={initialAppearance.mode}
+			data-theme={serverTheme}
+			style={{ colorScheme: serverResolvedMode }}
 			suppressHydrationWarning
 		>
 			<head>
@@ -42,7 +47,7 @@ function RootDocument({ children }: { children: ReactNode }) {
 				<ScriptOnce>{themeBootScript}</ScriptOnce>
 			</head>
 			<body className="isolate h-dvh overflow-hidden bg-background font-mono text-foreground">
-				<ThemeProvider initialTheme={initialTheme}>{children}</ThemeProvider>
+				<ThemeProvider initialAppearance={initialAppearance}>{children}</ThemeProvider>
 				<Scripts />
 			</body>
 		</html>

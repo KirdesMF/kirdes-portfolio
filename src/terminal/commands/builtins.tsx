@@ -238,6 +238,13 @@ function handleLang(ctx: CommandContext): boolean {
 	return false;
 }
 
+function handleSettings(ctx: CommandContext): boolean {
+	if (ctx.normalized !== "settings" && ctx.normalized !== "config") return false;
+	ctx.navigate(ctx.currentRoute, { dialog: "settings" });
+	ctx.pushHistory(<p className="text-muted-foreground">opened settings</p>);
+	return true;
+}
+
 function handleReload(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "reload") return false;
 	ctx.navigate("/");
@@ -260,5 +267,6 @@ export const builtinHandlers: ReadonlyArray<CommandHandler> = [
 	handleLinkedin,
 	handleSocial,
 	handleX,
+	handleSettings,
 	handleReload,
 ];

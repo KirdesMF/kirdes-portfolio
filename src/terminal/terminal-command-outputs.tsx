@@ -73,6 +73,7 @@ const manPages: Record<string, string> = {
 	cat: "cat <file> — print file contents to the terminal.\n  Resolves relative to current folder, falls back to root.\n  Examples:\n    cat README.md\n    cat /work/experience.json",
 	cd: "cd [directory] — navigate to a route/directory.\n  Without arguments, goes home (~).\n  cd .. also goes home (single-level navigation).\n  Examples:\n    cd about\n    cd /work\n    cd ..",
 	clear: "clear — clear the terminal screen.",
+	config: "config — open appearance settings. Alias for settings.",
 	close:
 		"close [file] — close a file or the editor.\n  Without arguments, closes the active file or editor.\n  Examples:\n    close README.md\n    close editor\n    close all",
 	date: "date — display current date and time.",
@@ -91,6 +92,7 @@ const manPages: Record<string, string> = {
 	pwd: "pwd — print working directory (current folder).",
 	reload: "reload — reload the portfolio (go to splash screen).",
 	rm: "rm [file] — pretend to remove files.\n  This is not a real terminal — all files are read-only.\n  Nice try though.",
+	settings: "settings — open appearance settings.",
 	source:
 		"source [path] — show route, content files, and renderer for a section.\n  Without arguments, uses the current route.\n  Examples:\n    source about\n    source /work\n    source",
 	tree: "tree — display folder structure as a tree.\n  Aliases and flags:\n    tree --all — show full tree including src/ page renderers.",

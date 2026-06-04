@@ -1,11 +1,11 @@
-import { Link } from "@tanstack/react-router";
-import { ClockIcon, FileTerminal } from "lucide-react";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { ClockIcon, FileTerminal, SettingsIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "#/design-system/cn";
 import { Clock } from "#/layout/Clock";
 import { setLocale } from "#/paraglide/runtime";
+import { SettingsDialog } from "#/settings-dialog";
 import { terminalNavigationItems } from "#/terminal/terminal-routes";
-import { ThemeToggle } from "#/theme/ThemeToggle";
 
 type StatusSide = "left" | "right";
 type StatusVariant = "primary" | "muted";
@@ -30,6 +30,19 @@ const variantClass = {
 } as const;
 
 export function AppHeader() {
+	const navigate = useNavigate();
+	const search = useSearch({ strict: false }) as { dialog?: string };
+	const settingsOpen = search.dialog === "settings";
+
+	function setSettingsOpen(open: boolean) {
+		// biome-ignore lint/suspicious/noExplicitAny: route search is shared across nested terminal routes.
+		void (navigate as any)({
+			search: (previous: Record<string, unknown>) => ({
+				...previous,
+				dialog: open ? "settings" : undefined,
+			}),
+		});
+	}
 	const leftItems: StatusItem[] = terminalNavigationItems.map(({ command, label, to }, index) => {
 		const variant: StatusVariant = index % 2 === 0 ? "primary" : "muted";
 		const linkClassName = getNavigationLinkClassName(variant);
@@ -46,6 +59,7 @@ export function AppHeader() {
 					}}
 					className={linkClassName}
 					search={(previous) => ({
+						...previous,
 						activeFile: previous.activeFile,
 						editor: previous.editor,
 						files: previous.files ?? [],
@@ -69,6 +83,7 @@ export function AppHeader() {
 				aria-label="Open editor"
 				className={getNavigationLinkClassName(editorVariant)}
 				search={(previous) => ({
+					...previous,
 					activeFile: previous.activeFile,
 					editor: "open",
 					files: previous.files ?? [],
@@ -100,9 +115,18 @@ export function AppHeader() {
 			),
 		},
 		{
-			id: "theme",
+			id: "settings",
 			variant: "primary",
-			content: <ThemeToggle />,
+			content: (
+				<button
+					aria-label="Open settings"
+					className="inline-flex size-4 items-center justify-center rounded-sm opacity-80 transition hover:opacity-100 focus-visible:outline-2 focus-visible:outline-ring"
+					type="button"
+					onClick={() => setSettingsOpen(true)}
+				>
+					<SettingsIcon className="size-3" />
+				</button>
+			),
 		},
 		{
 			id: "clock",
@@ -117,10 +141,13 @@ export function AppHeader() {
 	];
 
 	return (
-		<header className="flex h-status-bar shrink-0 items-stretch justify-between border-b border-border bg-status">
-			<StatusGroup items={leftItems} side="left" />
-			<StatusGroup items={rightItems} side="right" />
-		</header>
+		<>
+			<header className="flex h-status-bar shrink-0 items-stretch justify-between border-b border-border bg-status">
+				<StatusGroup items={leftItems} side="left" />
+				<StatusGroup items={rightItems} side="right" />
+			</header>
+			<SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+		</>
 	);
 }
 
