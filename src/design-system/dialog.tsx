@@ -30,10 +30,10 @@ export function DialogClose(props: DialogCloseProps): ReactNode {
 export function DialogContent({ children, className, ...props }: DialogContentProps): ReactNode {
 	return (
 		<BaseDialog.Portal>
-			<BaseDialog.Backdrop className="fixed inset-0 z-40" />
+			<BaseDialog.Backdrop className="fixed inset-0" />
 			<BaseDialog.Popup
 				className={cn(
-					"fixed top-1/2 left-1/2 z-50 max-h-[min(90dvh,42rem)] w-[min(92vw,32rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded border-2 border-border bg-popover p-1.5 text-popover-foreground shadow-lg outline-none",
+					"fixed top-1/2 inset-s-1/2 max-h-[min(90dvh,42rem)] w-[min(92vw,32rem)] -translate-1/2 rounded bg-popover p-3 text-popover-foreground",
 					className,
 				)}
 				{...props}

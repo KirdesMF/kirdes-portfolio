@@ -38,17 +38,17 @@ export function SettingsDialog(props: SettingsDialogProps) {
 
 	return (
 		<Dialog open={props.open} onOpenChange={props.onOpenChange}>
-			<DialogContent className="max-h-none overflow-visible border-0 bg-transparent p-0 shadow-none">
-				<div className="relative flex max-h-[min(90dvh,42rem)] flex-col rounded border-2 border-border bg-popover p-4 pt-5 text-popover-foreground shadow-lg">
-					<DialogTitle className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-popover px-2 leading-none text-primary">
+			<DialogContent className="flex">
+				<div className="relative flex-1 flex flex-col rounded border-2 border-border bg-popover p-4 text-popover-foreground">
+					<DialogTitle className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-2 border-border">
 						Settings
 					</DialogTitle>
-					<DialogDescription className="shrink-0 border-b border-border pb-3">
-						Configure color mode and IDE themes.
-					</DialogDescription>
 
-					<div className="min-h-0 flex-1 space-y-5 overflow-y-auto py-3">
-						<section className="space-y-2">
+					<div className="min-h-0 flex-1 grid gap-5 overflow-y-auto py-3">
+						<DialogDescription className="border-b border-border pb-3">
+							Configure color mode and IDE themes.
+						</DialogDescription>
+						<section className="grid gap-2">
 							<h2 className="font-medium text-sm">Mode</h2>
 							<div className="grid gap-2 sm:grid-cols-3">
 								{appearanceModes.map((mode) => {
@@ -77,7 +77,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
 							</div>
 						</section>
 
-						<section className="space-y-3">
+						<section className="grid gap-3">
 							<h2 className="font-medium text-sm">IDE themes</h2>
 							<ThemeList
 								label="Light themes"
