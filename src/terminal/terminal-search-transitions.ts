@@ -61,7 +61,7 @@ export function showRoutePanelSearch(previous: TerminalSearchDraft): TerminalSea
 }
 
 export function showTerminalPanelSearch(previous: TerminalSearchDraft): TerminalSearchTransition {
-	return keepTerminalSearch(previous, { panel: "terminal" });
+	return keepTerminalSearch(previous, { maximized: undefined, panel: "terminal" });
 }
 
 export function openEditorPanelSearch(previous: TerminalSearchDraft): TerminalSearchTransition {

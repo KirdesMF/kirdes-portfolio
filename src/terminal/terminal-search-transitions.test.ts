@@ -5,6 +5,7 @@ import {
 	keepTerminalSearch,
 	openEditorFileSearch,
 	showRoutePanelSearch,
+	showTerminalPanelSearch,
 } from "./terminal-search-transitions";
 
 describe("terminal search transitions", () => {
@@ -68,6 +69,24 @@ describe("terminal search transitions", () => {
 			editor: "open",
 			files: ["~/README.md"],
 			panel: "route",
+		});
+	});
+
+	it("clears maximized state when closing the route pane", () => {
+		expect(
+			showTerminalPanelSearch({
+				activeFile: "~/README.md",
+				editor: "open",
+				files: ["~/README.md"],
+				maximized: "route",
+				panel: "route",
+			}),
+		).toEqual({
+			activeFile: "~/README.md",
+			editor: "open",
+			files: ["~/README.md"],
+			maximized: undefined,
+			panel: "terminal",
 		});
 	});
 });
