@@ -1,18 +1,25 @@
 import {
 	Braces,
+	Clock,
 	FileText,
 	FileType,
+	FolderOpen,
 	GitBranch,
+	History,
 	List,
 	type LucideIcon,
+	Map as MapIcon,
 	Maximize2,
 	Minimize2,
+	Search,
 	X,
+	Zap,
 } from "lucide-react";
-import type { ReactNode } from "react";
+import { type ReactNode, useRef } from "react";
 import { cn } from "#/design-system/cn";
 import { Menu, MenuContent, MenuItem, MenuTrigger } from "#/design-system/Menu";
-import { editorFiles } from "#/editor/editor-files";
+import { useScrambleRef } from "#/design-system/useScrambleRef";
+import { getRandomNumber } from "#/utils/random-number";
 
 const fileExtensionIcon: Record<string, LucideIcon> = {
 	json: Braces,
@@ -47,8 +54,21 @@ const variantClass = {
 const EDITOR_BRANCH_NAME = "feat/portfolio";
 const EDITOR_VERSION = "kish v1.0.0";
 
-// Only root files in the empty editor (globally accessible)
-const rootEditorFiles = editorFiles.filter((f) => f.folder === "~");
+const emptyEditorCommands: Array<{
+	id: string;
+	Icon: LucideIcon;
+	label: string;
+	shortcut: string;
+}> = [
+	{ id: "search-file", Icon: Search, label: "Search File", shortcut: "f" },
+	{ id: "find-text", Icon: FileText, label: "Find Text", shortcut: "g" },
+	{ id: "explorer", Icon: FolderOpen, label: "Explorer", shortcut: "e" },
+	{ id: "recent-files", Icon: History, label: "Recent Files", shortcut: "r" },
+	{ id: "source-map", Icon: MapIcon, label: "Source Map", shortcut: "m" },
+	{ id: "changelog", Icon: Clock, label: "Changelog", shortcut: "c" },
+	{ id: "git-branch", Icon: GitBranch, label: "Git Branch", shortcut: "b" },
+	{ id: "quit", Icon: X, label: "Quit", shortcut: "q" },
+];
 
 function getFileIcon(fileName: string): LucideIcon | null {
 	const extension = fileName.split(".").pop()?.toLowerCase();
@@ -202,7 +222,7 @@ function renderEditorTabs({
 	const overflowCount = openFileNames.length - MAX_VISIBLE_TABS;
 
 	return (
-		<div className="flex h-8 w-full shrink-0 items-center justify-between border-b border-border bg-background/60">
+		<div className="flex h-status-bar w-full shrink-0 items-center justify-between border-b border-border bg-background/60">
 			<div className="flex min-w-0 flex-1 items-center overflow-x-auto self-stretch">
 				{visibleFiles.map((fileName) => (
 					<div
@@ -278,27 +298,34 @@ function renderEditorTabs({
 	);
 }
 
-function renderEmptyEditor({ onOpenFile }: { onOpenFile: (fileName: string) => void }) {
+function EmptyEditor() {
+	const loadingTimeRef = useRef(getRandomNumber({ max: 100, min: 20 }));
+	const rootRef = useScrambleRef<HTMLDivElement>({
+		selector: "[data-anim-editor-status]",
+		staggerMs: 0,
+	});
+
 	return (
-		<div className="flex min-h-0 flex-1 items-center justify-center p-4 text-xs">
-			<div className="flex max-w-sm flex-col items-center gap-3 text-center">
-				<div className="text-foreground">No file open</div>
-				<div className="text-muted-foreground">Open a file to inspect portfolio source.</div>
-				<div className="flex flex-wrap justify-center gap-2">
-					<p className="text-muted-foreground/60">
-						root files — use <kbd className="rounded border border-border px-1">cd</kbd> to navigate
-						to a folder for its files
-					</p>
-					{rootEditorFiles.map((file) => (
-						<button
-							className="rounded border border-border px-2 py-1 text-muted-foreground hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
-							key={file.id}
-							type="button"
-							onClick={() => onOpenFile(file.id)}
-						>
-							{file.name}
-						</button>
+		<div className="flex h-full min-h-0 items-center justify-center p-6 text-sm">
+			<div className="flex w-full max-w-md flex-col gap-7 text-primary/80">
+				<div className="grid gap-4">
+					{emptyEditorCommands.map(({ Icon, id, label, shortcut }) => (
+						<div className="grid grid-cols-[1.5rem_1fr_1rem] items-center gap-4" key={id}>
+							<Icon aria-hidden="true" className="size-4 text-primary" />
+							<span className="tracking-wide text-primary/90">{label}</span>
+							<span className="text-end text-highlight">{shortcut}</span>
+						</div>
 					))}
+				</div>
+				<div
+					className="flex items-center justify-center gap-1.5 text-primary/70 text-tiny"
+					ref={rootRef}
+				>
+					<Zap aria-hidden="true" className="size-3 text-primary" />
+					<span data-anim-editor-status>
+						Neovim loaded <span className="text-status-primary">5/38</span> plugins in{" "}
+						{loadingTimeRef.current}ms
+					</span>
 				</div>
 			</div>
 		</div>
@@ -326,6 +353,8 @@ export function ReadOnlyFileEditor({
 	onToggleMaximize: () => void;
 	openFileNames: Array<string>;
 }) {
+	void onOpenFile;
+
 	return (
 		<section className="relative flex h-full w-full min-h-0 flex-col border-border text-xs">
 			{renderEditorTabs({
@@ -341,7 +370,7 @@ export function ReadOnlyFileEditor({
 				{activeFileName ? (
 					<EditorBody highlightedEditorFile={highlightedEditorFile} key={activeFileName} />
 				) : (
-					renderEmptyEditor({ onOpenFile })
+					<EmptyEditor />
 				)}
 			</div>
 			<EditorStatusBar activeFileName={activeFileName} />

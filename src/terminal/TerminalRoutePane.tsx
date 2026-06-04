@@ -28,7 +28,7 @@ export function TerminalRoutePane({
 
 	return (
 		<div className={cn("flex min-h-0 w-full flex-1 flex-col overflow-hidden", className)}>
-			<div className="flex h-8 shrink-0 items-center border-b border-border bg-background/60">
+			<div className="flex h-status-bar shrink-0 items-center border-b border-border bg-background/60">
 				<span className="px-3 text-tiny text-muted-foreground/70">{routeLabel}</span>
 				<div className="flex-1 h-full bg-stripes border-x-accent border-x"></div>
 				<button

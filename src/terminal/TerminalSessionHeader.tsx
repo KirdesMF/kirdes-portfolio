@@ -1,16 +1,16 @@
 import { useRouterState } from "@tanstack/react-router";
 import { animate, createScope } from "animejs";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useScrambleRef } from "#/design-system/useScrambleRef";
 import { formatTerminalCwd } from "#/terminal/terminal-path";
+import { getRandomNumber } from "#/utils/random-number";
 
 export function TerminalSessionHeader() {
 	const pathname = useRouterState({ select: (state) => state.location.pathname });
 	const cwd = formatTerminalCwd(pathname, { trailingSlash: true });
 	const startTimeRef = useRef(Date.now());
 	const [uptime, setUptime] = useState(0);
-	const bootTimeId = useId();
-	const bootTimeRef = useRef(getRoundedFakeNumber(bootTimeId));
+	const bootTimeRef = useRef(getRandomNumber({ max: 200, min: 30 }));
 	const rootRef = useScrambleRef<HTMLDivElement>({ selector: "[data-anim-header]", staggerMs: 75 });
 	const statusShineRef = useRef<HTMLSpanElement>(null);
 
@@ -98,25 +98,6 @@ export function TerminalSessionHeader() {
 			</div>
 		</div>
 	);
-}
-
-function getHashValue(seed: string): number {
-	let hash = 0;
-
-	for (const character of seed) {
-		hash = (hash * 31 + character.charCodeAt(0)) % 100000;
-	}
-
-	return hash;
-}
-
-function getRoundedFakeNumber(seed: string): number {
-	const min = 100;
-	const max = 500;
-	const range = max - min + 1;
-	const hash = getHashValue(seed);
-
-	return min + (hash % range);
 }
 
 function formatUptime(seconds: number): string {
