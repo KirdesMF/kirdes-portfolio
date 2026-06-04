@@ -1,6 +1,6 @@
 import { useRouterState } from "@tanstack/react-router";
 import { animate, createScope } from "animejs";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useScrambleRef } from "#/design-system/useScrambleRef";
 import { formatTerminalCwd } from "#/terminal/terminal-path";
 import { getRandomNumber } from "#/utils/random-number";
@@ -10,7 +10,8 @@ export function TerminalSessionHeader() {
 	const cwd = formatTerminalCwd(pathname, { trailingSlash: true });
 	const startTimeRef = useRef(Date.now());
 	const [uptime, setUptime] = useState(0);
-	const bootTimeRef = useRef(getRandomNumber({ max: 200, min: 30 }));
+	const bootTimeId = useId();
+	const bootTimeRef = useRef(getRandomNumber({ hash: bootTimeId, max: 200, min: 30 }));
 	const rootRef = useScrambleRef<HTMLDivElement>({ selector: "[data-anim-header]", staggerMs: 75 });
 	const statusShineRef = useRef<HTMLSpanElement>(null);
 
