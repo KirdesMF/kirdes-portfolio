@@ -7,6 +7,11 @@ import { TerminalRouteList } from "./TerminalRouteList";
 import { getCommandSummary, manPages, routeDescriptions } from "./terminal-command-docs";
 import { terminalCommands } from "./terminal-commands";
 import { terminalRoutes } from "./terminal-routes";
+import {
+	openEditorFileSearch,
+	setDialogSearch,
+	showRoutePanelSearch,
+} from "./terminal-search-transitions";
 
 export function HelpOutput(): ReactNode {
 	return (
@@ -53,10 +58,7 @@ export function WelcomeOutput(): ReactNode {
 					Type{" "}
 					<Link
 						className="text-primary underline-offset-2 hover:underline"
-						search={(previous) => ({
-							...previous,
-							dialog: "help",
-						})}
+						search={(previous) => setDialogSearch(previous, "help")}
 						to="."
 					>
 						help
@@ -211,12 +213,7 @@ export function TreeAllOutput(): ReactNode {
 							activeOptions={{ exact: true }}
 							activeProps={{ className: "text-primary" }}
 							className="underline-offset-2 hover:text-primary hover:underline"
-							search={(previous) => ({
-								activeFile: previous.activeFile,
-								editor: previous.editor,
-								files: previous.files ?? [],
-								panel: "route",
-							})}
+							search={showRoutePanelSearch}
 							to={route}
 						>
 							{label}/
@@ -228,14 +225,7 @@ export function TreeAllOutput(): ReactNode {
 									<span className="text-muted-foreground/50">{`  ${branch}`}</span>
 									<Link
 										className="underline-offset-2 hover:text-primary hover:underline"
-										search={(previous) => ({
-											activeFile: file.id,
-											editor: "open",
-											files: previous.files
-												? [...new Set([...previous.files, file.id])]
-												: [file.id],
-											panel: "editor",
-										})}
+										search={(previous) => openEditorFileSearch(previous, file.id)}
 										to="."
 									>
 										{file.name}
@@ -257,12 +247,7 @@ export function TreeAllOutput(): ReactNode {
 								<span className="text-muted-foreground/50">{`    ${branch}`}</span>
 								<Link
 									className="underline-offset-2 hover:text-primary hover:underline"
-									search={(previous) => ({
-										activeFile: file.id,
-										editor: "open",
-										files: previous.files ? [...new Set([...previous.files, file.id])] : [file.id],
-										panel: "editor",
-									})}
+									search={(previous) => openEditorFileSearch(previous, file.id)}
 									to="."
 								>
 									{file.name}
@@ -289,12 +274,7 @@ export function TreeOutput(): ReactNode {
 							activeOptions={{ exact: true }}
 							activeProps={{ className: "text-primary" }}
 							className="underline-offset-2 hover:text-primary hover:underline"
-							search={(previous) => ({
-								activeFile: previous.activeFile,
-								editor: previous.editor,
-								files: previous.files ?? [],
-								panel: "route",
-							})}
+							search={showRoutePanelSearch}
 							to={route}
 						>
 							{label}/
@@ -306,14 +286,7 @@ export function TreeOutput(): ReactNode {
 									<span className="text-muted-foreground/50">{`  ${branch}`}</span>
 									<Link
 										className="underline-offset-2 hover:text-primary hover:underline"
-										search={(previous) => ({
-											activeFile: file.id,
-											editor: "open",
-											files: previous.files
-												? [...new Set([...previous.files, file.id])]
-												: [file.id],
-											panel: "editor",
-										})}
+										search={(previous) => openEditorFileSearch(previous, file.id)}
 										to="."
 									>
 										{file.name}

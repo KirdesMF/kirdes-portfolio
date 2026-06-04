@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { cn } from "#/design-system/cn";
 import { Separator } from "#/design-system/Separator";
 import { getLocale } from "#/paraglide/runtime";
+import { showTerminalPanelSearch } from "#/terminal/terminal-search-transitions";
 
 export function TerminalRoutePane({
 	children,
@@ -42,13 +43,7 @@ export function TerminalRoutePane({
 				<Link
 					aria-label="Close panel"
 					className="flex h-full shrink-0 items-center px-2 text-tiny text-muted-foreground/70 hover:text-foreground"
-					search={(prev) => ({
-						...prev,
-						activeFile: prev.activeFile,
-						editor: prev.editor,
-						files: prev.files ?? [],
-						panel: "terminal",
-					})}
+					search={showTerminalPanelSearch}
 					to="/terminal"
 				>
 					<X className="size-3.5" />

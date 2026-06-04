@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { ScrambleText } from "#/design-system/ScrambleText";
 import { SourceLinks } from "#/portfolio/SourceLinks";
+import { showRoutePanelSearch } from "#/terminal/terminal-search-transitions";
 import { workspaceViewMetadata } from "#/workspace/workspace-catalogue";
 import { projects, statusColors } from "./work.data";
 
@@ -29,13 +30,7 @@ export function WorkSection(): ReactNode {
 									className="text-primary underline-offset-2 hover:underline"
 									to="/terminal/work/$project"
 									params={{ project: entry.name }}
-									search={(previous) => ({
-										activeFile: previous.activeFile,
-										editor: previous.editor,
-										files: previous.files ?? [],
-										maximized: previous.maximized,
-										panel: previous.panel ?? "route",
-									})}
+									search={showRoutePanelSearch}
 								>
 									<ScrambleText text={entry.name} />
 								</Link>

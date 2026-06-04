@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { copyToClipboard } from "#/design-system/clipboard";
 import { Separator } from "#/design-system/Separator";
+import { showRoutePanelSearch } from "#/terminal/terminal-search-transitions";
 
 const labelClass = "inline-block w-24 shrink-0 text-muted-foreground/60";
 
@@ -61,15 +62,7 @@ export function WhoamiOutput(): ReactNode {
 					for more, visit{" "}
 					<Link
 						className="text-primary underline-offset-2 hover:underline"
-						search={(previous) => ({
-							...previous,
-							activeFile: previous.activeFile,
-							dialog: previous.dialog,
-							editor: previous.editor,
-							files: previous.files ?? [],
-							maximized: previous.maximized,
-							panel: "route",
-						})}
+						search={showRoutePanelSearch}
 						to="/terminal/about"
 					>
 						/about

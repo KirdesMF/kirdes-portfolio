@@ -1,16 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import type { EditorFileEntry, FolderRoute } from "#/editor/editor-files.types";
+import { openEditorFileSearch, showRoutePanelSearch } from "#/terminal/terminal-search-transitions";
 
 function formatRouteLabel(label: string): string {
 	if (label === "~") return "~/";
 
 	return `${label}/`;
-}
-
-function addOpenFile(files: ReadonlyArray<string>, fileName: string): Array<string> {
-	if (files.includes(fileName)) return [...files, fileName];
-
-	return [...files, fileName];
 }
 
 export function TerminalRouteList({
@@ -30,12 +25,7 @@ export function TerminalRouteList({
 						activeProps={{ className: "text-primary" }}
 						className="text-muted-foreground underline-offset-2 hover:text-primary hover:underline"
 						key={folder}
-						search={(previous) => ({
-							activeFile: previous.activeFile,
-							editor: previous.editor,
-							files: previous.files ?? [],
-							panel: "route",
-						})}
+						search={showRoutePanelSearch}
 						to={route}
 					>
 						{formatRouteLabel(label)}
@@ -48,12 +38,7 @@ export function TerminalRouteList({
 					<Link
 						className="text-muted-foreground underline-offset-2 hover:text-primary hover:underline"
 						key={file.id}
-						search={(previous) => ({
-							activeFile: file.id,
-							editor: "open",
-							files: addOpenFile(previous.files ?? [], file.id),
-							panel: "editor",
-						})}
+						search={(previous) => openEditorFileSearch(previous, file.id)}
 						to="."
 					>
 						{file.name}

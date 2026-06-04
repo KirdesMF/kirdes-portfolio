@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
 import { SourceLinks } from "#/portfolio/SourceLinks";
+import { showRoutePanelSearch } from "#/terminal/terminal-search-transitions";
 import { workspaceViewMetadata } from "#/workspace/workspace-catalogue";
 import { projects, statusColors } from "./work.data";
 
@@ -20,13 +21,7 @@ export function WorkDetailSection({ project }: { project: string }): ReactNode {
 				<Link
 					className="flex items-center gap-1 text-primary hover:underline"
 					to="/terminal/work"
-					search={(previous) => ({
-						activeFile: previous.activeFile,
-						editor: previous.editor,
-						files: previous.files ?? [],
-						maximized: previous.maximized,
-						panel: previous.panel ?? "route",
-					})}
+					search={showRoutePanelSearch}
 				>
 					<ArrowLeft className="size-3" />
 					back to projects
@@ -41,13 +36,7 @@ export function WorkDetailSection({ project }: { project: string }): ReactNode {
 				<Link
 					className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
 					to="/terminal/work"
-					search={(previous) => ({
-						activeFile: previous.activeFile,
-						editor: previous.editor,
-						files: previous.files ?? [],
-						maximized: previous.maximized,
-						panel: previous.panel ?? "route",
-					})}
+					search={showRoutePanelSearch}
 				>
 					<ArrowLeft className="size-3" />
 					work

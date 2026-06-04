@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
 import { terminalNavigationItems } from "#/terminal/terminal-routes";
+import { showRoutePanelSearch } from "#/terminal/terminal-search-transitions";
 
 export function AppHeaderNavigation() {
 	return (
@@ -14,12 +15,7 @@ export function AppHeaderNavigation() {
 						}}
 						className="rounded px-1.5 py-0.5 text-status-primary-foreground/75 transition-colors hover:bg-status-primary-foreground/15 hover:text-status-primary-foreground"
 						key={command}
-						search={(previous) => ({
-							activeFile: previous.activeFile,
-							editor: previous.editor,
-							files: previous.files ?? [],
-							panel: "route",
-						})}
+						search={showRoutePanelSearch}
 						to={to}
 					>
 						{label === "~" ? label : `${label}/`}

@@ -10,6 +10,7 @@ import {
 } from "#/design-system/Popover";
 import { Separator } from "#/design-system/Separator";
 import { useScrambleRef } from "#/design-system/useScrambleRef";
+import { showRoutePanelSearch } from "#/terminal/terminal-search-transitions";
 
 export type Availability = "open-to-work" | "open-to-offers" | "busy";
 
@@ -65,12 +66,7 @@ export function AvailabilityStatus({ status }: AvailabilityStatusProps) {
 				<p className="mt-2 font-mono text-tiny text-muted-foreground/50">
 					<Link
 						className="underline-offset-2 hover:text-primary hover:underline"
-						search={(previous) => ({
-							activeFile: previous.activeFile,
-							editor: previous.editor,
-							files: previous.files ?? [],
-							panel: "route",
-						})}
+						search={showRoutePanelSearch}
 						to="/terminal/contact"
 					>
 						{"/* contact */"}

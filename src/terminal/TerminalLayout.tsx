@@ -10,6 +10,7 @@ import { TerminalPane } from "./TerminalPane";
 import { TerminalRoutePane } from "./TerminalRoutePane";
 import type { MaximizedPanel, TerminalPanelName } from "./terminal-panel-types";
 import { getTerminalRoutePath } from "./terminal-routes";
+import { setDialogSearch, toggleMaximizedSearch } from "./terminal-search-transitions";
 import { useTerminalController } from "./useTerminalController";
 
 export function TerminalLayout({
@@ -51,31 +52,14 @@ export function TerminalLayout({
 	function setHelpOpen(open: boolean) {
 		void router.navigate({
 			to: currentTerminalRoute,
-			search: (previous) => ({
-				...previous,
-				activeFile: previous.activeFile,
-				dialog: open ? "help" : undefined,
-				editor: previous.editor,
-				files: previous.files ?? [],
-				maximized: previous.maximized,
-				panel: previous.panel ?? "terminal",
-			}),
+			search: (previous) => setDialogSearch(previous, open ? "help" : undefined),
 		});
 	}
 
 	function toggleMaximize(panel: MaximizedPanel) {
-		const isCurrentlyMaximized = maximized === panel;
-
-		router.navigate({
+		void router.navigate({
 			to: currentTerminalRoute,
-			search: (previous) => ({
-				...previous,
-				activeFile: previous.activeFile,
-				editor: previous.editor,
-				files: previous.files ?? [],
-				maximized: isCurrentlyMaximized ? undefined : panel,
-				panel: previous.panel ?? "terminal",
-			}),
+			search: (previous) => toggleMaximizedSearch(previous, panel),
 		});
 	}
 

@@ -6,6 +6,11 @@ import { Clock } from "#/layout/Clock";
 import { setLocale } from "#/paraglide/runtime";
 import { SettingsDialog } from "#/settings-dialog";
 import { terminalNavigationItems } from "#/terminal/terminal-routes";
+import {
+	openEditorPanelSearch,
+	setDialogSearch,
+	showRoutePanelSearch,
+} from "#/terminal/terminal-search-transitions";
 
 type StatusSide = "left" | "right";
 type StatusVariant = "primary" | "muted";
@@ -37,10 +42,8 @@ export function AppHeader() {
 	function setSettingsOpen(open: boolean) {
 		// biome-ignore lint/suspicious/noExplicitAny: route search is shared across nested terminal routes.
 		void (navigate as any)({
-			search: (previous: Record<string, unknown>) => ({
-				...previous,
-				dialog: open ? "settings" : undefined,
-			}),
+			search: (previous: Record<string, unknown>) =>
+				setDialogSearch(previous, open ? "settings" : undefined),
 		});
 	}
 	const leftItems: StatusItem[] = terminalNavigationItems.map(({ command, label, to }, index) => {
@@ -58,13 +61,7 @@ export function AppHeader() {
 						className: activeLinkClassName,
 					}}
 					className={linkClassName}
-					search={(previous) => ({
-						...previous,
-						activeFile: previous.activeFile,
-						editor: previous.editor,
-						files: previous.files ?? [],
-						panel: "route",
-					})}
+					search={showRoutePanelSearch}
 					to={to}
 				>
 					{label === "~" ? label : `${label}/`}
@@ -82,13 +79,7 @@ export function AppHeader() {
 				activeProps={{ className: getNavigationActiveLinkClassName(editorVariant) }}
 				aria-label="Open editor"
 				className={getNavigationLinkClassName(editorVariant)}
-				search={(previous) => ({
-					...previous,
-					activeFile: previous.activeFile,
-					editor: "open",
-					files: previous.files ?? [],
-					panel: "editor",
-				})}
+				search={openEditorPanelSearch}
 				to="."
 			>
 				<span className="flex items-center gap-1">

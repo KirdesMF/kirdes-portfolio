@@ -2,38 +2,14 @@ import { useRouter } from "@tanstack/react-router";
 import { type EditorFileName, resolveFile } from "#/editor/editor-files";
 import type { TerminalPanelName } from "./terminal-panel-types";
 import type { TerminalRoutePath } from "./terminal-routes";
-
-function addOpenFile(
-	files: Array<EditorFileName>,
-	fileName: EditorFileName,
-): Array<EditorFileName> {
-	if (files.includes(fileName)) return files;
-	return [...files, fileName];
-}
-
-function removeOpenFile(
-	files: Array<EditorFileName>,
-	fileName: EditorFileName,
-): Array<EditorFileName> {
-	return files.filter((openFileName) => openFileName !== fileName);
-}
-
-function getNextActiveFile({
-	activeFileName,
-	closedFileName,
-	files,
-}: {
-	activeFileName?: EditorFileName;
-	closedFileName: EditorFileName;
-	files: Array<EditorFileName>;
-}): EditorFileName | undefined {
-	if (activeFileName !== closedFileName) return activeFileName;
-
-	const closedFileIndex = files.indexOf(closedFileName);
-	const remainingFiles = removeOpenFile(files, closedFileName);
-
-	return remainingFiles.at(closedFileIndex) ?? remainingFiles.at(-1);
-}
+import {
+	closeEditorFileSearch,
+	closeEditorSearch,
+	keepTerminalSearch,
+	openEditorFileSearch,
+	openEditorPanelSearch,
+	type TerminalSearchDraft,
+} from "./terminal-search-transitions";
 
 export function useTerminalSearchActions({
 	activeFileName,
@@ -48,44 +24,24 @@ export function useTerminalSearchActions({
 }) {
 	const router = useRouter();
 
-	function navigate(to: string, search?: Record<string, unknown>): void {
+	function navigate(to: string, search?: TerminalSearchDraft): void {
 		// biome-ignore lint/suspicious/noExplicitAny: router.navigate generics are too strict for dynamic routes
 		void (router.navigate as any)({
 			to,
-			search: (previous: Record<string, unknown>) => ({
-				...previous,
-				activeFile: previous.activeFile,
-				editor: previous.editor,
-				files: previous.files ?? [],
-				panel: previous.panel ?? "terminal",
-				...search,
-			}),
+			search: (previous: TerminalSearchDraft) => keepTerminalSearch(previous, search),
 		});
 	}
 
 	function setMobilePanel(panel: TerminalPanelName): void {
 		void router.navigate({
-			search: (previous) => ({
-				...previous,
-				activeFile: previous.activeFile,
-				editor: previous.editor,
-				files: previous.files ?? [],
-				panel,
-			}),
+			search: (previous) => keepTerminalSearch(previous, { panel }),
 			to: currentTerminalRoute,
 		});
 	}
 
 	function closeEditor(): void {
 		void router.navigate({
-			search: (previous) => ({
-				...previous,
-				activeFile: undefined,
-				editor: undefined,
-				files: [],
-				maximized: undefined,
-				panel: isHomeRoute ? "terminal" : "route",
-			}),
+			search: (previous) => closeEditorSearch(previous, { isHomeRoute }),
 			to: currentTerminalRoute,
 		});
 	}
@@ -94,33 +50,20 @@ export function useTerminalSearchActions({
 		const file = resolveFile(fileName, currentTerminalRoute);
 		if (file === null) return;
 
-		const files = removeOpenFile(openFileNames, file.id);
-
 		void router.navigate({
-			search: (previous) => ({
-				...previous,
-				activeFile: getNextActiveFile({
+			search: (previous) =>
+				closeEditorFileSearch(previous, {
 					activeFileName,
 					closedFileName: file.id,
-					files: openFileNames,
+					openFileNames,
 				}),
-				editor: "open",
-				files,
-				panel: "editor",
-			}),
 			to: currentTerminalRoute,
 		});
 	}
 
 	function openEditor(): void {
 		void router.navigate({
-			search: (previous) => ({
-				...previous,
-				activeFile: previous.activeFile,
-				editor: "open",
-				files: previous.files ?? [],
-				panel: "editor",
-			}),
+			search: openEditorPanelSearch,
 			to: currentTerminalRoute,
 		});
 	}
@@ -130,13 +73,7 @@ export function useTerminalSearchActions({
 		if (file === null) return false;
 
 		void router.navigate({
-			search: (previous) => ({
-				...previous,
-				activeFile: file.id,
-				editor: "open",
-				files: addOpenFile(openFileNames, file.id),
-				panel: "editor",
-			}),
+			search: (previous) => openEditorFileSearch(previous, file.id),
 			to: currentTerminalRoute,
 		});
 		return true;
@@ -147,13 +84,7 @@ export function useTerminalSearchActions({
 		if (file === null) return;
 
 		void router.navigate({
-			search: (previous) => ({
-				...previous,
-				activeFile: file.id,
-				editor: "open",
-				files: addOpenFile(openFileNames, file.id),
-				panel: "editor",
-			}),
+			search: (previous) => openEditorFileSearch(previous, file.id),
 			to: currentTerminalRoute,
 		});
 	}
