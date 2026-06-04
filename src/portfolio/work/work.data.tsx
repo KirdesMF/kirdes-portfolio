@@ -39,29 +39,11 @@ export const projects: Array<Project> = [
 			<div className="flex flex-col gap-2">
 				<p>
 					A terminal-themed portfolio built with TanStack Start, React, and TypeScript. Features a
-					fully interactive shell, inline code editor, and a tetris game.
+					fully interactive shell and inline code editor.
 				</p>
 				<p className="text-muted-foreground">
 					design philosophy: every interaction should feel like working in a real terminal — fast,
 					keyboard-driven, and distraction-free.
-				</p>
-			</div>
-		),
-	},
-	{
-		name: "tetris",
-		version: "v0.1.0",
-		status: "wip",
-		description: "classic tetris implemented in the browser",
-		detail: (
-			<div className="flex flex-col gap-2">
-				<p>
-					A from-scratch implementation of classic Tetris rendered in the browser. Built as a lab
-					experiment to explore game loops, collision detection, and canvas rendering.
-				</p>
-				<p className="text-muted-foreground">
-					playable at <span className="text-primary">/lab/tetris</span>. pieces, scoring, and levels
-					are all implemented from scratch.
 				</p>
 			</div>
 		),
