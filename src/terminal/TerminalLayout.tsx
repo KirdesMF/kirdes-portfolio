@@ -4,6 +4,7 @@ import { cn } from "#/design-system/cn";
 import { EditorPane } from "#/editor/EditorPane";
 import type { EditorFileName } from "#/editor/editor-files";
 import { AppHeader } from "#/layout/AppHeader";
+import { HelpDialog } from "#/terminal/HelpDialog";
 import { getMobilePanel, TerminalMobilePanels } from "./TerminalMobilePanels";
 import { TerminalPane } from "./TerminalPane";
 import { TerminalRoutePane } from "./TerminalRoutePane";
@@ -16,6 +17,7 @@ export function TerminalLayout({
 	activeFileName,
 	activePanel,
 	children,
+	dialog,
 	highlightedEditorFile,
 	maximized,
 	openFileNames,
@@ -24,6 +26,7 @@ export function TerminalLayout({
 	activeFileName?: EditorFileName;
 	activePanel: TerminalPanelName;
 	children: ReactNode;
+	dialog?: "settings" | "help";
 	highlightedEditorFile: ReactNode | null;
 	maximized?: MaximizedPanel;
 	openFileNames: Array<EditorFileName>;
@@ -44,6 +47,21 @@ export function TerminalLayout({
 		isHomeRoute,
 		openFileNames,
 	});
+
+	function setHelpOpen(open: boolean) {
+		void router.navigate({
+			to: currentTerminalRoute,
+			search: (previous) => ({
+				...previous,
+				activeFile: previous.activeFile,
+				dialog: open ? "help" : undefined,
+				editor: previous.editor,
+				files: previous.files ?? [],
+				maximized: previous.maximized,
+				panel: previous.panel ?? "terminal",
+			}),
+		});
+	}
 
 	function toggleMaximize(panel: MaximizedPanel) {
 		const isCurrentlyMaximized = maximized === panel;
@@ -68,6 +86,7 @@ export function TerminalLayout({
 	return (
 		<div className="flex h-dvh flex-col">
 			<AppHeader />
+			<HelpDialog open={dialog === "help"} onOpenChange={setHelpOpen} />
 			<TerminalMobilePanels
 				activeFileName={activeFileName}
 				activePanel={activePanel}

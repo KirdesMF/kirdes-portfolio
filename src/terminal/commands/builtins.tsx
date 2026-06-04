@@ -3,7 +3,7 @@ import { Separator } from "#/design-system/Separator";
 import { getLocale, setLocale } from "#/paraglide/runtime";
 import { formatTerminalCwd } from "#/terminal/terminal-path";
 import { EmailOutput, WhoamiOutput } from "#/terminal/terminal-profile-outputs";
-import { HelpOutput, LsOutput, TreeAllOutput, TreeOutput } from "../terminal-command-outputs";
+import { LsOutput, TreeAllOutput, TreeOutput } from "../terminal-command-outputs";
 import type { CommandContext, CommandHandler } from "./types";
 
 /**
@@ -18,7 +18,7 @@ function handleClear(ctx: CommandContext): boolean {
 
 function handleHelp(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "help") return false;
-	ctx.pushHistory(<HelpOutput />);
+	ctx.navigate(ctx.currentRoute, { dialog: "help" });
 	return true;
 }
 

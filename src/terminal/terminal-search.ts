@@ -38,7 +38,7 @@ export type TerminalSearch = {
 	activeFile?: EditorFileName;
 	editor?: "open";
 	files: Array<EditorFileName>;
-	dialog?: "settings";
+	dialog?: "settings" | "help";
 	maximized?: MaximizedPanel;
 	panel: TerminalPanelName;
 };
@@ -60,7 +60,7 @@ export function parseTerminalSearch(search: Record<string, unknown>): TerminalSe
 	const activeFile = files.find((fileName) => fileName === rawSearch.activeFile) ?? files.at(0);
 	const panel = parseTerminalPanelName(rawSearch.panel);
 	const maximized = parseMaximized(rawSearch.maximized);
-	const dialog = rawSearch.dialog === "settings" ? "settings" : undefined;
+	const dialog = rawSearch.dialog === "settings" || rawSearch.dialog === "help" ? rawSearch.dialog : undefined;
 
 	return {
 		activeFile,
