@@ -9,7 +9,7 @@ export function TerminalFooter() {
 	return (
 		<div
 			ref={rootRef}
-			className="flex h-6 shrink-0 items-center border-t border-border px-3 text-tiny text-muted-foreground"
+			className="flex h-status-bar shrink-0 items-center border-t border-border px-3 text-tiny text-muted-foreground"
 		>
 			<span data-anim-footer>TIP: type help for commands -- / to navigate</span>
 		</div>

@@ -99,7 +99,7 @@ function EditorStatusBar({ activeFileName }: { activeFileName?: string }) {
 	];
 
 	return (
-		<footer className="flex h-6 shrink-0 items-stretch justify-between border-t border-border bg-status">
+		<footer className="flex h-status-bar shrink-0 items-stretch justify-between border-t border-border bg-status">
 			<StatusGroup items={leftItems} side="left" />
 			<StatusGroup items={rightItems} side="right" />
 		</footer>
