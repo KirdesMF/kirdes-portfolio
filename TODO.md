@@ -28,12 +28,11 @@
 # Games idea
 
 - snake
-- tetris
-- solitaire
 - space invaders
+- suika game with folders instead of fruits
 
 # Review
 
 - [ ] `router.tsx` stringify params
 - [ ] url search params
-- [ ] use new tailwind scrollbar utilities
+- [x] use new tailwind scrollbar utilities
