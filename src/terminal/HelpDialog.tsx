@@ -27,7 +27,7 @@ export function HelpDialog(props: HelpDialogProps) {
 
 	return (
 		<Dialog open={props.open} onOpenChange={props.onOpenChange}>
-			<DialogContent className="!max-h-none w-[min(92vw,38rem)] !overflow-visible !border-0 !bg-transparent !p-0 !shadow-none">
+			<DialogContent className="max-h-none w-[min(92vw,38rem)] overflow-visible border-0 bg-transparent p-0 shadow-none">
 				<div className="relative flex max-h-[min(90dvh,42rem)] flex-col rounded border-2 border-border bg-popover p-4 pt-5 text-popover-foreground shadow-lg">
 					<DialogTitle className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-popover px-2 leading-none text-primary">
 						Help
@@ -87,14 +87,7 @@ function HelpRow(props: {
 		<div className="grid grid-cols-[1.5rem_1rem_1rem_minmax(0,1fr)] items-center gap-2 rounded px-1 py-0.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground">
 			<span className="text-right font-medium text-primary">{props.shortcut}</span>
 			<ChevronRightIcon className="size-3.5 text-muted-foreground/70" />
-			<Icon
-				className={cn(
-					"size-3.5",
-					props.icon === "route" && "text-cyan-400",
-					props.icon === "command" && "text-primary",
-					props.icon === "help" && "text-status-open",
-				)}
-			/>
+			<Icon className={cn("size-3.5 text-primary")} />
 			<span className="min-w-0 truncate">
 				<span className="text-foreground">{props.label}</span>
 				{props.description ? (

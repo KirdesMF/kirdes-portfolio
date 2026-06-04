@@ -38,7 +38,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
 
 	return (
 		<Dialog open={props.open} onOpenChange={props.onOpenChange}>
-			<DialogContent className="!max-h-none !overflow-visible !border-0 !bg-transparent !p-0 !shadow-none">
+			<DialogContent className="max-h-none overflow-visible border-0 bg-transparent p-0 shadow-none">
 				<div className="relative flex max-h-[min(90dvh,42rem)] flex-col rounded border-2 border-border bg-popover p-4 pt-5 text-popover-foreground shadow-lg">
 					<DialogTitle className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-popover px-2 leading-none text-primary">
 						Settings

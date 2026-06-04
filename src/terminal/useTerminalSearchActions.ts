@@ -83,6 +83,7 @@ export function useTerminalSearchActions({
 				activeFile: undefined,
 				editor: undefined,
 				files: [],
+				maximized: undefined,
 				panel: isHomeRoute ? "terminal" : "route",
 			}),
 			to: currentTerminalRoute,
