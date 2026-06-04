@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { copyToClipboard } from "#/design-system/clipboard";
 import { Separator } from "#/design-system/Separator";
@@ -7,9 +8,7 @@ const labelClass = "inline-block w-24 shrink-0 text-muted-foreground/60";
 export function InfosOutput(): ReactNode {
 	return (
 		<div className="flex flex-col whitespace-pre-wrap font-mono text-foreground/90">
-			<p className="pt-3 font-thin text-muted-foreground/70 uppercase tracking-wider">
-				[INFORMATIONS]
-			</p>
+			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider">[INFORMATIONS]</p>
 			<Separator className="mt-1 mb-2 opacity-50" />
 			<div className="flex flex-col gap-0.5">
 				<div>
@@ -52,10 +51,31 @@ export function InfosOutput(): ReactNode {
 
 export function WhoamiOutput(): ReactNode {
 	return (
-		<div className="flex flex-col gap-0.5">
-			<p>kirdes</p>
-			<p className="text-muted-foreground">product engineer / interface builder</p>
-			<p className="mt-1 text-muted-foreground/70">for more, visit /about</p>
+		<div className="flex flex-col whitespace-pre-wrap font-mono text-foreground/90">
+			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider">[WHOAMI]</p>
+			<Separator className="mt-1 mb-2 opacity-50" />
+			<div className="flex flex-col gap-0.5">
+				<p>kirdes</p>
+				<p className="text-muted-foreground">product engineer / interface builder</p>
+				<p className="mt-1 text-muted-foreground/70">
+					for more, visit{" "}
+					<Link
+						className="text-primary underline-offset-2 hover:underline"
+						search={(previous) => ({
+							...previous,
+							activeFile: previous.activeFile,
+							dialog: previous.dialog,
+							editor: previous.editor,
+							files: previous.files ?? [],
+							maximized: previous.maximized,
+							panel: "route",
+						})}
+						to="/terminal/about"
+					>
+						/about
+					</Link>
+				</p>
+			</div>
 		</div>
 	);
 }

@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { Separator } from "#/design-system/Separator";
 import { editorFiles, folderRoutes as folderRoutesData } from "#/editor/editor-files";
 import type { EditorFileEntry, FolderRoute } from "#/editor/editor-files.types";
 import { TerminalRouteList } from "./TerminalRouteList";
@@ -43,9 +44,26 @@ export function HelpOutput(): ReactNode {
 
 export function WelcomeOutput(): ReactNode {
 	return (
-		<div className="flex flex-col gap-0.5">
-			<p>Welcome to kirdes terminal.</p>
-			<p className="text-muted-foreground">Type help to list available commands.</p>
+		<div className="flex flex-col whitespace-pre-wrap font-mono text-foreground/90">
+			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider">[WELCOME]</p>
+			<Separator className="mt-1 mb-2 opacity-50" />
+			<div className="flex flex-col gap-0.5">
+				<p>Welcome to kirdes terminal.</p>
+				<p className="text-muted-foreground">
+					Type{" "}
+					<Link
+						className="text-primary underline-offset-2 hover:underline"
+						search={(previous) => ({
+							...previous,
+							dialog: "help",
+						})}
+						to="."
+					>
+						help
+					</Link>{" "}
+					to list available commands.
+				</p>
+			</div>
 		</div>
 	);
 }

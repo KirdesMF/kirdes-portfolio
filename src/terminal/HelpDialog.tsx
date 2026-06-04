@@ -31,7 +31,8 @@ export function HelpDialog(props: HelpDialogProps) {
 				<div className="space-y-1 border-b border-border pb-3">
 					<DialogTitle>Help</DialogTitle>
 					<DialogDescription>
-						Available routes and commands. Use <span className="text-foreground">man &lt;command&gt;</span> for details.
+						Available routes and commands. Use{" "}
+						<span className="text-foreground">man &lt;command&gt;</span> for details.
 					</DialogDescription>
 				</div>
 
@@ -75,7 +76,8 @@ function HelpRow(props: {
 	label: string;
 	shortcut: string;
 }) {
-	const Icon = props.icon === "route" ? FolderIcon : props.icon === "help" ? CircleHelpIcon : TerminalIcon;
+	const Icon =
+		props.icon === "route" ? FolderIcon : props.icon === "help" ? CircleHelpIcon : TerminalIcon;
 
 	return (
 		<div className="grid grid-cols-[1.5rem_1rem_1rem_minmax(0,1fr)] items-center gap-2 rounded px-1 py-0.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground">
@@ -91,7 +93,9 @@ function HelpRow(props: {
 			/>
 			<span className="min-w-0 truncate">
 				<span className="text-foreground">{props.label}</span>
-				{props.description ? <span className="text-muted-foreground"> — {props.description}</span> : null}
+				{props.description ? (
+					<span className="text-muted-foreground"> — {props.description}</span>
+				) : null}
 			</span>
 		</div>
 	);

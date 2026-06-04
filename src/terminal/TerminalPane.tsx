@@ -38,14 +38,16 @@ export function TerminalPane({
 		>
 			<TerminalSessionHeader />
 			<div className="min-h-0 flex-1 overflow-y-auto p-3 text-xs" ref={scrollRef}>
-				{history.map((entry) => (
-					<div className="mb-4 last:mb-0" key={entry.id}>
-						<div className="text-muted-foreground">
-							<span className="text-primary">$</span> {entry.input}
+				<div className="flex flex-col gap-5">
+					{history.map((entry) => (
+						<div className="flex flex-col gap-1" key={entry.id}>
+							<div className="text-muted-foreground">
+								<span className="text-primary">$</span> {entry.input}
+							</div>
+							<div className="text-foreground/90">{entry.output}</div>
 						</div>
-						<div className="mt-1 text-foreground/90">{entry.output}</div>
-					</div>
-				))}
+					))}
+				</div>
 			</div>
 			<div className="shrink-0">
 				<TerminalPrompt currentRoute={currentRoute} onSubmit={onSubmit} />
