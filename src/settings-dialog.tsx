@@ -1,6 +1,7 @@
 import { CheckIcon, MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import { cn } from "#/design-system/cn";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "#/design-system/dialog";
+import { Separator } from "#/design-system/Separator";
 import { useTheme } from "#/theme/ThemeProvider";
 import {
 	type AppearanceMode,
@@ -37,56 +38,63 @@ export function SettingsDialog(props: SettingsDialogProps) {
 
 	return (
 		<Dialog open={props.open} onOpenChange={props.onOpenChange}>
-			<DialogContent className="space-y-5 p-4">
-				<div className="space-y-1">
-					<DialogTitle>Settings</DialogTitle>
-					<DialogDescription>Configure color mode and IDE themes.</DialogDescription>
-				</div>
+			<DialogContent className="!max-h-none !overflow-visible !border-0 !bg-transparent !p-0 !shadow-none">
+				<div className="relative flex max-h-[min(90dvh,42rem)] flex-col rounded border-2 border-border bg-popover p-4 pt-5 text-popover-foreground shadow-lg">
+					<DialogTitle className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-popover px-2 leading-none text-primary">
+						Settings
+					</DialogTitle>
+					<DialogDescription className="shrink-0 border-b border-border pb-3">
+						Configure color mode and IDE themes.
+					</DialogDescription>
 
-				<section className="space-y-2">
-					<h2 className="font-medium text-sm">Mode</h2>
-					<div className="grid gap-2 sm:grid-cols-3">
-						{appearanceModes.map((mode) => {
-							const ModeIcon = modeIcons[mode];
-							const selected = appearance.mode === mode;
+					<div className="min-h-0 flex-1 space-y-5 overflow-y-auto py-3">
+						<section className="space-y-2">
+							<h2 className="font-medium text-sm">Mode</h2>
+							<div className="grid gap-2 sm:grid-cols-3">
+								{appearanceModes.map((mode) => {
+									const ModeIcon = modeIcons[mode];
+									const selected = appearance.mode === mode;
 
-							return (
-								<button
-									type="button"
-									className={cn(
-										"flex items-center justify-between gap-2 rounded border border-border px-2 py-1.5 text-sm",
-										selected && "bg-primary text-primary-foreground",
-									)}
-									aria-pressed={selected}
-									key={mode}
-									onClick={() => setAppearance({ ...appearance, mode })}
-								>
-									<span className="flex items-center gap-2">
-										<ModeIcon className="size-3.5" />
-										{modeLabels[mode]}
-									</span>
-									{selected && <CheckIcon className="size-3.5" />}
-								</button>
-							);
-						})}
+									return (
+										<button
+											type="button"
+											className={cn(
+												"flex items-center justify-between gap-2 rounded border border-border px-2 py-1.5 text-sm",
+												selected && "bg-primary text-primary-foreground",
+											)}
+											aria-pressed={selected}
+											key={mode}
+											onClick={() => setAppearance({ ...appearance, mode })}
+										>
+											<span className="flex items-center gap-2">
+												<ModeIcon className="size-3.5" />
+												{modeLabels[mode]}
+											</span>
+											{selected && <CheckIcon className="size-3.5" />}
+										</button>
+									);
+								})}
+							</div>
+						</section>
+
+						<section className="space-y-3">
+							<h2 className="font-medium text-sm">IDE themes</h2>
+							<ThemeList
+								label="Light themes"
+								selectedTheme={appearance.lightTheme}
+								themes={lightThemeOptions}
+								onSelect={(lightTheme) => setAppearance({ ...appearance, lightTheme })}
+							/>
+							<Separator className="my-4" />
+							<ThemeList
+								label="Dark themes"
+								selectedTheme={appearance.darkTheme}
+								themes={darkThemeOptions}
+								onSelect={(darkTheme) => setAppearance({ ...appearance, darkTheme })}
+							/>
+						</section>
 					</div>
-				</section>
-
-				<section className="space-y-3">
-					<h2 className="font-medium text-sm">IDE themes</h2>
-					<ThemeList
-						label="Light themes"
-						selectedTheme={appearance.lightTheme}
-						themes={lightThemeOptions}
-						onSelect={(lightTheme) => setAppearance({ ...appearance, lightTheme })}
-					/>
-					<ThemeList
-						label="Dark themes"
-						selectedTheme={appearance.darkTheme}
-						themes={darkThemeOptions}
-						onSelect={(darkTheme) => setAppearance({ ...appearance, darkTheme })}
-					/>
-				</section>
+				</div>
 			</DialogContent>
 		</Dialog>
 	);
@@ -119,7 +127,7 @@ function ThemeList<TTheme extends LightThemeId | DarkThemeId>(props: {
 						>
 							<span className="flex min-w-0 items-center gap-3">
 								<ThemePalette theme={theme.value} />
-								<span className="truncate">{theme.label}</span>
+								<span className="truncate text-xs">{theme.label}</span>
 							</span>
 							{selected && (
 								<span className="rounded border border-border px-1.5 py-0.5 text-xs">current</span>

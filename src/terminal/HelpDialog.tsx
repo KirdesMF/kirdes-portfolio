@@ -27,43 +27,47 @@ export function HelpDialog(props: HelpDialogProps) {
 
 	return (
 		<Dialog open={props.open} onOpenChange={props.onOpenChange}>
-			<DialogContent className="w-[min(92vw,38rem)] space-y-3 p-4">
-				<div className="space-y-1 border-b border-border pb-3">
-					<DialogTitle>Help</DialogTitle>
-					<DialogDescription>
+			<DialogContent className="!max-h-none w-[min(92vw,38rem)] !overflow-visible !border-0 !bg-transparent !p-0 !shadow-none">
+				<div className="relative flex max-h-[min(90dvh,42rem)] flex-col rounded border-2 border-border bg-popover p-4 pt-5 text-popover-foreground shadow-lg">
+					<DialogTitle className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-popover px-2 leading-none text-primary">
+						Help
+					</DialogTitle>
+					<DialogDescription className="shrink-0 border-b border-border pb-3">
 						Available routes and commands. Use{" "}
 						<span className="text-foreground">man &lt;command&gt;</span> for details.
 					</DialogDescription>
-				</div>
 
-				<div className="space-y-1 font-mono text-sm">
-					{terminalRoutes.map((route) => (
-						<HelpRow
-							description={routeDescriptions[route]?.split(" — ")[1] ?? ""}
-							icon="route"
-							key={route}
-							label={route}
-							shortcut={getShortcut(route, usedShortcuts)}
-						/>
-					))}
-					{terminalCommands.map((command) => (
-						<HelpRow
-							description={getCommandSummary(command) ?? ""}
-							icon={command === "help" ? "help" : "command"}
-							key={command}
-							label={command}
-							shortcut={getShortcut(command, usedShortcuts)}
-						/>
-					))}
-				</div>
+					<div className="min-h-0 flex-1 overflow-y-auto py-3">
+						<div className="space-y-1 font-mono text-sm">
+							{terminalRoutes.map((route) => (
+								<HelpRow
+									description={routeDescriptions[route]?.split(" — ")[1] ?? ""}
+									icon="route"
+									key={route}
+									label={route}
+									shortcut={getShortcut(route, usedShortcuts)}
+								/>
+							))}
+							{terminalCommands.map((command) => (
+								<HelpRow
+									description={getCommandSummary(command) ?? ""}
+									icon={command === "help" ? "help" : "command"}
+									key={command}
+									label={command}
+									shortcut={getShortcut(command, usedShortcuts)}
+								/>
+							))}
+						</div>
+					</div>
 
-				<div className="flex items-center justify-center gap-6 border-t border-border pt-3 text-muted-foreground text-xs">
-					<span>
-						<kbd className="text-primary">ESC</kbd> close
-					</span>
-					<span>
-						<kbd className="text-primary">←</kbd> back
-					</span>
+					<div className="flex shrink-0 items-center justify-center gap-6 border-t border-border pt-3 text-muted-foreground text-xs">
+						<span>
+							<kbd className="text-primary">ESC</kbd> close
+						</span>
+						<span>
+							<kbd className="text-primary">←</kbd> back
+						</span>
+					</div>
 				</div>
 			</DialogContent>
 		</Dialog>
