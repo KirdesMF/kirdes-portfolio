@@ -104,11 +104,11 @@ export function AppHeader() {
 			variant: "muted",
 			content: (
 				<div className="flex items-center gap-1.5">
-					<button type="button" onClick={() => setLocale("fr")}>
+					<button className="cursor-pointer" type="button" onClick={() => setLocale("fr")}>
 						FR
 					</button>
 					<span>|</span>
-					<button type="button" onClick={() => setLocale("en")}>
+					<button className="cursor-pointer" type="button" onClick={() => setLocale("en")}>
 						EN
 					</button>
 				</div>
@@ -120,7 +120,7 @@ export function AppHeader() {
 			content: (
 				<button
 					aria-label="Open settings"
-					className="inline-flex size-4 items-center justify-center rounded-sm opacity-80 transition hover:opacity-100 focus-visible:outline-2 focus-visible:outline-ring"
+					className="inline-flex size-4 cursor-pointer items-center justify-center rounded-sm opacity-80 transition hover:opacity-100 focus-visible:outline-2 focus-visible:outline-ring"
 					type="button"
 					onClick={() => setSettingsOpen(true)}
 				>
@@ -153,18 +153,18 @@ export function AppHeader() {
 
 function getNavigationLinkClassName(variant: StatusVariant): string {
 	if (variant === "primary") {
-		return "rounded px-1.5 text-status-primary-foreground/75 transition-colors hover:bg-status-primary-foreground/15 hover:text-status-primary-foreground";
+		return "rounded px-1.5 text-status-primary-foreground/75 transition-none";
 	}
 
-	return "rounded px-1.5 text-status-muted-foreground/75 transition-colors hover:bg-status-muted-foreground/15 hover:text-status-muted-foreground";
+	return "rounded px-1.5 text-status-muted-foreground/75 transition-none";
 }
 
 function getNavigationActiveLinkClassName(variant: StatusVariant): string {
 	if (variant === "primary") {
-		return "bg-status-primary-foreground/20 text-status-primary-foreground";
+		return "text-status-primary-foreground";
 	}
 
-	return "bg-status-muted-foreground/20 text-status-muted-foreground";
+	return "text-status-muted-foreground";
 }
 
 function StatusGroup(props: { items: StatusItem[]; side: StatusSide }) {
