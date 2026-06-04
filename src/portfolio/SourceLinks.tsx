@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import type { SectionMetadata } from "#/portfolio/portfolio-sections";
+import type { WorkspaceViewMetadata } from "#/workspace/workspace-catalogue";
 
 type SourceLinksProps = {
-	meta: SectionMetadata;
+	meta: WorkspaceViewMetadata;
 	/** Route to keep when opening files in editor. Defaults to "." */
 	to?: string;
 };

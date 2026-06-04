@@ -175,7 +175,7 @@ export function SourceOutput({
 		folder: string;
 		label: string;
 		renderer: string;
-		contentFiles: Array<string>;
+		contentFiles: ReadonlyArray<string>;
 	};
 }): ReactNode {
 	return (

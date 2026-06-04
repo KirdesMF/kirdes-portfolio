@@ -1,11 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { ScrambleText } from "#/design-system/ScrambleText";
-import { sectionMetadata } from "#/portfolio/portfolio-sections";
 import { SourceLinks } from "#/portfolio/SourceLinks";
+import { workspaceViewMetadata } from "#/workspace/workspace-catalogue";
 import { projects, statusColors } from "./work.data";
 
-const meta = sectionMetadata["/terminal/work"];
+const meta = workspaceViewMetadata["/terminal/work"];
 
 export function WorkSection(): ReactNode {
 	return (

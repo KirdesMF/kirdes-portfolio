@@ -1,15 +1,15 @@
 import {
-	getSectionByFolder,
-	getSectionByLabel,
-	getSectionByRoute,
-} from "#/portfolio/portfolio-sections";
+	getWorkspaceViewByFolder,
+	getWorkspaceViewByLabel,
+	getWorkspaceViewByRoute,
+} from "#/workspace/workspace-catalogue";
 import { SourceOutput } from "../terminal-command-outputs";
 import type { CommandHandler } from "./types";
 
 /**
  * source [path] — display route/content/renderer relationship.
  *
- * source about      — lookup by label or folder name
+ * source about      — lookup by workspace view label or folder name
  * source /about     — lookup by route path
  * source (no args)  — use current route
  */
@@ -20,12 +20,12 @@ export const handleSource: CommandHandler = (ctx) => {
 
 	// `source` with no arg — use current route
 	if (arg === "") {
-		const meta = getSectionByRoute(ctx.currentRoute);
+		const meta = getWorkspaceViewByRoute(ctx.currentRoute);
 
 		if (meta) {
 			ctx.pushHistory(<SourceOutput meta={meta} />);
 		} else {
-			ctx.pushHistory("no source metadata for current route");
+			ctx.pushHistory("no source metadata for current view");
 		}
 
 		return true;
@@ -34,18 +34,19 @@ export const handleSource: CommandHandler = (ctx) => {
 	// `source /about` — lookup by route
 	// `source about`  — lookup by label/folder
 	let meta = arg.startsWith("/")
-		? (getSectionByRoute(`/terminal${arg === "/" ? "" : arg}`) ?? getSectionByRoute(arg))
-		: (getSectionByLabel(arg) ?? getSectionByFolder(arg));
+		? (getWorkspaceViewByRoute(`/terminal${arg === "/" ? "" : arg}`) ??
+			getWorkspaceViewByRoute(arg))
+		: (getWorkspaceViewByLabel(arg) ?? getWorkspaceViewByFolder(arg));
 
 	if (!meta) {
 		// Try as direct route
-		meta = getSectionByRoute(`/terminal/${arg}`);
+		meta = getWorkspaceViewByRoute(`/terminal/${arg}`);
 	}
 
 	if (meta) {
 		ctx.pushHistory(<SourceOutput meta={meta} />);
 	} else {
-		ctx.pushHistory(`no section found: ${arg}`);
+		ctx.pushHistory(`no workspace view found: ${arg}`);
 	}
 
 	return true;

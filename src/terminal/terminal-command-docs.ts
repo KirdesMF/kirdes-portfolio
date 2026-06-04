@@ -30,7 +30,7 @@ export const manPages: Record<string, string> = {
 	rm: "rm [file] — pretend to remove files.\n  This is not a real terminal — all files are read-only.\n  Nice try though.",
 	settings: "settings — open appearance settings.",
 	source:
-		"source [path] — show route, content files, and renderer for a section.\n  Without arguments, uses the current route.\n  Examples:\n    source about\n    source /work\n    source",
+		"source [path] — show route, content files, and renderer for a workspace view.\n  Without arguments, uses the current route.\n  Examples:\n    source about\n    source /work\n    source",
 	tree: "tree — display folder structure as a tree.\n  Aliases and flags:\n    tree --all — show full tree including src/ page renderers.",
 	whoami: "whoami — display current user info.",
 };

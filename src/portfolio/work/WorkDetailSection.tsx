@@ -1,11 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
-import { sectionMetadata } from "#/portfolio/portfolio-sections";
 import { SourceLinks } from "#/portfolio/SourceLinks";
+import { workspaceViewMetadata } from "#/workspace/workspace-catalogue";
 import { projects, statusColors } from "./work.data";
 
-const meta = sectionMetadata["/terminal/work"];
+const meta = workspaceViewMetadata["/terminal/work"];
 
 export function WorkDetailSection({ project }: { project: string }): ReactNode {
 	const entry = projects.find((p) => p.name === project);

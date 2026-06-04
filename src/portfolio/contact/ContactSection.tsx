@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
-import { sectionMetadata } from "#/portfolio/portfolio-sections";
 import { SourceLinks } from "#/portfolio/SourceLinks";
+import { workspaceViewMetadata } from "#/workspace/workspace-catalogue";
 
-const meta = sectionMetadata["/terminal/contact"];
+const meta = workspaceViewMetadata["/terminal/contact"];
 
 export function ContactSection(): ReactNode {
 	return (

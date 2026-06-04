@@ -14,7 +14,7 @@ export const rootFiles: ReadonlyArray<EditorFileInput> = [
 			"Explore by navigating folders and opening files:",
 			"",
 			"- `ls` — list routes and files",
-			"- `cd <route>` — navigate to a section",
+			"- `cd <route>` — navigate to a workspace view",
 			"- `cat <file>` — print file contents",
 			"- `open <file>` — open in read-only editor",
 			"- `close` — close editor",

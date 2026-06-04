@@ -45,4 +45,11 @@ describe("editor files", () => {
 			getVisibleFileNames("/terminal/work").filter((name) => name === "README.md"),
 		).toHaveLength(1);
 	});
+
+	it("opens source files from the current implementation", () => {
+		const contactSource = findEditorFile("src/portfolio/contact/ContactSection.tsx");
+
+		expect(contactSource?.content).toContain("linkedin.com/in/kirdesmf");
+		expect(contactSource?.content).toContain('workspaceViewMetadata["/terminal/contact"]');
+	});
 });
