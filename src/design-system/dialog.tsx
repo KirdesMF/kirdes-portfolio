@@ -50,9 +50,6 @@ export function DialogTitle({ className, ...props }: DialogTitleProps): ReactNod
 
 export function DialogDescription({ className, ...props }: DialogDescriptionProps): ReactNode {
 	return (
-		<BaseDialog.Description
-			className={cn("text-muted-foreground text-xs", className)}
-			{...props}
-		/>
+		<BaseDialog.Description className={cn("text-muted-foreground text-xs", className)} {...props} />
 	);
 }

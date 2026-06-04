@@ -60,7 +60,8 @@ export function parseTerminalSearch(search: Record<string, unknown>): TerminalSe
 	const activeFile = files.find((fileName) => fileName === rawSearch.activeFile) ?? files.at(0);
 	const panel = parseTerminalPanelName(rawSearch.panel);
 	const maximized = parseMaximized(rawSearch.maximized);
-	const dialog = rawSearch.dialog === "settings" || rawSearch.dialog === "help" ? rawSearch.dialog : undefined;
+	const dialog =
+		rawSearch.dialog === "settings" || rawSearch.dialog === "help" ? rawSearch.dialog : undefined;
 
 	return {
 		activeFile,

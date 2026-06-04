@@ -125,5 +125,3 @@ function formatUptime(seconds: number): string {
 	const s = seconds % 60;
 	return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
-
-

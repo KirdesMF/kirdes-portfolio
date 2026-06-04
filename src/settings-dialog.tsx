@@ -1,21 +1,16 @@
 import { CheckIcon, MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import { cn } from "#/design-system/cn";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogTitle,
-} from "#/design-system/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "#/design-system/dialog";
 import { useTheme } from "#/theme/ThemeProvider";
 import {
-	appearanceModes,
 	type AppearanceMode,
-	darkThemeOptions,
+	appearanceModes,
 	type DarkThemeId,
-	lightThemeOptions,
+	darkThemeOptions,
 	type LightThemeId,
-	themeLabels,
+	lightThemeOptions,
 	type ThemeId,
+	themeLabels,
 } from "#/theme/themeTypes";
 
 const modeLabels = {
@@ -126,7 +121,9 @@ function ThemeList<TTheme extends LightThemeId | DarkThemeId>(props: {
 								<ThemePalette theme={theme.value} />
 								<span className="truncate">{theme.label}</span>
 							</span>
-							{selected && <span className="rounded border border-border px-1.5 py-0.5 text-xs">current</span>}
+							{selected && (
+								<span className="rounded border border-border px-1.5 py-0.5 text-xs">current</span>
+							)}
 						</button>
 					);
 				})}
@@ -137,7 +134,11 @@ function ThemeList<TTheme extends LightThemeId | DarkThemeId>(props: {
 
 function ThemePalette(props: { theme: ThemeId }) {
 	return (
-		<span className="flex overflow-hidden rounded border border-border" data-theme={props.theme} aria-hidden="true">
+		<span
+			className="flex overflow-hidden rounded border border-border"
+			data-theme={props.theme}
+			aria-hidden="true"
+		>
 			{themePaletteSwatches.map((className) => (
 				<span className={cn("size-4", className)} key={className} />
 			))}

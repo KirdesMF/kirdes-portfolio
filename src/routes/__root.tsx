@@ -4,7 +4,11 @@ import { getLocale } from "#/paraglide/runtime";
 import { ThemeProvider } from "#/theme/ThemeProvider";
 import { getInitialAppearanceSettings } from "#/theme/theme.functions";
 import { themeBootScript } from "#/theme/themeBootScript";
-import { defaultResolvedMode, resolveAppearanceMode, resolveThemeForMode } from "#/theme/themeTypes";
+import {
+	defaultResolvedMode,
+	resolveAppearanceMode,
+	resolveThemeForMode,
+} from "#/theme/themeTypes";
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({

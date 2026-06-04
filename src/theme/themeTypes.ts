@@ -5,8 +5,22 @@ export const LIGHT_THEME_COOKIE_NAME = "light-theme";
 export const DARK_THEME_COOKIE_NAME = "dark-theme";
 
 export const appearanceModes = ["light", "dark", "system"] as const;
-export const lightThemeIds = ["original-light", "catppuccin-latte", "nord-snow-storm", "github-light", "ayu-light", "sage-light"] as const;
-export const darkThemeIds = ["original-dark", "catppuccin-mocha", "nord-polar-night", "tokyo-night", "ayu-dark", "sage-dark"] as const;
+export const lightThemeIds = [
+	"original-light",
+	"catppuccin-latte",
+	"nord-snow-storm",
+	"github-light",
+	"ayu-light",
+	"sage-light",
+] as const;
+export const darkThemeIds = [
+	"original-dark",
+	"catppuccin-mocha",
+	"nord-polar-night",
+	"tokyo-night",
+	"ayu-dark",
+	"sage-dark",
+] as const;
 export const themeIds = [...lightThemeIds, ...darkThemeIds] as const;
 
 export type AppearanceMode = (typeof appearanceModes)[number];

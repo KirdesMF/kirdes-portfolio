@@ -55,7 +55,9 @@ describe("resolveThemeForMode", () => {
 
 describe("sanitizeAppearanceSettings", () => {
 	it("falls back invalid settings to defaults", () => {
-		expect(sanitizeAppearanceSettings({ mode: "auto" as never, lightTheme: "bad" as never })).toEqual({
+		expect(
+			sanitizeAppearanceSettings({ mode: "auto" as never, lightTheme: "bad" as never }),
+		).toEqual({
 			mode: "system",
 			lightTheme: "github-light",
 			darkTheme: "tokyo-night",
