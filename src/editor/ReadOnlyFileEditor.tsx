@@ -44,7 +44,7 @@ const variantClass = {
 	},
 } as const;
 
-const EDITOR_BRANCH_NAME = "feature/kirdes-app";
+const EDITOR_BRANCH_NAME = "feat/portfolio";
 const EDITOR_VERSION = "kish v1.0.0";
 
 // Only root files in the empty editor (globally accessible)
@@ -79,11 +79,15 @@ function EditorStatusBar({ activeFileName }: { activeFileName?: string }) {
 				</>
 			),
 		},
-		{
-			id: "file",
-			variant: "primary",
-			content: <span className="truncate">{activeFileName ?? "[No Name]"}</span>,
-		},
+		...(activeFileName
+			? [
+					{
+						id: "file",
+						variant: "primary" as const,
+						content: <span className="truncate">{activeFileName}</span>,
+					} as StatusItem,
+				]
+			: []),
 	];
 	const rightItems: StatusItem[] = [
 		{
