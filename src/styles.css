@@ -21,8 +21,8 @@ body::before {
 		0deg,
 		transparent,
 		transparent 1px,
-		color-mix(in oklch, var(--foreground) 8%, transparent) 1px,
-		color-mix(in oklch, var(--foreground) 8%, transparent) 2px
+		color-mix(in oklch, var(--foreground) 5%, transparent) 1px,
+		color-mix(in oklch, var(--foreground) 5%, transparent) 2px
 	);
 }
 

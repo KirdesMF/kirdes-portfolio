@@ -1,7 +1,8 @@
-import { useRouterState } from "@tanstack/react-router";
-import { Maximize2, Minimize2 } from "lucide-react";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { Maximize2, Minimize2, X } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "#/design-system/cn";
+import { Separator } from "#/design-system/Separator";
 
 function formatRouteLabel(pathname: string): string {
 	if (pathname === "/terminal") return "~/";
@@ -33,12 +34,27 @@ export function TerminalRoutePane({
 				<div className="flex-1 h-full bg-stripes border-x-accent border-x"></div>
 				<button
 					aria-label={isMaximized ? "Minimize panel" : "Maximize panel"}
-					className="ms-auto flex h-full shrink-0 items-center border-s border-border px-2 text-tiny text-muted-foreground/70 hover:text-foreground"
+					className="ms-auto flex h-full shrink-0 items-center px-2 text-tiny text-muted-foreground/70 hover:text-foreground"
 					type="button"
 					onClick={onToggleMaximize}
 				>
 					{isMaximized ? <Minimize2 className="size-3.5" /> : <Maximize2 className="size-3.5" />}
 				</button>
+				<Separator className="h-full" orientation="vertical" />
+				<Link
+					aria-label="Close panel"
+					className="flex h-full shrink-0 items-center px-3 text-tiny text-muted-foreground/70 hover:text-foreground"
+					search={(prev) => ({
+						...prev,
+						activeFile: prev.activeFile,
+						editor: prev.editor,
+						files: prev.files ?? [],
+						panel: "terminal",
+					})}
+					to="/terminal"
+				>
+					<X className="size-3.5" />
+				</Link>
 			</div>
 			<div
 				className={cn(

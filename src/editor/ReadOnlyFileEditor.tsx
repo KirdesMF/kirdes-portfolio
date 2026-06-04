@@ -18,6 +18,7 @@ import {
 import { type ReactNode, useRef } from "react";
 import { cn } from "#/design-system/cn";
 import { Menu, MenuContent, MenuItem, MenuTrigger } from "#/design-system/Menu";
+import { Separator } from "#/design-system/Separator";
 import { useScrambleRef } from "#/design-system/useScrambleRef";
 import { getRandomNumber } from "#/utils/random-number";
 
@@ -277,14 +278,16 @@ function renderEditorTabs({
 				) : null}
 			</div>
 			<div className="flex items-center shrink-0 self-stretch">
+				<Separator className="h-full" orientation="vertical" />
 				<button
 					aria-label={isMaximized ? "Minimize panel" : "Maximize panel"}
-					className="flex h-full shrink-0 items-center border-s border-border px-2 text-tiny text-muted-foreground/70 hover:text-foreground"
+					className="flex h-full shrink-0 items-center px-2 text-tiny text-muted-foreground/70 hover:text-foreground"
 					type="button"
 					onClick={onToggleMaximize}
 				>
 					{isMaximized ? <Minimize2 className="size-3.5" /> : <Maximize2 className="size-3.5" />}
 				</button>
+				<Separator className="h-full" orientation="vertical" />
 				<button
 					aria-label="Close editor"
 					className="flex h-full shrink-0 items-center px-3 text-tiny text-muted-foreground/70 hover:text-foreground"
