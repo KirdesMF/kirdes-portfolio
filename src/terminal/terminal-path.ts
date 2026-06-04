@@ -21,12 +21,12 @@ type FormatOptions = {
 /**
  * Format a terminal route as a cwd string, e.g. "/terminal/about" → "~/about".
  *
- * Works for nested routes too: "/terminal/work/tetris" → "~/work/tetris".
+ * Works for nested routes too: "/terminal/work/intent" → "~/work/intent".
  *
  * ```ts
  * formatTerminalCwd("/terminal")        // "~"
  * formatTerminalCwd("/terminal/about")  // "~/about"
- * formatTerminalCwd("/terminal/work/tetris")  // "~/work/tetris"
+ * formatTerminalCwd("/terminal/work/intent")  // "~/work/intent"
  * formatTerminalCwd("/terminal", { trailingSlash: true }) // "~/"
  * ```
  */

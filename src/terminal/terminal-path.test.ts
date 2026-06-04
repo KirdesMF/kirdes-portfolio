@@ -29,9 +29,9 @@ describe("formatTerminalCwd", () => {
 	});
 
 	it("formats nested sub-routes", () => {
-		expect(formatTerminalCwd("/terminal/work/tetris")).toBe("~/work/tetris");
-		expect(formatTerminalCwd("/terminal/work/tetris", { trailingSlash: true })).toBe(
-			"~/work/tetris/",
+		expect(formatTerminalCwd("/terminal/work/intent")).toBe("~/work/intent");
+		expect(formatTerminalCwd("/terminal/work/intent", { trailingSlash: true })).toBe(
+			"~/work/intent/",
 		);
 	});
 
