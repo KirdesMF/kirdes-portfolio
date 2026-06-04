@@ -14,7 +14,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as TerminalWorkRouteRouteImport } from './routes/terminal/work/route'
 import { Route as TerminalContactRouteRouteImport } from './routes/terminal/contact/route'
 import { Route as TerminalAboutRouteRouteImport } from './routes/terminal/about/route'
-import { Route as LabTetrisRouteRouteImport } from './routes/lab/tetris/route'
 import { Route as TerminalWorkIndexRouteImport } from './routes/terminal/work/index'
 import { Route as TerminalWorkProjectRouteRouteImport } from './routes/terminal/work/$project/route'
 
@@ -43,11 +42,6 @@ const TerminalAboutRouteRoute = TerminalAboutRouteRouteImport.update({
   path: '/about',
   getParentRoute: () => TerminalRouteRoute,
 } as any)
-const LabTetrisRouteRoute = LabTetrisRouteRouteImport.update({
-  id: '/lab/tetris',
-  path: '/lab/tetris',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TerminalWorkIndexRoute = TerminalWorkIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -63,7 +57,6 @@ const TerminalWorkProjectRouteRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/terminal': typeof TerminalRouteRouteWithChildren
-  '/lab/tetris': typeof LabTetrisRouteRoute
   '/terminal/about': typeof TerminalAboutRouteRoute
   '/terminal/contact': typeof TerminalContactRouteRoute
   '/terminal/work': typeof TerminalWorkRouteRouteWithChildren
@@ -73,7 +66,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/terminal': typeof TerminalRouteRouteWithChildren
-  '/lab/tetris': typeof LabTetrisRouteRoute
   '/terminal/about': typeof TerminalAboutRouteRoute
   '/terminal/contact': typeof TerminalContactRouteRoute
   '/terminal/work/$project': typeof TerminalWorkProjectRouteRoute
@@ -83,7 +75,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/terminal': typeof TerminalRouteRouteWithChildren
-  '/lab/tetris': typeof LabTetrisRouteRoute
   '/terminal/about': typeof TerminalAboutRouteRoute
   '/terminal/contact': typeof TerminalContactRouteRoute
   '/terminal/work': typeof TerminalWorkRouteRouteWithChildren
@@ -95,7 +86,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/terminal'
-    | '/lab/tetris'
     | '/terminal/about'
     | '/terminal/contact'
     | '/terminal/work'
@@ -105,7 +95,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/terminal'
-    | '/lab/tetris'
     | '/terminal/about'
     | '/terminal/contact'
     | '/terminal/work/$project'
@@ -114,7 +103,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/terminal'
-    | '/lab/tetris'
     | '/terminal/about'
     | '/terminal/contact'
     | '/terminal/work'
@@ -125,7 +113,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   TerminalRouteRoute: typeof TerminalRouteRouteWithChildren
-  LabTetrisRouteRoute: typeof LabTetrisRouteRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -164,13 +151,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/terminal/about'
       preLoaderRoute: typeof TerminalAboutRouteRouteImport
       parentRoute: typeof TerminalRouteRoute
-    }
-    '/lab/tetris': {
-      id: '/lab/tetris'
-      path: '/lab/tetris'
-      fullPath: '/lab/tetris'
-      preLoaderRoute: typeof LabTetrisRouteRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/terminal/work/': {
       id: '/terminal/work/'
@@ -221,7 +201,6 @@ const TerminalRouteRouteWithChildren = TerminalRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   TerminalRouteRoute: TerminalRouteRouteWithChildren,
-  LabTetrisRouteRoute: LabTetrisRouteRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
