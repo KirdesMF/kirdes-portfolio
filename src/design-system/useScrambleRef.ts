@@ -1,4 +1,4 @@
-import { animate, stagger } from "animejs";
+import { animate, createScope, stagger } from "animejs";
 import { scrambleText } from "animejs/text";
 import { useEffect, useRef } from "react";
 
@@ -14,7 +14,6 @@ type UseScrambleRefOptions = {
 /**
  * Applies scramble animation to all elements matching `selector` within
  * the returned ref container. Cleans up on unmount.
- * Skips animation when user prefers reduced motion.
  */
 export function useScrambleRef<T extends HTMLElement>({
 	selector,
@@ -24,26 +23,27 @@ export function useScrambleRef<T extends HTMLElement>({
 	const rootRef = useRef<T>(null);
 
 	useEffect(() => {
-		if (
-			typeof window !== "undefined" &&
-			window.matchMedia("(prefers-reduced-motion: reduce)").matches
-		) {
-			return;
-		}
+		const scope = createScope({
+			mediaQueries: {
+				reduceMotion: "(prefers-reduced-motion)",
+			},
+		}).add((self) => {
+			if (self?.matches.reduceMotion) return;
 
-		const elements = rootRef.current?.querySelectorAll(selector);
-		if (!elements || elements.length === 0) return;
+			const elements = rootRef.current?.querySelectorAll(selector);
+			if (!elements || elements.length === 0) return;
 
-		const anim = animate(elements, {
-			ease: "linear",
-			innerHTML: scrambleText({
-				cursor,
-				delay: stagger(staggerMs),
-			}),
+			animate(elements, {
+				ease: "linear",
+				innerHTML: scrambleText({
+					cursor,
+					delay: stagger(staggerMs),
+				}),
+			});
 		});
 
 		return () => {
-			anim.revert();
+			scope.revert();
 		};
 	}, [selector, staggerMs, cursor]);
 

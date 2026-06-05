@@ -1,4 +1,4 @@
-import { animate } from "animejs";
+import { animate, createScope } from "animejs";
 import { scrambleText } from "animejs/text";
 import { useEffect, useRef } from "react";
 
@@ -11,31 +11,29 @@ type ScrambleTextProps = {
 
 /**
  * Renders text with a scramble animation on mount.
- *
- * Replaces ScrambleTitle, which only supported ReactNode children
- * and had no reduced-motion support.
  */
 export function ScrambleText({ text, className, cursor = "░▒▓█" }: ScrambleTextProps) {
 	const ref = useRef<HTMLSpanElement>(null);
 
 	useEffect(() => {
-		if (
-			typeof window !== "undefined" &&
-			window.matchMedia("(prefers-reduced-motion: reduce)").matches
-		) {
-			return;
-		}
-
 		const el = ref.current;
 		if (!el) return;
 
-		const anim = animate(el, {
-			ease: "linear",
-			innerHTML: scrambleText({ cursor }),
+		const scope = createScope({
+			mediaQueries: {
+				reduceMotion: "(prefers-reduced-motion)",
+			},
+		}).add((self) => {
+			if (self?.matches.reduceMotion) return;
+
+			animate(el, {
+				ease: "linear",
+				innerHTML: scrambleText({ cursor }),
+			});
 		});
 
 		return () => {
-			anim.revert();
+			scope.revert();
 		};
 	}, [cursor]);
 
