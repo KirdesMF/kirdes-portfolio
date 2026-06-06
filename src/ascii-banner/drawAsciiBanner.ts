@@ -112,12 +112,17 @@ function drawCells(ctx: CanvasRenderingContext2D, art: BannerArt, options: DrawB
 			}
 		}
 
+		const cellX = (x - options.originX) * cellWidth;
+		const cellY = (y - options.originY) * cellHeight;
+
 		ctx.fillStyle = fill;
-		ctx.fillText(
-			char,
-			(x - options.originX) * cellWidth + cellWidth / 2,
-			(y - options.originY) * cellHeight + cellHeight / 2,
-		);
+
+		if (kind === "block") {
+			ctx.fillRect(cellX, cellY, cellWidth, cellHeight);
+			continue;
+		}
+
+		ctx.fillText(char, cellX + cellWidth / 2, cellY + cellHeight / 2);
 	}
 }
 
