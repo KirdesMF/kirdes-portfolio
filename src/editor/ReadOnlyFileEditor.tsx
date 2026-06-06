@@ -15,7 +15,7 @@ import {
 	X,
 	Zap,
 } from "lucide-react";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { AsciiBanner } from "#/ascii-banner/AsciiBanner";
 import { cn } from "#/design-system/cn";
 import { Menu, MenuContent, MenuItem, MenuTrigger } from "#/design-system/Menu";
@@ -304,6 +304,8 @@ function renderEditorTabs({
 
 function EmptyEditor() {
 	const [loadingTime, setLoadingTime] = useState(20);
+	const [compact, setCompact] = useState(false);
+	const containerRef = useRef<HTMLDivElement | null>(null);
 	const rootRef = useScrambleRef<HTMLDivElement>({
 		selector: "[data-anim-editor-status]",
 		staggerMs: 0,
@@ -313,11 +315,30 @@ function EmptyEditor() {
 		setLoadingTime(getRandomNumber({ max: 100, min: 20 }));
 	}, []);
 
+	useEffect(() => {
+		const container = containerRef.current;
+		if (!container) return;
+
+		const updateCompact = () => {
+			setCompact(container.getBoundingClientRect().height < 460);
+		};
+		const observer = new ResizeObserver(updateCompact);
+		observer.observe(container);
+		updateCompact();
+
+		return () => observer.disconnect();
+	}, []);
+
 	return (
-		<div className="flex h-full min-h-0 items-center justify-center p-6 text-sm">
-			<div className="flex w-full max-w-3xl flex-col items-center gap-7 text-primary/80">
-				<AsciiBanner className="w-full max-w-lg" />
-				<div className="grid w-full max-w-md gap-4">
+		<div className="flex min-h-full items-center justify-center p-6 text-sm" ref={containerRef}>
+			<div
+				className={cn(
+					"flex w-full max-w-3xl flex-col items-center text-primary/80",
+					compact ? "gap-4" : "gap-7",
+				)}
+			>
+				<AsciiBanner className={cn("w-full", compact ? "max-w-sm" : "max-w-lg")} />
+				<div className={cn("grid w-full max-w-md", compact ? "grid-cols-2 gap-2" : "gap-4")}>
 					{emptyEditorCommands.map(({ Icon, id, label, shortcut }) => (
 						<div className="grid grid-cols-[1.5rem_1fr_1rem] items-center gap-4" key={id}>
 							<Icon aria-hidden="true" className="size-4 text-primary" />

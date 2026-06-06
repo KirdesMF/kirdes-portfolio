@@ -23,6 +23,7 @@ export type AsciiBannerProps = {
 	effects?: Partial<AsciiBannerEffects>;
 	shimmerConfig?: Partial<AsciiBannerShimmer>;
 	className?: string;
+	fit?: "width" | "contain";
 	shimmer?: boolean;
 	glow?: boolean;
 	blur?: boolean;
@@ -80,6 +81,7 @@ export function AsciiBanner({
 	effects,
 	shimmerConfig,
 	className,
+	fit = "width",
 	shimmer = true,
 	glow = true,
 	blur = false,
@@ -150,7 +152,13 @@ export function AsciiBanner({
 
 		const resize = () => {
 			const rect = wrapper.getBoundingClientRect();
-			const nextWidth = Math.max(1, Math.floor(rect.width));
+			const availableWidth = rect.width;
+			const availableHeight = rect.height;
+			const containedWidth =
+				fit === "contain" && availableHeight > 0
+					? Math.min(availableWidth, availableHeight / aspectRatio)
+					: availableWidth;
+			const nextWidth = Math.max(1, Math.floor(containedWidth));
 			const nextHeight = Math.max(1, Math.floor(nextWidth * aspectRatio));
 			const dpr = Math.min(window.devicePixelRatio || 1, ASCII_BANNER_MAX_DPR);
 			const nextCanvasWidth = Math.floor(nextWidth * dpr);
@@ -198,6 +206,7 @@ export function AsciiBanner({
 	}, [
 		blur,
 		deviceShimmer,
+		fit,
 		glow,
 		reducedMotionRef,
 		resolvedColors,
@@ -229,7 +238,7 @@ export function AsciiBanner({
 						<CurrentYear />
 					</ClientOnly>
 				</span>
-				<canvas className="block w-full" ref={canvasRef} />
+				<canvas className="mx-auto block max-w-full" ref={canvasRef} />
 			</div>
 		</div>
 	);

@@ -1,7 +1,7 @@
+import { MoveRight } from "lucide-react";
 import { type SubmitEvent, useId, useRef, useState } from "react";
 import { getVisibleFileNames } from "#/editor/editor-files";
 import { m } from "#/paraglide/messages";
-import { formatTerminalCwd } from "#/terminal/terminal-path";
 import { commandNames, terminalNavigationItems } from "#/terminal/terminal-routes";
 
 const cdSuggestions = [
@@ -137,32 +137,32 @@ export function TerminalPrompt({
 
 	return (
 		<form
-			className="flex shrink-0 items-center gap-2 border-t border-border px-3 py-1.5 text-sm"
+			className="flex shrink-0 flex-col border-t border-border px-3 pb-2 pt-1.5 text-xs"
 			onSubmit={handleSubmit}
 		>
-			<label className="flex shrink-0 items-center gap-2 text-xs" htmlFor={inputId}>
-				<span className="shrink-0 text-primary">{formatTerminalCwd(currentRoute)}</span>
-				<span className="shrink-0 text-muted-foreground">$</span>
-			</label>
-			<div className="relative flex-1 flex items-center">
-				{suggestion ? (
-					<div className="pointer-events-none absolute inset-0 flex items-center text-xs text-muted-foreground/30">
-						{suggestion}
-					</div>
-				) : null}
-				<input
-					autoComplete="off"
-					/* biome-ignore lint/a11y/noAutofocus: intentional for terminal UX */
-					autoFocus
-					className="relative w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/70 [caret-shape:block]"
-					id={inputId}
-					placeholder={m.prompt_placeholder()}
-					spellCheck={false}
-					type="text"
-					value={value}
-					onChange={(event) => handleChange(event.target.value)}
-					onKeyDown={handleKeyDown}
-				/>
+			<span className="text-primary">~/code/kirdes</span>
+			<div className="mt-0.5 flex items-center gap-2">
+				<MoveRight className="size-3.5 shrink-0 text-muted-foreground/70" />
+				<div className="relative flex flex-1 items-center">
+					{suggestion ? (
+						<div className="pointer-events-none absolute inset-0 flex items-center text-xs text-muted-foreground/30">
+							{suggestion}
+						</div>
+					) : null}
+					<input
+						autoComplete="off"
+						/* biome-ignore lint/a11y/noAutofocus: intentional for terminal UX */
+						autoFocus
+						className="relative w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/70 [caret-shape:block]"
+						id={inputId}
+						placeholder={m.prompt_placeholder()}
+						spellCheck={false}
+						type="text"
+						value={value}
+						onChange={(event) => handleChange(event.target.value)}
+						onKeyDown={handleKeyDown}
+					/>
+				</div>
 			</div>
 		</form>
 	);
