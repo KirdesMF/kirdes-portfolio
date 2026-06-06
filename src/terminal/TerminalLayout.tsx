@@ -24,7 +24,7 @@ export function TerminalLayout({
 	maximized,
 	openFileNames,
 }: {
-	activeEditor: "open" | undefined;
+	activeEditor: "open" | "closed" | undefined;
 	activeFileName?: EditorFileName;
 	activePanel: TerminalPanelName;
 	children: ReactNode;

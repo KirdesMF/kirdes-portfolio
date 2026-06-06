@@ -36,7 +36,7 @@ describe("terminal search transitions", () => {
 			closeEditorSearch({ editor: "open", files: ["~/README.md"] }, { isHomeRoute: false }),
 		).toMatchObject({
 			activeFile: undefined,
-			editor: undefined,
+			editor: "closed",
 			files: [],
 			maximized: undefined,
 			panel: "route",

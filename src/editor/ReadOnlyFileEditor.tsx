@@ -54,7 +54,7 @@ const variantClass = {
 } as const;
 
 const EDITOR_BRANCH_NAME = "feat/portfolio";
-const EDITOR_VERSION = "kish v1.0.0";
+const EDITOR_VERSION = "kirdes v1.0.0";
 
 const emptyEditorCommands: Array<{
 	id: string;

@@ -36,7 +36,7 @@ function normalizeFiles(files: string | Array<string>): Array<EditorFileName> {
 
 export type TerminalSearch = {
 	activeFile?: EditorFileName;
-	editor?: "open";
+	editor?: "open" | "closed";
 	files: Array<EditorFileName>;
 	dialog?: "settings" | "help";
 	maximized?: MaximizedPanel;
@@ -55,7 +55,7 @@ export function parseTerminalSearch(search: Record<string, unknown>): TerminalSe
 				maximized: undefined,
 				panel: "terminal",
 			};
-	const editor = rawSearch.editor === "open" ? "open" : undefined;
+	const editor = rawSearch.editor === "open" ? "open" : rawSearch.editor === "closed" ? "closed" : "open";
 	const files = editor === "open" ? normalizeFiles(rawSearch.files) : [];
 	const activeFile = files.find((fileName) => fileName === rawSearch.activeFile) ?? files.at(0);
 	const panel = parseTerminalPanelName(rawSearch.panel);

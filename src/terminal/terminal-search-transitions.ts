@@ -3,7 +3,7 @@ import type { MaximizedPanel, TerminalPanelName } from "#/terminal/terminal-pane
 export type TerminalSearchDraft = {
 	activeFile?: string;
 	dialog?: "settings" | "help";
-	editor?: "open";
+	editor?: "open" | "closed";
 	files?: ReadonlyArray<string>;
 	maximized?: MaximizedPanel;
 	panel?: TerminalPanelName;
@@ -86,7 +86,7 @@ export function closeEditorSearch(
 ): TerminalSearchTransition {
 	return keepTerminalSearch(previous, {
 		activeFile: undefined,
-		editor: undefined,
+		editor: "closed",
 		files: [],
 		maximized: undefined,
 		panel: isHomeRoute ? "terminal" : "route",

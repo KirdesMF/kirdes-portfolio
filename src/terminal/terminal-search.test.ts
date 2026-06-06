@@ -5,7 +5,7 @@ describe("parseTerminalSearch", () => {
 	it("returns defaults for invalid search", () => {
 		expect(parseTerminalSearch({ files: 123, panel: 456 })).toEqual({
 			activeFile: undefined,
-			editor: undefined,
+			editor: "open",
 			files: [],
 			maximized: undefined,
 			panel: "terminal",
@@ -46,11 +46,12 @@ describe("parseTerminalSearch", () => {
 		expect(
 			parseTerminalSearch({
 				activeFile: "about/README.md",
+				editor: "closed",
 				files: "about/README.md",
 			}),
 		).toMatchObject({
 			activeFile: undefined,
-			editor: undefined,
+			editor: "closed",
 			files: [],
 		});
 	});
