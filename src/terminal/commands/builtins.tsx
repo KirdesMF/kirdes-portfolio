@@ -47,6 +47,12 @@ function handleDate(ctx: CommandContext): boolean {
 	return true;
 }
 
+function handleBunDev(ctx: CommandContext): boolean {
+	if (ctx.normalized !== "bun dev") return false;
+	ctx.pushHistory("dev is already running on port 3000");
+	return true;
+}
+
 function handleHistory(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "history") return false;
 	const cmdHistory = ctx.commandHistory;
@@ -294,6 +300,7 @@ export const builtinHandlers: ReadonlyArray<CommandHandler> = [
 	handlePwd,
 	handleWhoami,
 	handleDate,
+	handleBunDev,
 	handleHistory,
 	handleTree,
 	handleEmail,

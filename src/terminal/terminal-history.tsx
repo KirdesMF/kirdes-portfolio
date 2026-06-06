@@ -23,5 +23,7 @@ export function createInitialHistory(): Array<TerminalHistoryEntry> {
 		createHistoryEntry("welcome", <WelcomeOutput />),
 		createHistoryEntry("whoami", <WhoamiOutput />),
 		createHistoryEntry("cat infos.txt", <InfosOutput />),
+		createHistoryEntry("bun dev", "dev server running on port 3000"),
+		createHistoryEntry("nvim .", "opening editor"),
 	];
 }

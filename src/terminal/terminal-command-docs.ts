@@ -6,6 +6,7 @@ export const routeDescriptions: Record<string, string> = {
 };
 
 export const manPages: Record<string, string> = {
+	bun: "bun dev — start the dev server.\n  Already running on port 3000.",
 	cat: "cat <file> — print file contents to the terminal.\n  Resolves relative to current folder, falls back to root.\n  Examples:\n    cat README.md\n    cat /work/experience.json",
 	cd: "cd [directory] — navigate to a route/directory.\n  Without arguments, goes home (~).\n  cd .. also goes home (single-level navigation).\n  Examples:\n    cd about\n    cd /work\n    cd ..",
 	clear: "clear — clear the terminal screen.",
@@ -24,7 +25,8 @@ export const manPages: Record<string, string> = {
 	history: "history — show command history.",
 	ls: "ls — list directories and files.\n  Context-aware: shows current folder's files + root files.\n  At root (~), shows all route folders + root files.",
 	man: "man <command> — show the manual page for a command.\n  Examples:\n    man ls\n    man cat\n    man cd",
-	open: "open <file> — open a file in the read-only editor.\n  Resolves relative to current folder, falls back to root.\n  Examples:\n    open README.md\n    open /about/values.md",
+	nvim: "nvim . — open the editor.",
+	open: "open <file> — open a file in the read-only editor.\n  Resolves relative to current folder, falls back to root.\n  Aliases:\n    nvim . — open the editor\n  Examples:\n    open README.md\n    open /about/values.md",
 	pwd: "pwd — print working directory (current folder).",
 	reload: "reload — reload the portfolio (go to splash screen).",
 	rm: "rm [file] — pretend to remove files.\n  This is not a real terminal — all files are read-only.\n  Nice try though.",

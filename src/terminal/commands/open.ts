@@ -3,9 +3,10 @@ import type { CommandHandler } from "./types";
 /**
  * open <file> — open a file in the read-only editor.
  * open editor — open the editor panel.
+ * nvim . — open the editor panel.
  */
 export const handleOpen: CommandHandler = (ctx) => {
-	if (ctx.normalized === "open editor") {
+	if (ctx.normalized === "open editor" || ctx.normalized === "nvim .") {
 		ctx.openEditor();
 		ctx.pushHistory("opening editor");
 		return true;

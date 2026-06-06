@@ -1,13 +1,9 @@
-import { useRouterState } from "@tanstack/react-router";
 import { animate, createScope } from "animejs";
 import { useEffect, useId, useRef, useState } from "react";
 import { useScrambleRef } from "#/design-system/useScrambleRef";
-import { formatTerminalCwd } from "#/terminal/terminal-path";
 import { getRandomNumber } from "#/utils/random-number";
 
 export function TerminalSessionHeader() {
-	const pathname = useRouterState({ select: (state) => state.location.pathname });
-	const cwd = formatTerminalCwd(pathname, { trailingSlash: true });
 	const startTimeRef = useRef(Date.now());
 	const [uptime, setUptime] = useState(0);
 	const bootTimeId = useId();
@@ -62,7 +58,7 @@ export function TerminalSessionHeader() {
 				<span>
 					VERSION:{" "}
 					<span data-anim-header className="text-primary">
-						kish v1.0.0
+						v1.0.0
 					</span>
 				</span>
 			</div>
@@ -76,7 +72,7 @@ export function TerminalSessionHeader() {
 				<span>
 					HOST:{" "}
 					<span data-anim-header className="text-primary">
-						kirdes.dev
+						localhost
 					</span>
 				</span>
 			</div>
@@ -91,10 +87,8 @@ export function TerminalSessionHeader() {
 					</span>
 				</span>
 				<span>
-					CWD:{" "}
-					<span data-anim-header className="text-primary">
-						{cwd}
-					</span>
+					PORT:{" "}
+					<span data-anim-header className="text-primary">3000</span>
 				</span>
 			</div>
 		</div>

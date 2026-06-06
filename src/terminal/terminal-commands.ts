@@ -1,4 +1,5 @@
 export const terminalCommands = [
+	"bun",
 	"cat",
 	"cd",
 	"clear",
@@ -15,6 +16,7 @@ export const terminalCommands = [
 	"ls",
 	"man",
 	"mode",
+	"nvim",
 	"open",
 	"pwd",
 	"reload",
