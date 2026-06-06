@@ -85,26 +85,26 @@ Create a new feature branch (`feat/i18n-translations`) for this work. Then add m
 
 ## Steps
 
-- [ ] Create and switch to `feat/i18n-translations` branch
-- [ ] Add all English message keys to `messages/en.json`
-- [ ] Add French translations to `messages/fr.json`
-- [ ] Update `src/layout/AppHeader.tsx` — translate aria-labels and sr-only text
-- [ ] Update `src/terminal/TerminalMobilePanels.tsx` — translate panel button labels
-- [ ] Update `src/terminal/TerminalPrompt.tsx` — translate placeholder
-- [ ] Update `src/settings-dialog.tsx` — translate title, description, theme section headings, `current` badge
-- [ ] Update `src/terminal/HelpDialog.tsx` — translate title, description, footer hints
-- [ ] Update `src/portfolio/about/AboutSection.tsx` — translate labels and guidance text
-- [ ] Update `src/portfolio/contact/ContactSection.tsx` — translate labels and guidance text
-- [ ] Update `src/portfolio/work/WorkSection.tsx` — translate table headers and guidance text
-- [ ] Update `src/portfolio/work/WorkDetailSection.tsx` — translate not-found and navigation text
-- [ ] Update `src/terminal/terminal-command-outputs.tsx` — translate `WelcomeOutput`, `WhoamiOutput`
-- [ ] Update `src/terminal/terminal-profile-outputs.tsx` — translate `InfosOutput`, `EmailOutput`
-- [ ] Update `src/terminal/commands/builtins.tsx` — translate user-facing output messages
-- [ ] Update `src/terminal/commands/open.ts` — translate output messages
-- [ ] Update `src/terminal/commands/close.ts` — translate output messages
-- [ ] Update `src/terminal/commands/cat.tsx` — translate output messages
-- [ ] Update `src/terminal/commands/source.tsx` — translate output messages
-- [ ] Update `src/portfolio/AvailabilityStatus.tsx` — translate labels and popover content
+- [x] Create and switch to `feat/i18n-translations` branch
+- [x] Add all English message keys to `messages/en.json`
+- [x] Add French translations to `messages/fr.json`
+- [x] Update `src/layout/AppHeader.tsx` — translate aria-labels and sr-only text
+- [x] Update `src/terminal/TerminalMobilePanels.tsx` — translate panel button labels
+- [x] Update `src/terminal/TerminalPrompt.tsx` — translate placeholder
+- [x] Update `src/settings-dialog.tsx` — translate title, description, theme section headings, `current` badge
+- [x] Update `src/terminal/HelpDialog.tsx` — translate title, description, footer hints
+- [x] Update `src/portfolio/about/AboutSection.tsx` — translate labels and guidance text
+- [x] Update `src/portfolio/contact/ContactSection.tsx` — translate labels and guidance text
+- [x] Update `src/portfolio/work/WorkSection.tsx` — translate table headers and guidance text
+- [x] Update `src/portfolio/work/WorkDetailSection.tsx` — translate not-found and navigation text
+- [x] Update `src/terminal/terminal-command-outputs.tsx` — translate `WelcomeOutput`, `WhoamiOutput`
+- [x] Update `src/terminal/terminal-profile-outputs.tsx` — translate `InfosOutput`, `EmailOutput`
+- [x] Update `src/terminal/commands/builtins.tsx` — translate user-facing output messages
+- [x] Update `src/terminal/commands/open.ts` — translate output messages
+- [x] Update `src/terminal/commands/close.ts` — translate output messages
+- [x] Update `src/terminal/commands/cat.tsx` — translate output messages
+- [x] Update `src/terminal/commands/source.tsx` — translate output messages
+- [x] Update `src/portfolio/AvailabilityStatus.tsx` — translate labels and popover content
 
 ## Verification
 

@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { m } from "#/paraglide/messages";
 import { Separator } from "#/design-system/Separator";
 import { editorFiles, folderRoutes as folderRoutesData } from "#/editor/editor-files";
 import type { EditorFileEntry, FolderRoute } from "#/editor/editor-files.types";
+import { m } from "#/paraglide/messages";
 import { TerminalRouteList } from "./TerminalRouteList";
 import { getCommandSummary, manPages, routeDescriptions } from "./terminal-command-docs";
 import { terminalCommands } from "./terminal-commands";
@@ -51,7 +51,9 @@ export function HelpOutput(): ReactNode {
 export function WelcomeOutput(): ReactNode {
 	return (
 		<div className="flex flex-col whitespace-pre-wrap font-mono text-foreground/90">
-			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider">{m.welcome_title()}</p>
+			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider">
+				{m.welcome_title()}
+			</p>
 			<Separator className="mt-1 mb-2 opacity-50" />
 			<div className="flex flex-col gap-0.5">
 				<p>{m.welcome_message()}</p>

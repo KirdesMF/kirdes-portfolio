@@ -1,7 +1,15 @@
 import { ChevronRightIcon, CircleHelpIcon, FolderIcon, TerminalIcon } from "lucide-react";
-import { m } from "#/paraglide/messages";
 import { cn } from "#/design-system/cn";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "#/design-system/dialog";
+import {
+	Drawer,
+	DrawerContent,
+	DrawerDescription,
+	DrawerHandle,
+	DrawerTitle,
+} from "#/design-system/drawer";
+import { useIsMobile } from "#/design-system/useMediaQuery";
+import { m } from "#/paraglide/messages";
 import { terminalCommands } from "#/terminal/terminal-commands";
 import { terminalRoutes } from "#/terminal/terminal-routes";
 
@@ -60,56 +68,78 @@ function getShortcut(value: string, used: Set<string>): string {
 }
 
 export function HelpDialog(props: HelpDialogProps) {
-	const usedShortcuts = new Set<string>();
+	const isMobile = useIsMobile();
+
+	if (isMobile) {
+		return (
+			<Drawer open={props.open} onOpenChange={props.onOpenChange}>
+				<DrawerContent className="px-3 pb-3">
+					<DrawerHandle />
+					<HelpDialogInner Description={DrawerDescription} Title={DrawerTitle} />
+				</DrawerContent>
+			</Drawer>
+		);
+	}
 
 	return (
 		<Dialog open={props.open} onOpenChange={props.onOpenChange}>
 			<DialogContent className="flex">
-				<div className="relative flex-1 flex flex-col rounded border-2 border-border border-glow bg-popover p-4 text-popover-foreground">
-					<DialogTitle className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-2 border-border z-10">
-						{m.help_title()}
-					</DialogTitle>
-
-					<div className="min-h-0 flex-1 grid gap-5 overflow-y-auto py-3">
-						<DialogDescription className="border-b border-border pb-3">
-							{m.help_description_prefix()}{" "}
-							<span className="text-foreground">man &lt;command&gt;</span>{" "}
-							{m.help_description_suffix()}
-						</DialogDescription>
-
-						<div className="grid gap-1 font-mono text-xs">
-							{terminalRoutes.map((route) => (
-								<HelpRow
-									description={routeDescriptionMessages[route]?.() ?? ""}
-									icon="route"
-									key={route}
-									label={route}
-									shortcut={getShortcut(route, usedShortcuts)}
-								/>
-							))}
-							{terminalCommands.map((command) => (
-								<HelpRow
-									description={commandDescriptionMessages[command]?.() ?? ""}
-									icon={command === "help" ? "help" : "command"}
-									key={command}
-									label={command}
-									shortcut={getShortcut(command, usedShortcuts)}
-								/>
-							))}
-						</div>
-					</div>
-
-					<div className="flex items-center justify-center gap-6 border-t border-border pt-3 text-muted-foreground text-xs">
-						<span>
-							<kbd className="text-primary">ESC</kbd> {m.help_hint_close()}
-						</span>
-						<span>
-							<kbd className="text-primary">←</kbd> {m.help_hint_back()}
-						</span>
-					</div>
-				</div>
+				<HelpDialogInner Description={DialogDescription} Title={DialogTitle} />
 			</DialogContent>
 		</Dialog>
+	);
+}
+
+function HelpDialogInner(props: {
+	Description: typeof DialogDescription | typeof DrawerDescription;
+	Title: typeof DialogTitle | typeof DrawerTitle;
+}) {
+	const usedShortcuts = new Set<string>();
+	const { Description, Title } = props;
+
+	return (
+		<div className="relative flex min-h-0 flex-1 flex-col rounded border-2 border-border border-glow bg-popover p-4 text-popover-foreground">
+			<Title className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-2 border-border z-10">
+				{m.help_title()}
+			</Title>
+
+			<div className="min-h-0 flex-1 grid gap-5 overflow-y-auto touch-auto py-3">
+				<Description className="border-b border-border pb-3">
+					{m.help_description_prefix()} <span className="text-foreground">man &lt;command&gt;</span>{" "}
+					{m.help_description_suffix()}
+				</Description>
+
+				<div className="grid gap-1 font-mono text-xs">
+					{terminalRoutes.map((route) => (
+						<HelpRow
+							description={routeDescriptionMessages[route]?.() ?? ""}
+							icon="route"
+							key={route}
+							label={route}
+							shortcut={getShortcut(route, usedShortcuts)}
+						/>
+					))}
+					{terminalCommands.map((command) => (
+						<HelpRow
+							description={commandDescriptionMessages[command]?.() ?? ""}
+							icon={command === "help" ? "help" : "command"}
+							key={command}
+							label={command}
+							shortcut={getShortcut(command, usedShortcuts)}
+						/>
+					))}
+				</div>
+			</div>
+
+			<div className="flex items-center justify-center gap-6 border-t border-border pt-3 text-muted-foreground text-xs">
+				<span>
+					<kbd className="text-primary">ESC</kbd> {m.help_hint_close()}
+				</span>
+				<span>
+					<kbd className="text-primary">←</kbd> {m.help_hint_back()}
+				</span>
+			</div>
+		</div>
 	);
 }
 

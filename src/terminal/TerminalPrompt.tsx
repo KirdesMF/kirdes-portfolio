@@ -1,6 +1,6 @@
 import { type SubmitEvent, useId, useRef, useState } from "react";
-import { m } from "#/paraglide/messages";
 import { getVisibleFileNames } from "#/editor/editor-files";
+import { m } from "#/paraglide/messages";
 import { formatTerminalCwd } from "#/terminal/terminal-path";
 import { commandNames, terminalNavigationItems } from "#/terminal/terminal-routes";
 

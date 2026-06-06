@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { m } from "#/paraglide/messages";
 import { ScrambleText } from "#/design-system/ScrambleText";
+import { m } from "#/paraglide/messages";
 import { SourceLinks } from "#/portfolio/SourceLinks";
 import { showRoutePanelSearch } from "#/terminal/terminal-search-transitions";
 import { workspaceViewMetadata } from "#/workspace/workspace-catalogue";
@@ -48,9 +48,7 @@ export function WorkSection(): ReactNode {
 				</tbody>
 			</table>
 
-			<p className="text-muted-foreground">
-				{m.work_guidance()}
-			</p>
+			<p className="text-muted-foreground">{m.work_guidance()}</p>
 
 			{meta ? <SourceLinks meta={meta} to="/terminal/work" /> : null}
 		</div>

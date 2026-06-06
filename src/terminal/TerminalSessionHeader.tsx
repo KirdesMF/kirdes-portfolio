@@ -88,7 +88,9 @@ export function TerminalSessionHeader() {
 				</span>
 				<span>
 					PORT:{" "}
-					<span data-anim-header className="text-primary">3000</span>
+					<span data-anim-header className="text-primary">
+						3000
+					</span>
 				</span>
 			</div>
 		</div>

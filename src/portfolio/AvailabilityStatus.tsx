@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { MoveRight } from "lucide-react";
 import { useState } from "react";
-import { m } from "#/paraglide/messages";
 import {
 	Popover,
 	PopoverContent,
@@ -11,6 +10,7 @@ import {
 } from "#/design-system/Popover";
 import { Separator } from "#/design-system/Separator";
 import { useScrambleRef } from "#/design-system/useScrambleRef";
+import { m } from "#/paraglide/messages";
 import { showRoutePanelSearch } from "#/terminal/terminal-search-transitions";
 
 export type Availability = "open-to-work" | "open-to-offers" | "busy";

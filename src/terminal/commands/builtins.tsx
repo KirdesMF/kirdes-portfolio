@@ -1,7 +1,7 @@
 import { copyToClipboard } from "#/design-system/clipboard";
 import { Separator } from "#/design-system/Separator";
-import { getLocale, setLocale } from "#/paraglide/runtime";
 import { m } from "#/paraglide/messages";
+import { getLocale, setLocale } from "#/paraglide/runtime";
 import { formatTerminalCwd } from "#/terminal/terminal-path";
 import { EmailOutput, WhoamiOutput } from "#/terminal/terminal-profile-outputs";
 import { LsOutput, TreeAllOutput, TreeOutput } from "../terminal-command-outputs";
@@ -234,11 +234,7 @@ function handleLang(ctx: CommandContext): boolean {
 		}
 
 		setLocale(target);
-		ctx.pushHistory(
-			<p className="text-muted-foreground">
-				{m.lang_set({ target })}
-			</p>,
-		);
+		ctx.pushHistory(<p className="text-muted-foreground">{m.lang_set({ target })}</p>);
 		return true;
 	}
 
@@ -258,9 +254,7 @@ function handleMode(ctx: CommandContext): boolean {
 	if (ctx.normalized === "mode dark") {
 		ctx.setMode("dark");
 		ctx.pushHistory(
-			<span className="text-muted-foreground">
-				{m.mode_switched({ mode: "dark" })}
-			</span>,
+			<span className="text-muted-foreground">{m.mode_switched({ mode: "dark" })}</span>,
 		);
 		return true;
 	}
@@ -268,9 +262,7 @@ function handleMode(ctx: CommandContext): boolean {
 	if (ctx.normalized === "mode light") {
 		ctx.setMode("light");
 		ctx.pushHistory(
-			<span className="text-muted-foreground">
-				{m.mode_switched({ mode: "light" })}
-			</span>,
+			<span className="text-muted-foreground">{m.mode_switched({ mode: "light" })}</span>,
 		);
 		return true;
 	}

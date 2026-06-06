@@ -16,9 +16,7 @@ export function WorkDetailSection({ project }: { project: string }): ReactNode {
 		return (
 			<div className="flex flex-1 flex-col gap-3 p-4 text-xs">
 				<div className="text-muted-foreground">{"/* work */"}</div>
-				<p>
-					{m.work_detail_not_found({ name: project })}
-				</p>
+				<p>{m.work_detail_not_found({ name: project })}</p>
 				<Link
 					className="flex items-center gap-1 text-primary hover:underline"
 					to="/terminal/work"

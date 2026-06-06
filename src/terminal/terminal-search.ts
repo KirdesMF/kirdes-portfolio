@@ -55,7 +55,8 @@ export function parseTerminalSearch(search: Record<string, unknown>): TerminalSe
 				maximized: undefined,
 				panel: "terminal",
 			};
-	const editor = rawSearch.editor === "open" ? "open" : rawSearch.editor === "closed" ? "closed" : "open";
+	const editor =
+		rawSearch.editor === "open" ? "open" : rawSearch.editor === "closed" ? "closed" : "open";
 	const files = editor === "open" ? normalizeFiles(rawSearch.files) : [];
 	const activeFile = files.find((fileName) => fileName === rawSearch.activeFile) ?? files.at(0);
 	const panel = parseTerminalPanelName(rawSearch.panel);

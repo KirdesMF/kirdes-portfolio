@@ -1,10 +1,10 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
-import { m } from "#/paraglide/messages";
 import { animate, createScope } from "animejs";
 import { ClockIcon, FileTerminal, SettingsIcon } from "lucide-react";
-import { useEffect, useRef, type ReactNode } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import { cn } from "#/design-system/cn";
 import { Clock } from "#/layout/Clock";
+import { m } from "#/paraglide/messages";
 import { getLocale, setLocale } from "#/paraglide/runtime";
 import { SettingsDialog } from "#/settings-dialog";
 import { terminalNavigationItems } from "#/terminal/terminal-routes";
@@ -97,6 +97,8 @@ export function AppHeader() {
 	useEffect(() => {
 		const el = langShineRef.current;
 		if (!el) return;
+		// re-run when locale changes to attach shimmer to the new active button
+		void currentLocale;
 
 		const scope = createScope({
 			mediaQueries: {

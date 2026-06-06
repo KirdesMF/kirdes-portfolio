@@ -27,9 +27,7 @@ export function ContactSection(): ReactNode {
 					<span>linkedin.com/in/kirdesmf</span>
 				</div>
 			</div>
-			<p className="text-muted-foreground">
-				{m.contact_guidance()}
-			</p>
+			<p className="text-muted-foreground">{m.contact_guidance()}</p>
 			{meta ? <SourceLinks meta={meta} /> : null}
 		</div>
 	);

@@ -1,6 +1,6 @@
 import { cn } from "#/design-system/cn";
-import { m } from "#/paraglide/messages";
 import type { EditorFileName } from "#/editor/editor-files";
+import { m } from "#/paraglide/messages";
 import type { TerminalPanelName } from "./terminal-panel-types";
 
 export function getMobilePanel(

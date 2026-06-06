@@ -11,9 +11,7 @@ export function AboutSection(): ReactNode {
 			<div className="text-muted-foreground">{m.about_comment()}</div>
 			<div className="flex flex-col gap-1 text-muted-foreground">
 				<p>{m.about_role()}</p>
-				<p className="mt-2">
-					{m.about_guidance()}
-				</p>
+				<p className="mt-2">{m.about_guidance()}</p>
 			</div>
 			{meta ? <SourceLinks meta={meta} /> : null}
 		</div>
