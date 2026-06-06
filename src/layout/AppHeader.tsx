@@ -1,6 +1,6 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { animate, createScope } from "animejs";
-import { ClockIcon, FileTerminal, SettingsIcon } from "lucide-react";
+import { ClockIcon, SettingsIcon } from "lucide-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "#/design-system/cn";
 import { Drawer, DrawerContent, DrawerHandle, DrawerTrigger } from "#/design-system/drawer";
@@ -107,10 +107,7 @@ export function AppHeader() {
 					search={openEditorPanelSearch}
 					to="."
 				>
-					<span className="flex items-center gap-1">
-						<FileTerminal className="size-3" />
-						<span className="sr-only">{m.header_editor_sr()}</span>
-					</span>
+					editor
 				</Link>
 			),
 		},
@@ -129,10 +126,7 @@ export function AppHeader() {
 				search={openEditorPanelSearch}
 				to="."
 			>
-				<span className="flex items-center gap-1">
-					<FileTerminal className="size-3" />
-					<span className="sr-only">{m.header_editor_sr()}</span>
-				</span>
+				editor
 			</Link>
 		),
 	});
