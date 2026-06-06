@@ -1,5 +1,6 @@
 import { CheckIcon, MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import { cn } from "#/design-system/cn";
+import { m } from "#/paraglide/messages";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "#/design-system/dialog";
 import { Separator } from "#/design-system/Separator";
 import { useTheme } from "#/theme/ThemeProvider";
@@ -41,12 +42,12 @@ export function SettingsDialog(props: SettingsDialogProps) {
 			<DialogContent className="flex">
 				<div className="relative flex-1 flex flex-col rounded border-2 border-border border-glow bg-popover p-4 text-popover-foreground">
 					<DialogTitle className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-2 border-border z-10">
-						Settings
+						{m.settings_title()}
 					</DialogTitle>
 
 					<div className="min-h-0 flex-1 grid gap-5 overflow-y-auto py-3">
 						<DialogDescription className="border-b border-border pb-3">
-							Configure color mode and IDE themes.
+							{m.settings_description()}
 						</DialogDescription>
 						<section className="grid gap-2">
 							<h2 className="font-medium text-sm">Mode</h2>
@@ -78,16 +79,16 @@ export function SettingsDialog(props: SettingsDialogProps) {
 						</section>
 
 						<section className="grid gap-3">
-							<h2 className="font-medium text-sm">IDE themes</h2>
+							<h2 className="font-medium text-sm">{m.settings_ide_themes()}</h2>
 							<ThemeList
-								label="Light themes"
+								label={m.settings_light_themes()}
 								selectedTheme={appearance.lightTheme}
 								themes={lightThemeOptions}
 								onSelect={(lightTheme) => setAppearance({ ...appearance, lightTheme })}
 							/>
 							<Separator className="my-4" />
 							<ThemeList
-								label="Dark themes"
+								label={m.settings_dark_themes()}
 								selectedTheme={appearance.darkTheme}
 								themes={darkThemeOptions}
 								onSelect={(darkTheme) => setAppearance({ ...appearance, darkTheme })}
@@ -130,7 +131,7 @@ function ThemeList<TTheme extends LightThemeId | DarkThemeId>(props: {
 								<span className="truncate text-xs">{theme.label}</span>
 							</span>
 							{selected && (
-								<span className="rounded border border-border px-1.5 py-0.5 text-xs">current</span>
+								<span className="rounded border border-border px-1.5 py-0.5 text-xs">{m.settings_current()}</span>
 							)}
 						</button>
 					);

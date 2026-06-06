@@ -1,4 +1,5 @@
 import { cn } from "#/design-system/cn";
+import { m } from "#/paraglide/messages";
 import type { EditorFileName } from "#/editor/editor-files";
 import type { TerminalPanelName } from "./terminal-panel-types";
 
@@ -38,7 +39,7 @@ export function TerminalMobilePanels({
 				type="button"
 				onClick={() => onSelectPanel("terminal")}
 			>
-				terminal
+				{m.mobile_panel_terminal()}
 			</button>
 			{isHomeRoute ? null : (
 				<button
@@ -49,7 +50,7 @@ export function TerminalMobilePanels({
 					type="button"
 					onClick={() => onSelectPanel("route")}
 				>
-					route
+					{m.mobile_panel_route()}
 				</button>
 			)}
 			{hasEditorPanel ? (
@@ -61,7 +62,7 @@ export function TerminalMobilePanels({
 					type="button"
 					onClick={() => onSelectPanel("editor")}
 				>
-					{activeFileName ?? "editor"}
+					{activeFileName ?? m.mobile_panel_editor_fallback()}
 				</button>
 			) : null}
 		</div>

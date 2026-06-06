@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { m } from "#/paraglide/messages";
 import { ScrambleText } from "#/design-system/ScrambleText";
 import { SourceLinks } from "#/portfolio/SourceLinks";
 import { showRoutePanelSearch } from "#/terminal/terminal-search-transitions";
@@ -11,15 +12,15 @@ const meta = workspaceViewMetadata["/terminal/work"];
 export function WorkSection(): ReactNode {
 	return (
 		<div className="flex flex-1 flex-col gap-3 p-4 text-xs">
-			<div className="text-muted-foreground">{"/* work */"}</div>
+			<div className="text-muted-foreground">{m.work_comment()}</div>
 
 			<table className="w-full border-collapse">
 				<thead>
 					<tr className="border-b border-border text-left text-tiny text-muted-foreground/70">
-						<th className="whitespace-nowrap pb-1.5 pr-4 font-medium">NAME</th>
-						<th className="whitespace-nowrap pb-1.5 pr-4 font-medium">VERSION</th>
-						<th className="whitespace-nowrap pb-1.5 pr-4 font-medium">STATUS</th>
-						<th className="pb-1.5 font-medium">DESCRIPTION</th>
+						<th className="whitespace-nowrap pb-1.5 pr-4 font-medium">{m.work_column_name()}</th>
+						<th className="whitespace-nowrap pb-1.5 pr-4 font-medium">{m.work_column_version()}</th>
+						<th className="whitespace-nowrap pb-1.5 pr-4 font-medium">{m.work_column_status()}</th>
+						<th className="pb-1.5 font-medium">{m.work_column_description()}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -48,8 +49,7 @@ export function WorkSection(): ReactNode {
 			</table>
 
 			<p className="text-muted-foreground">
-				click a project name for details. see{" "}
-				<span className="text-primary">cat projects.json</span> for structured data.
+				{m.work_guidance()}
 			</p>
 
 			{meta ? <SourceLinks meta={meta} to="/terminal/work" /> : null}

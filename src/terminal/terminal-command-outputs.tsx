@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { m } from "#/paraglide/messages";
 import { Separator } from "#/design-system/Separator";
 import { editorFiles, folderRoutes as folderRoutesData } from "#/editor/editor-files";
 import type { EditorFileEntry, FolderRoute } from "#/editor/editor-files.types";
@@ -50,12 +51,12 @@ export function HelpOutput(): ReactNode {
 export function WelcomeOutput(): ReactNode {
 	return (
 		<div className="flex flex-col whitespace-pre-wrap font-mono text-foreground/90">
-			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider">[WELCOME]</p>
+			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider">{m.welcome_title()}</p>
 			<Separator className="mt-1 mb-2 opacity-50" />
 			<div className="flex flex-col gap-0.5">
-				<p>Welcome to kirdes terminal.</p>
+				<p>{m.welcome_message()}</p>
 				<p className="text-muted-foreground">
-					Type{" "}
+					{m.welcome_hint_prefix()}{" "}
 					<Link
 						className="text-primary underline-offset-2 hover:underline"
 						search={(previous) => setDialogSearch(previous, "help")}
@@ -63,7 +64,7 @@ export function WelcomeOutput(): ReactNode {
 					>
 						help
 					</Link>{" "}
-					to list available commands.
+					{m.welcome_hint_suffix()}
 				</p>
 			</div>
 		</div>

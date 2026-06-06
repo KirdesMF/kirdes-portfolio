@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { copyToClipboard } from "#/design-system/clipboard";
 import { Separator } from "#/design-system/Separator";
+import { m } from "#/paraglide/messages";
 import { showRoutePanelSearch } from "#/terminal/terminal-search-transitions";
 
 const labelClass = "inline-block w-24 shrink-0 text-muted-foreground/60";
@@ -9,19 +10,19 @@ const labelClass = "inline-block w-24 shrink-0 text-muted-foreground/60";
 export function InfosOutput(): ReactNode {
 	return (
 		<div className="flex flex-col whitespace-pre-wrap font-mono text-foreground/90">
-			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider">[INFORMATIONS]</p>
+			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider">{m.infos_title()}</p>
 			<Separator className="mt-1 mb-2 opacity-50" />
 			<div className="flex flex-col gap-0.5">
 				<div>
-					<span className={labelClass}>LOCATION</span>
-					<span>Paris, France</span>
+					<span className={labelClass}>{m.infos_location_label()}</span>
+					<span>{m.infos_location_value()}</span>
 				</div>
 				<div>
-					<span className={labelClass}>FOCUS</span>
-					<span>frontend architecture — design systems — dev tooling</span>
+					<span className={labelClass}>{m.infos_focus_label()}</span>
+					<span>{m.infos_focus_value()}</span>
 				</div>
 				<div>
-					<span className={labelClass}>CONTACT</span>
+					<span className={labelClass}>{m.infos_contact_label()}</span>
 					<button
 						className="underline-offset-2 hover:text-primary hover:underline"
 						type="button"
@@ -42,8 +43,8 @@ export function InfosOutput(): ReactNode {
 					</a>
 				</div>
 				<div>
-					<span className={labelClass}>STATUS</span>
-					<span>open for freelance &amp; collaboration</span>
+					<span className={labelClass}>{m.infos_status_label()}</span>
+					<span>{m.infos_status_value()}</span>
 				</div>
 			</div>
 		</div>
@@ -53,13 +54,13 @@ export function InfosOutput(): ReactNode {
 export function WhoamiOutput(): ReactNode {
 	return (
 		<div className="flex flex-col whitespace-pre-wrap font-mono text-foreground/90">
-			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider">[WHOAMI]</p>
+			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider">{m.whoami_title()}</p>
 			<Separator className="mt-1 mb-2 opacity-50" />
 			<div className="flex flex-col gap-0.5">
 				<p>kirdes</p>
-				<p className="text-muted-foreground">product engineer / interface builder</p>
+				<p className="text-muted-foreground">{m.whoami_role()}</p>
 				<p className="mt-1 text-muted-foreground/70">
-					for more, visit{" "}
+					{m.whoami_visit()}{" "}
 					<Link
 						className="text-primary underline-offset-2 hover:underline"
 						search={showRoutePanelSearch}
@@ -77,7 +78,7 @@ export function EmailOutput(): ReactNode {
 	return (
 		<div className="flex flex-col gap-0.5">
 			<p>cedric@kirdes.dev</p>
-			<p className="text-muted-foreground">copy requested</p>
+			<p className="text-muted-foreground">{m.email_copy_requested()}</p>
 		</div>
 	);
 }

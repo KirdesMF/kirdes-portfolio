@@ -1,3 +1,4 @@
+import { m } from "#/paraglide/messages";
 import type { CommandHandler } from "./types";
 
 /**
@@ -8,7 +9,7 @@ import type { CommandHandler } from "./types";
 export const handleOpen: CommandHandler = (ctx) => {
 	if (ctx.normalized === "open editor" || ctx.normalized === "nvim .") {
 		ctx.openEditor();
-		ctx.pushHistory("opening editor");
+		ctx.pushHistory(m.open_editor());
 		return true;
 	}
 
@@ -17,10 +18,10 @@ export const handleOpen: CommandHandler = (ctx) => {
 	const target = ctx.normalized.slice(5).trim();
 
 	if (ctx.openFile(target)) {
-		ctx.pushHistory(`opening ${target}`);
+		ctx.pushHistory(m.open_file({ target }));
 		return true;
 	}
 
-	ctx.pushHistory(`file not found: ${target}`);
+	ctx.pushHistory(m.open_not_found({ target }));
 	return true;
 };

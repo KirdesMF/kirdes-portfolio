@@ -1,3 +1,4 @@
+import { m } from "#/paraglide/messages";
 import {
 	getWorkspaceViewByFolder,
 	getWorkspaceViewByLabel,
@@ -25,7 +26,7 @@ export const handleSource: CommandHandler = (ctx) => {
 		if (meta) {
 			ctx.pushHistory(<SourceOutput meta={meta} />);
 		} else {
-			ctx.pushHistory("no source metadata for current view");
+			ctx.pushHistory(m.source_no_metadata());
 		}
 
 		return true;
@@ -46,7 +47,7 @@ export const handleSource: CommandHandler = (ctx) => {
 	if (meta) {
 		ctx.pushHistory(<SourceOutput meta={meta} />);
 	} else {
-		ctx.pushHistory(`no workspace view found: ${arg}`);
+		ctx.pushHistory(m.source_not_found({ target: arg }));
 	}
 
 	return true;

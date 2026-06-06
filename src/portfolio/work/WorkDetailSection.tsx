@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
+import { m } from "#/paraglide/messages";
 import { SourceLinks } from "#/portfolio/SourceLinks";
 import { showRoutePanelSearch } from "#/terminal/terminal-search-transitions";
 import { workspaceViewMetadata } from "#/workspace/workspace-catalogue";
@@ -16,7 +17,7 @@ export function WorkDetailSection({ project }: { project: string }): ReactNode {
 			<div className="flex flex-1 flex-col gap-3 p-4 text-xs">
 				<div className="text-muted-foreground">{"/* work */"}</div>
 				<p>
-					project <span className="text-primary">{project}</span> not found.
+					{m.work_detail_not_found({ name: project })}
 				</p>
 				<Link
 					className="flex items-center gap-1 text-primary hover:underline"
@@ -24,7 +25,7 @@ export function WorkDetailSection({ project }: { project: string }): ReactNode {
 					search={showRoutePanelSearch}
 				>
 					<ArrowLeft className="size-3" />
-					back to projects
+					{m.work_detail_back()}
 				</Link>
 			</div>
 		);
@@ -39,7 +40,7 @@ export function WorkDetailSection({ project }: { project: string }): ReactNode {
 					search={showRoutePanelSearch}
 				>
 					<ArrowLeft className="size-3" />
-					work
+					{m.work_detail_nav_work()}
 				</Link>
 				<span>/</span>
 				<span className="text-primary">{entry.name}</span>

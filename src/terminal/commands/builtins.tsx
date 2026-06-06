@@ -1,6 +1,7 @@
 import { copyToClipboard } from "#/design-system/clipboard";
 import { Separator } from "#/design-system/Separator";
 import { getLocale, setLocale } from "#/paraglide/runtime";
+import { m } from "#/paraglide/messages";
 import { formatTerminalCwd } from "#/terminal/terminal-path";
 import { EmailOutput, WhoamiOutput } from "#/terminal/terminal-profile-outputs";
 import { LsOutput, TreeAllOutput, TreeOutput } from "../terminal-command-outputs";
@@ -49,7 +50,7 @@ function handleDate(ctx: CommandContext): boolean {
 
 function handleBunDev(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "bun dev") return false;
-	ctx.pushHistory("dev is already running on port 3000");
+	ctx.pushHistory(m.bun_dev_running());
 	return true;
 }
 
@@ -58,7 +59,7 @@ function handleHistory(ctx: CommandContext): boolean {
 	const cmdHistory = ctx.commandHistory;
 
 	if (cmdHistory.length === 0) {
-		ctx.pushHistory("no commands in history");
+		ctx.pushHistory(m.history_empty());
 		return true;
 	}
 
@@ -206,13 +207,13 @@ function handleLang(ctx: CommandContext): boolean {
 	if (ctx.normalized === "lang") {
 		ctx.pushHistory(
 			<div className="flex flex-col gap-0.5 font-mono text-foreground/90">
-				<p className="text-muted-foreground/70">available languages:</p>
+				<p className="text-muted-foreground/70">{m.lang_available()}</p>
 				{available.map((loc) => (
 					<p key={loc}>
 						{loc === current ? (
 							<>
 								<span className="text-primary">* {loc}</span>
-								<span className="text-muted-foreground/50"> (current)</span>
+								<span className="text-muted-foreground/50"> {m.lang_current()}</span>
 							</>
 						) : (
 							<span className="text-muted-foreground/70"> {loc}</span>
@@ -228,14 +229,14 @@ function handleLang(ctx: CommandContext): boolean {
 		const target = ctx.normalized === "lang --en" ? "en" : "fr";
 
 		if (current === target) {
-			ctx.pushHistory(<p className="text-muted-foreground">lang is already set to {target}</p>);
+			ctx.pushHistory(<p className="text-muted-foreground">{m.lang_already_set({ target })}</p>);
 			return true;
 		}
 
 		setLocale(target);
 		ctx.pushHistory(
 			<p className="text-muted-foreground">
-				lang set to <span className="text-primary">{target}</span>
+				{m.lang_set({ target })}
 			</p>,
 		);
 		return true;
@@ -247,7 +248,7 @@ function handleLang(ctx: CommandContext): boolean {
 function handleSettings(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "settings" && ctx.normalized !== "config") return false;
 	ctx.navigate(ctx.currentRoute, { dialog: "settings" });
-	ctx.pushHistory(<p className="text-muted-foreground">opened settings</p>);
+	ctx.pushHistory(<p className="text-muted-foreground">{m.settings_opened()}</p>);
 	return true;
 }
 
@@ -258,7 +259,7 @@ function handleMode(ctx: CommandContext): boolean {
 		ctx.setMode("dark");
 		ctx.pushHistory(
 			<span className="text-muted-foreground">
-				switched to <span className="text-primary">dark</span> mode
+				{m.mode_switched({ mode: "dark" })}
 			</span>,
 		);
 		return true;
@@ -268,7 +269,7 @@ function handleMode(ctx: CommandContext): boolean {
 		ctx.setMode("light");
 		ctx.pushHistory(
 			<span className="text-muted-foreground">
-				switched to <span className="text-primary">light</span> mode
+				{m.mode_switched({ mode: "light" })}
 			</span>,
 		);
 		return true;
@@ -277,7 +278,7 @@ function handleMode(ctx: CommandContext): boolean {
 	if (ctx.normalized === "mode") {
 		ctx.pushHistory(
 			<div className="flex flex-col gap-0.5 font-mono text-foreground/90">
-				<p className="text-muted-foreground/70">usage: mode &lt;dark|light&gt;</p>
+				<p className="text-muted-foreground/70">{m.mode_usage()}</p>
 			</div>,
 		);
 		return true;

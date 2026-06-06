@@ -1,9 +1,46 @@
 import { ChevronRightIcon, CircleHelpIcon, FolderIcon, TerminalIcon } from "lucide-react";
+import { m } from "#/paraglide/messages";
 import { cn } from "#/design-system/cn";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "#/design-system/dialog";
-import { getCommandSummary, routeDescriptions } from "#/terminal/terminal-command-docs";
 import { terminalCommands } from "#/terminal/terminal-commands";
 import { terminalRoutes } from "#/terminal/terminal-routes";
+
+const routeDescriptionMessages: Record<string, () => string> = {
+	"/home": () => m.route_home(),
+	"/about": () => m.route_about(),
+	"/work": () => m.route_work(),
+	"/contact": () => m.route_contact(),
+};
+
+const commandDescriptionMessages: Record<string, () => string> = {
+	bun: () => m.cmd_bun(),
+	cat: () => m.cmd_cat(),
+	cd: () => m.cmd_cd(),
+	clear: () => m.cmd_clear(),
+	config: () => m.cmd_config(),
+	close: () => m.cmd_close(),
+	date: () => m.cmd_date(),
+	email: () => m.cmd_email(),
+	git: () => m.cmd_git(),
+	github: () => m.cmd_github(),
+	lang: () => m.cmd_lang(),
+	linkedin: () => m.cmd_linkedin(),
+	social: () => m.cmd_social(),
+	x: () => m.cmd_x(),
+	help: () => m.cmd_help(),
+	history: () => m.cmd_history(),
+	ls: () => m.cmd_ls(),
+	man: () => m.cmd_man(),
+	nvim: () => m.cmd_nvim(),
+	open: () => m.cmd_open(),
+	pwd: () => m.cmd_pwd(),
+	reload: () => m.cmd_reload(),
+	rm: () => m.cmd_rm(),
+	settings: () => m.cmd_settings(),
+	source: () => m.cmd_source(),
+	tree: () => m.cmd_tree(),
+	whoami: () => m.cmd_whoami(),
+};
 
 type HelpDialogProps = {
 	open: boolean;
@@ -30,19 +67,20 @@ export function HelpDialog(props: HelpDialogProps) {
 			<DialogContent className="flex">
 				<div className="relative flex-1 flex flex-col rounded border-2 border-border border-glow bg-popover p-4 text-popover-foreground">
 					<DialogTitle className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-2 border-border z-10">
-						Help
+						{m.help_title()}
 					</DialogTitle>
 
 					<div className="min-h-0 flex-1 grid gap-5 overflow-y-auto py-3">
 						<DialogDescription className="border-b border-border pb-3">
-							Available routes and commands. Use{" "}
-							<span className="text-foreground">man &lt;command&gt;</span> for details.
+							{m.help_description_prefix()}{" "}
+							<span className="text-foreground">man &lt;command&gt;</span>{" "}
+							{m.help_description_suffix()}
 						</DialogDescription>
 
 						<div className="grid gap-1 font-mono text-xs">
 							{terminalRoutes.map((route) => (
 								<HelpRow
-									description={routeDescriptions[route]?.split(" — ")[1] ?? ""}
+									description={routeDescriptionMessages[route]?.() ?? ""}
 									icon="route"
 									key={route}
 									label={route}
@@ -51,7 +89,7 @@ export function HelpDialog(props: HelpDialogProps) {
 							))}
 							{terminalCommands.map((command) => (
 								<HelpRow
-									description={getCommandSummary(command) ?? ""}
+									description={commandDescriptionMessages[command]?.() ?? ""}
 									icon={command === "help" ? "help" : "command"}
 									key={command}
 									label={command}
@@ -63,10 +101,10 @@ export function HelpDialog(props: HelpDialogProps) {
 
 					<div className="flex items-center justify-center gap-6 border-t border-border pt-3 text-muted-foreground text-xs">
 						<span>
-							<kbd className="text-primary">ESC</kbd> close
+							<kbd className="text-primary">ESC</kbd> {m.help_hint_close()}
 						</span>
 						<span>
-							<kbd className="text-primary">←</kbd> back
+							<kbd className="text-primary">←</kbd> {m.help_hint_back()}
 						</span>
 					</div>
 				</div>

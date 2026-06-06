@@ -1,9 +1,11 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { m } from "#/paraglide/messages";
+import { animate, createScope } from "animejs";
 import { ClockIcon, FileTerminal, SettingsIcon } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { cn } from "#/design-system/cn";
 import { Clock } from "#/layout/Clock";
-import { setLocale } from "#/paraglide/runtime";
+import { getLocale, setLocale } from "#/paraglide/runtime";
 import { SettingsDialog } from "#/settings-dialog";
 import { terminalNavigationItems } from "#/terminal/terminal-routes";
 import {
@@ -77,18 +79,45 @@ export function AppHeader() {
 			<Link
 				activeOptions={{ includeSearch: true }}
 				activeProps={{ className: getNavigationActiveLinkClassName(editorVariant) }}
-				aria-label="Open editor"
+				aria-label={m.header_open_editor()}
 				className={getNavigationLinkClassName(editorVariant)}
 				search={openEditorPanelSearch}
 				to="."
 			>
 				<span className="flex items-center gap-1">
 					<FileTerminal className="size-3" />
-					<span className="sr-only">editor</span>
+					<span className="sr-only">{m.header_editor_sr()}</span>
 				</span>
 			</Link>
 		),
 	});
+	const currentLocale = getLocale();
+	const langShineRef = useRef<HTMLSpanElement>(null);
+
+	useEffect(() => {
+		const el = langShineRef.current;
+		if (!el) return;
+
+		const scope = createScope({
+			mediaQueries: {
+				reduceMotion: "(prefers-reduced-motion)",
+			},
+		}).add((self) => {
+			const reduceMotion = self?.matches.reduceMotion ?? false;
+
+			animate(el, {
+				backgroundPosition: ["200%", "-200%"],
+				duration: reduceMotion ? 0 : 4000,
+				ease: "linear",
+				loop: true,
+			});
+		});
+
+		return () => {
+			scope.revert();
+		};
+	}, [currentLocale]);
+
 	const rightItems: StatusItem[] = [
 		{
 			id: "language",
@@ -96,11 +125,29 @@ export function AppHeader() {
 			content: (
 				<div className="flex items-center gap-1.5">
 					<button className="cursor-pointer" type="button" onClick={() => setLocale("fr")}>
-						FR
+						{currentLocale === "fr" ? (
+							<span
+								className="inline-block bg-linear-to-r from-status-open from-35% via-status-shimmer via-60% to-status-open to-55% bg-size-[200%_100%] bg-clip-text leading-none text-transparent"
+								ref={currentLocale === "fr" ? langShineRef : undefined}
+							>
+								FR
+							</span>
+						) : (
+							"FR"
+						)}
 					</button>
 					<span>|</span>
 					<button className="cursor-pointer" type="button" onClick={() => setLocale("en")}>
-						EN
+						{currentLocale === "en" ? (
+							<span
+								className="inline-block bg-linear-to-r from-status-open from-35% via-status-shimmer via-60% to-status-open to-55% bg-size-[200%_100%] bg-clip-text leading-none text-transparent"
+								ref={currentLocale === "en" ? langShineRef : undefined}
+							>
+								EN
+							</span>
+						) : (
+							"EN"
+						)}
 					</button>
 				</div>
 			),
@@ -110,7 +157,7 @@ export function AppHeader() {
 			variant: "primary",
 			content: (
 				<button
-					aria-label="Open settings"
+					aria-label={m.header_open_settings()}
 					className="inline-flex size-4 cursor-pointer items-center justify-center rounded-sm opacity-80 transition hover:opacity-100 focus-visible:outline-2 focus-visible:outline-ring"
 					type="button"
 					onClick={() => setSettingsOpen(true)}

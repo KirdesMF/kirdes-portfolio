@@ -1,3 +1,4 @@
+import { m } from "#/paraglide/messages";
 import { InfosOutput } from "#/terminal/terminal-profile-outputs";
 import type { CommandHandler } from "./types";
 
@@ -21,6 +22,6 @@ export const handleCat: CommandHandler = (ctx) => {
 		return true;
 	}
 
-	ctx.pushHistory(`file not found: ${target}`);
+	ctx.pushHistory(m.cat_not_found({ target }));
 	return true;
 };

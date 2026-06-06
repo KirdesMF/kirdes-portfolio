@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { MoveRight } from "lucide-react";
 import { useState } from "react";
+import { m } from "#/paraglide/messages";
 import {
 	Popover,
 	PopoverContent,
@@ -24,22 +25,21 @@ const STATUS_CONFIG: Record<
 > = {
 	"open-to-work": {
 		dotColor: "bg-status-open",
-		label: "OPEN",
-		title: "[OPEN TO WORK]",
-		description:
-			"Actively looking for new opportunities. Open to full-time, contract, or freelance roles.",
+		label: m.avail_open_to_work_label(),
+		title: m.avail_open_to_work_title(),
+		description: m.avail_open_to_work_description(),
 	},
 	"open-to-offers": {
 		dotColor: "bg-status-open-offers",
-		label: "OFFERS",
-		title: "[OPEN TO OFFERS]",
-		description: "Not actively searching but open to interesting opportunities and conversations.",
+		label: m.avail_open_to_offers_label(),
+		title: m.avail_open_to_offers_title(),
+		description: m.avail_open_to_offers_description(),
 	},
 	busy: {
 		dotColor: "bg-status-busy",
-		label: "BUSY",
-		title: "[BUSY]",
-		description: "Fully committed to current projects — not available for new work right now.",
+		label: m.avail_busy_label(),
+		title: m.avail_busy_title(),
+		description: m.avail_busy_description(),
 	},
 };
 
@@ -55,7 +55,7 @@ export function AvailabilityStatus({ status }: AvailabilityStatusProps) {
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger ref={rootRef} className="flex cursor-pointer items-center gap-1.5">
 				<span className={`inline-block size-1.5 rounded-full ${config.dotColor}`} />
-				<span data-anim-item>AVAILABLE</span>
+				<span data-anim-item>{m.avail_label()}</span>
 				<MoveRight className="size-3" />
 				<span data-anim-item>{config.label}</span>
 			</PopoverTrigger>

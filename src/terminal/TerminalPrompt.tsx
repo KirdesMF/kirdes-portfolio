@@ -1,4 +1,5 @@
 import { type SubmitEvent, useId, useRef, useState } from "react";
+import { m } from "#/paraglide/messages";
 import { getVisibleFileNames } from "#/editor/editor-files";
 import { formatTerminalCwd } from "#/terminal/terminal-path";
 import { commandNames, terminalNavigationItems } from "#/terminal/terminal-routes";
@@ -155,7 +156,7 @@ export function TerminalPrompt({
 					autoFocus
 					className="relative w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/70 [caret-shape:block]"
 					id={inputId}
-					placeholder="type a command..."
+					placeholder={m.prompt_placeholder()}
 					spellCheck={false}
 					type="text"
 					value={value}

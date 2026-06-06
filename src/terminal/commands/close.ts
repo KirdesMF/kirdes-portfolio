@@ -1,3 +1,4 @@
+import { m } from "#/paraglide/messages";
 import type { CommandHandler } from "./types";
 
 /**
@@ -27,7 +28,7 @@ export const handleClose: CommandHandler = (ctx) => {
 		const file = ctx.resolveFile(target, ctx.currentRoute);
 
 		if (file === null) {
-			ctx.pushHistory(`file not found: ${target}`);
+			ctx.pushHistory(m.close_not_found({ target }));
 			return true;
 		}
 
