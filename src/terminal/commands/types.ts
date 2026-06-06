@@ -48,4 +48,7 @@ export type CommandContext = {
 	commandHistory: Array<string>;
 	/** Clear terminal display history */
 	clearHistory: () => void;
+
+	/** Set color mode to "light" or "dark" */
+	setMode: (mode: "light" | "dark") => void;
 };

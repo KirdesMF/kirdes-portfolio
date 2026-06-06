@@ -28,8 +28,8 @@ export function HelpDialog(props: HelpDialogProps) {
 	return (
 		<Dialog open={props.open} onOpenChange={props.onOpenChange}>
 			<DialogContent className="flex">
-				<div className="relative flex-1 flex flex-col rounded border-2 border-border bg-popover p-4 text-popover-foreground">
-					<DialogTitle className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-2 border-border">
+				<div className="relative flex-1 flex flex-col rounded border-2 border-border border-glow bg-popover p-4 text-popover-foreground">
+					<DialogTitle className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-2 border-border z-10">
 						Help
 					</DialogTitle>
 

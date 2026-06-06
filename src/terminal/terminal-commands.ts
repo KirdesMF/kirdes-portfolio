@@ -14,6 +14,7 @@ export const terminalCommands = [
 	"linkedin",
 	"ls",
 	"man",
+	"mode",
 	"open",
 	"pwd",
 	"reload",

@@ -245,6 +245,33 @@ function handleSettings(ctx: CommandContext): boolean {
 	return true;
 }
 
+function handleMode(ctx: CommandContext): boolean {
+	if (!ctx.normalized.startsWith("mode")) return false;
+
+	if (ctx.normalized === "mode dark") {
+		ctx.setMode("dark");
+		ctx.pushHistory(<span className="text-muted-foreground">switched to <span className="text-primary">dark</span> mode</span>);
+		return true;
+	}
+
+	if (ctx.normalized === "mode light") {
+		ctx.setMode("light");
+		ctx.pushHistory(<span className="text-muted-foreground">switched to <span className="text-primary">light</span> mode</span>);
+		return true;
+	}
+
+	if (ctx.normalized === "mode") {
+		ctx.pushHistory(
+			<div className="flex flex-col gap-0.5 font-mono text-foreground/90">
+				<p className="text-muted-foreground/70">usage: mode &lt;dark|light&gt;</p>
+			</div>,
+		);
+		return true;
+	}
+
+	return false;
+}
+
 function handleReload(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "reload") return false;
 	ctx.navigate("/");
@@ -268,5 +295,6 @@ export const builtinHandlers: ReadonlyArray<CommandHandler> = [
 	handleSocial,
 	handleX,
 	handleSettings,
+	handleMode,
 	handleReload,
 ];

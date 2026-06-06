@@ -10,11 +10,13 @@ export function useTerminalController({
 	currentTerminalRoute,
 	isHomeRoute,
 	openFileNames,
+	setMode,
 }: {
 	activeFileName?: EditorFileName;
 	currentTerminalRoute: TerminalRoutePath;
 	isHomeRoute: boolean;
 	openFileNames: Array<EditorFileName>;
+	setMode: (mode: "light" | "dark") => void;
 }) {
 	const { clearHistory, commandHistory, history, pushHistory } = useCommandHistory();
 	const actions = useTerminalSearchActions({
@@ -42,6 +44,7 @@ export function useTerminalController({
 			lsFiles,
 			commandHistory,
 			clearHistory,
+			setMode,
 		};
 
 		dispatch(ctx);

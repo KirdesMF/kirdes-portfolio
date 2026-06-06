@@ -4,6 +4,7 @@ import { cn } from "#/design-system/cn";
 import { EditorPane } from "#/editor/EditorPane";
 import type { EditorFileName } from "#/editor/editor-files";
 import { AppHeader } from "#/layout/AppHeader";
+import { useTheme } from "#/theme/ThemeProvider";
 import { HelpDialog } from "#/terminal/HelpDialog";
 import { getMobilePanel, TerminalMobilePanels } from "./TerminalMobilePanels";
 import { TerminalPane } from "./TerminalPane";
@@ -42,11 +43,13 @@ export function TerminalLayout({
 	const hasEditorPanel = activeEditor === "open";
 	const hasRightPanel = !isHomeRoute || hasEditorPanel;
 	const mobilePanel = getMobilePanel(activePanel, hasEditorPanel, isHomeRoute);
+	const { setAppearance, appearance } = useTheme();
 	const terminal = useTerminalController({
 		activeFileName,
 		currentTerminalRoute,
 		isHomeRoute,
 		openFileNames,
+		setMode: (mode) => setAppearance({ ...appearance, mode }),
 	});
 
 	function setHelpOpen(open: boolean) {
