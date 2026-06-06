@@ -250,13 +250,21 @@ function handleMode(ctx: CommandContext): boolean {
 
 	if (ctx.normalized === "mode dark") {
 		ctx.setMode("dark");
-		ctx.pushHistory(<span className="text-muted-foreground">switched to <span className="text-primary">dark</span> mode</span>);
+		ctx.pushHistory(
+			<span className="text-muted-foreground">
+				switched to <span className="text-primary">dark</span> mode
+			</span>,
+		);
 		return true;
 	}
 
 	if (ctx.normalized === "mode light") {
 		ctx.setMode("light");
-		ctx.pushHistory(<span className="text-muted-foreground">switched to <span className="text-primary">light</span> mode</span>);
+		ctx.pushHistory(
+			<span className="text-muted-foreground">
+				switched to <span className="text-primary">light</span> mode
+			</span>,
+		);
 		return true;
 	}
 
