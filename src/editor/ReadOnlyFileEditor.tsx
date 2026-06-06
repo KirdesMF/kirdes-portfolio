@@ -396,7 +396,7 @@ export function ReadOnlyFileEditor({
 				onToggleMaximize,
 				openFileNames,
 			})}
-			<div className="min-h-0 flex-1 overflow-auto">
+			<div className="min-h-0 flex-1 overflow-auto scrollbar-gutter-both">
 				{activeFileName ? (
 					<EditorBody highlightedEditorFile={highlightedEditorFile} key={activeFileName} />
 				) : (

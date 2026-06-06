@@ -1,5 +1,5 @@
 import { useRouter, useRouterState } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { type CSSProperties, type ReactNode, useRef } from "react";
 import { cn } from "#/design-system/cn";
 import { EditorPane } from "#/editor/EditorPane";
 import type { EditorFileName } from "#/editor/editor-files";
@@ -8,10 +8,12 @@ import { HelpDialog } from "#/terminal/HelpDialog";
 import { useTheme } from "#/theme/ThemeProvider";
 import { getMobilePanel, TerminalMobilePanels } from "./TerminalMobilePanels";
 import { TerminalPane } from "./TerminalPane";
+import { TerminalResizeHandle } from "./TerminalResizeHandle";
 import { TerminalRoutePane } from "./TerminalRoutePane";
 import type { MaximizedPanel, TerminalPanelName } from "./terminal-panel-types";
 import { getTerminalRoutePath } from "./terminal-routes";
 import { setDialogSearch, toggleMaximizedSearch } from "./terminal-search-transitions";
+import { useResizablePanels } from "./useResizablePanels";
 import { useTerminalController } from "./useTerminalController";
 
 export function TerminalLayout({
@@ -44,6 +46,9 @@ export function TerminalLayout({
 	const hasRightPanel = !isHomeRoute || hasEditorPanel;
 	const mobilePanel = getMobilePanel(activePanel, hasEditorPanel, isHomeRoute);
 	const { setAppearance, appearance } = useTheme();
+	const layoutRef = useRef<HTMLDivElement | null>(null);
+	const rightPaneRef = useRef<HTMLElement | null>(null);
+	const resizablePanels = useResizablePanels();
 	const terminal = useTerminalController({
 		activeFileName,
 		currentTerminalRoute,
@@ -69,6 +74,14 @@ export function TerminalLayout({
 	const isTerminalHidden = maximized !== undefined;
 	const isRouteMaximized = maximized === "route";
 	const isEditorMaximized = maximized === "editor";
+	const canResizeTerminal = hasRightPanel && maximized === undefined;
+	const canResizeRouteEditor = hasEditorPanel && !isHomeRoute && maximized === undefined;
+	const layoutStyle = {
+		"--terminal-pane-size": `${resizablePanels.terminalPaneSize}%`,
+	} as CSSProperties;
+	const rightPaneStyle = {
+		"--route-pane-size": `${resizablePanels.routePaneSize}%`,
+	} as CSSProperties;
 
 	return (
 		<div className="flex h-dvh flex-col">
@@ -81,11 +94,12 @@ export function TerminalLayout({
 				isHomeRoute={isHomeRoute}
 				onSelectPanel={terminal.setMobilePanel}
 			/>
-			<div className="flex min-h-0 flex-1">
+			<div className="flex min-h-0 flex-1" ref={layoutRef} style={layoutStyle}>
 				<TerminalPane
 					className={cn(
 						mobilePanel === "terminal" ? "flex" : "hidden",
 						"md:flex",
+						canResizeTerminal && "md:basis-(--terminal-pane-size) md:flex-none",
 						isTerminalHidden && "md:hidden",
 					)}
 					currentRoute={currentTerminalRoute}
@@ -93,17 +107,40 @@ export function TerminalLayout({
 					history={terminal.history}
 					onSubmit={terminal.handleSubmit}
 				/>
+				{canResizeTerminal ? (
+					<TerminalResizeHandle
+						axis="horizontal"
+						value={resizablePanels.terminalPaneSize}
+						onKeyResize={(delta) =>
+							resizablePanels.resizeByKeyboard({
+								container: layoutRef.current,
+								delta,
+								target: "terminal",
+							})
+						}
+						onResizeStart={(event) =>
+							resizablePanels.startResize({
+								axis: "horizontal",
+								container: layoutRef.current,
+								event,
+								target: "terminal",
+							})
+						}
+					/>
+				) : null}
 				{hasRightPanel ? (
 					<aside
 						className={cn(
 							"min-w-0 flex-1 overflow-hidden text-xs",
 							"md:grid",
 							mobilePanel === "terminal" ? "hidden md:grid" : "grid",
-							!isTerminalHidden && "md:w-1/2 md:flex-none",
-							hasEditorPanel && !isHomeRoute && !isRouteMaximized && !isEditorMaximized
-								? "md:grid-rows-2"
+							canResizeTerminal && "md:basis-[calc(100%-var(--terminal-pane-size))] md:flex-none",
+							canResizeRouteEditor
+								? "md:grid-rows-[var(--route-pane-size)_auto_minmax(0,1fr)]"
 								: "md:grid-rows-1",
 						)}
+						ref={rightPaneRef}
+						style={rightPaneStyle}
 					>
 						{isHomeRoute ? null : (
 							<TerminalRoutePane
@@ -119,6 +156,27 @@ export function TerminalLayout({
 								{children}
 							</TerminalRoutePane>
 						)}
+						{canResizeRouteEditor ? (
+							<TerminalResizeHandle
+								axis="vertical"
+								value={resizablePanels.routePaneSize}
+								onKeyResize={(delta) =>
+									resizablePanels.resizeByKeyboard({
+										container: rightPaneRef.current,
+										delta,
+										target: "route",
+									})
+								}
+								onResizeStart={(event) =>
+									resizablePanels.startResize({
+										axis: "vertical",
+										container: rightPaneRef.current,
+										event,
+										target: "route",
+									})
+								}
+							/>
+						) : null}
 						{hasEditorPanel ? (
 							<EditorPane
 								activeFileName={activeFileName}

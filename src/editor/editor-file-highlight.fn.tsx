@@ -15,7 +15,7 @@ async function HighlightedEditorFile({ fileName }: { fileName: string }) {
 	}
 
 	return (
-		<div className="editor-code min-h-0 flex-1 overflow-auto p-2">
+		<div className="editor-code min-h-0 flex-1 overflow-auto p-2 scrollbar-gutter-both">
 			{/* biome-ignore lint/security/noDangerouslySetInnerHtml: shiki output is server-generated from local files */}
 			<div dangerouslySetInnerHTML={{ __html: result.html }} />
 		</div>

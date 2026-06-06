@@ -51,7 +51,7 @@ export function TerminalRoutePane({
 			</div>
 			<div
 				className={cn(
-					"min-h-0 flex-1 overflow-y-auto p-3",
+					"min-h-0 flex-1 overflow-y-auto p-3 scrollbar-gutter-both",
 					hasEditorPanel && "md:border-b md:border-border",
 				)}
 			>
