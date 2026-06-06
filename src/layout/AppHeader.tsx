@@ -1,8 +1,10 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { animate, createScope } from "animejs";
 import { ClockIcon, FileTerminal, SettingsIcon } from "lucide-react";
-import { type ReactNode, useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "#/design-system/cn";
+import { Drawer, DrawerContent, DrawerHandle, DrawerTrigger } from "#/design-system/drawer";
+import { useIsMobile } from "#/design-system/useMediaQuery";
 import { Clock } from "#/layout/Clock";
 import { m } from "#/paraglide/messages";
 import { getLocale, setLocale } from "#/paraglide/runtime";
@@ -40,6 +42,8 @@ export function AppHeader() {
 	const navigate = useNavigate();
 	const search = useSearch({ strict: false }) as { dialog?: string };
 	const settingsOpen = search.dialog === "settings";
+	const [navDrawerOpen, setNavDrawerOpen] = useState(false);
+	const isMobile = useIsMobile();
 
 	function setSettingsOpen(open: boolean) {
 		// biome-ignore lint/suspicious/noExplicitAny: route search is shared across nested terminal routes.
@@ -48,31 +52,72 @@ export function AppHeader() {
 				setDialogSearch(previous, open ? "settings" : undefined),
 		});
 	}
-	const leftItems: StatusItem[] = terminalNavigationItems.map(({ command, label, to }, index) => {
-		const variant: StatusVariant = index % 2 === 0 ? "primary" : "muted";
-		const linkClassName = getNavigationLinkClassName(variant);
-		const activeLinkClassName = getNavigationActiveLinkClassName(variant);
 
-		return {
-			id: command,
-			variant,
+	// ── Desktop left items (current behavior) ──────────────────────────
+	const desktopLeftItems: StatusItem[] = terminalNavigationItems.map(
+		({ command, label, to }, index) => {
+			const variant: StatusVariant = index % 2 === 0 ? "primary" : "muted";
+			const linkClassName = getNavigationLinkClassName(variant);
+			const activeLinkClassName = getNavigationActiveLinkClassName(variant);
+
+			return {
+				id: command,
+				variant,
+				content: (
+					<Link
+						activeOptions={{ exact: true }}
+						activeProps={{
+							className: activeLinkClassName,
+						}}
+						className={linkClassName}
+						search={showRoutePanelSearch}
+						to={to}
+					>
+						{label === "~" ? label : `${label}/`}
+					</Link>
+				),
+			};
+		},
+	);
+	const editorVariant: StatusVariant = desktopLeftItems.length % 2 === 0 ? "primary" : "muted";
+
+	// ── Mobile left items: menu + editor ───────────────────────────────
+	const mobileMenuVariant: StatusVariant = "primary";
+	const mobileEditorVariant: StatusVariant = "muted";
+
+	const mobileLeftItems: StatusItem[] = [
+		{
+			id: "menu",
+			variant: mobileMenuVariant,
+			content: (
+				<DrawerTrigger className="cursor-pointer" aria-label="Open navigation menu">
+					menu
+				</DrawerTrigger>
+			),
+		},
+		{
+			id: "editor",
+			variant: mobileEditorVariant,
 			content: (
 				<Link
-					activeOptions={{ exact: true }}
-					activeProps={{
-						className: activeLinkClassName,
-					}}
-					className={linkClassName}
-					search={showRoutePanelSearch}
-					to={to}
+					activeOptions={{ includeSearch: true }}
+					activeProps={{ className: getNavigationActiveLinkClassName(mobileEditorVariant) }}
+					aria-label={m.header_open_editor()}
+					className={getNavigationLinkClassName(mobileEditorVariant)}
+					search={openEditorPanelSearch}
+					to="."
 				>
-					{label === "~" ? label : `${label}/`}
+					<span className="flex items-center gap-1">
+						<FileTerminal className="size-3" />
+						<span className="sr-only">{m.header_editor_sr()}</span>
+					</span>
 				</Link>
 			),
-		};
-	});
-	const editorVariant: StatusVariant = leftItems.length % 2 === 0 ? "primary" : "muted";
-	leftItems.push({
+		},
+	];
+
+	// Desktop: add editor after nav items
+	desktopLeftItems.push({
 		id: "editor",
 		variant: editorVariant,
 		content: (
@@ -183,7 +228,29 @@ export function AppHeader() {
 	return (
 		<>
 			<header className="flex h-status-bar shrink-0 items-stretch justify-between border-b border-border bg-status text-status-foreground">
-				<StatusGroup items={leftItems} side="left" />
+				{/* Desktop navigation — inline chevron segments */}
+				<div className="hidden min-w-0 md:flex">
+					<StatusGroup items={desktopLeftItems} side="left" />
+				</div>
+				{/* Mobile navigation — menu chevron + editor */}
+				{isMobile && (
+					<Drawer open={navDrawerOpen} onOpenChange={setNavDrawerOpen}>
+						<div className="flex min-w-0">
+							<StatusGroup items={mobileLeftItems} side="left" />
+						</div>
+						<DrawerContent>
+							<DrawerHandle />
+							<div
+								className={cn(
+									"relative mx-4 mb-4 flex flex-col rounded border-2 border-border border-glow",
+									"bg-popover text-popover-foreground overflow-hidden",
+								)}
+							>
+								<MobileNavDrawer onNavigate={() => setNavDrawerOpen(false)} />
+							</div>
+						</DrawerContent>
+					</Drawer>
+				)}
 				<StatusGroup items={rightItems} side="right" />
 			</header>
 			<SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
@@ -274,5 +341,41 @@ function Chevron(props: { direction: "left" | "right"; variant: StatusVariant })
 		>
 			<polygon points={props.direction === "left" ? "16,0 0,10 16,20" : "0,0 16,10 0,20"} />
 		</svg>
+	);
+}
+
+function MobileNavDrawer({ onNavigate }: { onNavigate: () => void }) {
+	return (
+		<nav className="grid gap-2.5 p-2.5">
+			{terminalNavigationItems.map(({ command, label, to }, index) => {
+				const variant: StatusVariant = index % 2 === 0 ? "primary" : "muted";
+				const direction = index % 2 === 0 ? "right" : "left";
+				const v = variantClass[variant];
+
+				return (
+					<Link
+						className={cn("flex h-10 min-w-0 items-stretch no-underline", v.foreground)}
+						key={command}
+						search={showRoutePanelSearch}
+						to={to}
+						onClick={onNavigate}
+					>
+						{direction === "left" && <Chevron direction="left" variant={variant} />}
+						<div
+							className={cn(
+								"flex min-w-0 flex-1 items-center gap-2 px-4",
+								v.background,
+								direction === "left" ? "ps-5" : "pe-4",
+							)}
+						>
+							<span className="text-sm uppercase tracking-wider">
+								{label === "~" ? "terminal" : label}
+							</span>
+						</div>
+						{direction === "right" && <Chevron direction="right" variant={variant} />}
+					</Link>
+				);
+			})}
+		</nav>
 	);
 }
