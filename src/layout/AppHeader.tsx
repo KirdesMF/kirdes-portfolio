@@ -133,7 +133,7 @@ export function AppHeader() {
 
 	return (
 		<>
-			<header className="flex h-status-bar shrink-0 items-stretch justify-between border-b border-border bg-status">
+			<header className="flex h-status-bar shrink-0 items-stretch justify-between border-b border-border bg-status text-status-foreground">
 				<StatusGroup items={leftItems} side="left" />
 				<StatusGroup items={rightItems} side="right" />
 			</header>

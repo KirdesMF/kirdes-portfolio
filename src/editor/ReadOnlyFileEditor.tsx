@@ -125,7 +125,7 @@ function EditorStatusBar({ activeFileName }: { activeFileName?: string }) {
 	];
 
 	return (
-		<footer className="flex h-status-bar shrink-0 items-stretch justify-between border-t border-border bg-status">
+		<footer className="flex h-status-bar shrink-0 items-stretch justify-between border-t border-border bg-status text-status-foreground">
 			<StatusGroup items={leftItems} side="left" />
 			<StatusGroup items={rightItems} side="right" />
 		</footer>
@@ -322,7 +322,7 @@ function EmptyEditor() {
 						<div className="grid grid-cols-[1.5rem_1fr_1rem] items-center gap-4" key={id}>
 							<Icon aria-hidden="true" className="size-4 text-primary" />
 							<span className="tracking-wide text-primary/90">{label}</span>
-							<span className="text-end text-highlight">{shortcut}</span>
+							<span className="text-end text-command-shortcut">{shortcut}</span>
 						</div>
 					))}
 				</div>

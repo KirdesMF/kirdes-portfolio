@@ -19,7 +19,7 @@ type MenuLinkItemProps = Omit<ComponentProps<typeof BaseMenu.LinkItem>, "classNa
 };
 
 const menuItemClassName =
-	"block rounded-sm px-2 py-1.5 text-muted-foreground text-xs outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus:bg-sidebar-accent focus:text-sidebar-foreground data-highlighted:bg-sidebar-accent data-highlighted:text-sidebar-foreground";
+	"block rounded-sm px-2 py-1.5 text-muted-foreground text-xs outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-highlighted:bg-accent data-highlighted:text-accent-foreground";
 
 export function Menu(props: MenuProps): ReactNode {
 	return <BaseMenu.Root {...props} />;
