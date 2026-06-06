@@ -282,13 +282,13 @@ function renderEditorTabs({
 				<Separator className="h-full" orientation="vertical" />
 				<button
 					aria-label={isMaximized ? "Minimize panel" : "Maximize panel"}
-					className="flex h-full shrink-0 items-center px-2 text-tiny text-muted-foreground/70 hover:text-foreground"
+					className="hidden h-full shrink-0 items-center px-2 text-tiny text-muted-foreground/70 hover:text-foreground md:flex"
 					type="button"
 					onClick={onToggleMaximize}
 				>
 					{isMaximized ? <Minimize2 className="size-3.5" /> : <Maximize2 className="size-3.5" />}
 				</button>
-				<Separator className="h-full" orientation="vertical" />
+				<Separator className="hidden h-full md:block" orientation="vertical" />
 				<button
 					aria-label="Close editor"
 					className="flex h-full shrink-0 items-center px-3 text-tiny text-muted-foreground/70 hover:text-foreground"
