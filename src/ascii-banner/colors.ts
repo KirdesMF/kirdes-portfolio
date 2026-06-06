@@ -1,8 +1,12 @@
 export function hexToRgb(hex: string): [number, number, number] {
 	const normalized = hex.replace("#", "");
-	const full = normalized.length === 3
-		? normalized.split("").map((char) => char + char).join("")
-		: normalized.padEnd(6, "0").slice(0, 6);
+	const full =
+		normalized.length === 3
+			? normalized
+					.split("")
+					.map((char) => char + char)
+					.join("")
+			: normalized.padEnd(6, "0").slice(0, 6);
 
 	return [
 		Number.parseInt(full.slice(0, 2), 16),

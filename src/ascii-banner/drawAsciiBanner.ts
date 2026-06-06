@@ -1,4 +1,4 @@
-import { getCellKind, type BannerArt } from "./bannerArt";
+import { type BannerArt, getCellKind } from "./bannerArt";
 import { mixColor } from "./colors";
 
 export type AsciiBannerColors = {

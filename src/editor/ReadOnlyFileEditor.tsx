@@ -332,8 +332,8 @@ function EmptyEditor() {
 				>
 					<Zap aria-hidden="true" className="size-3 text-primary" />
 					<span data-anim-editor-status>
-						Neovim loaded <span className="text-status-primary">5/38</span> plugins in{" "}
-						{loadingTime}ms
+						Neovim loaded <span className="text-status-primary">5/38</span> plugins in {loadingTime}
+						ms
 					</span>
 				</div>
 			</div>
