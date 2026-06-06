@@ -31,7 +31,7 @@
 	-webkit-mask-composite: xor;
 	animation: border-rotate 4s linear infinite;
 	pointer-events: none;
-	z-index: 0;
+	z-index: var(--z-decoration);
 }
 
 @keyframes border-rotate {
@@ -55,7 +55,7 @@ body::before {
 	position: fixed;
 	inset: 0;
 	pointer-events: none;
-	z-index: 100;
+	z-index: var(--z-screen-effect);
 	background: repeating-linear-gradient(
 		0deg,
 		transparent,
@@ -172,6 +172,9 @@ Theme token taxonomy:
 	--tracking-normal: 0.01em;
 	--spacing: 0.25rem;
 	--spacing-status-bar: 1.5rem;
+	--z-decoration: 0;
+	--z-raised: 20;
+	--z-screen-effect: 100;
 }
 
 .dark {
@@ -626,6 +629,9 @@ Theme token taxonomy:
 }
 
 @theme inline {
+	--z-index-decoration: var(--z-decoration);
+	--z-index-raised: var(--z-raised);
+	--z-index-screen-effect: var(--z-screen-effect);
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
 	--color-card: var(--card);
@@ -726,9 +732,8 @@ Theme token taxonomy:
 	display: inline-block;
 	min-height: 1lh;
 	min-width: 100%;
-	padding-inline-start: 2.5rem;
+	padding-inline-start: 5ch;
 	position: relative;
-	vertical-align: top;
 }
 
 .editor-code .line:empty::after {
@@ -739,12 +744,12 @@ Theme token taxonomy:
 	content: counter(line);
 	counter-increment: line;
 	font-variant-numeric: tabular-nums;
-	left: 0;
+	inset-inline-start: 0;
 	opacity: 0.35;
 	position: absolute;
 	text-align: right;
 	user-select: none;
-	width: 2rem;
+	width: 3ch;
 	color: var(--muted-foreground);
 }
 

@@ -32,11 +32,11 @@ export function DrawerContent({ children, className, ...props }: DrawerContentPr
 	return (
 		<BaseDrawer.Portal>
 			<BaseDrawer.Backdrop
-				className="fixed inset-0 z-50 bg-black/40 opacity-[calc(1-var(--drawer-swipe-progress))] transition-opacity duration-300 data-ending-style:opacity-0 data-starting-style:opacity-0 data-swiping:duration-0"
+				className="fixed inset-0 bg-black/40 opacity-[calc(1-var(--drawer-swipe-progress))] transition-opacity duration-300 data-ending-style:opacity-0 data-starting-style:opacity-0 data-swiping:duration-0"
 				data-slot="drawer-backdrop"
 			/>
 			<BaseDrawer.Viewport
-				className="fixed inset-0 z-50 grid grid-rows-[1fr_auto] touch-none pt-12"
+				className="fixed inset-0 grid grid-rows-[1fr_auto] touch-none pt-12"
 				data-slot="drawer-viewport"
 			>
 				<BaseDrawer.Popup

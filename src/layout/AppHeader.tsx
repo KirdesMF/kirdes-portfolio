@@ -1,7 +1,7 @@
-import { Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState, useSearch } from "@tanstack/react-router";
 import { animate, createScope } from "animejs";
 import { ClockIcon, SettingsIcon } from "lucide-react";
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "#/design-system/cn";
 import { Drawer, DrawerContent, DrawerHandle, DrawerTrigger } from "#/design-system/drawer";
 import { Clock } from "#/layout/Clock";
@@ -41,12 +41,14 @@ const activeLanguageClassName =
 	"inline-block bg-linear-to-r from-status-open from-35% via-status-shimmer via-60% to-status-open to-55% bg-size-[200%_100%] bg-clip-text leading-none text-transparent";
 
 export function AppHeader() {
-	const navigate = useNavigate({ from: "/terminal" });
+	const navigate = useNavigate();
+	const pathname = useRouterState({ select: (state) => state.location.pathname });
 	const search = useSearch({ from: "/terminal" });
 	const settingsOpen = search.dialog === "settings";
 
 	function setSettingsOpen(open: boolean) {
 		void navigate({
+			to: pathname,
 			search: (previous) => setDialogSearch(previous, open ? "settings" : undefined),
 		});
 	}
@@ -303,12 +305,12 @@ function StatusSegment(props: {
 	return (
 		<div
 			className={cn(
-				"flex min-w-0 items-stretch",
+				"flex min-w-0 items-stretch z-(--status-segment-stack)",
 				variant.foreground,
 				props.side === "left" && !props.isFirst && "-ms-2.5",
 				props.side === "right" && !props.isLast && "-me-2.5",
 			)}
-			style={{ zIndex: props.stack }}
+			style={{ "--status-segment-stack": props.stack } as CSSProperties}
 		>
 			{props.side === "right" && <Chevron direction="left" variant={props.item.variant} />}
 

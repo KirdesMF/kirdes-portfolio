@@ -6,7 +6,6 @@ import {
 	FolderOpen,
 	GitBranch,
 	History,
-	List,
 	type LucideIcon,
 	Map as MapIcon,
 	Maximize2,
@@ -15,10 +14,9 @@ import {
 	X,
 	Zap,
 } from "lucide-react";
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from "react";
 import { AsciiBanner } from "#/ascii-banner/AsciiBanner";
 import { cn } from "#/design-system/cn";
-import { Menu, MenuContent, MenuItem, MenuTrigger } from "#/design-system/Menu";
 import { Separator } from "#/design-system/Separator";
 import { useScrambleRef } from "#/design-system/useScrambleRef";
 import { getDisplayFileName } from "#/editor/editor-files";
@@ -77,6 +75,13 @@ function getFileIcon(fileName: string): LucideIcon | null {
 	const extension = fileName.split(".").pop()?.toLowerCase();
 	if (!extension) return null;
 	return fileExtensionIcon[extension] ?? null;
+}
+
+function FileIcon({ fileName }: { fileName: string }) {
+	const Icon = getFileIcon(fileName);
+	if (!Icon) return null;
+
+	return <Icon className="size-3 shrink-0" />;
 }
 
 function EditorBody({ highlightedEditorFile }: { highlightedEditorFile: ReactNode | null }) {
@@ -162,12 +167,12 @@ function StatusSegment(props: {
 	return (
 		<div
 			className={cn(
-				"flex min-w-0 items-stretch",
+				"flex min-w-0 items-stretch z-(--status-segment-stack)",
 				variant.foreground,
 				props.side === "left" && !props.isFirst && "-ms-2.5",
 				props.side === "right" && !props.isLast && "-me-2.5",
 			)}
-			style={{ zIndex: props.stack }}
+			style={{ "--status-segment-stack": props.stack } as CSSProperties}
 		>
 			{props.side === "right" && <Chevron direction="left" variant={props.item.variant} />}
 
@@ -203,7 +208,7 @@ function Chevron(props: { direction: "left" | "right"; variant: StatusVariant })
 	);
 }
 
-function renderEditorTabs({
+function EditorTabs({
 	activeFileName,
 	isMaximized,
 	onCloseEditor,
@@ -220,33 +225,28 @@ function renderEditorTabs({
 	onToggleMaximize: () => void;
 	openFileNames: Array<string>;
 }) {
-	const MAX_VISIBLE_TABS = 3;
-	const visibleFiles = openFileNames.slice(0, MAX_VISIBLE_TABS);
-	const overflowCount = openFileNames.length - MAX_VISIBLE_TABS;
-
 	return (
 		<div className="hidden h-status-bar w-full shrink-0 items-center justify-between border-b border-border bg-background/60 md:flex">
-			<div className="flex min-w-0 flex-1 items-center overflow-x-auto self-stretch">
-				{visibleFiles.map((fileName) => {
+			<div className="flex min-w-0 flex-1 items-center overflow-x-auto self-stretch scrollbar-none">
+				{openFileNames.map((fileName) => {
 					const displayFileName = getDisplayFileName(fileName);
+					const active = activeFileName === fileName;
 
 					return (
 						<div
 							className={cn(
-								"flex h-full max-w-40 shrink-0 items-center border-r border-border text-tiny text-muted-foreground hover:bg-muted/30 hover:text-foreground",
-								activeFileName === fileName && "bg-muted/40 text-foreground",
+								"relative flex h-full max-w-40 shrink-0 items-center border-r border-border text-tiny text-muted-foreground hover:bg-muted/30 hover:text-foreground",
+								active && "bg-muted/40 text-foreground",
 							)}
 							key={fileName}
 						>
+							{active ? <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" /> : null}
 							<button
 								className="flex h-full min-w-0 items-center gap-1.5 pl-3 pr-2"
 								type="button"
 								onClick={() => onSelectFile(fileName)}
 							>
-								{(() => {
-									const Icon = getFileIcon(fileName);
-									return Icon ? <Icon className="size-3 shrink-0" /> : null;
-								})()}
+								<FileIcon fileName={fileName} />
 								<span className="truncate">{displayFileName}</span>
 							</button>
 							<button
@@ -260,28 +260,6 @@ function renderEditorTabs({
 						</div>
 					);
 				})}
-				{overflowCount > 0 ? (
-					<Menu>
-						<MenuTrigger
-							aria-label="All open files"
-							className="flex h-full shrink-0 items-center gap-1 border-r border-border px-2 text-tiny text-muted-foreground/70 hover:text-foreground"
-						>
-							<List className="size-3" />
-							<span className="tabular-nums">+{overflowCount}</span>
-						</MenuTrigger>
-						<MenuContent align="start" side="bottom" sideOffset={0}>
-							{openFileNames.map((fileName) => (
-								<MenuItem
-									className={cn(activeFileName === fileName && "text-foreground")}
-									key={fileName}
-									onClick={() => onSelectFile(fileName)}
-								>
-									{getDisplayFileName(fileName)}
-								</MenuItem>
-							))}
-						</MenuContent>
-					</Menu>
-				) : null}
 			</div>
 			<div className="flex items-center shrink-0 self-stretch">
 				<Separator className="h-full" orientation="vertical" />
@@ -392,15 +370,15 @@ export function ReadOnlyFileEditor({
 
 	return (
 		<section className="relative flex h-full w-full min-h-0 flex-col border-border text-xs">
-			{renderEditorTabs({
-				activeFileName,
-				isMaximized,
-				onCloseEditor,
-				onCloseFile,
-				onSelectFile,
-				onToggleMaximize,
-				openFileNames,
-			})}
+			<EditorTabs
+				activeFileName={activeFileName}
+				isMaximized={isMaximized}
+				onCloseEditor={onCloseEditor}
+				onCloseFile={onCloseFile}
+				onSelectFile={onSelectFile}
+				onToggleMaximize={onToggleMaximize}
+				openFileNames={openFileNames}
+			/>
 			<div className="min-h-0 flex-1 overflow-auto scrollbar-gutter-both">
 				{activeFileName ? (
 					<EditorBody highlightedEditorFile={highlightedEditorFile} key={activeFileName} />

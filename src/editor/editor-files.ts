@@ -45,7 +45,12 @@ export function isEditorFileName(id: string): id is EditorFileName {
 }
 
 export function getDisplayFileName(id: string): string {
-	return findEditorFile(id)?.name ?? id.split("/").at(-1) ?? id;
+	const file = findEditorFile(id);
+	if (!file) return id.split("/").at(-1) ?? id;
+	if (file.folder === "~") return file.name;
+	if (file.folder.startsWith("src/")) return file.name;
+
+	return `${file.folder}/${file.name}`;
 }
 
 /**

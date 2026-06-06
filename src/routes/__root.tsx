@@ -50,8 +50,10 @@ function RootDocument({ children }: { children: ReactNode }) {
 				<HeadContent />
 				<ScriptOnce>{themeBootScript}</ScriptOnce>
 			</head>
-			<body className="isolate h-dvh overflow-hidden bg-background font-mono text-foreground">
-				<ThemeProvider initialAppearance={initialAppearance}>{children}</ThemeProvider>
+			<body className="h-dvh overflow-hidden bg-background font-mono text-foreground">
+				<div className="relative isolate h-full">
+					<ThemeProvider initialAppearance={initialAppearance}>{children}</ThemeProvider>
+				</div>
 				<Scripts />
 			</body>
 		</html>
