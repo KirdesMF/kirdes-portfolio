@@ -15,7 +15,8 @@ import {
 	X,
 	Zap,
 } from "lucide-react";
-import { type ReactNode, useRef } from "react";
+import { type ReactNode, useEffect, useState } from "react";
+import { AsciiBanner } from "#/ascii-banner/AsciiBanner";
 import { cn } from "#/design-system/cn";
 import { Menu, MenuContent, MenuItem, MenuTrigger } from "#/design-system/Menu";
 import { Separator } from "#/design-system/Separator";
@@ -302,16 +303,21 @@ function renderEditorTabs({
 }
 
 function EmptyEditor() {
-	const loadingTimeRef = useRef(getRandomNumber({ max: 100, min: 20 }));
+	const [loadingTime, setLoadingTime] = useState(20);
 	const rootRef = useScrambleRef<HTMLDivElement>({
 		selector: "[data-anim-editor-status]",
 		staggerMs: 0,
 	});
 
+	useEffect(() => {
+		setLoadingTime(getRandomNumber({ max: 100, min: 20 }));
+	}, []);
+
 	return (
 		<div className="flex h-full min-h-0 items-center justify-center p-6 text-sm">
-			<div className="flex w-full max-w-md flex-col gap-7 text-primary/80">
-				<div className="grid gap-4">
+			<div className="flex w-full max-w-3xl flex-col items-center gap-7 text-primary/80">
+				<AsciiBanner className="w-full max-w-lg" />
+				<div className="grid w-full max-w-md gap-4">
 					{emptyEditorCommands.map(({ Icon, id, label, shortcut }) => (
 						<div className="grid grid-cols-[1.5rem_1fr_1rem] items-center gap-4" key={id}>
 							<Icon aria-hidden="true" className="size-4 text-primary" />
@@ -327,7 +333,7 @@ function EmptyEditor() {
 					<Zap aria-hidden="true" className="size-3 text-primary" />
 					<span data-anim-editor-status>
 						Neovim loaded <span className="text-status-primary">5/38</span> plugins in{" "}
-						{loadingTimeRef.current}ms
+						{loadingTime}ms
 					</span>
 				</div>
 			</div>
