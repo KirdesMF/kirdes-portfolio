@@ -25,7 +25,7 @@ export function TerminalRoutePane({
 	const displayUrl = `http://localhost:3000/${locale}${urlPath}`;
 	return (
 		<div className={cn("flex min-h-0 w-full flex-1 flex-col overflow-hidden", className)}>
-			<div className="flex h-status-bar shrink-0 items-center border-b border-border bg-background/60">
+			<div className="hidden h-status-bar shrink-0 items-center border-b border-border bg-background/60 md:flex">
 				<div className="flex flex-1 items-center gap-2 self-stretch px-3">
 					<EarthIcon className="size-3.5 shrink-0 text-muted-foreground/40" />
 					<span className="text-tiny text-muted-foreground/60 truncate">{displayUrl}</span>

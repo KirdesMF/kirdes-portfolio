@@ -12,7 +12,7 @@ import { TerminalResizeHandle } from "./TerminalResizeHandle";
 import { TerminalRoutePane } from "./TerminalRoutePane";
 import type { MaximizedPanel, TerminalPanelName } from "./terminal-panel-types";
 import { getTerminalRoutePath } from "./terminal-routes";
-import { setDialogSearch, toggleMaximizedSearch } from "./terminal-search-transitions";
+import { setDialogSearch, showTerminalPanelSearch, toggleMaximizedSearch } from "./terminal-search-transitions";
 import { useResizablePanels } from "./useResizablePanels";
 import { useTerminalController } from "./useTerminalController";
 
@@ -92,6 +92,13 @@ export function TerminalLayout({
 				activePanel={activePanel}
 				hasEditorPanel={hasEditorPanel}
 				isHomeRoute={isHomeRoute}
+				onCloseEditor={terminal.closeEditor}
+				onCloseRoute={() =>
+					void router.navigate({
+						search: showTerminalPanelSearch,
+						to: "/terminal",
+					})
+				}
 				onSelectPanel={terminal.setMobilePanel}
 			/>
 			<div className="flex min-h-0 flex-1" ref={layoutRef} style={layoutStyle}>

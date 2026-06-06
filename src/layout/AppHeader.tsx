@@ -4,7 +4,6 @@ import { ClockIcon, SettingsIcon } from "lucide-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "#/design-system/cn";
 import { Drawer, DrawerContent, DrawerHandle, DrawerTrigger } from "#/design-system/drawer";
-import { useIsMobile } from "#/design-system/useMediaQuery";
 import { Clock } from "#/layout/Clock";
 import { m } from "#/paraglide/messages";
 import { getLocale, setLocale } from "#/paraglide/runtime";
@@ -38,106 +37,152 @@ const variantClass = {
 	},
 } as const;
 
+const activeLanguageClassName =
+	"inline-block bg-linear-to-r from-status-open from-35% via-status-shimmer via-60% to-status-open to-55% bg-size-[200%_100%] bg-clip-text leading-none text-transparent";
+
 export function AppHeader() {
-	const navigate = useNavigate();
-	const search = useSearch({ strict: false }) as { dialog?: string };
+	const navigate = useNavigate({ from: "/terminal" });
+	const search = useSearch({ from: "/terminal" });
 	const settingsOpen = search.dialog === "settings";
-	const [navDrawerOpen, setNavDrawerOpen] = useState(false);
-	const isMobile = useIsMobile();
 
 	function setSettingsOpen(open: boolean) {
-		// biome-ignore lint/suspicious/noExplicitAny: route search is shared across nested terminal routes.
-		void (navigate as any)({
-			search: (previous: Record<string, unknown>) =>
-				setDialogSearch(previous, open ? "settings" : undefined),
+		void navigate({
+			search: (previous) => setDialogSearch(previous, open ? "settings" : undefined),
 		});
 	}
 
-	// ── Desktop left items (current behavior) ──────────────────────────
-	const desktopLeftItems: StatusItem[] = terminalNavigationItems.map(
-		({ command, label, to }, index) => {
-			const variant: StatusVariant = index % 2 === 0 ? "primary" : "muted";
-			const linkClassName = getNavigationLinkClassName(variant);
-			const activeLinkClassName = getNavigationActiveLinkClassName(variant);
-
-			return {
-				id: command,
-				variant,
-				content: (
-					<Link
-						activeOptions={{ exact: true }}
-						activeProps={{
-							className: activeLinkClassName,
-						}}
-						className={linkClassName}
-						search={showRoutePanelSearch}
-						to={to}
-					>
-						{label === "~" ? label : `${label}/`}
-					</Link>
-				),
-			};
-		},
+	return (
+		<>
+			<header className="flex h-status-bar shrink-0 items-stretch justify-between border-b border-border bg-status text-status-foreground">
+				<DesktopHeaderNav />
+				<MobileHeaderNav />
+				<HeaderActions onOpenSettings={() => setSettingsOpen(true)} />
+			</header>
+			<SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+		</>
 	);
-	const editorVariant: StatusVariant = desktopLeftItems.length % 2 === 0 ? "primary" : "muted";
+}
 
-	// ── Mobile left items: menu + editor ───────────────────────────────
-	const mobileMenuVariant: StatusVariant = "primary";
-	const mobileEditorVariant: StatusVariant = "muted";
+function DesktopHeaderNav() {
+	const navigationItems = createDesktopNavigationItems();
+	const editorVariant: StatusVariant = navigationItems.length % 2 === 0 ? "primary" : "muted";
+	const items = [
+		...navigationItems,
+		createEditorStatusItem({ id: "editor", variant: editorVariant }),
+	];
 
-	const mobileLeftItems: StatusItem[] = [
+	return (
+		<div className="hidden min-w-0 md:flex">
+			<StatusGroup items={items} side="left" />
+		</div>
+	);
+}
+
+function MobileHeaderNav() {
+	const [open, setOpen] = useState(false);
+	const items: StatusItem[] = [
 		{
 			id: "menu",
-			variant: mobileMenuVariant,
+			variant: "primary",
 			content: (
 				<DrawerTrigger className="cursor-pointer" aria-label="Open navigation menu">
 					menu
 				</DrawerTrigger>
 			),
 		},
-		{
-			id: "editor",
-			variant: mobileEditorVariant,
-			content: (
-				<Link
-					activeOptions={{ includeSearch: true }}
-					activeProps={{ className: getNavigationActiveLinkClassName(mobileEditorVariant) }}
-					aria-label={m.header_open_editor()}
-					className={getNavigationLinkClassName(mobileEditorVariant)}
-					search={openEditorPanelSearch}
-					to="."
+		createEditorStatusItem({ id: "editor", variant: "muted" }),
+	];
+
+	return (
+		<Drawer open={open} onOpenChange={setOpen}>
+			<div className="flex min-w-0 md:hidden">
+				<StatusGroup items={items} side="left" />
+			</div>
+			<DrawerContent>
+				<DrawerHandle />
+				<div
+					className={cn(
+						"relative mx-4 mb-4 flex flex-col rounded border-2 border-border border-glow",
+						"bg-popover text-popover-foreground overflow-hidden",
+					)}
 				>
-					editor
-				</Link>
+					<MobileNavDrawer onNavigate={() => setOpen(false)} />
+				</div>
+			</DrawerContent>
+		</Drawer>
+	);
+}
+
+function HeaderActions({ onOpenSettings }: { onOpenSettings: () => void }) {
+	const items: StatusItem[] = [
+		{
+			id: "language",
+			variant: "muted",
+			content: <LanguageSwitcher />,
+		},
+		{
+			id: "settings",
+			variant: "primary",
+			content: (
+				<button
+					aria-label={m.header_open_settings()}
+					className="inline-flex size-4 cursor-pointer items-center justify-center rounded-sm opacity-80 transition hover:opacity-100 focus-visible:outline-2 focus-visible:outline-ring"
+					type="button"
+					onClick={onOpenSettings}
+				>
+					<SettingsIcon className="size-3" />
+				</button>
+			),
+		},
+		{
+			id: "clock",
+			variant: "muted",
+			content: (
+				<>
+					<ClockIcon className="size-3" />
+					<Clock />
+				</>
 			),
 		},
 	];
 
-	// Desktop: add editor after nav items
-	desktopLeftItems.push({
-		id: "editor",
-		variant: editorVariant,
-		content: (
-			<Link
-				activeOptions={{ includeSearch: true }}
-				activeProps={{ className: getNavigationActiveLinkClassName(editorVariant) }}
-				aria-label={m.header_open_editor()}
-				className={getNavigationLinkClassName(editorVariant)}
-				search={openEditorPanelSearch}
-				to="."
-			>
-				editor
-			</Link>
-		),
-	});
+	return <StatusGroup items={items} side="right" />;
+}
+
+function LanguageSwitcher() {
 	const currentLocale = getLocale();
-	const langShineRef = useRef<HTMLSpanElement>(null);
+
+	return (
+		<div className="flex items-center gap-1.5">
+			<LanguageButton active={currentLocale === "fr"} label="FR" locale="fr" />
+			<span>|</span>
+			<LanguageButton active={currentLocale === "en"} label="EN" locale="en" />
+		</div>
+	);
+}
+
+function LanguageButton({
+	active,
+	label,
+	locale,
+}: {
+	active: boolean;
+	label: string;
+	locale: "en" | "fr";
+}) {
+	return (
+		<button className="cursor-pointer" type="button" onClick={() => setLocale(locale)}>
+			{active ? <ActiveLanguageLabel label={label} /> : label}
+		</button>
+	);
+}
+
+function ActiveLanguageLabel({ label }: { label: string }) {
+	const labelRef = useRef<HTMLSpanElement>(null);
 
 	useEffect(() => {
-		const el = langShineRef.current;
+		const el = labelRef.current;
 		if (!el) return;
-		// re-run when locale changes to attach shimmer to the new active button
-		void currentLocale;
 
 		const scope = createScope({
 			mediaQueries: {
@@ -157,99 +202,60 @@ export function AppHeader() {
 		return () => {
 			scope.revert();
 		};
-	}, [currentLocale]);
-
-	const rightItems: StatusItem[] = [
-		{
-			id: "language",
-			variant: "muted",
-			content: (
-				<div className="flex items-center gap-1.5">
-					<button className="cursor-pointer" type="button" onClick={() => setLocale("fr")}>
-						{currentLocale === "fr" ? (
-							<span
-								className="inline-block bg-linear-to-r from-status-open from-35% via-status-shimmer via-60% to-status-open to-55% bg-size-[200%_100%] bg-clip-text leading-none text-transparent"
-								ref={currentLocale === "fr" ? langShineRef : undefined}
-							>
-								FR
-							</span>
-						) : (
-							"FR"
-						)}
-					</button>
-					<span>|</span>
-					<button className="cursor-pointer" type="button" onClick={() => setLocale("en")}>
-						{currentLocale === "en" ? (
-							<span
-								className="inline-block bg-linear-to-r from-status-open from-35% via-status-shimmer via-60% to-status-open to-55% bg-size-[200%_100%] bg-clip-text leading-none text-transparent"
-								ref={currentLocale === "en" ? langShineRef : undefined}
-							>
-								EN
-							</span>
-						) : (
-							"EN"
-						)}
-					</button>
-				</div>
-			),
-		},
-		{
-			id: "settings",
-			variant: "primary",
-			content: (
-				<button
-					aria-label={m.header_open_settings()}
-					className="inline-flex size-4 cursor-pointer items-center justify-center rounded-sm opacity-80 transition hover:opacity-100 focus-visible:outline-2 focus-visible:outline-ring"
-					type="button"
-					onClick={() => setSettingsOpen(true)}
-				>
-					<SettingsIcon className="size-3" />
-				</button>
-			),
-		},
-		{
-			id: "clock",
-			variant: "muted",
-			content: (
-				<>
-					<ClockIcon className="size-3" />
-					<Clock />
-				</>
-			),
-		},
-	];
+	}, []);
 
 	return (
-		<>
-			<header className="flex h-status-bar shrink-0 items-stretch justify-between border-b border-border bg-status text-status-foreground">
-				{/* Desktop navigation — inline chevron segments */}
-				<div className="hidden min-w-0 md:flex">
-					<StatusGroup items={desktopLeftItems} side="left" />
-				</div>
-				{/* Mobile navigation — menu chevron + editor */}
-				{isMobile && (
-					<Drawer open={navDrawerOpen} onOpenChange={setNavDrawerOpen}>
-						<div className="flex min-w-0">
-							<StatusGroup items={mobileLeftItems} side="left" />
-						</div>
-						<DrawerContent>
-							<DrawerHandle />
-							<div
-								className={cn(
-									"relative mx-4 mb-4 flex flex-col rounded border-2 border-border border-glow",
-									"bg-popover text-popover-foreground overflow-hidden",
-								)}
-							>
-								<MobileNavDrawer onNavigate={() => setNavDrawerOpen(false)} />
-							</div>
-						</DrawerContent>
-					</Drawer>
-				)}
-				<StatusGroup items={rightItems} side="right" />
-			</header>
-			<SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
-		</>
+		<span className={activeLanguageClassName} ref={labelRef}>
+			{label}
+		</span>
 	);
+}
+
+function createDesktopNavigationItems(): Array<StatusItem> {
+	return terminalNavigationItems.map(({ command, label, to }, index) => {
+		const variant: StatusVariant = index % 2 === 0 ? "primary" : "muted";
+
+		return {
+			id: command,
+			variant,
+			content: (
+				<Link
+					activeOptions={{ exact: true }}
+					activeProps={{ className: getNavigationActiveLinkClassName(variant) }}
+					className={getNavigationLinkClassName(variant)}
+					search={showRoutePanelSearch}
+					to={to}
+				>
+					{label === "~" ? label : `${label}/`}
+				</Link>
+			),
+		};
+	});
+}
+
+function createEditorStatusItem({
+	id,
+	variant,
+}: {
+	id: string;
+	variant: StatusVariant;
+}): StatusItem {
+	return {
+		id,
+		variant,
+		content: (
+			<Link
+				activeOptions={{ includeSearch: true }}
+				activeProps={{ className: getNavigationActiveLinkClassName(variant) }}
+				aria-label={m.header_open_editor()}
+				className={getNavigationLinkClassName(variant)}
+				search={openEditorPanelSearch}
+				to="."
+			>
+				editor
+			</Link>
+		),
+	};
 }
 
 function getNavigationLinkClassName(variant: StatusVariant): string {

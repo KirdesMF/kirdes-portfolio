@@ -21,6 +21,7 @@ import { cn } from "#/design-system/cn";
 import { Menu, MenuContent, MenuItem, MenuTrigger } from "#/design-system/Menu";
 import { Separator } from "#/design-system/Separator";
 import { useScrambleRef } from "#/design-system/useScrambleRef";
+import { getDisplayFileName } from "#/editor/editor-files";
 import { getRandomNumber } from "#/utils/random-number";
 
 const fileExtensionIcon: Record<string, LucideIcon> = {
@@ -106,7 +107,7 @@ function EditorStatusBar({ activeFileName }: { activeFileName?: string }) {
 					{
 						id: "file",
 						variant: "primary" as const,
-						content: <span className="truncate">{activeFileName}</span>,
+						content: <span className="truncate">{getDisplayFileName(activeFileName)}</span>,
 					} as StatusItem,
 				]
 			: []),
@@ -224,37 +225,41 @@ function renderEditorTabs({
 	const overflowCount = openFileNames.length - MAX_VISIBLE_TABS;
 
 	return (
-		<div className="flex h-status-bar w-full shrink-0 items-center justify-between border-b border-border bg-background/60">
+		<div className="hidden h-status-bar w-full shrink-0 items-center justify-between border-b border-border bg-background/60 md:flex">
 			<div className="flex min-w-0 flex-1 items-center overflow-x-auto self-stretch">
-				{visibleFiles.map((fileName) => (
-					<div
-						className={cn(
-							"flex h-full max-w-40 shrink-0 items-center border-r border-border text-tiny text-muted-foreground hover:bg-muted/30 hover:text-foreground",
-							activeFileName === fileName && "bg-muted/40 text-foreground",
-						)}
-						key={fileName}
-					>
-						<button
-							className="flex h-full min-w-0 items-center gap-1.5 pl-3 pr-2"
-							type="button"
-							onClick={() => onSelectFile(fileName)}
+				{visibleFiles.map((fileName) => {
+					const displayFileName = getDisplayFileName(fileName);
+
+					return (
+						<div
+							className={cn(
+								"flex h-full max-w-40 shrink-0 items-center border-r border-border text-tiny text-muted-foreground hover:bg-muted/30 hover:text-foreground",
+								activeFileName === fileName && "bg-muted/40 text-foreground",
+							)}
+							key={fileName}
 						>
-							{(() => {
-								const Icon = getFileIcon(fileName);
-								return Icon ? <Icon className="size-3 shrink-0" /> : null;
-							})()}
-							<span className="truncate">{fileName}</span>
-						</button>
-						<button
-							aria-label={`Close ${fileName}`}
-							className="h-full px-2 text-muted-foreground hover:text-foreground"
-							type="button"
-							onClick={() => onCloseFile(fileName)}
-						>
-							<X className="size-3" />
-						</button>
-					</div>
-				))}
+							<button
+								className="flex h-full min-w-0 items-center gap-1.5 pl-3 pr-2"
+								type="button"
+								onClick={() => onSelectFile(fileName)}
+							>
+								{(() => {
+									const Icon = getFileIcon(fileName);
+									return Icon ? <Icon className="size-3 shrink-0" /> : null;
+								})()}
+								<span className="truncate">{displayFileName}</span>
+							</button>
+							<button
+								aria-label={`Close ${displayFileName}`}
+								className="h-full px-2 text-muted-foreground hover:text-foreground"
+								type="button"
+								onClick={() => onCloseFile(fileName)}
+							>
+								<X className="size-3" />
+							</button>
+						</div>
+					);
+				})}
 				{overflowCount > 0 ? (
 					<Menu>
 						<MenuTrigger
@@ -271,7 +276,7 @@ function renderEditorTabs({
 									key={fileName}
 									onClick={() => onSelectFile(fileName)}
 								>
-									{fileName}
+									{getDisplayFileName(fileName)}
 								</MenuItem>
 							))}
 						</MenuContent>

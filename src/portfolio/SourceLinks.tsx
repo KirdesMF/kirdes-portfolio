@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { getDisplayFileName } from "#/editor/editor-files";
 import { openEditorFileSearch } from "#/terminal/terminal-search-transitions";
 import type { WorkspaceViewMetadata } from "#/workspace/workspace-catalogue";
 
@@ -20,7 +21,7 @@ export function SourceLinks({ meta: m, to = "." }: SourceLinksProps) {
 						search={(prev) => openEditorFileSearch(prev, m.renderer)}
 						to={to}
 					>
-						{m.renderer}
+						{getDisplayFileName(m.renderer)}
 					</Link>
 				</span>
 				<span>

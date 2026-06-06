@@ -12,12 +12,12 @@ export function TerminalResizeHandle({
 	axis: ResizeAxis;
 	className?: string;
 	onKeyResize?: (delta: number) => void;
-	onResizeStart: (event: PointerEvent<HTMLButtonElement>) => void;
+	onResizeStart: (event: PointerEvent<HTMLHRElement>) => void;
 	value: number;
 }) {
 	const vertical = axis === "horizontal";
 
-	function handleKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+	function handleKeyDown(event: KeyboardEvent<HTMLHRElement>) {
 		const sign = event.shiftKey ? 10 : 2;
 		const delta =
 			event.key === "ArrowRight" || event.key === "ArrowDown"
@@ -31,7 +31,7 @@ export function TerminalResizeHandle({
 	}
 
 	return (
-		<button
+		<hr
 			aria-label={
 				vertical ? "Resize terminal and browser panes" : "Resize browser and editor panes"
 			}
@@ -40,22 +40,16 @@ export function TerminalResizeHandle({
 			aria-valuemin={25}
 			aria-valuenow={value}
 			className={cn(
-				"group z-20 hidden shrink-0 touch-none bg-border/60 outline-none transition-colors hover:bg-primary/60 focus-visible:bg-primary md:block",
-				vertical ? "w-px cursor-col-resize" : "h-px cursor-row-resize",
+				"relative z-20 hidden shrink-0 touch-none border-0 bg-border/60 outline-none transition-colors hover:bg-primary/60 focus-visible:bg-primary md:block",
+				"before:absolute before:bg-transparent before:content-['']",
+				vertical
+					? "w-px cursor-col-resize before:-inset-x-1 before:inset-y-0"
+					: "h-px cursor-row-resize before:-inset-y-1 before:inset-x-0",
 				className,
 			)}
-			role="separator"
-			type="button"
+			tabIndex={0}
 			onKeyDown={handleKeyDown}
 			onPointerDown={onResizeStart}
-		>
-			<span
-				aria-hidden="true"
-				className={cn(
-					"block bg-transparent transition-colors group-hover:bg-primary/20 group-focus-visible:bg-primary/20",
-					vertical ? "-mx-1 h-full w-2" : "-my-1 h-2 w-full",
-				)}
-			/>
-		</button>
+		/>
 	);
 }

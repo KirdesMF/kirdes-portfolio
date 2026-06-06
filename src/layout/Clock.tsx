@@ -10,14 +10,13 @@ function formatTime(timestamp: number): string {
 	const date = new Date(timestamp);
 	const hours = date.getHours().toString().padStart(2, "0");
 	const minutes = date.getMinutes().toString().padStart(2, "0");
-	const seconds = date.getSeconds().toString().padStart(2, "0");
 
-	return `${hours}:${minutes}:${seconds}`;
+	return `${hours}:${minutes}`;
 }
 
 export function Clock(): ReactElement {
 	return (
-		<ClientOnly fallback={<span className="text-tiny tabular-nums">--:--:--</span>}>
+		<ClientOnly fallback={<span className="text-tiny tabular-nums">--:--</span>}>
 			<ClockClient />
 		</ClientOnly>
 	);
@@ -29,7 +28,7 @@ function ClockClient(): ReactElement {
 	useEffect(function startClock(): () => void {
 		const intervalId = window.setInterval(function updateTimestamp(): void {
 			setTimestamp(getCurrentTimestamp());
-		}, 1000);
+		}, 60_000);
 
 		return function cleanup(): void {
 			window.clearInterval(intervalId);

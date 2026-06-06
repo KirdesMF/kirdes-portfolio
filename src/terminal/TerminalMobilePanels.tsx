@@ -1,5 +1,6 @@
+import { X } from "lucide-react";
 import { cn } from "#/design-system/cn";
-import type { EditorFileName } from "#/editor/editor-files";
+import { type EditorFileName, getDisplayFileName } from "#/editor/editor-files";
 import { m } from "#/paraglide/messages";
 import type { TerminalPanelName } from "./terminal-panel-types";
 
@@ -19,51 +20,86 @@ export function TerminalMobilePanels({
 	activePanel,
 	hasEditorPanel,
 	isHomeRoute,
+	onCloseEditor,
+	onCloseRoute,
 	onSelectPanel,
 }: {
 	activeFileName?: EditorFileName;
 	activePanel: TerminalPanelName;
 	hasEditorPanel: boolean;
 	isHomeRoute: boolean;
+	onCloseEditor: () => void;
+	onCloseRoute: () => void;
 	onSelectPanel: (panel: TerminalPanelName) => void;
 }) {
 	const panel = getMobilePanel(activePanel, hasEditorPanel, isHomeRoute);
+	const editorLabel = activeFileName
+		? getDisplayFileName(activeFileName)
+		: m.mobile_panel_editor_fallback();
 
 	return (
-		<div className="flex shrink-0 items-center gap-1 border-b border-border px-2 py-1 md:hidden">
-			<button
+		<div className="flex h-status-bar shrink-0 items-center border-b border-border bg-background/60 md:hidden">
+			<div
 				className={cn(
-					"rounded border border-transparent px-2 py-1 text-tiny text-muted-foreground",
-					panel === "terminal" && "border-primary/40 bg-primary/10 text-primary",
+					"flex h-full shrink-0 items-center border-r border-border text-tiny text-muted-foreground hover:bg-muted/30 hover:text-foreground",
+					panel === "terminal" && "bg-muted/40 text-foreground",
 				)}
-				type="button"
-				onClick={() => onSelectPanel("terminal")}
 			>
-				{m.mobile_panel_terminal()}
-			</button>
-			{isHomeRoute ? null : (
 				<button
-					className={cn(
-						"rounded border border-transparent px-2 py-1 text-tiny text-muted-foreground",
-						panel === "route" && "border-primary/40 bg-primary/10 text-primary",
-					)}
+					className="flex h-full min-w-0 items-center gap-1.5 px-3"
 					type="button"
-					onClick={() => onSelectPanel("route")}
+					onClick={() => onSelectPanel("terminal")}
 				>
-					{m.mobile_panel_route()}
+					{m.mobile_panel_terminal()}
 				</button>
+			</div>
+			{isHomeRoute ? null : (
+				<div
+					className={cn(
+						"flex h-full shrink-0 items-center border-r border-border text-tiny text-muted-foreground hover:bg-muted/30 hover:text-foreground",
+						panel === "route" && "bg-muted/40 text-foreground",
+					)}
+				>
+					<button
+						className="flex h-full min-w-0 items-center gap-1.5 px-3"
+						type="button"
+						onClick={() => onSelectPanel("route")}
+					>
+						{m.mobile_panel_route()}
+					</button>
+					<button
+						aria-label="Close route"
+						className="flex h-full items-center px-2 text-muted-foreground hover:text-foreground"
+						type="button"
+						onClick={onCloseRoute}
+					>
+						<X className="size-3" />
+					</button>
+				</div>
 			)}
 			{hasEditorPanel ? (
-				<button
+				<div
 					className={cn(
-						"max-w-36 truncate rounded border border-transparent px-2 py-1 text-tiny text-muted-foreground",
-						panel === "editor" && "border-primary/40 bg-primary/10 text-primary",
+						"flex h-full max-w-40 shrink-0 items-center border-r border-border text-tiny text-muted-foreground hover:bg-muted/30 hover:text-foreground",
+						panel === "editor" && "bg-muted/40 text-foreground",
 					)}
-					type="button"
-					onClick={() => onSelectPanel("editor")}
 				>
-					{activeFileName ?? m.mobile_panel_editor_fallback()}
-				</button>
+					<button
+						className="flex h-full min-w-0 items-center gap-1.5 truncate px-3"
+						type="button"
+						onClick={() => onSelectPanel("editor")}
+					>
+						<span className="truncate">{editorLabel}</span>
+					</button>
+					<button
+						aria-label="Close editor"
+						className="flex h-full items-center px-2 text-muted-foreground hover:text-foreground"
+						type="button"
+						onClick={onCloseEditor}
+					>
+						<X className="size-3" />
+					</button>
+				</div>
 			) : null}
 		</div>
 	);

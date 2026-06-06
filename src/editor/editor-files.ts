@@ -44,6 +44,10 @@ export function isEditorFileName(id: string): id is EditorFileName {
 	return findEditorFile(id) !== null;
 }
 
+export function getDisplayFileName(id: string): string {
+	return findEditorFile(id)?.name ?? id.split("/").at(-1) ?? id;
+}
+
 /**
  * Context-aware file resolution.
  *
