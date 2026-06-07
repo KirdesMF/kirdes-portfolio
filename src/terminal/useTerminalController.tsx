@@ -32,6 +32,7 @@ export function useTerminalController({
 			normalized: command.trim().toLowerCase(),
 			pushHistory: (output) => pushHistory(command, output),
 			navigate: actions.navigate,
+			reload: actions.reload,
 			currentRoute: currentTerminalRoute,
 			isHomeRoute,
 			activeFileName,

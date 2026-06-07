@@ -12,8 +12,10 @@ export type CommandContext = {
 	/** Push output to terminal history */
 	pushHistory: (output: ReactNode) => void;
 
-	/** Router instance for navigation */
+	/** Router instance for terminal route navigation */
 	navigate: (to: string, search?: Record<string, unknown>) => void;
+	/** Return to the boot splash route. */
+	reload: () => void;
 
 	/** Current terminal route path */
 	currentRoute: string;

@@ -281,7 +281,7 @@ function handleMode(ctx: CommandContext): boolean {
 
 function handleReload(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "reload") return false;
-	ctx.navigate("/");
+	ctx.reload();
 	return true;
 }
 

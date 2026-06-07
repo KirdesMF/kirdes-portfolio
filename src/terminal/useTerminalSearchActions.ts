@@ -32,6 +32,13 @@ export function useTerminalSearchActions({
 		});
 	}
 
+	function reload(): void {
+		void router.navigate({
+			search: {},
+			to: "/",
+		});
+	}
+
 	function setMobilePanel(panel: TerminalPanelName): void {
 		void router.navigate({
 			search: (previous) => keepTerminalSearch(previous, { panel }),
@@ -95,6 +102,7 @@ export function useTerminalSearchActions({
 		navigate,
 		openEditor,
 		openFile,
+		reload,
 		selectFile,
 		setMobilePanel,
 	};

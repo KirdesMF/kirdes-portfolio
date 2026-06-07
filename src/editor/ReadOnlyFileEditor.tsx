@@ -126,7 +126,7 @@ function EditorStatusBar({ activeFileName }: { activeFileName?: string }) {
 		{
 			id: "version",
 			variant: "primary",
-			content: <span>{EDITOR_VERSION}</span>,
+			content: <span className="text-nowrap">{EDITOR_VERSION}</span>,
 		},
 	];
 
