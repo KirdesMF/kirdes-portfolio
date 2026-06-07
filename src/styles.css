@@ -16,7 +16,7 @@
 }
 
 @utility scanlines {
-	--size: 3%;
+	--amount: 1%;
 	content: "";
 	position: fixed;
 	inset: 0;
@@ -26,12 +26,12 @@
 		0deg,
 		transparent,
 		transparent 2px,
-		color-mix(in oklch, var(--foreground) var(--size), transparent) 2px,
-		color-mix(in oklch, var(--foreground) var(--size), transparent) 4px
+		color-mix(in oklch, var(--foreground) var(--amount), transparent) 2px,
+		color-mix(in oklch, var(--foreground) var(--amount), transparent) 4px
 	);
 
 	@variant md {
-		--size: 1%;
+		--amount: 1%;
 	}
 }
 
