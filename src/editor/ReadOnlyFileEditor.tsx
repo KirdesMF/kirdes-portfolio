@@ -325,7 +325,7 @@ function EmptyEditor() {
 	}, []);
 
 	return (
-		<div className="flex min-h-full items-center justify-center p-6 text-sm" ref={containerRef}>
+		<div className="flex min-h-full items-center justify-center p-6 text-xs" ref={containerRef}>
 			<div
 				className={cn(
 					"flex w-full max-w-3xl flex-col items-center text-primary/80",
@@ -333,11 +333,11 @@ function EmptyEditor() {
 				)}
 			>
 				<AsciiBanner className={cn("w-full", compact ? "max-w-sm" : "max-w-lg")} />
-				<div className={cn("grid w-full max-w-md", compact ? "grid-cols-2 gap-2" : "gap-4")}>
+				<div className={cn("grid w-full max-w-sm", compact ? "grid-cols-2 gap-2" : "gap-4")}>
 					{emptyEditorCommands.map(({ Icon, id, label, shortcut }) => (
 						<div className="grid grid-cols-[1.5rem_1fr_1rem] items-center gap-4" key={id}>
 							<Icon aria-hidden="true" className="size-4 text-primary" />
-							<span className="tracking-wide text-primary/90">{label}</span>
+							<span className="text-primary/90">{label}</span>
 							<span className="text-end text-command-shortcut">{shortcut}</span>
 						</div>
 					))}
