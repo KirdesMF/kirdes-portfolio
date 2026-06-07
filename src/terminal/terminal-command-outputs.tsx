@@ -2,29 +2,27 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { editorFiles, folderRoutes as folderRoutesData } from "#/editor/editor-files";
 import type { EditorFileEntry, FolderRoute } from "#/editor/editor-files.types";
-import { getCommandSummary, manPages, routeDescriptions } from "./terminal-command-docs";
-import { terminalCommands } from "./terminal-commands";
+import { manPages } from "./terminal-command-docs";
 import { TerminalRouteList } from "./terminal-route-list";
-import { terminalRoutes } from "./terminal-routes";
 import { openEditorFileSearch, showRoutePanelSearch } from "./terminal-search-transitions";
 
 export function BunDevOutput(): ReactNode {
 	return (
-		<div className="flex flex-col gap-1.5 whitespace-pre-wrap font-mono text-muted-foreground">
+		<div className="flex flex-col gap-1.5 whitespace-pre-wrap font-mono text-muted-foreground mt-4">
 			<p>Default inspector port 9229 not available, using 9230 instead</p>
 			<p className="pt-2 text-foreground/80">Using secrets defined in .env</p>
 			<p>
 				<span className="text-primary">✓ [paraglide-js]</span>{" "}
-				<span>Compilation complete (message-modules)</span>
+				<span className="text-foreground/80">Compilation complete (message-modules)</span>
 			</p>
-			<p className="pt-2">
-				<span className="font-semibold text-primary">VITE v8.0.12</span>
-				<span className="mx-3">ready in</span>
-				<span className="font-semibold text-foreground/80">3960 ms</span>
+			<p>
+				<span className="font-semibold text-primary">✓ VITE v8.0.12</span>
+				<span className="mx-3 text-muted-foreground">ready in</span>
+				<span className="font-semibold text-foreground/80">60 ms</span>
 			</p>
-			<p className="pt-2">
+			<p className="pt-2 ps-8">
 				<span className="text-primary">➜</span>
-				<span className="mx-3 font-semibold text-foreground/80">Local:</span>
+				<span className="mx-3 text-muted-foreground">Local:</span>
 				<a
 					className="text-primary underline-offset-2 hover:underline"
 					href="http://localhost:3000/"
@@ -34,40 +32,6 @@ export function BunDevOutput(): ReactNode {
 					http://localhost:3000/
 				</a>
 			</p>
-		</div>
-	);
-}
-
-export function HelpOutput(): ReactNode {
-	return (
-		<div className="flex flex-col gap-3 whitespace-pre-wrap">
-			<p className="text-primary">Usage: man &lt;command&gt; for details</p>
-
-			<div className="flex flex-col gap-1">
-				<p className="font-semibold text-primary/80">Routes</p>
-				{terminalRoutes.map((route) => (
-					<p key={route} className="text-muted-foreground">
-						<span className="text-primary">{route}</span>
-						<span className="text-muted-foreground/70">
-							{" — "}
-							{routeDescriptions[route]?.split(" — ")[1] ?? ""}
-						</span>
-					</p>
-				))}
-			</div>
-
-			<div className="flex flex-col gap-1">
-				<p className="font-semibold text-primary/80">Commands</p>
-				{terminalCommands.map((cmd) => {
-					const desc = getCommandSummary(cmd);
-					return (
-						<p key={cmd} className="text-muted-foreground">
-							<span className="font-medium text-foreground">{cmd}</span>
-							{desc && <span className="text-muted-foreground/70"> — {desc}</span>}
-						</p>
-					);
-				})}
-			</div>
 		</div>
 	);
 }
@@ -94,7 +58,7 @@ export function ManOutput({ command }: { command: string }): ReactNode {
 	return (
 		<div className="flex flex-col gap-1 whitespace-pre-wrap">
 			<p className="text-primary">man {command}</p>
-			<p className="text-muted-foreground">{page}</p>
+			<p className="text-foreground/80">{page}</p>
 		</div>
 	);
 }
@@ -103,45 +67,47 @@ export function ManOutput({ command }: { command: string }): ReactNode {
 
 function gitStatus(): ReactNode {
 	return (
-		<div className="flex flex-col whitespace-pre-wrap font-mono text-muted-foreground">
-			<p>On branch feature/kirdes-app</p>
-			<p>nothing to commit, working tree clean</p>
+		<div className="flex flex-col whitespace-pre-wrap font-mono">
+			<p className="text-muted-foreground">On branch</p>
+			<p className="text-foreground/80">feature/kirdes-app</p>
+			<p className="text-muted-foreground">nothing to commit, working tree clean</p>
 		</div>
 	);
 }
 
 function gitBranch(): ReactNode {
 	return (
-		<div className="flex flex-col whitespace-pre-wrap font-mono text-muted-foreground">
+		<div className="flex flex-col whitespace-pre-wrap font-mono">
 			<p className="text-primary">* feature/kirdes-app</p>
-			<p> main</p>
-			<p> feat/ascii-title</p>
-			<p> experiments/touch-type</p>
+			<p className="text-foreground/80"> main</p>
+			<p className="text-foreground/80"> feat/ascii-title</p>
+			<p className="text-foreground/80"> experiments/touch-type</p>
 		</div>
 	);
 }
 
 function gitLog(): ReactNode {
 	return (
-		<div className="flex flex-col whitespace-pre-wrap font-mono text-muted-foreground">
-			<p>commit a1b2c3d4 (HEAD {"->"} feature/kirdes-app)</p>
-			<p>Date: {new Date().toLocaleDateString()}</p>
-			<p className="pl-4"> refactor terminal for the third time</p>
-			<p className="mt-1">commit e5f6g7h8</p>
-			<p>Date: yesterday</p>
-			<p className="pl-4"> add more commands nobody asked for</p>
-			<p className="mt-1">commit 9a0b1c2d</p>
-			<p>Date: last week</p>
-			<p className="pl-4"> initial commit (it was better then)</p>
+		<div className="flex flex-col whitespace-pre-wrap font-mono">
+			<p className="text-foreground/80">commit a1b2c3d4 (HEAD {"->"} feature/kirdes-app)</p>
+			<p className="text-muted-foreground">Date: {new Date().toLocaleDateString()}</p>
+			<p className="pl-4 text-foreground/80"> refactor terminal for the third time</p>
+			<p className="mt-1 text-foreground/80">commit e5f6g7h8</p>
+			<p className="text-muted-foreground">Date: yesterday</p>
+			<p className="pl-4 text-foreground/80"> add more commands nobody asked for</p>
+			<p className="mt-1 text-foreground/80">commit 9a0b1c2d</p>
+			<p className="text-muted-foreground">Date: last week</p>
+			<p className="pl-4 text-foreground/80"> initial commit (it was better then)</p>
 		</div>
 	);
 }
 
 function gitCommit(): ReactNode {
 	return (
-		<div className="flex flex-col whitespace-pre-wrap font-mono text-muted-foreground">
-			<p>On branch feature/kirdes-app</p>
-			<p>nothing to commit, working tree clean (as always)</p>
+		<div className="flex flex-col whitespace-pre-wrap font-mono">
+			<p className="text-muted-foreground">On branch</p>
+			<p className="text-foreground/80">feature/kirdes-app</p>
+			<p className="text-muted-foreground">nothing to commit, working tree clean (as always)</p>
 		</div>
 	);
 }
@@ -185,17 +151,17 @@ export function SourceOutput({
 	return (
 		<div className="flex flex-col gap-1 whitespace-pre-wrap">
 			<p className="text-primary">source</p>
-			<div className="flex flex-col gap-0.5 text-muted-foreground">
-				<p>route:</p>
-				<p className="pl-4">{meta.route}</p>
-				<p>content:</p>
+			<div className="flex flex-col gap-0.5">
+				<p className="text-muted-foreground">route:</p>
+				<p className="pl-4 text-foreground/80">{meta.route}</p>
+				<p className="text-muted-foreground">content:</p>
 				{meta.contentFiles.map((f) => (
-					<p className="pl-4" key={f}>
+					<p className="pl-4 text-foreground/80" key={f}>
 						{meta.folder}/{f}
 					</p>
 				))}
-				<p>renderer:</p>
-				<p className="pl-4">{meta.renderer}</p>
+				<p className="text-muted-foreground">renderer:</p>
+				<p className="pl-4 text-foreground/80">{meta.renderer}</p>
 			</div>
 		</div>
 	);

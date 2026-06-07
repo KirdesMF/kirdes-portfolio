@@ -38,7 +38,7 @@ export function TerminalPane({
 		>
 			<TerminalSessionHeader />
 			<div className="min-h-0 flex-1 overflow-y-auto p-3 text-xs" ref={scrollRef}>
-				<div className="flex flex-col gap-5">
+				<div className="flex flex-col gap-8">
 					{history.map((entry) => (
 						<div className="flex flex-col gap-1" key={entry.id}>
 							<div className="text-muted-foreground">

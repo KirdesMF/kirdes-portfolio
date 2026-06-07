@@ -23,7 +23,7 @@ export function TerminalRouteList({
 					<Link
 						activeOptions={{ exact: true }}
 						activeProps={{ className: "text-primary" }}
-						className="text-muted-foreground underline-offset-2 hover:text-primary hover:underline"
+						className="text-foreground/80 underline-offset-2 hover:text-primary hover:underline"
 						key={folder}
 						search={showRoutePanelSearch}
 						to={route}
@@ -36,7 +36,7 @@ export function TerminalRouteList({
 				<span className="w-10 text-muted-foreground/60">files</span>
 				{files.map((file) => (
 					<Link
-						className="text-muted-foreground underline-offset-2 hover:text-primary hover:underline"
+						className="text-foreground/80 underline-offset-2 hover:text-primary hover:underline"
 						key={file.id}
 						search={(previous) => openEditorFileSearch(previous, file.id)}
 						to="."

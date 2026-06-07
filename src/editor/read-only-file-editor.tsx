@@ -7,7 +7,7 @@ import {
 	GitBranch,
 	History,
 	type LucideIcon,
-	Map as MapIcon,
+	MapIcon,
 	Maximize2,
 	Minimize2,
 	Search,

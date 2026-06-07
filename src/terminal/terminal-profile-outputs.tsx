@@ -10,7 +10,7 @@ const labelClass = "inline-block w-24 shrink-0 text-muted-foreground/60";
 export function InfosOutput(): ReactNode {
 	return (
 		<div className="flex flex-col whitespace-pre-wrap font-mono text-foreground/90">
-			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider">
+			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider mt-4">
 				{m.infos_title()}
 			</p>
 			<Separator className="mt-1 mb-2 opacity-50" />
@@ -55,13 +55,13 @@ export function InfosOutput(): ReactNode {
 
 export function WhoamiOutput(): ReactNode {
 	return (
-		<div className="flex flex-col whitespace-pre-wrap font-mono text-foreground/90">
-			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider">
+		<div className="flex flex-col whitespace-pre-wrap text-foreground/90">
+			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider mt-4">
 				{m.whoami_title()}
 			</p>
 			<Separator className="mt-1 mb-2 opacity-50" />
 			<div className="flex flex-col gap-0.5">
-				<p>kirdes</p>
+				<p>Cédric Gourville</p>
 				<p className="text-muted-foreground">{m.whoami_role()}</p>
 				<p className="mt-1 text-muted-foreground/70">
 					{m.whoami_visit()}{" "}
