@@ -1,14 +1,14 @@
 import { createRootRoute, HeadContent, Outlet, ScriptOnce, Scripts } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { getLocale } from "#/paraglide/runtime";
-import { ThemeProvider } from "#/theme/ThemeProvider";
 import { getInitialAppearanceSettings } from "#/theme/theme.functions";
-import { themeBootScript } from "#/theme/themeBootScript";
 import {
 	defaultResolvedMode,
 	resolveAppearanceMode,
 	resolveThemeForMode,
-} from "#/theme/themeTypes";
+} from "#/theme/theme.types";
+import { themeBootScript } from "#/theme/theme-boot-script";
+import { ThemeProvider } from "#/theme/theme-provider";
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({

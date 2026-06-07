@@ -1,5 +1,5 @@
 import { GitOutput } from "../terminal-command-outputs";
-import type { CommandHandler } from "./types";
+import type { CommandHandler } from "./command.types";
 
 /**
  * git [subcommand] — fake git operations.

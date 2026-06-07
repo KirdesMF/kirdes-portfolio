@@ -1,4 +1,4 @@
-import type { CommandHandler } from "./types";
+import type { CommandHandler } from "./command.types";
 
 /**
  * rm [file] — playful fake command. Does nothing.

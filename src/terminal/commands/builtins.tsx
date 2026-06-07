@@ -1,11 +1,11 @@
 import { copyToClipboard } from "#/design-system/clipboard";
-import { Separator } from "#/design-system/Separator";
+import { Separator } from "#/design-system/separator";
 import { m } from "#/paraglide/messages";
 import { getLocale, setLocale } from "#/paraglide/runtime";
 import { formatTerminalCwd } from "#/terminal/terminal-path";
 import { EmailOutput, WhoamiOutput } from "#/terminal/terminal-profile-outputs";
 import { BunDevOutput, LsOutput, TreeAllOutput, TreeOutput } from "../terminal-command-outputs";
-import type { CommandContext, CommandHandler } from "./types";
+import type { CommandContext, CommandHandler } from "./command.types";
 
 /**
  * All simple commands that match by exact name and need no arg parsing.

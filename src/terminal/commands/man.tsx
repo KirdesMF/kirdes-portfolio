@@ -1,5 +1,5 @@
 import { ManOutput } from "../terminal-command-outputs";
-import type { CommandHandler } from "./types";
+import type { CommandHandler } from "./command.types";
 
 /**
  * man <command> — show manual page for a command.

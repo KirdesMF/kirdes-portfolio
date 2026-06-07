@@ -5,7 +5,7 @@ import {
 	parseMaximized,
 	parseTerminalPanelName,
 	type TerminalPanelName,
-} from "./terminal-panel-types";
+} from "./terminal-panel.types";
 
 const RawTerminalSearch = v.object({
 	activeFile: v.optional(v.string()),

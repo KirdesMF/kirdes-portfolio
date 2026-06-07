@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ContactSection } from "#/portfolio/contact/ContactSection";
+import { ContactSection } from "#/browser/contact/contact-section";
 
 export const Route = createFileRoute("/terminal/contact")({
 	component: RouteComponent,

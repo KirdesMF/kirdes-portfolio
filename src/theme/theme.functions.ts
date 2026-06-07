@@ -8,7 +8,7 @@ import {
 	MODE_COOKIE_NAME,
 	sanitizeAppearanceSettings,
 	THEME_COOKIE_MAX_AGE_SECONDS,
-} from "./themeTypes";
+} from "./theme.types";
 
 export const getInitialAppearanceSettings = createServerFn({ method: "GET" }).handler(async () =>
 	sanitizeAppearanceSettings({

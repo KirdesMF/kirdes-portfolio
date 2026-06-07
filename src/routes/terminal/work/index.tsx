@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { WorkSection } from "#/portfolio/work/WorkSection";
+import { WorkSection } from "#/browser/work/work-section";
 
 export const Route = createFileRoute("/terminal/work/")({
 	component: RouteComponent,

@@ -1,6 +1,6 @@
 import { m } from "#/paraglide/messages";
 import { InfosOutput } from "#/terminal/terminal-profile-outputs";
-import type { CommandHandler } from "./types";
+import type { CommandHandler } from "./command.types";
 
 /**
  * cat <file> — print file contents to terminal.

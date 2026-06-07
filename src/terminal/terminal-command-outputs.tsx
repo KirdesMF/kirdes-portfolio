@@ -2,9 +2,9 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { editorFiles, folderRoutes as folderRoutesData } from "#/editor/editor-files";
 import type { EditorFileEntry, FolderRoute } from "#/editor/editor-files.types";
-import { TerminalRouteList } from "./TerminalRouteList";
 import { getCommandSummary, manPages, routeDescriptions } from "./terminal-command-docs";
 import { terminalCommands } from "./terminal-commands";
+import { TerminalRouteList } from "./terminal-route-list";
 import { terminalRoutes } from "./terminal-routes";
 import { openEditorFileSearch, showRoutePanelSearch } from "./terminal-search-transitions";
 
@@ -239,9 +239,9 @@ export function TreeAllOutput(): ReactNode {
 				);
 			})}
 			<div>
-				<span className="text-muted-foreground/70">src/portfolio/</span>
+				<span className="text-muted-foreground/70">src/browser/</span>
 				{editorFiles
-					.filter((f) => f.folder.startsWith("src/portfolio/"))
+					.filter((f) => f.folder.startsWith("src/browser/"))
 					.map((file, i, arr) => {
 						const branch = i === arr.length - 1 ? "└── " : "├── ";
 						return (

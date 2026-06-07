@@ -1,4 +1,4 @@
-import type { MaximizedPanel, TerminalPanelName } from "#/terminal/terminal-panel-types";
+import type { MaximizedPanel, TerminalPanelName } from "#/terminal/terminal-panel.types";
 
 export type TerminalSearchDraft = {
 	activeFile?: string;

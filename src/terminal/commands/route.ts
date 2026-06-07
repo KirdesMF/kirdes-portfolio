@@ -1,5 +1,5 @@
 import { parseTerminalRoute } from "../terminal-routes";
-import type { CommandHandler } from "./types";
+import type { CommandHandler } from "./command.types";
 
 /**
  * /route — navigate to a terminal route.

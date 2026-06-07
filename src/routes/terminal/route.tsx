@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { getHighlightedEditorFileRsc } from "#/editor/editor-file-highlight.fn";
-import { TerminalLayout } from "#/terminal/TerminalLayout";
+import { TerminalLayout } from "#/terminal/terminal-layout";
 import { parseTerminalSearch } from "#/terminal/terminal-search";
 
 export const Route = createFileRoute("/terminal")({

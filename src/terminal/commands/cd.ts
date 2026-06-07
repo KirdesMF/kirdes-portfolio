@@ -1,5 +1,5 @@
 import { parseTerminalRouteTarget } from "../terminal-routes";
-import type { CommandHandler } from "./types";
+import type { CommandHandler } from "./command.types";
 
 /**
  * cd [directory] — navigate to a route/directory.

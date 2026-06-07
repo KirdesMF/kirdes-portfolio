@@ -1,13 +1,13 @@
+import { aboutFiles } from "#/browser/about/about.files";
+import aboutSectionSource from "#/browser/about/about-section.tsx?raw";
+import { contactFiles } from "#/browser/contact/contact.files";
+import contactSectionSource from "#/browser/contact/contact-section.tsx?raw";
+import homeSectionSource from "#/browser/home/home-section.tsx?raw";
+import { rootFiles } from "#/browser/root.files";
+import { workFiles } from "#/browser/work/work.files";
+import workDetailSectionSource from "#/browser/work/work-detail-section.tsx?raw";
+import workSectionSource from "#/browser/work/work-section.tsx?raw";
 import type { EditorFileInput, FileGroup } from "#/editor/editor-files.types";
-import aboutSectionSource from "#/portfolio/about/AboutSection.tsx?raw";
-import { aboutFiles } from "#/portfolio/about/about.files";
-import contactSectionSource from "#/portfolio/contact/ContactSection.tsx?raw";
-import { contactFiles } from "#/portfolio/contact/contact.files";
-import homeSectionSource from "#/portfolio/home/HomeSection.tsx?raw";
-import { rootFiles } from "#/portfolio/root.files";
-import workDetailSectionSource from "#/portfolio/work/WorkDetailSection.tsx?raw";
-import workSectionSource from "#/portfolio/work/WorkSection.tsx?raw";
-import { workFiles } from "#/portfolio/work/work.files";
 
 export type WorkspaceView = {
 	readonly route: string;
@@ -30,28 +30,28 @@ export const workspaceViews: ReadonlyArray<WorkspaceView> = [
 		route: "/terminal/home",
 		folder: "~",
 		label: "home",
-		renderer: "src/portfolio/home/HomeSection.tsx",
+		renderer: "src/browser/home/home-section.tsx",
 		files: rootFiles,
 	},
 	{
 		route: "/terminal/about",
 		folder: "about",
 		label: "about",
-		renderer: "src/portfolio/about/AboutSection.tsx",
+		renderer: "src/browser/about/about-section.tsx",
 		files: aboutFiles,
 	},
 	{
 		route: "/terminal/work",
 		folder: "work",
 		label: "work",
-		renderer: "src/portfolio/work/WorkSection.tsx",
+		renderer: "src/browser/work/work-section.tsx",
 		files: workFiles,
 	},
 	{
 		route: "/terminal/contact",
 		folder: "contact",
 		label: "contact",
-		renderer: "src/portfolio/contact/ContactSection.tsx",
+		renderer: "src/browser/contact/contact-section.tsx",
 		files: contactFiles,
 	},
 ] as const;
@@ -75,32 +75,32 @@ export const workspaceViewMetadata: Record<string, WorkspaceViewMetadata> = Obje
 
 export const workspaceSourceFiles: ReadonlyArray<EditorFileInput> = [
 	{
-		name: "HomeSection.tsx",
-		folder: "src/portfolio/home",
+		name: "home-section.tsx",
+		folder: "src/browser/home",
 		language: "tsx",
 		content: homeSectionSource,
 	},
 	{
-		name: "AboutSection.tsx",
-		folder: "src/portfolio/about",
+		name: "about-section.tsx",
+		folder: "src/browser/about",
 		language: "tsx",
 		content: aboutSectionSource,
 	},
 	{
-		name: "WorkSection.tsx",
-		folder: "src/portfolio/work",
+		name: "work-section.tsx",
+		folder: "src/browser/work",
 		language: "tsx",
 		content: workSectionSource,
 	},
 	{
-		name: "WorkDetailSection.tsx",
-		folder: "src/portfolio/work",
+		name: "work-detail-section.tsx",
+		folder: "src/browser/work",
 		language: "tsx",
 		content: workDetailSectionSource,
 	},
 	{
-		name: "ContactSection.tsx",
-		folder: "src/portfolio/contact",
+		name: "contact-section.tsx",
+		folder: "src/browser/contact",
 		language: "tsx",
 		content: contactSectionSource,
 	},

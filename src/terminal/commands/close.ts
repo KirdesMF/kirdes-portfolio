@@ -1,5 +1,5 @@
 import { m } from "#/paraglide/messages";
-import type { CommandHandler } from "./types";
+import type { CommandHandler } from "./command.types";
 
 /**
  * close <file> — close a specific file.

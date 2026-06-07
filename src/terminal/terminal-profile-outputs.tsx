@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { copyToClipboard } from "#/design-system/clipboard";
-import { Separator } from "#/design-system/Separator";
+import { Separator } from "#/design-system/separator";
 import { m } from "#/paraglide/messages";
 import { showRoutePanelSearch } from "#/terminal/terminal-search-transitions";
 

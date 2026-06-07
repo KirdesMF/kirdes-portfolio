@@ -5,7 +5,7 @@ import {
 	getWorkspaceViewByRoute,
 } from "#/workspace/workspace-catalogue";
 import { SourceOutput } from "../terminal-command-outputs";
-import type { CommandHandler } from "./types";
+import type { CommandHandler } from "./command.types";
 
 /**
  * source [path] — display route/content/renderer relationship.

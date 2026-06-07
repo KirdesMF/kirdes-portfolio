@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createTimeline, steps } from "animejs";
 import { useEffect } from "react";
-import { useScrambleRef } from "#/design-system/useScrambleRef";
+import { useScrambleRef } from "#/design-system/use-scramble-ref";
 
 const bootLines = ["initializing shell", "loading profile", "mounting terminal"] as const;
 

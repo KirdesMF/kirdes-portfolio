@@ -8,10 +8,9 @@ import {
 	DrawerHandle,
 	DrawerTitle,
 } from "#/design-system/drawer";
-import { Separator } from "#/design-system/Separator";
-import { useIsMobile } from "#/design-system/useMediaQuery";
+import { Separator } from "#/design-system/separator";
+import { useIsMobile } from "#/design-system/use-media-query";
 import { m } from "#/paraglide/messages";
-import { useTheme } from "#/theme/ThemeProvider";
 import {
 	type AppearanceMode,
 	appearanceModes,
@@ -21,7 +20,8 @@ import {
 	lightThemeOptions,
 	type ThemeId,
 	themeLabels,
-} from "#/theme/themeTypes";
+} from "#/theme/theme.types";
+import { useTheme } from "#/theme/theme-provider";
 
 const modeLabels = {
 	light: "Light",

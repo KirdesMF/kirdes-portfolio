@@ -1,5 +1,5 @@
 import { m } from "#/paraglide/messages";
-import type { CommandHandler } from "./types";
+import type { CommandHandler } from "./command.types";
 
 /**
  * open <file> — open a file in the read-only editor.

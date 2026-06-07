@@ -2,9 +2,9 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SettingsDialog } from "#/settings-dialog";
-import { installMatchMedia } from "#/test-utils/matchMedia";
-import { ThemeProvider } from "#/theme/ThemeProvider";
-import { defaultAppearanceSettings } from "#/theme/themeTypes";
+import { installMatchMedia } from "#/test-utils/match-media";
+import { defaultAppearanceSettings } from "#/theme/theme.types";
+import { ThemeProvider } from "#/theme/theme-provider";
 
 vi.mock("#/theme/theme.functions", () => ({
 	setAppearanceSettings: vi.fn(),

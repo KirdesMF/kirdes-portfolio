@@ -2,13 +2,13 @@ import { builtinHandlers } from "./builtins";
 import { handleCat } from "./cat";
 import { handleCd } from "./cd";
 import { handleClose } from "./close";
+import type { CommandContext, CommandHandler } from "./command.types";
 import { handleGit } from "./git";
 import { handleMan } from "./man";
 import { handleOpen } from "./open";
 import { handleRm } from "./rm";
 import { handleRoute } from "./route";
 import { handleSource } from "./source";
-import type { CommandContext, CommandHandler } from "./types";
 
 /**
  * Middleware chain — each handler checks if it can handle the command.
