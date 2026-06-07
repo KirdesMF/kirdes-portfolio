@@ -71,8 +71,8 @@ function usePrefersReducedMotion() {
 	return ref;
 }
 
-function CurrentYear() {
-	return <ScrambleText className="tabular-nums" text={new Date().getFullYear().toString()} />;
+function VersionLabel() {
+	return <ScrambleText className="tabular-nums" text="v1.0.0" />;
 }
 
 export function AsciiBanner({
@@ -243,7 +243,7 @@ export function AsciiBanner({
 		>
 			<div className="grid gap-1">
 				<span className="justify-self-end text-status-primary text-xs leading-none">
-					<CurrentYear />
+					<VersionLabel />
 				</span>
 				<canvas className="mx-auto block max-w-full" ref={canvasRef} />
 			</div>

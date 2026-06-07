@@ -46,7 +46,7 @@ export function TerminalSessionHeader() {
 	return (
 		<div
 			ref={rootRef}
-			className="flex shrink-0 flex-col gap-0.5 border-b-[0.5px] border-border px-4 py-2 font-mono text-xs text-muted-foreground"
+			className="flex shrink-0 flex-col gap-2 border-b-[0.5px] border-border px-4 py-2 font-mono text-xs text-muted-foreground"
 		>
 			<div className="flex items-center justify-between">
 				<span>
@@ -58,7 +58,7 @@ export function TerminalSessionHeader() {
 				<span>
 					VERSION:{" "}
 					<span data-anim-header className="text-primary">
-						v1.0.0
+						1.0.0
 					</span>
 				</span>
 			</div>

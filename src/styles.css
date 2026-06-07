@@ -16,23 +16,19 @@
 }
 
 @utility scanlines {
-	display: none;
-	@variant md {
-		display: block;
-		--amount: 2%;
-		content: "";
-		position: fixed;
-		inset: 0;
-		pointer-events: none;
-		z-index: var(--z-screen-effect);
-		background: repeating-linear-gradient(
-			0deg,
-			transparent,
-			transparent 2px,
-			color-mix(in oklch, var(--foreground) var(--amount), transparent) 2px,
-			color-mix(in oklch, var(--foreground) var(--amount), transparent) 4px
-		);
-	}
+	--amount: 2%;
+	content: "";
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: var(--z-screen-effect);
+	background: repeating-linear-gradient(
+		0deg,
+		transparent,
+		transparent 2px,
+		color-mix(in oklch, var(--foreground) var(--amount), transparent) 2px,
+		color-mix(in oklch, var(--foreground) var(--amount), transparent) 3px
+	);
 }
 
 :root {

@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { EarthIcon, Maximize2, Minimize2, X } from "lucide-react";
+import { GlobeIcon, Maximize2, Minimize2, X } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "#/design-system/cn";
 import { Separator } from "#/design-system/separator";
@@ -27,7 +27,7 @@ export function TerminalRoutePane({
 		<div className={cn("flex min-h-0 w-full flex-1 flex-col overflow-hidden", className)}>
 			<div className="hidden h-status-bar shrink-0 items-center border-b border-border bg-background/60 md:flex">
 				<div className="flex flex-1 items-center gap-2 self-stretch px-3">
-					<EarthIcon className="size-3.5 shrink-0 text-muted-foreground/40" />
+					<GlobeIcon className="size-3.5 shrink-0 text-muted-foreground/40" />
 					<span className="text-tiny text-muted-foreground/60 truncate">{displayUrl}</span>
 				</div>
 				<Separator className="h-full" orientation="vertical" />
