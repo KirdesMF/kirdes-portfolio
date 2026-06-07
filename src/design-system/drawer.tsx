@@ -59,7 +59,7 @@ export function DrawerContent({ children, className, ...props }: DrawerContentPr
 export function DrawerTitle({ className, ...props }: DrawerTitleProps): ReactNode {
 	return (
 		<BaseDrawer.Title
-			className={cn("font-medium text-sm", className)}
+			className={cn("font-medium", className)}
 			data-slot="drawer-title"
 			{...props}
 		/>

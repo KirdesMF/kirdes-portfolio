@@ -363,7 +363,7 @@ function MobileNavDrawer({ onNavigate }: { onNavigate: () => void }) {
 								direction === "left" ? "ps-5" : "pe-4",
 							)}
 						>
-							<span className="text-sm uppercase tracking-wider">{label}</span>
+							<span className="uppercase tracking-wider">{label}</span>
 						</div>
 						{direction === "right" && <Chevron direction="right" variant={variant} />}
 					</Link>

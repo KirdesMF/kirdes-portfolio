@@ -55,7 +55,7 @@ export function PopoverContent({
 }
 
 export function PopoverTitle({ className, ...props }: PopoverTitleProps): ReactNode {
-	return <BasePopover.Title className={cn("font-medium text-sm", className)} {...props} />;
+	return <BasePopover.Title className={cn("font-medium", className)} {...props} />;
 }
 
 export function PopoverDescription({ className, ...props }: PopoverDescriptionProps): ReactNode {

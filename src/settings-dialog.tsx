@@ -83,7 +83,7 @@ function SettingsDialogInner(props: {
 					{m.settings_description()}
 				</Description>
 				<section className="grid gap-2">
-					<h2 className="font-medium text-sm">Mode</h2>
+					<h2 className="font-medium">Mode</h2>
 					<div className="grid gap-2 sm:grid-cols-3">
 						{appearanceModes.map((mode) => {
 							const ModeIcon = modeIcons[mode];
@@ -93,7 +93,7 @@ function SettingsDialogInner(props: {
 								<button
 									type="button"
 									className={cn(
-										"flex items-center justify-between gap-2 rounded border border-border px-2 py-1.5 text-sm",
+										"flex items-center justify-between gap-2 rounded border border-border px-2 py-1.5",
 										selected && "bg-primary text-primary-foreground",
 									)}
 									aria-pressed={selected}
@@ -112,7 +112,7 @@ function SettingsDialogInner(props: {
 				</section>
 
 				<section className="grid gap-3">
-					<h2 className="font-medium text-sm">{m.settings_ide_themes()}</h2>
+					<h2 className="font-medium">{m.settings_ide_themes()}</h2>
 					<ThemeList
 						label={m.settings_light_themes()}
 						selectedTheme={appearance.lightTheme}
@@ -149,7 +149,7 @@ function ThemeList<TTheme extends LightThemeId | DarkThemeId>(props: {
 						<button
 							type="button"
 							className={cn(
-								"flex items-center justify-between gap-3 rounded border border-border px-2 py-2 text-left text-sm",
+								"flex items-center justify-between gap-3 rounded border border-border px-2 py-2 text-left",
 								selected && "bg-accent text-accent-foreground",
 							)}
 							aria-label={`Select ${themeLabels[theme.value]}`}

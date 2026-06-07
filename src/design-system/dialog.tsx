@@ -45,7 +45,7 @@ export function DialogContent({ children, className, ...props }: DialogContentPr
 }
 
 export function DialogTitle({ className, ...props }: DialogTitleProps): ReactNode {
-	return <BaseDialog.Title className={cn("font-medium text-sm", className)} {...props} />;
+	return <BaseDialog.Title className={cn("font-medium", className)} {...props} />;
 }
 
 export function DialogDescription({ className, ...props }: DialogDescriptionProps): ReactNode {
