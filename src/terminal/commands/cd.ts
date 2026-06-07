@@ -13,7 +13,7 @@ export const handleCd: CommandHandler = (ctx) => {
 	// cd with no args or cd .. → go home
 	if (!target || target === "..") {
 		ctx.pushHistory("opening ~");
-		ctx.navigate("/terminal", { panel: "route" });
+		ctx.navigate("/terminal/home", { panel: "route" });
 		return true;
 	}
 

@@ -33,7 +33,7 @@ describe("terminal search transitions", () => {
 
 	it("closes the editor back to the right pane", () => {
 		expect(
-			closeEditorSearch({ editor: "open", files: ["~/README.md"] }, { isHomeRoute: false }),
+			closeEditorSearch({ editor: "open", files: ["~/README.md"] }, { isTerminalOnlyRoute: false }),
 		).toMatchObject({
 			activeFile: undefined,
 			editor: "closed",

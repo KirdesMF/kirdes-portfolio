@@ -1,4 +1,3 @@
-import { ClientOnly } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef } from "react";
 import { ScrambleText } from "#/design-system/ScrambleText";
 import { BANNER_ART } from "./bannerArt";
@@ -108,6 +107,7 @@ export function AsciiBanner({
 		if (!ctx) return;
 
 		let animationFrame = 0;
+		let resizeFrame = 0;
 		let width = 0;
 		let height = 0;
 		let lastDraw = 0;
@@ -180,7 +180,15 @@ export function AsciiBanner({
 			render(performance.now());
 		};
 
-		const observer = new ResizeObserver(resize);
+		const scheduleResize = () => {
+			if (resizeFrame) return;
+			resizeFrame = window.requestAnimationFrame(() => {
+				resizeFrame = 0;
+				resize();
+			});
+		};
+
+		const observer = new ResizeObserver(scheduleResize);
 		const themeObserver = new MutationObserver(updateThemeColors);
 		observer.observe(wrapper);
 		themeObserver.observe(document.documentElement, {
@@ -202,6 +210,7 @@ export function AsciiBanner({
 			observer.disconnect();
 			themeObserver.disconnect();
 			window.cancelAnimationFrame(animationFrame);
+			if (resizeFrame) window.cancelAnimationFrame(resizeFrame);
 		};
 	}, [
 		blur,
@@ -234,9 +243,7 @@ export function AsciiBanner({
 		>
 			<div className="grid gap-1">
 				<span className="justify-self-end text-status-primary text-xs leading-none">
-					<ClientOnly fallback={<span className="tabular-nums">0000</span>}>
-						<CurrentYear />
-					</ClientOnly>
+					<CurrentYear />
 				</span>
 				<canvas className="mx-auto block max-w-full" ref={canvasRef} />
 			</div>

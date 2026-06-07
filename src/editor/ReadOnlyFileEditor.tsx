@@ -302,14 +302,26 @@ function EmptyEditor() {
 		const container = containerRef.current;
 		if (!container) return;
 
+		let frame = 0;
 		const updateCompact = () => {
-			setCompact(container.getBoundingClientRect().height < 460);
+			const nextCompact = container.getBoundingClientRect().height < 460;
+			setCompact((previous) => (previous === nextCompact ? previous : nextCompact));
 		};
-		const observer = new ResizeObserver(updateCompact);
+		const scheduleUpdate = () => {
+			if (frame) return;
+			frame = window.requestAnimationFrame(() => {
+				frame = 0;
+				updateCompact();
+			});
+		};
+		const observer = new ResizeObserver(scheduleUpdate);
 		observer.observe(container);
 		updateCompact();
 
-		return () => observer.disconnect();
+		return () => {
+			observer.disconnect();
+			if (frame) window.cancelAnimationFrame(frame);
+		};
 	}, []);
 
 	return (

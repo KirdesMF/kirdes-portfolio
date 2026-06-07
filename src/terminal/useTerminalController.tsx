@@ -8,13 +8,13 @@ import { useTerminalSearchActions } from "./useTerminalSearchActions";
 export function useTerminalController({
 	activeFileName,
 	currentTerminalRoute,
-	isHomeRoute,
+	isTerminalOnlyRoute,
 	openFileNames,
 	setMode,
 }: {
 	activeFileName?: EditorFileName;
 	currentTerminalRoute: TerminalRoutePath;
-	isHomeRoute: boolean;
+	isTerminalOnlyRoute: boolean;
 	openFileNames: Array<EditorFileName>;
 	setMode: (mode: "light" | "dark") => void;
 }) {
@@ -22,7 +22,7 @@ export function useTerminalController({
 	const actions = useTerminalSearchActions({
 		activeFileName,
 		currentTerminalRoute,
-		isHomeRoute,
+		isTerminalOnlyRoute,
 		openFileNames,
 	});
 
@@ -34,7 +34,7 @@ export function useTerminalController({
 			navigate: actions.navigate,
 			reload: actions.reload,
 			currentRoute: currentTerminalRoute,
-			isHomeRoute,
+			isHomeRoute: isTerminalOnlyRoute,
 			activeFileName,
 			openFileNames,
 			openFile: actions.openFile,

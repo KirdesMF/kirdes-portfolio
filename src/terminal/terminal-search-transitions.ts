@@ -82,14 +82,14 @@ export function openEditorFileSearch(
 
 export function closeEditorSearch(
 	previous: TerminalSearchDraft,
-	{ isHomeRoute }: { isHomeRoute: boolean },
+	{ isTerminalOnlyRoute }: { isTerminalOnlyRoute: boolean },
 ): TerminalSearchTransition {
 	return keepTerminalSearch(previous, {
 		activeFile: undefined,
 		editor: "closed",
 		files: [],
 		maximized: undefined,
-		panel: isHomeRoute ? "terminal" : "route",
+		panel: isTerminalOnlyRoute ? "terminal" : "route",
 	});
 }
 

@@ -33,7 +33,7 @@ export function DialogContent({ children, className, ...props }: DialogContentPr
 			<BaseDialog.Backdrop className="fixed inset-0" />
 			<BaseDialog.Popup
 				className={cn(
-					"fixed top-1/2 inset-s-1/2 max-h-[min(90dvh,42rem)] w-[min(92vw,32rem)] -translate-1/2 rounded bg-popover p-3 text-popover-foreground",
+					"fixed top-1/2 inset-s-1/2 max-h-[min(90dvh,42rem)] w-[min(92vw,32rem)] -translate-1/2 rounded bg-popover p-3 text-popover-foreground outline-none",
 					className,
 				)}
 				{...props}

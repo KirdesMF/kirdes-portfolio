@@ -3,6 +3,7 @@ import aboutSectionSource from "#/portfolio/about/AboutSection.tsx?raw";
 import { aboutFiles } from "#/portfolio/about/about.files";
 import contactSectionSource from "#/portfolio/contact/ContactSection.tsx?raw";
 import { contactFiles } from "#/portfolio/contact/contact.files";
+import homeSectionSource from "#/portfolio/home/HomeSection.tsx?raw";
 import { rootFiles } from "#/portfolio/root.files";
 import workDetailSectionSource from "#/portfolio/work/WorkDetailSection.tsx?raw";
 import workSectionSource from "#/portfolio/work/WorkSection.tsx?raw";
@@ -26,6 +27,13 @@ export type WorkspaceViewMetadata = {
 
 export const workspaceViews: ReadonlyArray<WorkspaceView> = [
 	{
+		route: "/terminal/home",
+		folder: "~",
+		label: "home",
+		renderer: "src/portfolio/home/HomeSection.tsx",
+		files: rootFiles,
+	},
+	{
 		route: "/terminal/about",
 		folder: "about",
 		label: "about",
@@ -48,10 +56,9 @@ export const workspaceViews: ReadonlyArray<WorkspaceView> = [
 	},
 ] as const;
 
-export const workspaceFileGroups: ReadonlyArray<FileGroup> = [
-	{ folder: "~", label: "~", route: "/terminal", files: rootFiles },
-	...workspaceViews.map(({ files, folder, label, route }) => ({ folder, label, route, files })),
-];
+export const workspaceFileGroups: ReadonlyArray<FileGroup> = workspaceViews.map(
+	({ files, folder, label, route }) => ({ folder, label, route, files }),
+);
 
 export const workspaceViewMetadata: Record<string, WorkspaceViewMetadata> = Object.fromEntries(
 	workspaceViews.map((view) => [
@@ -67,6 +74,12 @@ export const workspaceViewMetadata: Record<string, WorkspaceViewMetadata> = Obje
 );
 
 export const workspaceSourceFiles: ReadonlyArray<EditorFileInput> = [
+	{
+		name: "HomeSection.tsx",
+		folder: "src/portfolio/home",
+		language: "tsx",
+		content: homeSectionSource,
+	},
 	{
 		name: "AboutSection.tsx",
 		folder: "src/portfolio/about",

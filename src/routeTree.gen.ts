@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TerminalRouteRouteImport } from './routes/terminal/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TerminalWorkRouteRouteImport } from './routes/terminal/work/route'
+import { Route as TerminalHomeRouteRouteImport } from './routes/terminal/home/route'
 import { Route as TerminalContactRouteRouteImport } from './routes/terminal/contact/route'
 import { Route as TerminalAboutRouteRouteImport } from './routes/terminal/about/route'
 import { Route as TerminalWorkIndexRouteImport } from './routes/terminal/work/index'
@@ -30,6 +31,11 @@ const IndexRoute = IndexRouteImport.update({
 const TerminalWorkRouteRoute = TerminalWorkRouteRouteImport.update({
   id: '/work',
   path: '/work',
+  getParentRoute: () => TerminalRouteRoute,
+} as any)
+const TerminalHomeRouteRoute = TerminalHomeRouteRouteImport.update({
+  id: '/home',
+  path: '/home',
   getParentRoute: () => TerminalRouteRoute,
 } as any)
 const TerminalContactRouteRoute = TerminalContactRouteRouteImport.update({
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/terminal': typeof TerminalRouteRouteWithChildren
   '/terminal/about': typeof TerminalAboutRouteRoute
   '/terminal/contact': typeof TerminalContactRouteRoute
+  '/terminal/home': typeof TerminalHomeRouteRoute
   '/terminal/work': typeof TerminalWorkRouteRouteWithChildren
   '/terminal/work/$project': typeof TerminalWorkProjectRouteRoute
   '/terminal/work/': typeof TerminalWorkIndexRoute
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/terminal': typeof TerminalRouteRouteWithChildren
   '/terminal/about': typeof TerminalAboutRouteRoute
   '/terminal/contact': typeof TerminalContactRouteRoute
+  '/terminal/home': typeof TerminalHomeRouteRoute
   '/terminal/work/$project': typeof TerminalWorkProjectRouteRoute
   '/terminal/work': typeof TerminalWorkIndexRoute
 }
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/terminal': typeof TerminalRouteRouteWithChildren
   '/terminal/about': typeof TerminalAboutRouteRoute
   '/terminal/contact': typeof TerminalContactRouteRoute
+  '/terminal/home': typeof TerminalHomeRouteRoute
   '/terminal/work': typeof TerminalWorkRouteRouteWithChildren
   '/terminal/work/$project': typeof TerminalWorkProjectRouteRoute
   '/terminal/work/': typeof TerminalWorkIndexRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/terminal'
     | '/terminal/about'
     | '/terminal/contact'
+    | '/terminal/home'
     | '/terminal/work'
     | '/terminal/work/$project'
     | '/terminal/work/'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/terminal'
     | '/terminal/about'
     | '/terminal/contact'
+    | '/terminal/home'
     | '/terminal/work/$project'
     | '/terminal/work'
   id:
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/terminal'
     | '/terminal/about'
     | '/terminal/contact'
+    | '/terminal/home'
     | '/terminal/work'
     | '/terminal/work/$project'
     | '/terminal/work/'
@@ -136,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/work'
       fullPath: '/terminal/work'
       preLoaderRoute: typeof TerminalWorkRouteRouteImport
+      parentRoute: typeof TerminalRouteRoute
+    }
+    '/terminal/home': {
+      id: '/terminal/home'
+      path: '/home'
+      fullPath: '/terminal/home'
+      preLoaderRoute: typeof TerminalHomeRouteRouteImport
       parentRoute: typeof TerminalRouteRoute
     }
     '/terminal/contact': {
@@ -185,12 +204,14 @@ const TerminalWorkRouteRouteWithChildren =
 interface TerminalRouteRouteChildren {
   TerminalAboutRouteRoute: typeof TerminalAboutRouteRoute
   TerminalContactRouteRoute: typeof TerminalContactRouteRoute
+  TerminalHomeRouteRoute: typeof TerminalHomeRouteRoute
   TerminalWorkRouteRoute: typeof TerminalWorkRouteRouteWithChildren
 }
 
 const TerminalRouteRouteChildren: TerminalRouteRouteChildren = {
   TerminalAboutRouteRoute: TerminalAboutRouteRoute,
   TerminalContactRouteRoute: TerminalContactRouteRoute,
+  TerminalHomeRouteRoute: TerminalHomeRouteRoute,
   TerminalWorkRouteRoute: TerminalWorkRouteRouteWithChildren,
 }
 

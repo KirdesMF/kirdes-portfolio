@@ -28,7 +28,7 @@ function RouteComponent() {
 						files: [],
 						panel: "terminal",
 					},
-					to: "/terminal",
+					to: "/terminal/home",
 				});
 			},
 		});

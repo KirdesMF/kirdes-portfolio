@@ -14,12 +14,12 @@ import {
 export function useTerminalSearchActions({
 	activeFileName,
 	currentTerminalRoute,
-	isHomeRoute,
+	isTerminalOnlyRoute,
 	openFileNames,
 }: {
 	activeFileName?: EditorFileName;
 	currentTerminalRoute: TerminalRoutePath;
-	isHomeRoute: boolean;
+	isTerminalOnlyRoute: boolean;
 	openFileNames: Array<EditorFileName>;
 }) {
 	const router = useRouter();
@@ -48,7 +48,7 @@ export function useTerminalSearchActions({
 
 	function closeEditor(): void {
 		void router.navigate({
-			search: (previous) => closeEditorSearch(previous, { isHomeRoute }),
+			search: (previous) => closeEditorSearch(previous, { isTerminalOnlyRoute }),
 			to: currentTerminalRoute,
 		});
 	}

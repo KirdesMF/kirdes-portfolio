@@ -66,16 +66,9 @@ export function AppHeader() {
 }
 
 function DesktopHeaderNav() {
-	const navigationItems = createDesktopNavigationItems();
-	const editorVariant: StatusVariant = navigationItems.length % 2 === 0 ? "primary" : "muted";
-	const items = [
-		...navigationItems,
-		createEditorStatusItem({ id: "editor", variant: editorVariant }),
-	];
-
 	return (
 		<div className="hidden min-w-0 md:flex">
-			<StatusGroup items={items} side="left" />
+			<StatusGroup items={createDesktopNavigationItems()} side="left" />
 		</div>
 	);
 }
@@ -92,7 +85,6 @@ function MobileHeaderNav() {
 				</DrawerTrigger>
 			),
 		},
-		createEditorStatusItem({ id: "editor", variant: "muted" }),
 	];
 
 	return (
@@ -117,6 +109,7 @@ function MobileHeaderNav() {
 
 function HeaderActions({ onOpenSettings }: { onOpenSettings: () => void }) {
 	const items: StatusItem[] = [
+		createEditorStatusItem({ id: "editor", variant: "primary" }),
 		{
 			id: "language",
 			variant: "muted",
@@ -228,7 +221,7 @@ function createDesktopNavigationItems(): Array<StatusItem> {
 					search={showRoutePanelSearch}
 					to={to}
 				>
-					{label === "~" ? label : `${label}/`}
+					{`${label}/`}
 				</Link>
 			),
 		};
@@ -370,9 +363,7 @@ function MobileNavDrawer({ onNavigate }: { onNavigate: () => void }) {
 								direction === "left" ? "ps-5" : "pe-4",
 							)}
 						>
-							<span className="text-sm uppercase tracking-wider">
-								{label === "~" ? "terminal" : label}
-							</span>
+							<span className="text-sm uppercase tracking-wider">{label}</span>
 						</div>
 						{direction === "right" && <Chevron direction="right" variant={variant} />}
 					</Link>

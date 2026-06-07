@@ -39,12 +39,12 @@ export function TerminalLayout({
 	const currentTerminalRoute = useRouterState({
 		select: (state) => getTerminalRoutePath(state.location.pathname),
 	});
-	const isHomeRoute = useRouterState({
+	const isTerminalOnlyRoute = useRouterState({
 		select: (state) => state.matches.at(-1)?.routeId === "/terminal",
 	});
 	const hasEditorPanel = activeEditor === "open";
-	const hasRightPanel = !isHomeRoute || hasEditorPanel;
-	const mobilePanel = getMobilePanel(activePanel, hasEditorPanel, isHomeRoute);
+	const hasRightPanel = !isTerminalOnlyRoute || hasEditorPanel;
+	const mobilePanel = getMobilePanel(activePanel, hasEditorPanel, isTerminalOnlyRoute);
 	const { setAppearance, appearance } = useTheme();
 	const layoutRef = useRef<HTMLDivElement | null>(null);
 	const rightPaneRef = useRef<HTMLElement | null>(null);
@@ -52,7 +52,7 @@ export function TerminalLayout({
 	const terminal = useTerminalController({
 		activeFileName,
 		currentTerminalRoute,
-		isHomeRoute,
+		isTerminalOnlyRoute,
 		openFileNames,
 		setMode: (mode) => setAppearance({ ...appearance, mode }),
 	});
@@ -75,7 +75,7 @@ export function TerminalLayout({
 	const isRouteMaximized = maximized === "route";
 	const isEditorMaximized = maximized === "editor";
 	const canResizeTerminal = hasRightPanel && maximized === undefined;
-	const canResizeRouteEditor = hasEditorPanel && !isHomeRoute && maximized === undefined;
+	const canResizeRouteEditor = hasEditorPanel && !isTerminalOnlyRoute && maximized === undefined;
 	const layoutStyle = {
 		"--terminal-pane-size": `${resizablePanels.terminalPaneSize}%`,
 	} as CSSProperties;
@@ -91,7 +91,7 @@ export function TerminalLayout({
 				activeFileName={activeFileName}
 				activePanel={activePanel}
 				hasEditorPanel={hasEditorPanel}
-				isHomeRoute={isHomeRoute}
+				isTerminalOnlyRoute={isTerminalOnlyRoute}
 				onCloseEditor={terminal.closeEditor}
 				onCloseRoute={() =>
 					void router.navigate({
@@ -149,7 +149,7 @@ export function TerminalLayout({
 						ref={rightPaneRef}
 						style={rightPaneStyle}
 					>
-						{isHomeRoute ? null : (
+						{isTerminalOnlyRoute ? null : (
 							<TerminalRoutePane
 								className={cn(
 									mobilePanel === "route" ? "flex" : "hidden",

@@ -21,7 +21,7 @@ export function useCommandHistory(): UseCommandHistoryResult {
 		const entry = createHistoryEntry(input, output);
 		setHistory((previous) => [...previous, entry]);
 
-		if (input !== "welcome" && input !== "whoami") {
+		if (input !== "whoami") {
 			commandHistoryRef.current.push(input);
 		}
 	}

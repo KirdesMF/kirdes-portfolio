@@ -1,18 +1,42 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Separator } from "#/design-system/Separator";
 import { editorFiles, folderRoutes as folderRoutesData } from "#/editor/editor-files";
 import type { EditorFileEntry, FolderRoute } from "#/editor/editor-files.types";
-import { m } from "#/paraglide/messages";
 import { TerminalRouteList } from "./TerminalRouteList";
 import { getCommandSummary, manPages, routeDescriptions } from "./terminal-command-docs";
 import { terminalCommands } from "./terminal-commands";
 import { terminalRoutes } from "./terminal-routes";
-import {
-	openEditorFileSearch,
-	setDialogSearch,
-	showRoutePanelSearch,
-} from "./terminal-search-transitions";
+import { openEditorFileSearch, showRoutePanelSearch } from "./terminal-search-transitions";
+
+export function BunDevOutput(): ReactNode {
+	return (
+		<div className="flex flex-col gap-1.5 whitespace-pre-wrap font-mono text-muted-foreground">
+			<p>Default inspector port 9229 not available, using 9230 instead</p>
+			<p className="pt-2 text-foreground/80">Using secrets defined in .env</p>
+			<p>
+				<span className="text-primary">✓ [paraglide-js]</span>{" "}
+				<span>Compilation complete (message-modules)</span>
+			</p>
+			<p className="pt-2">
+				<span className="font-semibold text-primary">VITE v8.0.12</span>
+				<span className="mx-3">ready in</span>
+				<span className="font-semibold text-foreground/80">3960 ms</span>
+			</p>
+			<p className="pt-2">
+				<span className="text-primary">➜</span>
+				<span className="mx-3 font-semibold text-foreground/80">Local:</span>
+				<a
+					className="text-primary underline-offset-2 hover:underline"
+					href="http://localhost:3000/"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					http://localhost:3000/
+				</a>
+			</p>
+		</div>
+	);
+}
 
 export function HelpOutput(): ReactNode {
 	return (
@@ -43,31 +67,6 @@ export function HelpOutput(): ReactNode {
 						</p>
 					);
 				})}
-			</div>
-		</div>
-	);
-}
-
-export function WelcomeOutput(): ReactNode {
-	return (
-		<div className="flex flex-col whitespace-pre-wrap font-mono text-foreground/90">
-			<p className="font-thin text-muted-foreground/70 uppercase tracking-wider">
-				{m.welcome_title()}
-			</p>
-			<Separator className="mt-1 mb-2 opacity-50" />
-			<div className="flex flex-col gap-0.5">
-				<p>{m.welcome_message()}</p>
-				<p className="text-muted-foreground">
-					{m.welcome_hint_prefix()}{" "}
-					<Link
-						className="text-primary underline-offset-2 hover:underline"
-						search={(previous) => setDialogSearch(previous, "help")}
-						to="."
-					>
-						help
-					</Link>{" "}
-					{m.welcome_hint_suffix()}
-				</p>
 			</div>
 		</div>
 	);

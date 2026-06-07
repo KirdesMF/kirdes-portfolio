@@ -9,9 +9,9 @@ describe("terminal routes", () => {
 	it("parses route targets", () => {
 		expect(parseTerminalRouteTarget("about")).toBe("/terminal/about");
 		expect(parseTerminalRouteTarget("/about")).toBe("/terminal/about");
-		expect(parseTerminalRouteTarget("/home")).toBe("/terminal");
-		expect(parseTerminalRouteTarget("~")).toBeNull();
-		expect(parseTerminalRouteTarget("")).toBeNull();
+		expect(parseTerminalRouteTarget("/home")).toBe("/terminal/home");
+		expect(parseTerminalRouteTarget("~")).toBe("/terminal/home");
+		expect(parseTerminalRouteTarget("")).toBe("/terminal/home");
 		expect(parseTerminalRouteTarget("missing")).toBeNull();
 	});
 
@@ -23,7 +23,8 @@ describe("terminal routes", () => {
 
 	it("normalizes browser pathnames to known terminal routes", () => {
 		expect(getTerminalRoutePath("/terminal/contact")).toBe("/terminal/contact");
-		expect(getTerminalRoutePath("/terminal/work/project")).toBe("/terminal");
-		expect(getTerminalRoutePath("/unknown")).toBe("/terminal");
+		expect(getTerminalRoutePath("/terminal/work/project")).toBe("/terminal/home");
+		expect(getTerminalRoutePath("/unknown")).toBe("/terminal/home");
+		expect(getTerminalRoutePath("/terminal")).toBe("/terminal");
 	});
 });

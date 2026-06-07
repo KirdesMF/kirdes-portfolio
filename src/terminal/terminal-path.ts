@@ -8,6 +8,7 @@
 /** Extract folder name from a terminal route, e.g. "/terminal/about" → "about". */
 export function getTerminalFolder(route: string | null | undefined): string | null {
 	if (!route || route === "/terminal") return null;
+	if (route === "/terminal/home") return "~";
 
 	const parts = route.split("/");
 	return parts[parts.length - 1] ?? null;
@@ -39,7 +40,7 @@ export function formatTerminalCwd(
 	}
 
 	// Replace /terminal/ prefix to preserve full subpath (including nested routes)
-	const subpath = route.replace("/terminal/", "");
+	const subpath = route === "/terminal/home" ? "home" : route.replace("/terminal/", "");
 	const suffix = options?.trailingSlash ? "/" : "";
 
 	return `~/${subpath}${suffix}`;

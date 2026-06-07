@@ -4,7 +4,7 @@ import { m } from "#/paraglide/messages";
 import { getLocale, setLocale } from "#/paraglide/runtime";
 import { formatTerminalCwd } from "#/terminal/terminal-path";
 import { EmailOutput, WhoamiOutput } from "#/terminal/terminal-profile-outputs";
-import { LsOutput, TreeAllOutput, TreeOutput } from "../terminal-command-outputs";
+import { BunDevOutput, LsOutput, TreeAllOutput, TreeOutput } from "../terminal-command-outputs";
 import type { CommandContext, CommandHandler } from "./types";
 
 /**
@@ -50,7 +50,7 @@ function handleDate(ctx: CommandContext): boolean {
 
 function handleBunDev(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "bun dev") return false;
-	ctx.pushHistory(m.bun_dev_running());
+	ctx.pushHistory(<BunDevOutput />);
 	return true;
 }
 

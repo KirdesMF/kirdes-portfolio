@@ -7,9 +7,7 @@ import { commandNames, terminalNavigationItems } from "#/terminal/terminal-route
 const cdSuggestions = [
 	"cd ..",
 	...terminalNavigationItems.flatMap(({ command, label }) => {
-		if (label === "~") return ["cd ~", "cd /"];
-
-		return [`cd ${label}`, `cd ${command}`];
+			return [`cd ${label}`, `cd ${command}`];
 	}),
 ];
 

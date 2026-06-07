@@ -8,6 +8,7 @@ describe("getTerminalFolder", () => {
 	});
 
 	it("extracts folder name from route", () => {
+		expect(getTerminalFolder("/terminal/home")).toBe("~");
 		expect(getTerminalFolder("/terminal/about")).toBe("about");
 		expect(getTerminalFolder("/terminal/work")).toBe("work");
 		expect(getTerminalFolder("/terminal/work/something")).toBe("something");
@@ -24,6 +25,7 @@ describe("formatTerminalCwd", () => {
 	});
 
 	it("formats sub-route", () => {
+		expect(formatTerminalCwd("/terminal/home")).toBe("~/home");
 		expect(formatTerminalCwd("/terminal/about")).toBe("~/about");
 		expect(formatTerminalCwd("/terminal/work")).toBe("~/work");
 	});

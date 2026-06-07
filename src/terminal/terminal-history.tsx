@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
+import { BunDevOutput } from "#/terminal/terminal-command-outputs";
 import { InfosOutput, WhoamiOutput } from "#/terminal/terminal-profile-outputs";
-import { WelcomeOutput } from "./terminal-command-outputs";
 
 export type TerminalHistoryEntry = {
 	id: string;
@@ -20,10 +20,9 @@ export function createHistoryEntry(input: string, output: ReactNode): TerminalHi
 
 export function createInitialHistory(): Array<TerminalHistoryEntry> {
 	return [
-		createHistoryEntry("welcome", <WelcomeOutput />),
 		createHistoryEntry("whoami", <WhoamiOutput />),
 		createHistoryEntry("cat infos.txt", <InfosOutput />),
-		createHistoryEntry("bun dev", "dev server running on port 3000"),
+		createHistoryEntry("bun dev", <BunDevOutput />),
 		createHistoryEntry("nvim .", "opening editor"),
 	];
 }
