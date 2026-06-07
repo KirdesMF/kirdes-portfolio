@@ -98,7 +98,7 @@ function HelpDialogInner(props: {
 	const { Description, Title } = props;
 
 	return (
-		<div className="relative flex min-h-0 flex-1 flex-col rounded border-2 border-border border-glow bg-popover p-4 text-popover-foreground">
+		<div className="relative flex min-h-0 flex-1 flex-col rounded border-2 border-border bg-popover p-4 text-popover-foreground">
 			<Title className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-2 border-border z-raised">
 				{m.help_title()}
 			</Title>

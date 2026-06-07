@@ -1,81 +1,9 @@
 @import "tailwindcss";
 @import "@fontsource-variable/geist-mono";
 
-@property --border-angle {
-	syntax: "<angle>";
-	initial-value: 0deg;
-	inherits: false;
-}
-
-.border-glow {
-	position: relative;
-}
-
-.border-glow::after {
-	content: "";
-	position: absolute;
-	inset: -2px;
-	border-radius: inherit;
-	padding: 2px;
-	background: conic-gradient(
-		from var(--border-angle),
-		transparent 0%,
-		rgb(255 255 255 / 0.5) 5%,
-		transparent 10%,
-		transparent 100%
-	);
-	mask:
-		linear-gradient(#fff 0 0) content-box,
-		linear-gradient(#fff 0 0);
-	mask-composite: exclude;
-	-webkit-mask-composite: xor;
-	animation: border-rotate 4s linear infinite;
-	pointer-events: none;
-	z-index: var(--z-decoration);
-}
-
-@keyframes border-rotate {
-	to {
-		--border-angle: 360deg;
-	}
-}
-
-html {
-	scroll-behavior: smooth;
-}
-
-html,
-body,
-#app {
-	min-height: 100%;
-}
-
-body::before {
-	content: "";
-	position: fixed;
-	inset: 0;
-	pointer-events: none;
-	z-index: var(--z-screen-effect);
-	background: repeating-linear-gradient(
-		0deg,
-		transparent,
-		transparent 1px,
-		color-mix(in oklch, var(--foreground) 5%, transparent) 1px,
-		color-mix(in oklch, var(--foreground) 5%, transparent) 2px
-	);
-}
-
 @custom-variant dark (&:is(.dark *));
 
 @layer base {
-	* {
-		@apply border-border outline-ring/50;
-	}
-	body {
-		@apply bg-background text-foreground;
-		letter-spacing: var(--tracking-normal);
-	}
-
 	* {
 		@apply scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent;
 	}
@@ -87,28 +15,24 @@ body::before {
 	background-size: 2.5px 2.5px;
 }
 
-/*
-Theme token taxonomy:
-- Core UI tokens (`--background`, `--foreground`, `--primary`, etc.) are reusable app
-  surface/content colors and are exported to Tailwind as `--color-*` utilities.
-- Feature tokens (`--editor-*`, `--status-*`, `--ascii-banner-*`,
-  `--command-shortcut`, `--availability-*`) describe one UI feature or purpose.
-  Prefer adding a feature token when a color must mean something more specific than
-  a generic core UI role.
-- Tailwind export tokens live only in `@theme inline` and map semantic custom
-  properties to utility classes. Avoid putting raw palette values there unless a
-  color is intentionally global and not theme-specific.
-*/
-
-@utility bg-stripes {
-	--line: color-mix(in oklch, var(--color-foreground) 30%, transparent);
-	background-image: repeating-linear-gradient(
-		-45deg,
-		var(--line) 0,
-		var(--line) 4px,
-		transparent 4px,
-		transparent 8px
+@utility scanlines {
+	--size: 3%;
+	content: "";
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: var(--z-screen-effect);
+	background: repeating-linear-gradient(
+		0deg,
+		transparent,
+		transparent 2px,
+		color-mix(in oklch, var(--foreground) var(--size), transparent) 2px,
+		color-mix(in oklch, var(--foreground) var(--size), transparent) 4px
 	);
+
+	@variant md {
+		--size: 1%;
+	}
 }
 
 :root {
@@ -155,26 +79,81 @@ Theme token taxonomy:
 	--font-serif: Georgia, serif;
 	--font-mono: Geist Mono, ui-monospace, monospace;
 	--radius: 0.375rem;
-	--shadow-x: 0px;
-	--shadow-y: 2px;
-	--shadow-blur: 10px;
-	--shadow-spread: 0px;
-	--shadow-opacity: 0.1;
-	--shadow-color: 0 0 0;
-	--shadow-2xs: 0px 2px 10px 0px hsl(0 0 0 / 0.05);
-	--shadow-xs: 0px 2px 10px 0px hsl(0 0 0 / 0.05);
-	--shadow-sm: 0px 2px 10px 0px hsl(0 0 0 / 0.1), 0px 1px 2px -1px hsl(0 0 0 / 0.1);
-	--shadow: 0px 2px 10px 0px hsl(0 0 0 / 0.1), 0px 1px 2px -1px hsl(0 0 0 / 0.1);
-	--shadow-md: 0px 2px 10px 0px hsl(0 0 0 / 0.1), 0px 2px 4px -1px hsl(0 0 0 / 0.1);
-	--shadow-lg: 0px 2px 10px 0px hsl(0 0 0 / 0.1), 0px 4px 6px -1px hsl(0 0 0 / 0.1);
-	--shadow-xl: 0px 2px 10px 0px hsl(0 0 0 / 0.1), 0px 8px 10px -1px hsl(0 0 0 / 0.1);
-	--shadow-2xl: 0px 2px 10px 0px hsl(0 0 0 / 0.25);
 	--tracking-normal: 0.01em;
 	--spacing: 0.25rem;
 	--spacing-status-bar: 1.5rem;
-	--z-decoration: 0;
 	--z-raised: 20;
 	--z-screen-effect: 100;
+}
+
+@theme inline {
+	--z-index-raised: var(--z-raised);
+	--z-index-screen-effect: var(--z-screen-effect);
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-destructive-foreground: var(--destructive-foreground);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+	--color-editor: var(--editor);
+	--color-editor-foreground: var(--editor-foreground);
+	--color-editor-line: var(--editor-line);
+	--color-editor-selection: var(--editor-selection);
+	--color-editor-cursor: var(--editor-cursor);
+	--color-command-shortcut: var(--command-shortcut);
+	--color-status: var(--status);
+	--color-status-foreground: var(--status-foreground);
+	--color-status-primary: var(--status-primary);
+	--color-status-primary-foreground: var(--status-primary-foreground);
+	--color-status-muted: var(--status-muted);
+	--color-status-muted-foreground: var(--status-muted-foreground);
+
+	--spacing-status-bar: var(--spacing-status-bar);
+
+	--color-status-open: var(--availability-open);
+	--color-status-shimmer: var(--foreground);
+	--color-status-open-offers: var(--availability-open-offers);
+	--color-status-busy: var(--availability-busy);
+
+	--font-sans: var(--font-sans);
+	--font-mono: var(--font-mono);
+	--font-serif: var(--font-serif);
+
+	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+
+	--shadow-2xs: var(--shadow-2xs);
+	--shadow-xs: var(--shadow-xs);
+	--shadow-sm: var(--shadow-sm);
+	--shadow: var(--shadow);
+	--shadow-md: var(--shadow-md);
+	--shadow-lg: var(--shadow-lg);
+	--shadow-xl: var(--shadow-xl);
+	--shadow-2xl: var(--shadow-2xl);
+
+	--tracking-tighter: calc(var(--tracking-normal) - 0.05em);
+	--tracking-tight: calc(var(--tracking-normal) - 0.025em);
+	--tracking-normal: var(--tracking-normal);
+	--tracking-wide: calc(var(--tracking-normal) + 0.025em);
+	--tracking-wider: calc(var(--tracking-normal) + 0.05em);
+	--tracking-widest: calc(var(--tracking-normal) + 0.1em);
+
+	--text-tiny: 0.625rem;
 }
 
 .dark {
@@ -626,77 +605,6 @@ Theme token taxonomy:
 	--status-primary-foreground: oklch(17.00% 0.018 155);
 	--status-muted: oklch(27.00% 0.035 155);
 	--status-muted-foreground: oklch(67.00% 0.105 145);
-}
-
-@theme inline {
-	--z-index-decoration: var(--z-decoration);
-	--z-index-raised: var(--z-raised);
-	--z-index-screen-effect: var(--z-screen-effect);
-	--color-background: var(--background);
-	--color-foreground: var(--foreground);
-	--color-card: var(--card);
-	--color-card-foreground: var(--card-foreground);
-	--color-popover: var(--popover);
-	--color-popover-foreground: var(--popover-foreground);
-	--color-primary: var(--primary);
-	--color-primary-foreground: var(--primary-foreground);
-	--color-secondary: var(--secondary);
-	--color-secondary-foreground: var(--secondary-foreground);
-	--color-muted: var(--muted);
-	--color-muted-foreground: var(--muted-foreground);
-	--color-accent: var(--accent);
-	--color-accent-foreground: var(--accent-foreground);
-	--color-destructive: var(--destructive);
-	--color-destructive-foreground: var(--destructive-foreground);
-	--color-border: var(--border);
-	--color-input: var(--input);
-	--color-ring: var(--ring);
-	--color-editor: var(--editor);
-	--color-editor-foreground: var(--editor-foreground);
-	--color-editor-line: var(--editor-line);
-	--color-editor-selection: var(--editor-selection);
-	--color-editor-cursor: var(--editor-cursor);
-	--color-command-shortcut: var(--command-shortcut);
-	--color-status: var(--status);
-	--color-status-foreground: var(--status-foreground);
-	--color-status-primary: var(--status-primary);
-	--color-status-primary-foreground: var(--status-primary-foreground);
-	--color-status-muted: var(--status-muted);
-	--color-status-muted-foreground: var(--status-muted-foreground);
-
-	--spacing-status-bar: var(--spacing-status-bar);
-
-	--color-status-open: var(--availability-open);
-	--color-status-shimmer: var(--foreground);
-	--color-status-open-offers: var(--availability-open-offers);
-	--color-status-busy: var(--availability-busy);
-
-	--font-sans: var(--font-sans);
-	--font-mono: var(--font-mono);
-	--font-serif: var(--font-serif);
-
-	--radius-sm: calc(var(--radius) - 4px);
-	--radius-md: calc(var(--radius) - 2px);
-	--radius-lg: var(--radius);
-	--radius-xl: calc(var(--radius) + 4px);
-
-	--shadow-2xs: var(--shadow-2xs);
-	--shadow-xs: var(--shadow-xs);
-	--shadow-sm: var(--shadow-sm);
-	--shadow: var(--shadow);
-	--shadow-md: var(--shadow-md);
-	--shadow-lg: var(--shadow-lg);
-	--shadow-xl: var(--shadow-xl);
-	--shadow-2xl: var(--shadow-2xl);
-
-	--tracking-tighter: calc(var(--tracking-normal) - 0.05em);
-	--tracking-tight: calc(var(--tracking-normal) - 0.025em);
-	--tracking-normal: var(--tracking-normal);
-	--tracking-wide: calc(var(--tracking-normal) + 0.025em);
-	--tracking-wider: calc(var(--tracking-normal) + 0.05em);
-	--tracking-widest: calc(var(--tracking-normal) + 0.1em);
-
-	--text-tiny: 0.625rem;
 }
 
 /* Shiki editor-code */

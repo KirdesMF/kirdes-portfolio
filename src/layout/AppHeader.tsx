@@ -104,7 +104,7 @@ function MobileHeaderNav() {
 				<DrawerHandle />
 				<div
 					className={cn(
-						"relative mx-4 mb-4 flex flex-col rounded border-2 border-border border-glow",
+						"relative mx-4 mb-4 flex flex-col rounded border-2 border-border",
 						"bg-popover text-popover-foreground overflow-hidden",
 					)}
 				>
