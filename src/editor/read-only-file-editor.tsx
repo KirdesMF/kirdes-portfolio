@@ -1,25 +1,32 @@
+import { useHotkeys } from "@tanstack/react-hotkeys";
+import { useNavigate } from "@tanstack/react-router";
 import {
 	Braces,
-	Clock,
+	Briefcase,
+	DoorOpenIcon,
 	FileText,
 	FileType,
-	FolderOpen,
 	GitBranch,
 	History,
 	type LucideIcon,
-	MapIcon,
+	Mail,
 	Maximize2,
 	Minimize2,
+	RotateCw,
 	Search,
+	Settings,
+	Share2,
 	X,
 	Zap,
 } from "lucide-react";
-import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from "react";
+import { type CSSProperties, type ReactNode, useEffect, useId, useRef, useState } from "react";
+import { copyToClipboard } from "#/design-system/clipboard";
 import { cn } from "#/design-system/cn";
 import { Separator } from "#/design-system/separator";
 import { useScrambleRef } from "#/design-system/use-scramble-ref";
 import { AsciiBanner } from "#/editor/ascii-banner/ascii-banner";
 import { getDisplayFileName } from "#/editor/editor-files";
+import { useIdeStore } from "#/ide/store";
 import { getRandomNumber } from "#/utils/random-number";
 
 const fileExtensionIcon: Record<string, LucideIcon> = {
@@ -61,14 +68,15 @@ const emptyEditorCommands: Array<{
 	label: string;
 	shortcut: string;
 }> = [
-	{ id: "search-file", Icon: Search, label: "Search File", shortcut: "f" },
+	{ id: "find-file", Icon: Search, label: "Find File", shortcut: "f" },
+	{ id: "projects", Icon: Briefcase, label: "Projects", shortcut: "p" },
 	{ id: "find-text", Icon: FileText, label: "Find Text", shortcut: "g" },
-	{ id: "explorer", Icon: FolderOpen, label: "Explorer", shortcut: "e" },
 	{ id: "recent-files", Icon: History, label: "Recent Files", shortcut: "r" },
-	{ id: "source-map", Icon: MapIcon, label: "Source Map", shortcut: "m" },
-	{ id: "changelog", Icon: Clock, label: "Changelog", shortcut: "c" },
-	{ id: "git-branch", Icon: GitBranch, label: "Git Branch", shortcut: "b" },
-	{ id: "quit", Icon: X, label: "Quit", shortcut: "q" },
+	{ id: "config", Icon: Settings, label: "Config", shortcut: "c" },
+	{ id: "email", Icon: Mail, label: "Email", shortcut: "m" },
+	{ id: "social-medias", Icon: Share2, label: "Social Medias", shortcut: "s" },
+	{ id: "reload", Icon: RotateCw, label: "Reload", shortcut: "R" },
+	{ id: "quit", Icon: DoorOpenIcon, label: "Quit", shortcut: "q" },
 ];
 
 function getFileIcon(fileName: string): LucideIcon | null {
@@ -286,17 +294,46 @@ function EditorTabs({
 }
 
 export function EmptyEditor() {
-	const [loadingTime, setLoadingTime] = useState(20);
+	const loadingTimeId = useId();
+	const loadingTimeRef = useRef(getRandomNumber({ hash: loadingTimeId, max: 100, min: 20 }));
 	const [compact, setCompact] = useState(false);
+	const commandMenuOpen = useIdeStore((s) => s.commandMenuOpen);
+	const settingsOpen = useIdeStore((s) => s.settingsOpen);
+	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
+	const navigate = useNavigate();
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const rootRef = useScrambleRef<HTMLDivElement>({
 		selector: "[data-anim-editor-status]",
 		staggerMs: 0,
 	});
 
-	useEffect(() => {
-		setLoadingTime(getRandomNumber({ max: 100, min: 20 }));
-	}, []);
+	useHotkeys(
+		[
+			{
+				hotkey: "Shift+R",
+				callback: () => {
+					void navigate({ to: "/" });
+				},
+			},
+			{
+				hotkey: "C",
+				callback: () => {
+					setSettingsOpen(true);
+				},
+			},
+			{
+				hotkey: "M",
+				callback: () => {
+					void copyToClipboard("cedric@kirdes.dev");
+				},
+			},
+		],
+		{
+			enabled: !commandMenuOpen && !settingsOpen,
+			ignoreInputs: true,
+			preventDefault: true,
+		},
+	);
 
 	useEffect(() => {
 		const container = containerRef.current;
@@ -348,7 +385,7 @@ export function EmptyEditor() {
 				>
 					<Zap aria-hidden="true" className="size-3 text-primary" />
 					<span data-anim-editor-status>
-						Neovim loaded <span className="text-status-primary">5/38</span> plugins in {loadingTime}
+						Neovim loaded <span className="text-status-primary">5/38</span> plugins in {loadingTimeRef.current}
 						ms
 					</span>
 				</div>

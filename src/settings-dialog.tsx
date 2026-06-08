@@ -44,7 +44,6 @@ type SettingsDialogProps = {
 
 export function SettingsDialog(props: SettingsDialogProps) {
 	const isMobile = useIsMobile();
-
 	if (isMobile) {
 		return (
 			<Drawer open={props.open} onOpenChange={props.onOpenChange}>

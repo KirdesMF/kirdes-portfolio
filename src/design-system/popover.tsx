@@ -38,12 +38,7 @@ export function PopoverContent({
 		<BasePopover.Portal>
 			<BasePopover.Positioner align={align} side={side} sideOffset={sideOffset}>
 				<BasePopover.Popup
-					className={cn(
-						"rounded-md bg-popover p-2 text-popover-foreground shadow-md",
-						"data-ending-style:opacity-0 data-starting-style:opacity-0 data-ending-style:translate-y-1 data-starting-style:translate-y-1",
-						"transition-[opacity,transform] duration-150 ease-editor-shell motion-reduce:transition-none",
-						className,
-					)}
+					className={cn("rounded-md bg-popover p-2 text-popover-foreground shadow-md", className)}
 					initialFocus={false}
 					{...props}
 				>

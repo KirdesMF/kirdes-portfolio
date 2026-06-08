@@ -1,5 +1,12 @@
 import { useNavigate, useRouterState } from "@tanstack/react-router";
-import { FileText, FolderOpen, LogOut, type LucideIcon, Settings, Terminal } from "lucide-react";
+import {
+	FileText,
+	FolderTreeIcon,
+	LogOut,
+	type LucideIcon,
+	Settings,
+	Terminal,
+} from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Command, CommandItem, CommandList } from "#/design-system/command";
 import { Drawer, DrawerContent, DrawerHandle } from "#/design-system/drawer";
@@ -7,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "#/design-system/popover
 import { useIsMobile } from "#/design-system/use-media-query";
 import { useIdeStore } from "#/ide/store";
 
-type CommandItem = {
+type Item = {
 	id: string;
 	Icon: LucideIcon;
 	label: string;
@@ -23,18 +30,34 @@ export function CommandMenu() {
 	const navigate = useNavigate();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-	const commands: CommandItem[] = [
+	const commands: Item[] = [
 		{
 			id: "explorer",
-			Icon: FolderOpen,
+			Icon: FolderTreeIcon,
 			label: "Explorer",
 			shortcut: "e",
+			action: () => {
+				void navigate({
+					to: "/editor",
+					search: (prev) => ({
+						...prev,
+						neotree: prev.neotree === "open" ? "closed" : "open",
+					}),
+				});
+				setOpen(false);
+			},
+		},
+		{
+			id: "explorer-focus",
+			Icon: FolderTreeIcon,
+			label: "Explorer Focus",
+			shortcut: "E",
 			action: () => {
 				void navigate({
 					to: pathname,
 					search: (prev) => ({
 						...prev,
-						neotree: prev.neotree === "open" ? "closed" : "open",
+						neotree: "open",
 					}),
 				});
 				setOpen(false);
@@ -106,7 +129,7 @@ export function CommandMenu() {
 	);
 }
 
-function CommandMenuInner({ commands, onClose }: { commands: CommandItem[]; onClose: () => void }) {
+function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: () => void }) {
 	const commandRef = useRef<HTMLDivElement>(null);
 	const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -115,7 +138,7 @@ function CommandMenuInner({ commands, onClose }: { commands: CommandItem[]; onCl
 	}, []);
 
 	const selectCommand = useCallback(
-		(cmd: CommandItem) => {
+		(cmd: Item) => {
 			cmd.action();
 			onClose();
 		},
@@ -123,10 +146,13 @@ function CommandMenuInner({ commands, onClose }: { commands: CommandItem[]; onCl
 	);
 
 	function handleKeyDown(event: React.KeyboardEvent) {
-		const shortcutIndex = commands.findIndex((cmd) => cmd.shortcut === event.key);
+		const shortcutIndex = commands.findIndex(
+			(cmd) => cmd.shortcut === event.key && cmd.id !== "explorer-focus",
+		);
 
 		if (shortcutIndex >= 0) {
 			event.preventDefault();
+			event.stopPropagation();
 			selectCommand(commands[shortcutIndex]);
 			return;
 		}
@@ -135,19 +161,23 @@ function CommandMenuInner({ commands, onClose }: { commands: CommandItem[]; onCl
 			case "ArrowDown":
 			case "j":
 				event.preventDefault();
+				event.stopPropagation();
 				setSelectedIndex((prev) => (prev + 1) % commands.length);
 				break;
 			case "ArrowUp":
 			case "k":
 				event.preventDefault();
+				event.stopPropagation();
 				setSelectedIndex((prev) => (prev - 1 + commands.length) % commands.length);
 				break;
 			case "Enter":
 				event.preventDefault();
+				event.stopPropagation();
 				selectCommand(commands[selectedIndex]);
 				break;
 			case "Escape":
 				event.preventDefault();
+				event.stopPropagation();
 				onClose();
 				break;
 		}
@@ -156,7 +186,7 @@ function CommandMenuInner({ commands, onClose }: { commands: CommandItem[]; onCl
 	return (
 		<Command
 			className="relative rounded border border-border outline-none w-40"
-			onKeyDown={handleKeyDown}
+			onKeyDownCapture={handleKeyDown}
 			ref={commandRef}
 			shouldFilter={false}
 		>
@@ -176,7 +206,7 @@ function CommandMenuInner({ commands, onClose }: { commands: CommandItem[]; onCl
 						<span className="text-foreground">{cmd.shortcut}</span>
 						<span className="text-muted-foreground">→</span>
 						<span className="flex min-w-0 items-center gap-2">
-							<cmd.Icon className="size-4 shrink-0" />
+							<cmd.Icon className="size-2.5 shrink-0" />
 							<span className="truncate">{cmd.label}</span>
 						</span>
 					</CommandItem>

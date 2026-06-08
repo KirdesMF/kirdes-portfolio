@@ -1,4 +1,4 @@
-import { GitBranch } from "lucide-react";
+import { ClockIcon, GitBranch } from "lucide-react";
 import type { CSSProperties, ReactNode } from "react";
 import { cn } from "#/design-system/cn";
 import { useIdeStore } from "#/ide/store";
@@ -76,7 +76,7 @@ function StatusSegment(props: {
 
 			<div
 				className={cn(
-					"flex min-w-0 items-center gap-2",
+					"flex min-w-0 items-center gap-1",
 					variant.background,
 					props.side === "left" && props.isFirst && "ps-2 pe-4",
 					props.side === "left" && !props.isFirst && "pe-4 ps-5",
@@ -152,7 +152,14 @@ export function StatusBar({ currentFile }: { currentFile?: string }) {
 		{
 			id: "time",
 			variant: "primary" as const,
-			content: <Clock />,
+			content: (
+				<>
+					<ClockIcon className="size-3 shrink-0" />
+					<span className="font-medium">
+						<Clock />
+					</span>
+				</>
+			),
 		},
 	];
 
