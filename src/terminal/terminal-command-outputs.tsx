@@ -4,7 +4,6 @@ import { editorFiles, folderRoutes as folderRoutesData } from "#/editor/editor-f
 import type { EditorFileEntry, FolderRoute } from "#/editor/editor-files.types";
 import { manPages } from "./terminal-command-docs";
 import { TerminalRouteList } from "./terminal-route-list";
-import { openEditorFileSearch, showRoutePanelSearch } from "./terminal-search-transitions";
 
 export function BunDevOutput(): ReactNode {
 	return (
@@ -181,7 +180,6 @@ export function TreeAllOutput(): ReactNode {
 							activeOptions={{ exact: true }}
 							activeProps={{ className: "text-primary" }}
 							className="underline-offset-2 hover:text-primary hover:underline"
-							search={showRoutePanelSearch}
 							to={route}
 						>
 							{label}/
@@ -193,8 +191,8 @@ export function TreeAllOutput(): ReactNode {
 									<span className="text-muted-foreground/50">{`  ${branch}`}</span>
 									<Link
 										className="underline-offset-2 hover:text-primary hover:underline"
-										search={(previous) => openEditorFileSearch(previous, file.id)}
-										to="."
+										search={{ file: file.id }}
+										to="/editor"
 									>
 										{file.name}
 									</Link>
@@ -215,8 +213,8 @@ export function TreeAllOutput(): ReactNode {
 								<span className="text-muted-foreground/50">{`    ${branch}`}</span>
 								<Link
 									className="underline-offset-2 hover:text-primary hover:underline"
-									search={(previous) => openEditorFileSearch(previous, file.id)}
-									to="."
+									search={{ file: file.id }}
+									to="/editor"
 								>
 									{file.name}
 								</Link>
@@ -242,7 +240,6 @@ export function TreeOutput(): ReactNode {
 							activeOptions={{ exact: true }}
 							activeProps={{ className: "text-primary" }}
 							className="underline-offset-2 hover:text-primary hover:underline"
-							search={showRoutePanelSearch}
 							to={route}
 						>
 							{label}/
@@ -254,8 +251,8 @@ export function TreeOutput(): ReactNode {
 									<span className="text-muted-foreground/50">{`  ${branch}`}</span>
 									<Link
 										className="underline-offset-2 hover:text-primary hover:underline"
-										search={(previous) => openEditorFileSearch(previous, file.id)}
-										to="."
+										search={{ file: file.id }}
+										to="/editor"
 									>
 										{file.name}
 									</Link>

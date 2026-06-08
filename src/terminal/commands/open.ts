@@ -2,13 +2,13 @@ import { m } from "#/paraglide/messages";
 import type { CommandHandler } from "./command.types";
 
 /**
- * open <file> — open a file in the read-only editor.
- * open editor — open the editor panel.
- * nvim . — open the editor panel.
+ * open <file> — open a file in the editor.
+ * open editor — navigate to /editor.
+ * nvim . — navigate to /editor.
  */
 export const handleOpen: CommandHandler = (ctx) => {
 	if (ctx.normalized === "open editor" || ctx.normalized === "nvim .") {
-		ctx.openEditor();
+		ctx.navigate("/editor");
 		ctx.pushHistory(m.open_editor());
 		return true;
 	}
@@ -16,8 +16,10 @@ export const handleOpen: CommandHandler = (ctx) => {
 	if (!ctx.normalized.startsWith("open ")) return false;
 
 	const target = ctx.normalized.slice(5).trim();
+	const file = ctx.resolveFile(target, ctx.currentRoute);
 
-	if (ctx.openFile(target)) {
+	if (file) {
+		ctx.navigate("/editor", { file: file.id });
 		ctx.pushHistory(m.open_file({ target }));
 		return true;
 	}

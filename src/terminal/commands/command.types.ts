@@ -12,31 +12,13 @@ export type CommandContext = {
 	/** Push output to terminal history */
 	pushHistory: (output: ReactNode) => void;
 
-	/** Router instance for terminal route navigation */
+	/** Navigate to a route, optionally with search params */
 	navigate: (to: string, search?: Record<string, unknown>) => void;
 	/** Return to the boot splash route. */
 	reload: () => void;
 
-	/** Current terminal route path */
+	/** Current route path (e.g. "/editor", "/terminal", "/about") */
 	currentRoute: string;
-
-	/** Whether we're at the home route (~) */
-	isHomeRoute: boolean;
-
-	/** Currently active file id in the editor */
-	activeFileName?: string;
-
-	/** Currently open file ids */
-	openFileNames: Array<string>;
-
-	/** Open a file in the editor by name (context-resolved). Returns true if found. */
-	openFile: (name: string) => boolean;
-	/** Close a file by its id */
-	closeFile: (id: string) => void;
-	/** Close the entire editor panel */
-	closeEditor: () => void;
-	/** Open the editor panel */
-	openEditor: () => void;
 
 	/** Resolve a filename to a file entry (context-aware) */
 	resolveFile: (name: string, route?: string) => EditorFileEntry | null;

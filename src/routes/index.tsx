@@ -3,7 +3,7 @@ import { createTimeline, steps } from "animejs";
 import { useEffect } from "react";
 import { useScrambleRef } from "#/design-system/use-scramble-ref";
 
-const bootLines = ["initializing shell", "loading profile", "mounting terminal"] as const;
+const bootLines = ["initializing shell", "loading profile", "mounting neovim"] as const;
 
 export const Route = createFileRoute("/")({
 	component: RouteComponent,
@@ -22,13 +22,7 @@ function RouteComponent() {
 			onComplete: () => {
 				navigate({
 					replace: true,
-					search: {
-						activeFile: undefined,
-						editor: undefined,
-						files: [],
-						panel: "terminal",
-					},
-					to: "/terminal/home",
+					to: "/editor",
 				});
 			},
 		});

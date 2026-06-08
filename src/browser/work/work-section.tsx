@@ -1,13 +1,11 @@
-import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { SourceLinks } from "#/browser/source-links";
 import { ScrambleText } from "#/design-system/scramble-text";
 import { m } from "#/paraglide/messages";
-import { showRoutePanelSearch } from "#/terminal/terminal-search-transitions";
 import { workspaceViewMetadata } from "#/workspace/workspace-catalogue";
 import { projects, statusColors } from "./work.data";
 
-const meta = workspaceViewMetadata["/terminal/work"];
+const meta = workspaceViewMetadata["/work"];
 
 export function WorkSection(): ReactNode {
 	return (
@@ -27,14 +25,9 @@ export function WorkSection(): ReactNode {
 					{projects.map((entry) => (
 						<tr key={entry.name} className="border-b border-border/50 last:border-none">
 							<td className="whitespace-nowrap py-1.5 pr-4">
-								<Link
-									className="text-primary underline-offset-2 hover:underline"
-									to="/terminal/work/$project"
-									params={{ project: entry.name }}
-									search={showRoutePanelSearch}
-								>
+								<span className="text-primary">
 									<ScrambleText text={entry.name} />
-								</Link>
+								</span>
 							</td>
 							<td className="whitespace-nowrap py-1.5 pr-4 text-muted-foreground">
 								{entry.version}
@@ -50,7 +43,7 @@ export function WorkSection(): ReactNode {
 
 			<p className="text-muted-foreground">{m.work_guidance()}</p>
 
-			{meta ? <SourceLinks meta={meta} to="/terminal/work" /> : null}
+			{meta ? <SourceLinks meta={meta} to="/work" /> : null}
 		</div>
 	);
 }

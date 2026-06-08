@@ -9,18 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TerminalRouteRouteImport } from './routes/terminal/route'
+import { Route as IdeRouteImport } from './routes/_ide'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TerminalWorkRouteRouteImport } from './routes/terminal/work/route'
-import { Route as TerminalHomeRouteRouteImport } from './routes/terminal/home/route'
-import { Route as TerminalContactRouteRouteImport } from './routes/terminal/contact/route'
-import { Route as TerminalAboutRouteRouteImport } from './routes/terminal/about/route'
-import { Route as TerminalWorkIndexRouteImport } from './routes/terminal/work/index'
-import { Route as TerminalWorkProjectRouteRouteImport } from './routes/terminal/work/$project/route'
+import { Route as IdeWorkRouteImport } from './routes/_ide.work'
+import { Route as IdeTerminalRouteImport } from './routes/_ide.terminal'
+import { Route as IdeEditorRouteImport } from './routes/_ide.editor'
+import { Route as IdeContactRouteImport } from './routes/_ide.contact'
+import { Route as IdeAboutRouteImport } from './routes/_ide.about'
 
-const TerminalRouteRoute = TerminalRouteRouteImport.update({
-  id: '/terminal',
-  path: '/terminal',
+const IdeRoute = IdeRouteImport.update({
+  id: '/_ide',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -28,112 +26,86 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TerminalWorkRouteRoute = TerminalWorkRouteRouteImport.update({
+const IdeWorkRoute = IdeWorkRouteImport.update({
   id: '/work',
   path: '/work',
-  getParentRoute: () => TerminalRouteRoute,
+  getParentRoute: () => IdeRoute,
 } as any)
-const TerminalHomeRouteRoute = TerminalHomeRouteRouteImport.update({
-  id: '/home',
-  path: '/home',
-  getParentRoute: () => TerminalRouteRoute,
+const IdeTerminalRoute = IdeTerminalRouteImport.update({
+  id: '/terminal',
+  path: '/terminal',
+  getParentRoute: () => IdeRoute,
 } as any)
-const TerminalContactRouteRoute = TerminalContactRouteRouteImport.update({
+const IdeEditorRoute = IdeEditorRouteImport.update({
+  id: '/editor',
+  path: '/editor',
+  getParentRoute: () => IdeRoute,
+} as any)
+const IdeContactRoute = IdeContactRouteImport.update({
   id: '/contact',
   path: '/contact',
-  getParentRoute: () => TerminalRouteRoute,
+  getParentRoute: () => IdeRoute,
 } as any)
-const TerminalAboutRouteRoute = TerminalAboutRouteRouteImport.update({
+const IdeAboutRoute = IdeAboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => TerminalRouteRoute,
+  getParentRoute: () => IdeRoute,
 } as any)
-const TerminalWorkIndexRoute = TerminalWorkIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => TerminalWorkRouteRoute,
-} as any)
-const TerminalWorkProjectRouteRoute =
-  TerminalWorkProjectRouteRouteImport.update({
-    id: '/$project',
-    path: '/$project',
-    getParentRoute: () => TerminalWorkRouteRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/terminal': typeof TerminalRouteRouteWithChildren
-  '/terminal/about': typeof TerminalAboutRouteRoute
-  '/terminal/contact': typeof TerminalContactRouteRoute
-  '/terminal/home': typeof TerminalHomeRouteRoute
-  '/terminal/work': typeof TerminalWorkRouteRouteWithChildren
-  '/terminal/work/$project': typeof TerminalWorkProjectRouteRoute
-  '/terminal/work/': typeof TerminalWorkIndexRoute
+  '/about': typeof IdeAboutRoute
+  '/contact': typeof IdeContactRoute
+  '/editor': typeof IdeEditorRoute
+  '/terminal': typeof IdeTerminalRoute
+  '/work': typeof IdeWorkRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/terminal': typeof TerminalRouteRouteWithChildren
-  '/terminal/about': typeof TerminalAboutRouteRoute
-  '/terminal/contact': typeof TerminalContactRouteRoute
-  '/terminal/home': typeof TerminalHomeRouteRoute
-  '/terminal/work/$project': typeof TerminalWorkProjectRouteRoute
-  '/terminal/work': typeof TerminalWorkIndexRoute
+  '/about': typeof IdeAboutRoute
+  '/contact': typeof IdeContactRoute
+  '/editor': typeof IdeEditorRoute
+  '/terminal': typeof IdeTerminalRoute
+  '/work': typeof IdeWorkRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/terminal': typeof TerminalRouteRouteWithChildren
-  '/terminal/about': typeof TerminalAboutRouteRoute
-  '/terminal/contact': typeof TerminalContactRouteRoute
-  '/terminal/home': typeof TerminalHomeRouteRoute
-  '/terminal/work': typeof TerminalWorkRouteRouteWithChildren
-  '/terminal/work/$project': typeof TerminalWorkProjectRouteRoute
-  '/terminal/work/': typeof TerminalWorkIndexRoute
+  '/_ide': typeof IdeRouteWithChildren
+  '/_ide/about': typeof IdeAboutRoute
+  '/_ide/contact': typeof IdeContactRoute
+  '/_ide/editor': typeof IdeEditorRoute
+  '/_ide/terminal': typeof IdeTerminalRoute
+  '/_ide/work': typeof IdeWorkRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/terminal'
-    | '/terminal/about'
-    | '/terminal/contact'
-    | '/terminal/home'
-    | '/terminal/work'
-    | '/terminal/work/$project'
-    | '/terminal/work/'
+  fullPaths: '/' | '/about' | '/contact' | '/editor' | '/terminal' | '/work'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/terminal'
-    | '/terminal/about'
-    | '/terminal/contact'
-    | '/terminal/home'
-    | '/terminal/work/$project'
-    | '/terminal/work'
+  to: '/' | '/about' | '/contact' | '/editor' | '/terminal' | '/work'
   id:
     | '__root__'
     | '/'
-    | '/terminal'
-    | '/terminal/about'
-    | '/terminal/contact'
-    | '/terminal/home'
-    | '/terminal/work'
-    | '/terminal/work/$project'
-    | '/terminal/work/'
+    | '/_ide'
+    | '/_ide/about'
+    | '/_ide/contact'
+    | '/_ide/editor'
+    | '/_ide/terminal'
+    | '/_ide/work'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  TerminalRouteRoute: typeof TerminalRouteRouteWithChildren
+  IdeRoute: typeof IdeRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/terminal': {
-      id: '/terminal'
-      path: '/terminal'
-      fullPath: '/terminal'
-      preLoaderRoute: typeof TerminalRouteRouteImport
+    '/_ide': {
+      id: '/_ide'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof IdeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -143,85 +115,65 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/terminal/work': {
-      id: '/terminal/work'
+    '/_ide/work': {
+      id: '/_ide/work'
       path: '/work'
-      fullPath: '/terminal/work'
-      preLoaderRoute: typeof TerminalWorkRouteRouteImport
-      parentRoute: typeof TerminalRouteRoute
+      fullPath: '/work'
+      preLoaderRoute: typeof IdeWorkRouteImport
+      parentRoute: typeof IdeRoute
     }
-    '/terminal/home': {
-      id: '/terminal/home'
-      path: '/home'
-      fullPath: '/terminal/home'
-      preLoaderRoute: typeof TerminalHomeRouteRouteImport
-      parentRoute: typeof TerminalRouteRoute
+    '/_ide/terminal': {
+      id: '/_ide/terminal'
+      path: '/terminal'
+      fullPath: '/terminal'
+      preLoaderRoute: typeof IdeTerminalRouteImport
+      parentRoute: typeof IdeRoute
     }
-    '/terminal/contact': {
-      id: '/terminal/contact'
+    '/_ide/editor': {
+      id: '/_ide/editor'
+      path: '/editor'
+      fullPath: '/editor'
+      preLoaderRoute: typeof IdeEditorRouteImport
+      parentRoute: typeof IdeRoute
+    }
+    '/_ide/contact': {
+      id: '/_ide/contact'
       path: '/contact'
-      fullPath: '/terminal/contact'
-      preLoaderRoute: typeof TerminalContactRouteRouteImport
-      parentRoute: typeof TerminalRouteRoute
+      fullPath: '/contact'
+      preLoaderRoute: typeof IdeContactRouteImport
+      parentRoute: typeof IdeRoute
     }
-    '/terminal/about': {
-      id: '/terminal/about'
+    '/_ide/about': {
+      id: '/_ide/about'
       path: '/about'
-      fullPath: '/terminal/about'
-      preLoaderRoute: typeof TerminalAboutRouteRouteImport
-      parentRoute: typeof TerminalRouteRoute
-    }
-    '/terminal/work/': {
-      id: '/terminal/work/'
-      path: '/'
-      fullPath: '/terminal/work/'
-      preLoaderRoute: typeof TerminalWorkIndexRouteImport
-      parentRoute: typeof TerminalWorkRouteRoute
-    }
-    '/terminal/work/$project': {
-      id: '/terminal/work/$project'
-      path: '/$project'
-      fullPath: '/terminal/work/$project'
-      preLoaderRoute: typeof TerminalWorkProjectRouteRouteImport
-      parentRoute: typeof TerminalWorkRouteRoute
+      fullPath: '/about'
+      preLoaderRoute: typeof IdeAboutRouteImport
+      parentRoute: typeof IdeRoute
     }
   }
 }
 
-interface TerminalWorkRouteRouteChildren {
-  TerminalWorkProjectRouteRoute: typeof TerminalWorkProjectRouteRoute
-  TerminalWorkIndexRoute: typeof TerminalWorkIndexRoute
+interface IdeRouteChildren {
+  IdeAboutRoute: typeof IdeAboutRoute
+  IdeContactRoute: typeof IdeContactRoute
+  IdeEditorRoute: typeof IdeEditorRoute
+  IdeTerminalRoute: typeof IdeTerminalRoute
+  IdeWorkRoute: typeof IdeWorkRoute
 }
 
-const TerminalWorkRouteRouteChildren: TerminalWorkRouteRouteChildren = {
-  TerminalWorkProjectRouteRoute: TerminalWorkProjectRouteRoute,
-  TerminalWorkIndexRoute: TerminalWorkIndexRoute,
+const IdeRouteChildren: IdeRouteChildren = {
+  IdeAboutRoute: IdeAboutRoute,
+  IdeContactRoute: IdeContactRoute,
+  IdeEditorRoute: IdeEditorRoute,
+  IdeTerminalRoute: IdeTerminalRoute,
+  IdeWorkRoute: IdeWorkRoute,
 }
 
-const TerminalWorkRouteRouteWithChildren =
-  TerminalWorkRouteRoute._addFileChildren(TerminalWorkRouteRouteChildren)
-
-interface TerminalRouteRouteChildren {
-  TerminalAboutRouteRoute: typeof TerminalAboutRouteRoute
-  TerminalContactRouteRoute: typeof TerminalContactRouteRoute
-  TerminalHomeRouteRoute: typeof TerminalHomeRouteRoute
-  TerminalWorkRouteRoute: typeof TerminalWorkRouteRouteWithChildren
-}
-
-const TerminalRouteRouteChildren: TerminalRouteRouteChildren = {
-  TerminalAboutRouteRoute: TerminalAboutRouteRoute,
-  TerminalContactRouteRoute: TerminalContactRouteRoute,
-  TerminalHomeRouteRoute: TerminalHomeRouteRoute,
-  TerminalWorkRouteRoute: TerminalWorkRouteRouteWithChildren,
-}
-
-const TerminalRouteRouteWithChildren = TerminalRouteRoute._addFileChildren(
-  TerminalRouteRouteChildren,
-)
+const IdeRouteWithChildren = IdeRoute._addFileChildren(IdeRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  TerminalRouteRoute: TerminalRouteRouteWithChildren,
+  IdeRoute: IdeRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

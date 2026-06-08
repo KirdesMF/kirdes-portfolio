@@ -13,14 +13,14 @@ export const handleCd: CommandHandler = (ctx) => {
 	// cd with no args or cd .. → go home
 	if (!target || target === "..") {
 		ctx.pushHistory("opening ~");
-		ctx.navigate("/terminal/home", { panel: "route" });
+		ctx.navigate("/editor");
 		return true;
 	}
 
 	const targetRoute = parseTerminalRouteTarget(target);
 	if (targetRoute) {
 		ctx.pushHistory(`opening ${target}`);
-		ctx.navigate(targetRoute, { panel: "route" });
+		ctx.navigate(targetRoute);
 		return true;
 	}
 

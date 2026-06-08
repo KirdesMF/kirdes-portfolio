@@ -19,9 +19,9 @@ export const handleSource: CommandHandler = (ctx) => {
 
 	const arg = ctx.normalized.slice(6).trim();
 
-	// `source` with no arg — use current route
 	if (arg === "") {
-		const meta = getWorkspaceViewByRoute(ctx.currentRoute);
+		const route = ctx.currentRoute || "/editor";
+		const meta = getWorkspaceViewByRoute(route);
 
 		if (meta) {
 			ctx.pushHistory(<SourceOutput meta={meta} />);
@@ -32,17 +32,13 @@ export const handleSource: CommandHandler = (ctx) => {
 		return true;
 	}
 
-	// `source /about` — lookup by route
-	// `source about`  — lookup by label/folder
-	let meta = arg.startsWith("/")
-		? (getWorkspaceViewByRoute(`/terminal${arg === "/" ? "" : arg}`) ??
-			getWorkspaceViewByRoute(arg))
+	// source /about — lookup by route
+	// source about  — lookup by label/folder
+	const meta = arg.startsWith("/")
+		? (getWorkspaceViewByRoute(arg) ??
+			getWorkspaceViewByLabel(arg) ??
+			getWorkspaceViewByFolder(arg))
 		: (getWorkspaceViewByLabel(arg) ?? getWorkspaceViewByFolder(arg));
-
-	if (!meta) {
-		// Try as direct route
-		meta = getWorkspaceViewByRoute(`/terminal/${arg}`);
-	}
 
 	if (meta) {
 		ctx.pushHistory(<SourceOutput meta={meta} />);

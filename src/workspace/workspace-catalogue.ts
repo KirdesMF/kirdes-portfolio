@@ -27,28 +27,28 @@ export type WorkspaceViewMetadata = {
 
 export const workspaceViews: ReadonlyArray<WorkspaceView> = [
 	{
-		route: "/terminal/home",
+		route: "/editor",
 		folder: "~",
 		label: "home",
 		renderer: "src/browser/home/home-section.tsx",
 		files: rootFiles,
 	},
 	{
-		route: "/terminal/about",
+		route: "/about",
 		folder: "about",
 		label: "about",
 		renderer: "src/browser/about/about-section.tsx",
 		files: aboutFiles,
 	},
 	{
-		route: "/terminal/work",
+		route: "/work",
 		folder: "work",
 		label: "work",
 		renderer: "src/browser/work/work-section.tsx",
 		files: workFiles,
 	},
 	{
-		route: "/terminal/contact",
+		route: "/contact",
 		folder: "contact",
 		label: "contact",
 		renderer: "src/browser/contact/contact-section.tsx",

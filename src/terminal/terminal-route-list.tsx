@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import type { EditorFileEntry, FolderRoute } from "#/editor/editor-files.types";
-import { openEditorFileSearch, showRoutePanelSearch } from "#/terminal/terminal-search-transitions";
 
 function formatRouteLabel(label: string): string {
 	if (label === "~") return "~/";
@@ -25,7 +24,6 @@ export function TerminalRouteList({
 						activeProps={{ className: "text-primary" }}
 						className="text-foreground/80 underline-offset-2 hover:text-primary hover:underline"
 						key={folder}
-						search={showRoutePanelSearch}
 						to={route}
 					>
 						{formatRouteLabel(label)}
@@ -38,8 +36,8 @@ export function TerminalRouteList({
 					<Link
 						className="text-foreground/80 underline-offset-2 hover:text-primary hover:underline"
 						key={file.id}
-						search={(previous) => openEditorFileSearch(previous, file.id)}
-						to="."
+						search={{ file: file.id }}
+						to="/editor"
 					>
 						{file.name}
 					</Link>

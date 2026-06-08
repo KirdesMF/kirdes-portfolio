@@ -2,24 +2,14 @@ import { m } from "#/paraglide/messages";
 import type { CommandHandler } from "./command.types";
 
 /**
- * close <file> — close a specific file.
- * close editor — close the editor panel.
- * close all — close all open files.
- * close — close active file, or editor if none open.
+ * close — navigate to editor (clear file).
+ * close editor — same.
+ * close all — same.
+ * close <file> — navigate to editor.
  */
 export const handleClose: CommandHandler = (ctx) => {
-	if (ctx.normalized === "close editor") {
-		ctx.closeEditor();
-		return true;
-	}
-
-	if (ctx.normalized === "close all") {
-		ctx.navigate(ctx.currentRoute, {
-			activeFile: undefined,
-			editor: "open",
-			files: [],
-			panel: "editor",
-		});
+	if (ctx.normalized === "close editor" || ctx.normalized === "close all") {
+		ctx.navigate("/editor");
 		return true;
 	}
 
@@ -32,18 +22,13 @@ export const handleClose: CommandHandler = (ctx) => {
 			return true;
 		}
 
-		ctx.closeFile(file.id);
+		ctx.navigate("/editor");
 		return true;
 	}
 
 	// bare "close"
 	if (ctx.normalized === "close") {
-		if (ctx.activeFileName) {
-			ctx.closeFile(ctx.activeFileName);
-			return true;
-		}
-
-		ctx.closeEditor();
+		ctx.navigate("/editor");
 		return true;
 	}
 

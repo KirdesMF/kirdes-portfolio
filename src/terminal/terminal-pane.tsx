@@ -8,13 +8,11 @@ import { TerminalSessionHeader } from "./terminal-session-header";
 export function TerminalPane({
 	className,
 	currentRoute,
-	hasRightPanel,
 	history,
 	onSubmit,
 }: {
 	className?: string;
 	currentRoute?: string;
-	hasRightPanel: boolean;
 	history: Array<TerminalHistoryEntry>;
 	onSubmit: (command: string) => void;
 }) {
@@ -29,13 +27,7 @@ export function TerminalPane({
 	}, [history.length]);
 
 	return (
-		<div
-			className={cn(
-				"min-w-0 flex-1 flex-col",
-				hasRightPanel ? "md:flex-none md:w-1/2 md:border-r md:border-border" : "md:flex-1",
-				className,
-			)}
-		>
+		<div className={cn("flex min-h-0 flex-1 flex-col", className)}>
 			<TerminalSessionHeader />
 			<div className="min-h-0 flex-1 overflow-y-auto p-3 text-xs" ref={scrollRef}>
 				<div className="flex flex-col gap-8">

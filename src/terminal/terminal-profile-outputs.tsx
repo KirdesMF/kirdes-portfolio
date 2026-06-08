@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 import { copyToClipboard } from "#/design-system/clipboard";
 import { Separator } from "#/design-system/separator";
 import { m } from "#/paraglide/messages";
-import { showRoutePanelSearch } from "#/terminal/terminal-search-transitions";
 
 const labelClass = "inline-block w-24 shrink-0 text-muted-foreground/60";
 
@@ -65,11 +64,7 @@ export function WhoamiOutput(): ReactNode {
 				<p className="text-muted-foreground">{m.whoami_role()}</p>
 				<p className="mt-1 text-muted-foreground/70">
 					{m.whoami_visit()}{" "}
-					<Link
-						className="text-primary underline-offset-2 hover:underline"
-						search={showRoutePanelSearch}
-						to="/terminal/about"
-					>
+					<Link className="text-primary underline-offset-2 hover:underline" to="/about">
 						/about
 					</Link>
 				</p>

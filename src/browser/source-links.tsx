@@ -1,15 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { getDisplayFileName } from "#/editor/editor-files";
-import { openEditorFileSearch } from "#/terminal/terminal-search-transitions";
 import type { WorkspaceViewMetadata } from "#/workspace/workspace-catalogue";
 
 type SourceLinksProps = {
 	meta: WorkspaceViewMetadata;
-	/** Route to keep when opening files in editor. Defaults to "." */
 	to?: string;
 };
 
-export function SourceLinks({ meta: m, to = "." }: SourceLinksProps) {
+export function SourceLinks({ meta: m, to = "/editor" }: SourceLinksProps) {
 	return (
 		<div className="mt-4 border-t border-border pt-3 text-muted-foreground/60">
 			<div className="mb-1 text-tiny uppercase tracking-wider">implementation</div>
@@ -18,7 +16,7 @@ export function SourceLinks({ meta: m, to = "." }: SourceLinksProps) {
 					renderer:{" "}
 					<Link
 						className="text-primary underline-offset-2 hover:underline"
-						search={(prev) => openEditorFileSearch(prev, m.renderer)}
+						search={{ file: m.renderer }}
 						to={to}
 					>
 						{getDisplayFileName(m.renderer)}
@@ -30,7 +28,7 @@ export function SourceLinks({ meta: m, to = "." }: SourceLinksProps) {
 						<span key={file}>
 							<Link
 								className="text-primary underline-offset-2 hover:underline"
-								search={(prev) => openEditorFileSearch(prev, `${m.folder}/${file}`)}
+								search={{ file: `${m.folder}/${file}` }}
 								to={to}
 							>
 								{file}

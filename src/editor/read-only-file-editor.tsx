@@ -84,7 +84,7 @@ function FileIcon({ fileName }: { fileName: string }) {
 	return <Icon className="size-3 shrink-0" />;
 }
 
-function EditorBody({ highlightedEditorFile }: { highlightedEditorFile: ReactNode | null }) {
+export function EditorBody({ highlightedEditorFile }: { highlightedEditorFile: ReactNode | null }) {
 	if (highlightedEditorFile) return highlightedEditorFile;
 
 	return <div className="p-3 text-muted-foreground">highlighting file...</div>;
@@ -285,7 +285,7 @@ function EditorTabs({
 	);
 }
 
-function EmptyEditor() {
+export function EmptyEditor() {
 	const [loadingTime, setLoadingTime] = useState(20);
 	const [compact, setCompact] = useState(false);
 	const containerRef = useRef<HTMLDivElement | null>(null);
