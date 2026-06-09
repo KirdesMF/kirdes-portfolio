@@ -122,7 +122,10 @@ export function NeoTree() {
 	function closeNeoTree() {
 		void navigate({
 			to: pathname,
-			search: { neotree: "closed" as const },
+			search: (prev) => ({
+				...prev,
+				neotree: "closed" as const,
+			}),
 		});
 	}
 

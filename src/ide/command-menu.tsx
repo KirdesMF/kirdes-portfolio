@@ -132,6 +132,7 @@ export function CommandMenu() {
 function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: () => void }) {
 	const commandRef = useRef<HTMLDivElement>(null);
 	const [selectedId, setSelectedId] = useState(commands[0]?.id ?? "");
+	const setCommandHistoryOpen = useIdeStore((s) => s.setCommandHistoryOpen);
 
 	useEffect(() => {
 		commandRef.current?.focus();
@@ -155,6 +156,13 @@ function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: ()
 	}
 
 	function handleKeyDown(event: React.KeyboardEvent) {
+		if (event.key === ":") {
+			event.preventDefault();
+			event.stopPropagation();
+			setCommandHistoryOpen(true);
+			return;
+		}
+
 		const shortcutIndex = commands.findIndex(
 			(cmd) => cmd.shortcut === event.key && cmd.id !== "explorer-focus",
 		);

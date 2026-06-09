@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type EditorMode = "normal" | "insert";
+type EditorMode = "normal" | "insert" | "command";
 
 type IdeStore = {
 	editorMode: EditorMode;
@@ -9,6 +9,13 @@ type IdeStore = {
 	commandMenuOpen: boolean;
 	setCommandMenuOpen: (open: boolean) => void;
 	toggleCommandMenu: () => void;
+
+	commandModeOpen: boolean;
+	setCommandModeOpen: (open: boolean) => void;
+	commandHistoryOpen: boolean;
+	setCommandHistoryOpen: (open: boolean) => void;
+	commandHistory: string[];
+	addCommandHistory: (command: string) => void;
 
 	settingsOpen: boolean;
 	setSettingsOpen: (open: boolean) => void;
@@ -32,6 +39,16 @@ export const useIdeStore = create<IdeStore>((set) => ({
 	commandMenuOpen: false,
 	setCommandMenuOpen: (open) => set({ commandMenuOpen: open }),
 	toggleCommandMenu: () => set((s) => ({ commandMenuOpen: !s.commandMenuOpen })),
+
+	commandModeOpen: false,
+	setCommandModeOpen: (open) => set({ commandModeOpen: open }),
+	commandHistoryOpen: false,
+	setCommandHistoryOpen: (open) => set({ commandHistoryOpen: open }),
+	commandHistory: [],
+	addCommandHistory: (command) =>
+		set((s) => ({
+			commandHistory: [command, ...s.commandHistory.filter((item) => item !== command)].slice(0, 20),
+		})),
 
 	settingsOpen: false,
 	setSettingsOpen: (open) => set({ settingsOpen: open }),

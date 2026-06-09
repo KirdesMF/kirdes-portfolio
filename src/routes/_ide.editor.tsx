@@ -34,7 +34,12 @@ function EditorRoute() {
 					aria-label="Close file"
 					className="cursor-pointer text-muted-foreground/70 hover:text-foreground"
 					type="button"
-					onClick={() => navigate({ to: "/editor", search: {} })}
+					onClick={() =>
+						navigate({
+							to: "/editor",
+							search: (prev) => ({ ...prev, file: undefined }),
+						})
+					}
 				>
 					[close]
 				</button>

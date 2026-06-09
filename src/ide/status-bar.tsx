@@ -46,7 +46,11 @@ const EDITOR_BRANCH_NAME = "feat/portfolio";
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-function StatusGroup(props: { editorMode: "normal" | "insert"; items: StatusItem[]; side: StatusSide }) {
+function StatusGroup(props: {
+	editorMode: "normal" | "insert" | "command";
+	items: StatusItem[];
+	side: StatusSide;
+}) {
 	return (
 		<div className="flex min-w-0 items-stretch text-tiny">
 			{props.items.map((item, index) => (
@@ -65,7 +69,7 @@ function StatusGroup(props: { editorMode: "normal" | "insert"; items: StatusItem
 }
 
 function StatusSegment(props: {
-	editorMode: "normal" | "insert";
+	editorMode: "normal" | "insert" | "command";
 	isFirst: boolean;
 	isLast: boolean;
 	item: StatusItem;
@@ -73,7 +77,7 @@ function StatusSegment(props: {
 	stack: number;
 }) {
 	const effectiveVariant =
-		props.editorMode === "insert"
+		props.editorMode === "insert" || props.editorMode === "command"
 			? props.item.variant === "primary"
 				? "insertPrimary"
 				: "insertMuted"
