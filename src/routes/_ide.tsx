@@ -1,5 +1,5 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { AppHeader } from "#/ide/app-header";
 import { CommandMenu } from "#/ide/command-menu";
@@ -30,6 +30,7 @@ function IdeShell() {
 	const findFileOpen = useIdeStore((s) => s.findFileOpen);
 	const findTextOpen = useIdeStore((s) => s.findTextOpen);
 	const toggleCommandMenu = useIdeStore((s) => s.toggleCommandMenu);
+	const navigate = useNavigate();
 
 	useHotkeys(
 		[
@@ -37,6 +38,15 @@ function IdeShell() {
 				hotkey: "Space",
 				callback: () => {
 					if (!commandMenuOpen) toggleCommandMenu();
+				},
+			},
+			{
+				hotkey: "P",
+				callback: () => {
+					void navigate({
+						to: "/editor",
+						search: { file: "work/projects/list.json", neotree: "open" as const },
+					});
 				},
 			},
 		],
