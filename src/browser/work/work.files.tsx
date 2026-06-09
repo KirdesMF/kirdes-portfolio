@@ -3,16 +3,24 @@ import type { EditorFileInput } from "#/editor/editor-files.types";
 
 export const workFiles: ReadonlyArray<EditorFileInput> = [
 	{
-		name: "README.md",
+		name: "route.tsx",
 		folder: "work",
-		language: "markdown",
+		language: "tsx",
 		content: md(
-			"# /work",
+			'import { createFileRoute } from "@tanstack/react-router";',
 			"",
-			"Selected work experience and freelance engagements.",
+			'export const Route = createFileRoute("/_browser/work")({',
+			"\tcomponent: RouteComponent,",
+			"});",
 			"",
-			"See `experience.json` for the timeline and `freelance.md`",
-			"for current availability.",
+			"function RouteComponent() {",
+			"\treturn (",
+			"\t\t<section>",
+			"\t\t\t<h1>work</h1>",
+			"\t\t\t<p>selected projects and experience</p>",
+			"\t\t</section>",
+			"\t);",
+			"}",
 		),
 	},
 	{
@@ -44,5 +52,11 @@ export const workFiles: ReadonlyArray<EditorFileInput> = [
 			"",
 			"Contact via `/contact` or email cedric@kirdes.dev.",
 		),
+	},
+	{
+		name: "list.json",
+		folder: "work/projects",
+		language: "json",
+		content: json([]),
 	},
 ];

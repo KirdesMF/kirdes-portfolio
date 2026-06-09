@@ -29,7 +29,7 @@ function buildTree(): TreeNode[] {
 	}>;
 
 	const aboutChildren: TreeNode[] = [
-		{ type: "file" as const, displayName: "README.md", entry: findFile("about", "README.md") },
+		{ type: "file" as const, displayName: "route.tsx", entry: findFile("about", "route.tsx") },
 		{ type: "file" as const, displayName: "skills.json", entry: findFile("about", "skills.json") },
 		{ type: "file" as const, displayName: "values.md", entry: findFile("about", "values.md") },
 	].filter((f) => f.entry !== undefined) as Array<{
@@ -38,10 +38,12 @@ function buildTree(): TreeNode[] {
 		displayName: string;
 	}>;
 
-	const projectChildren: TreeNode[] = [
-		{ type: "file" as const, displayName: "README.md", entry: findFile("contact", "README.md") },
-		{ type: "file" as const, displayName: "links.json", entry: findFile("contact", "links.json") },
-		{ type: "file" as const, displayName: "contact.md", entry: findFile("contact", "contact.md") },
+	const projectsChildren: TreeNode[] = [
+		{
+			type: "file" as const,
+			displayName: "list.json",
+			entry: findFile("work/projects", "list.json"),
+		},
 	].filter((f) => f.entry !== undefined) as Array<{
 		type: "file";
 		entry: EditorFileEntry;
@@ -49,13 +51,24 @@ function buildTree(): TreeNode[] {
 	}>;
 
 	const workChildren: TreeNode[] = [
-		{ type: "file" as const, displayName: "README.md", entry: findFile("work", "README.md") },
+		{ type: "file" as const, displayName: "route.tsx", entry: findFile("work", "route.tsx") },
 		{
 			type: "file" as const,
 			displayName: "experience.json",
 			entry: findFile("work", "experience.json"),
 		},
 		{ type: "file" as const, displayName: "freelance.md", entry: findFile("work", "freelance.md") },
+		{
+			type: "folder" as const,
+			label: "projects",
+			children: projectsChildren,
+		},
+	].filter((f) => f.type === "folder" || f.entry !== undefined) as TreeNode[];
+
+	const contactChildren: TreeNode[] = [
+		{ type: "file" as const, displayName: "route.tsx", entry: findFile("contact", "route.tsx") },
+		{ type: "file" as const, displayName: "links.json", entry: findFile("contact", "links.json") },
+		{ type: "file" as const, displayName: "contact.md", entry: findFile("contact", "contact.md") },
 	].filter((f) => f.entry !== undefined) as Array<{
 		type: "file";
 		entry: EditorFileEntry;
@@ -72,8 +85,8 @@ function buildTree(): TreeNode[] {
 					label: "src",
 					children: [
 						{ type: "folder", label: "about", children: aboutChildren },
-						{ type: "folder", label: "project", children: projectChildren },
 						{ type: "folder", label: "work", children: workChildren },
+						{ type: "folder", label: "contact", children: contactChildren },
 					],
 				},
 				...files,

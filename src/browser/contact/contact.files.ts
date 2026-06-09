@@ -3,15 +3,24 @@ import type { EditorFileInput } from "#/editor/editor-files.types";
 
 export const contactFiles: ReadonlyArray<EditorFileInput> = [
 	{
-		name: "README.md",
+		name: "route.tsx",
 		folder: "contact",
-		language: "markdown",
+		language: "tsx",
 		content: md(
-			"# /contact",
+			'import { createFileRoute } from "@tanstack/react-router";',
 			"",
-			"Reach out. Always happy to chat about work, collaboration, or ideas.",
+			'export const Route = createFileRoute("/_browser/contact")({',
+			"\tcomponent: RouteComponent,",
+			"});",
 			"",
-			"See `links.json` for social links and `contact.md` for direct info.",
+			"function RouteComponent() {",
+			"\treturn (",
+			"\t\t<section>",
+			"\t\t\t<h1>contact</h1>",
+			"\t\t\t<p>get in touch</p>",
+			"\t\t</section>",
+			"\t);",
+			"}",
 		),
 	},
 	{

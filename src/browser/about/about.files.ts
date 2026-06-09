@@ -3,19 +3,24 @@ import type { EditorFileInput } from "#/editor/editor-files.types";
 
 export const aboutFiles: ReadonlyArray<EditorFileInput> = [
 	{
-		name: "README.md",
+		name: "route.tsx",
 		folder: "about",
-		language: "markdown",
+		language: "tsx",
 		content: md(
-			"# /about",
+			'import { createFileRoute } from "@tanstack/react-router";',
 			"",
-			"Product engineer building for the web — frontend architecture,",
-			"design systems, and developer tooling.",
+			'export const Route = createFileRoute("/_browser/about")({',
+			"\tcomponent: RouteComponent,",
+			"});",
 			"",
-			"Currently exploring TanStack Start, Cloudflare Workers,",
-			"and the intersection of DX and UX.",
-			"",
-			"See `skills.json` for technical skills and `values.md` for principles.",
+			"function RouteComponent() {",
+			"\treturn (",
+			"\t\t<section>",
+			"\t\t\t<h1>about</h1>",
+			"\t\t\t<p>product engineer / interface builder</p>",
+			"\t\t</section>",
+			"\t);",
+			"}",
 		),
 	},
 	{
