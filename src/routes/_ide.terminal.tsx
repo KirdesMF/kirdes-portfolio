@@ -29,7 +29,7 @@ function TerminalRoute() {
 					[close]
 				</button>
 			</div>
-			<TerminalPane currentRoute="/terminal" history={history} onSubmit={handleSubmit} />
+			<TerminalPane history={history} onSubmit={handleSubmit} />
 		</section>
 	);
 }

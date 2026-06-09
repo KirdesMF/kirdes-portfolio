@@ -8,6 +8,7 @@ import { m } from "#/paraglide/messages";
 export function AppHeader() {
 	const toggleCommandMenu = useIdeStore((s) => s.toggleCommandMenu);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
+	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
 	const navigate = useNavigate();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -39,6 +40,13 @@ export function AppHeader() {
 					onClick={toggleExplorer}
 				>
 					[explorer]
+				</button>
+				<button
+					className="cursor-pointer text-muted-foreground/70 transition hover:text-foreground"
+					type="button"
+					onClick={() => setHelpOpen(true)}
+				>
+					[help]
 				</button>
 			</div>
 

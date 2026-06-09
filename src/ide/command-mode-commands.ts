@@ -1,9 +1,11 @@
+import type { NavigateOptions } from "@tanstack/react-router";
 import type { AppearanceSettings } from "#/theme/theme.types";
 
 type CommandExecutionContext = {
 	appearance: AppearanceSettings;
 	setAppearance: (appearance: AppearanceSettings) => void;
 	setLocale: (locale: "en" | "fr") => void;
+	navigate: (options: NavigateOptions) => void;
 };
 
 export type CommandModeCommand = {
@@ -43,6 +45,12 @@ export const commandModeCommands: CommandModeCommand[] = [
 		description: "Switch language to English.",
 		aliases: ["len", "en", "lang en", "lang english"],
 		execute: ({ setLocale }) => setLocale("en"),
+	},
+	{
+		name: "terminal",
+		description: "Open the terminal.",
+		aliases: ["terminal", "term", "t"],
+		execute: ({ navigate }) => navigate({ to: "/terminal" }),
 	},
 ];
 

@@ -149,9 +149,7 @@ function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: ()
 	function moveSelection(direction: 1 | -1) {
 		const currentIndex = commands.findIndex((cmd) => cmd.id === selectedId);
 		const nextIndex =
-			currentIndex < 0
-				? 0
-				: (currentIndex + direction + commands.length) % commands.length;
+			currentIndex < 0 ? 0 : (currentIndex + direction + commands.length) % commands.length;
 		setSelectedId(commands[nextIndex]?.id ?? "");
 	}
 

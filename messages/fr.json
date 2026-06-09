@@ -27,13 +27,11 @@
 	"route_about": "parcours, valeurs et philosophie",
 	"route_work": "projets et expérience professionnelle",
 	"route_contact": "me contacter",
-	"cmd_bun": "démarrer le serveur de développement",
 	"cmd_cat": "afficher le contenu d'un fichier dans le terminal",
 	"cmd_cd": "naviguer vers une route/répertoire",
 	"cmd_clear": "effacer l'écran du terminal",
 	"cmd_config": "ouvrir les paramètres d'apparence. Alias de settings.",
-	"cmd_close": "fermer un fichier ou l'éditeur",
-	"cmd_date": "afficher la date et l'heure actuelles",
+	"cmd_exit": "fermer un fichier ou l'éditeur",
 	"cmd_email": "copier cedric@kirdes.dev dans le presse-papier",
 	"cmd_git": "fausses opérations git",
 	"cmd_github": "ouvrir github.com/kirdesmf dans une nouvelle fenêtre",
@@ -44,14 +42,9 @@
 	"cmd_help": "ouvrir les routes et commandes disponibles",
 	"cmd_history": "afficher l'historique des commandes",
 	"cmd_ls": "lister les répertoires et fichiers",
-	"cmd_man": "afficher la page de manuel d'une commande",
 	"cmd_nvim": "ouvrir l'éditeur",
-	"cmd_open": "ouvrir un fichier dans l'éditeur en lecture seule",
-	"cmd_pwd": "afficher le répertoire de travail courant",
 	"cmd_reload": "recharger le portfolio (écran de démarrage)",
-	"cmd_rm": "faire semblant de supprimer des fichiers",
 	"cmd_settings": "ouvrir les paramètres d'apparence",
-	"cmd_source": "afficher les fichiers de contenu et le rendu d'une vue",
 	"cmd_tree": "afficher la structure des dossiers en arbre",
 	"cmd_whoami": "afficher les informations de l'utilisateur",
 
@@ -108,7 +101,7 @@
 	"avail_open_to_offers_description": "Pas en recherche active mais ouvert aux opportunités et conversations intéressantes.",
 	"avail_busy_description": "Entièrement engagé sur des projets en cours — pas disponible pour de nouvelles missions pour le moment.",
 
-	"bun_dev_running": "le serveur de développement tourne déjà sur le port 3000",
+
 	"lang_available": "langues disponibles :",
 	"lang_current": "(actuelle)",
 	"lang_already_set": "la langue est déjà définie sur {target}",
@@ -118,11 +111,6 @@
 	"mode_switched": "passage en mode {mode}",
 	"history_empty": "aucune commande dans l'historique",
 
-	"open_editor": "ouverture de l'éditeur",
-	"open_file": "ouverture de {target}",
-	"open_not_found": "fichier introuvable : {target}",
-	"close_not_found": "fichier introuvable : {target}",
-	"cat_not_found": "fichier introuvable : {target}",
-	"source_not_found": "aucune vue trouvée : {target}",
-	"source_no_metadata": "aucune métadonnée pour la vue actuelle"
+	"exit_not_found": "fichier introuvable : {target}",
+	"cat_not_found": "fichier introuvable : {target}"
 }

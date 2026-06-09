@@ -2,8 +2,8 @@ import { useHotkeys } from "@tanstack/react-hotkeys";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { AppHeader } from "#/ide/app-header";
-import { CommandHistoryDialog, CommandModeDialog } from "#/ide/command-mode-dialog";
 import { CommandMenu } from "#/ide/command-menu";
+import { CommandHistoryDialog, CommandModeDialog } from "#/ide/command-mode-dialog";
 import { FindFileDialog } from "#/ide/find-file-dialog";
 import { FindTextDialog } from "#/ide/find-text-dialog";
 import { NeoTree } from "#/ide/neo-tree";
@@ -42,11 +42,7 @@ function IdeShell() {
 		],
 		{
 			enabled:
-				!settingsOpen &&
-				!findFileOpen &&
-				!findTextOpen &&
-				!commandModeOpen &&
-				!commandHistoryOpen,
+				!settingsOpen && !findFileOpen && !findTextOpen && !commandModeOpen && !commandHistoryOpen,
 			ignoreInputs: true,
 		},
 	);

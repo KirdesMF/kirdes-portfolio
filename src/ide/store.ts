@@ -20,6 +20,9 @@ type IdeStore = {
 	settingsOpen: boolean;
 	setSettingsOpen: (open: boolean) => void;
 
+	helpOpen: boolean;
+	setHelpOpen: (open: boolean) => void;
+
 	findFileOpen: boolean;
 	setFindFileOpen: (open: boolean) => void;
 
@@ -47,11 +50,17 @@ export const useIdeStore = create<IdeStore>((set) => ({
 	commandHistory: [],
 	addCommandHistory: (command) =>
 		set((s) => ({
-			commandHistory: [command, ...s.commandHistory.filter((item) => item !== command)].slice(0, 20),
+			commandHistory: [command, ...s.commandHistory.filter((item) => item !== command)].slice(
+				0,
+				20,
+			),
 		})),
 
 	settingsOpen: false,
 	setSettingsOpen: (open) => set({ settingsOpen: open }),
+
+	helpOpen: false,
+	setHelpOpen: (open) => set({ helpOpen: open }),
 
 	findFileOpen: false,
 	setFindFileOpen: (open) => set({ findFileOpen: open }),

@@ -17,7 +17,7 @@ export const rootFiles: ReadonlyArray<EditorFileInput> = [
 			"- `cd <route>` — navigate to a workspace view",
 			"- `cat <file>` — print file contents",
 			"- `open <file>` — open in read-only editor",
-			"- `close` — close editor",
+			"- `exit` — close editor",
 		),
 	},
 	{

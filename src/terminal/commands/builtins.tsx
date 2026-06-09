@@ -2,9 +2,8 @@ import { copyToClipboard } from "#/design-system/clipboard";
 import { Separator } from "#/design-system/separator";
 import { m } from "#/paraglide/messages";
 import { getLocale, setLocale } from "#/paraglide/runtime";
-import { formatTerminalCwd } from "#/terminal/terminal-path";
 import { EmailOutput, WhoamiOutput } from "#/terminal/terminal-profile-outputs";
-import { BunDevOutput, LsOutput, TreeAllOutput, TreeOutput } from "../terminal-command-outputs";
+import { LsOutput, TreeAllOutput, TreeOutput } from "../terminal-command-outputs";
 import type { CommandContext, CommandHandler } from "./command.types";
 
 /**
@@ -30,27 +29,9 @@ function handleLs(ctx: CommandContext): boolean {
 	return true;
 }
 
-function handlePwd(ctx: CommandContext): boolean {
-	if (ctx.normalized !== "pwd") return false;
-	ctx.pushHistory(formatTerminalCwd(ctx.currentRoute));
-	return true;
-}
-
 function handleWhoami(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "whoami") return false;
 	ctx.pushHistory(<WhoamiOutput />);
-	return true;
-}
-
-function handleDate(ctx: CommandContext): boolean {
-	if (ctx.normalized !== "date") return false;
-	ctx.pushHistory(new Date().toLocaleString());
-	return true;
-}
-
-function handleBunDev(ctx: CommandContext): boolean {
-	if (ctx.normalized !== "bun dev") return false;
-	ctx.pushHistory(<BunDevOutput />);
 	return true;
 }
 
@@ -290,10 +271,7 @@ export const builtinHandlers: ReadonlyArray<CommandHandler> = [
 	handleClear,
 	handleHelp,
 	handleLs,
-	handlePwd,
 	handleWhoami,
-	handleDate,
-	handleBunDev,
 	handleHistory,
 	handleTree,
 	handleEmail,

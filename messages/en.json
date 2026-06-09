@@ -27,13 +27,11 @@
 	"route_about": "background, values, and philosophy",
 	"route_work": "projects and professional experience",
 	"route_contact": "get in touch with me",
-	"cmd_bun": "start the dev server",
 	"cmd_cat": "print file contents to the terminal",
 	"cmd_cd": "navigate to a route/directory",
 	"cmd_clear": "clear the terminal screen",
 	"cmd_config": "open appearance settings. Alias for settings.",
-	"cmd_close": "close a file or the editor",
-	"cmd_date": "display current date and time",
+	"cmd_exit": "close a file or the editor",
 	"cmd_email": "copy cedric@kirdes.dev to clipboard",
 	"cmd_git": "fake git operations",
 	"cmd_github": "open github.com/kirdesmf in a new window",
@@ -44,14 +42,9 @@
 	"cmd_help": "open available routes and commands",
 	"cmd_history": "show command history",
 	"cmd_ls": "list directories and files",
-	"cmd_man": "show the manual page for a command",
 	"cmd_nvim": "open the editor",
-	"cmd_open": "open a file in the read-only editor",
-	"cmd_pwd": "print working directory (current folder)",
 	"cmd_reload": "reload the portfolio (go to splash screen)",
-	"cmd_rm": "pretend to remove files",
 	"cmd_settings": "open appearance settings",
-	"cmd_source": "show route, content files, and renderer for a workspace view",
 	"cmd_tree": "display folder structure as a tree",
 	"cmd_whoami": "display current user info",
 
@@ -108,7 +101,7 @@
 	"avail_open_to_offers_description": "Not actively searching but open to interesting opportunities and conversations.",
 	"avail_busy_description": "Fully committed to current projects — not available for new work right now.",
 
-	"bun_dev_running": "dev is already running on port 3000",
+
 	"lang_available": "available languages:",
 	"lang_current": "(current)",
 	"lang_already_set": "lang is already set to {target}",
@@ -118,11 +111,6 @@
 	"mode_switched": "switched to {mode} mode",
 	"history_empty": "no commands in history",
 
-	"open_editor": "opening editor",
-	"open_file": "opening {target}",
-	"open_not_found": "file not found: {target}",
-	"close_not_found": "file not found: {target}",
-	"cat_not_found": "file not found: {target}",
-	"source_not_found": "no workspace view found: {target}",
-	"source_no_metadata": "no source metadata for current view"
+	"exit_not_found": "file not found: {target}",
+	"cat_not_found": "file not found: {target}"
 }

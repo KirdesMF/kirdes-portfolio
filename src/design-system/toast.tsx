@@ -35,7 +35,10 @@ type ToastArrowProps = Omit<ComponentProps<typeof BaseToast.Arrow>, "className">
 
 export const toastManager = BaseToast.createToastManager();
 
-export function ToastProvider({ toastManager: manager = toastManager, ...props }: ToastProviderProps) {
+export function ToastProvider({
+	toastManager: manager = toastManager,
+	...props
+}: ToastProviderProps) {
 	return <BaseToast.Provider toastManager={manager} {...props} />;
 }
 
@@ -82,10 +85,7 @@ export function ToastTitle({ className, ...props }: ToastTitleProps): ReactNode 
 
 export function ToastDescription({ className, ...props }: ToastDescriptionProps): ReactNode {
 	return (
-		<BaseToast.Description
-			className={cn("text-muted-foreground text-xs", className)}
-			{...props}
-		/>
+		<BaseToast.Description className={cn("text-muted-foreground text-xs", className)} {...props} />
 	);
 }
 
@@ -105,10 +105,7 @@ export function ToastClose({ children, className, ...props }: ToastCloseProps): 
 	return (
 		<BaseToast.Close
 			aria-label="Dismiss toast"
-			className={cn(
-				"shrink-0 text-muted-foreground hover:text-foreground",
-				className,
-			)}
+			className={cn("shrink-0 text-muted-foreground hover:text-foreground", className)}
 			{...props}
 		>
 			{children ?? <XIcon className="size-3.5" />}

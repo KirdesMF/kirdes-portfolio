@@ -63,7 +63,7 @@
 	--status-muted: var(--muted);
 	--status-muted-foreground: var(--muted-foreground);
 	--command-shortcut: oklch(0.654 0.1582 48.3615);
-	--insert-background: oklch(0.70 0.16 52);
+	--insert-background: oklch(0.7 0.16 52);
 	--insert-foreground: oklch(0.2621 0.0095 248.1897);
 	--availability-open: oklch(0.65 0.18 146);
 	--availability-open-offers: oklch(0.75 0.18 70);
@@ -230,7 +230,7 @@
 	--status-muted: var(--muted);
 	--status-muted-foreground: var(--muted-foreground);
 	--command-shortcut: oklch(0.654 0.1582 48.3615);
-	--insert-background: oklch(0.70 0.16 52);
+	--insert-background: oklch(0.7 0.16 52);
 	--insert-foreground: oklch(0.2621 0.0095 248.1897);
 }
 
@@ -297,7 +297,7 @@
 	--editor-selection: oklch(0.8495 0.0156 268.99);
 	--editor-cursor: oklch(0.6993 0.111 33.13);
 	--command-shortcut: var(--status-primary);
-	--insert-background: oklch(0.70 0.13 34);
+	--insert-background: oklch(0.7 0.13 34);
 	--insert-foreground: oklch(0.4004 0.0465 279.06);
 	--status: oklch(0.9298 0.0095 265.54);
 	--status-foreground: oklch(0.537 0.2587 295.75);
@@ -333,7 +333,7 @@
 	--editor-selection: oklch(0.2795 0.035 281.48);
 	--editor-cursor: oklch(0.9183 0.0252 29.89);
 	--command-shortcut: var(--status-primary);
-	--insert-background: oklch(0.90 0.08 32);
+	--insert-background: oklch(0.9 0.08 32);
 	--insert-foreground: oklch(0.1901 0.034 282.73);
 	--status: oklch(0.1591 0.0289 282.67);
 	--status-foreground: oklch(0.7757 0.1257 304.6);
@@ -370,7 +370,7 @@
 	--editor-selection: oklch(0.8936 0.0175 263.32);
 	--editor-cursor: oklch(0.5712 0.0823 254.24);
 	--command-shortcut: var(--status-primary);
-	--insert-background: oklch(0.74 0.10 92);
+	--insert-background: oklch(0.74 0.1 92);
 	--insert-foreground: oklch(0.2798 0.0252 264.19);
 	--status: oklch(0.8936 0.0175 263.32);
 	--status-foreground: oklch(0.5712 0.0823 254.24);
@@ -406,7 +406,7 @@
 	--editor-selection: oklch(0.3791 0.0351 264.17);
 	--editor-cursor: oklch(0.7624 0.0655 217.83);
 	--command-shortcut: var(--status-primary);
-	--insert-background: oklch(0.80 0.10 90);
+	--insert-background: oklch(0.8 0.1 90);
 	--insert-foreground: oklch(0.2798 0.0252 264.19);
 	--status: oklch(0.3396 0.0316 266.45);
 	--status-foreground: oklch(0.7624 0.0655 217.83);
@@ -479,7 +479,7 @@
 	--editor-selection: oklch(90.88% 0.0246 94.08);
 	--editor-cursor: oklch(77.46% 0.1577 57.87);
 	--command-shortcut: var(--status-primary);
-	--insert-background: oklch(0.76 0.10 225);
+	--insert-background: oklch(0.76 0.1 225);
 	--insert-foreground: oklch(0.1635 0.0136 264.09);
 	--status: oklch(90.88% 0.0246 94.08);
 	--status-foreground: oklch(50.87% 0.0234 250.58);
@@ -551,7 +551,7 @@
 	--editor-selection: oklch(40.64% 0.0939 267.53);
 	--editor-cursor: oklch(84.56% 0.0611 274.76);
 	--command-shortcut: var(--status-primary);
-	--insert-background: oklch(0.80 0.13 52);
+	--insert-background: oklch(0.8 0.13 52);
 	--insert-foreground: oklch(0.2263 0.0214 280.49);
 	--status: oklch(26.10% 0.0344 274.16);
 	--status-foreground: oklch(71.90% 0.1322 264.2);

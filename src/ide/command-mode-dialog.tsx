@@ -1,3 +1,4 @@
+import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
 	CommandDialog,
@@ -6,10 +7,10 @@ import {
 	CommandItem,
 	CommandList,
 } from "#/design-system/command";
-import { setLocale } from "#/paraglide/runtime";
-import { useTheme } from "#/theme/theme-provider";
 import { commandModeCommands, findCommand, normalizeCommand } from "#/ide/command-mode-commands";
 import { useIdeStore } from "#/ide/store";
+import { setLocale } from "#/paraglide/runtime";
+import { useTheme } from "#/theme/theme-provider";
 
 export function CommandModeDialog() {
 	const open = useIdeStore((s) => s.commandModeOpen);
@@ -17,6 +18,7 @@ export function CommandModeDialog() {
 	const setEditorMode = useIdeStore((s) => s.setEditorMode);
 	const addCommandHistory = useIdeStore((s) => s.addCommandHistory);
 	const { appearance, setAppearance } = useTheme();
+	const navigate = useNavigate();
 	const [input, setInput] = useState("");
 	const [error, setError] = useState("");
 
@@ -50,7 +52,7 @@ export function CommandModeDialog() {
 			return;
 		}
 
-		command.execute({ appearance, setAppearance, setLocale });
+		command.execute({ appearance, setAppearance, setLocale, navigate });
 		addCommandHistory(commandText);
 		setOpen(false);
 		setEditorMode("normal");

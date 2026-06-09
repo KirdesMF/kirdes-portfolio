@@ -3,7 +3,13 @@ import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "#/design-system/cn";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "#/design-system/dialog";
-import { Drawer, DrawerContent, DrawerDescription, DrawerHandle, DrawerTitle } from "#/design-system/drawer";
+import {
+	Drawer,
+	DrawerContent,
+	DrawerDescription,
+	DrawerHandle,
+	DrawerTitle,
+} from "#/design-system/drawer";
 import { useIsMobile } from "#/design-system/use-media-query";
 
 type CommandProps = Omit<ComponentProps<typeof BaseCommand>, "className"> & {
@@ -60,13 +66,19 @@ export function CommandDialog({
 	open,
 }: CommandDialogProps): ReactNode {
 	const isMobile = useIsMobile();
-	const inner = (Title: typeof DialogTitle | typeof DrawerTitle, Description: typeof DialogDescription | typeof DrawerDescription) => (
+	const inner = (
+		Title: typeof DialogTitle | typeof DrawerTitle,
+		Description: typeof DialogDescription | typeof DrawerDescription,
+	) => (
 		<div className="relative flex min-h-0 flex-col rounded border-2 border-border bg-popover p-3 text-popover-foreground">
 			<Title className="absolute top-0 inset-s-1/2 z-raised -translate-1/2 border-x-2 border-border bg-popover px-2 text-primary leading-none">
 				{title}
 			</Title>
 			<Description className="sr-only">{description}</Description>
-			<Command className={cn("rounded-none bg-transparent pt-2", commandClassName)} shouldFilter={false}>
+			<Command
+				className={cn("rounded-none bg-transparent pt-2", commandClassName)}
+				shouldFilter={false}
+			>
 				{children}
 			</Command>
 		</div>

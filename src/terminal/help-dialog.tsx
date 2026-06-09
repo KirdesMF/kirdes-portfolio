@@ -21,13 +21,11 @@ const routeDescriptionMessages: Record<string, () => string> = {
 };
 
 const commandDescriptionMessages: Record<string, () => string> = {
-	bun: () => m.cmd_bun(),
 	cat: () => m.cmd_cat(),
 	cd: () => m.cmd_cd(),
 	clear: () => m.cmd_clear(),
 	config: () => m.cmd_config(),
-	close: () => m.cmd_close(),
-	date: () => m.cmd_date(),
+	exit: () => m.cmd_exit(),
 	email: () => m.cmd_email(),
 	git: () => m.cmd_git(),
 	github: () => m.cmd_github(),
@@ -38,14 +36,9 @@ const commandDescriptionMessages: Record<string, () => string> = {
 	help: () => m.cmd_help(),
 	history: () => m.cmd_history(),
 	ls: () => m.cmd_ls(),
-	man: () => m.cmd_man(),
 	nvim: () => m.cmd_nvim(),
-	open: () => m.cmd_open(),
-	pwd: () => m.cmd_pwd(),
 	reload: () => m.cmd_reload(),
-	rm: () => m.cmd_rm(),
 	settings: () => m.cmd_settings(),
-	source: () => m.cmd_source(),
 	tree: () => m.cmd_tree(),
 	whoami: () => m.cmd_whoami(),
 };
