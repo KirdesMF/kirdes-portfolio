@@ -317,6 +317,12 @@ export function EmptyEditor() {
 			case "find-file":
 				setFindFileOpen(true);
 				break;
+			case "projects":
+				void navigate({
+					to: "/editor",
+					search: { file: "work/projects/list.json", neotree: "open" as const },
+				});
+				break;
 			case "find-text":
 				setFindTextOpen(true);
 				break;
@@ -347,6 +353,10 @@ export function EmptyEditor() {
 			{
 				hotkey: "F",
 				callback: () => runEmptyEditorCommand("find-file"),
+			},
+			{
+				hotkey: "P",
+				callback: () => runEmptyEditorCommand("projects"),
 			},
 			{
 				hotkey: "C",
