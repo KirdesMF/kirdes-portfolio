@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
 	CommandDialog,
@@ -19,6 +19,9 @@ export function CommandModeDialog() {
 	const addCommandHistory = useIdeStore((s) => s.addCommandHistory);
 	const { appearance, setAppearance } = useTheme();
 	const navigate = useNavigate();
+	const searchParams = useRouterState({
+		select: (s) => s.location.search as { neotree?: "open" | "closed"; file?: string },
+	});
 	const [input, setInput] = useState("");
 	const [error, setError] = useState("");
 
@@ -52,7 +55,7 @@ export function CommandModeDialog() {
 			return;
 		}
 
-		command.execute({ appearance, setAppearance, setLocale, navigate });
+		command.execute({ appearance, setAppearance, setLocale, navigate, searchParams });
 		addCommandHistory(commandText);
 		setOpen(false);
 		setEditorMode("normal");

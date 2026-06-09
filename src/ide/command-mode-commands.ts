@@ -6,6 +6,7 @@ type CommandExecutionContext = {
 	setAppearance: (appearance: AppearanceSettings) => void;
 	setLocale: (locale: "en" | "fr") => void;
 	navigate: (options: NavigateOptions) => void;
+	searchParams: { neotree?: "open" | "closed"; file?: string };
 };
 
 export type CommandModeCommand = {
@@ -51,6 +52,16 @@ export const commandModeCommands: CommandModeCommand[] = [
 		description: "Open the terminal.",
 		aliases: ["terminal", "term", "t"],
 		execute: ({ navigate }) => navigate({ to: "/terminal" }),
+	},
+	{
+		name: "bd",
+		description: "Close the current file.",
+		aliases: ["bd", "close"],
+		execute: ({ navigate, searchParams }) =>
+			navigate({
+				to: "/editor",
+				search: { neotree: searchParams.neotree ?? ("closed" as const) },
+			}),
 	},
 ];
 
