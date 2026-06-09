@@ -23,6 +23,7 @@ import { type CSSProperties, type ReactNode, useEffect, useId, useRef, useState 
 import { copyToClipboard } from "#/design-system/clipboard";
 import { cn } from "#/design-system/cn";
 import { Separator } from "#/design-system/separator";
+import { toastManager } from "#/design-system/toast";
 import { useScrambleRef } from "#/design-system/use-scramble-ref";
 import { AsciiBanner } from "#/editor/ascii-banner/ascii-banner";
 import { getDisplayFileName } from "#/editor/editor-files";
@@ -299,6 +300,10 @@ export function EmptyEditor() {
 	const [compact, setCompact] = useState(false);
 	const commandMenuOpen = useIdeStore((s) => s.commandMenuOpen);
 	const settingsOpen = useIdeStore((s) => s.settingsOpen);
+	const findFileOpen = useIdeStore((s) => s.findFileOpen);
+	const findTextOpen = useIdeStore((s) => s.findTextOpen);
+	const setFindFileOpen = useIdeStore((s) => s.setFindFileOpen);
+	const setFindTextOpen = useIdeStore((s) => s.setFindTextOpen);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
 	const navigate = useNavigate();
 	const containerRef = useRef<HTMLDivElement | null>(null);
@@ -307,29 +312,57 @@ export function EmptyEditor() {
 		staggerMs: 0,
 	});
 
+	function runEmptyEditorCommand(commandId: string) {
+		switch (commandId) {
+			case "find-file":
+				setFindFileOpen(true);
+				break;
+			case "find-text":
+				setFindTextOpen(true);
+				break;
+			case "config":
+				setSettingsOpen(true);
+				break;
+			case "email":
+				void copyToClipboard("cedric@kirdes.dev").then((copied) => {
+					toastManager.add({
+						description: copied ? "cedric@kirdes.dev" : "Clipboard permission denied.",
+						title: copied ? "Email copied" : "Copy failed",
+						type: copied ? "success" : "error",
+					});
+				});
+				break;
+			case "reload":
+				void navigate({ to: "/" });
+				break;
+		}
+	}
+
 	useHotkeys(
 		[
 			{
 				hotkey: "Shift+R",
-				callback: () => {
-					void navigate({ to: "/" });
-				},
+				callback: () => runEmptyEditorCommand("reload"),
+			},
+			{
+				hotkey: "F",
+				callback: () => runEmptyEditorCommand("find-file"),
 			},
 			{
 				hotkey: "C",
-				callback: () => {
-					setSettingsOpen(true);
-				},
+				callback: () => runEmptyEditorCommand("config"),
+			},
+			{
+				hotkey: "G",
+				callback: () => runEmptyEditorCommand("find-text"),
 			},
 			{
 				hotkey: "M",
-				callback: () => {
-					void copyToClipboard("cedric@kirdes.dev");
-				},
+				callback: () => runEmptyEditorCommand("email"),
 			},
 		],
 		{
-			enabled: !commandMenuOpen && !settingsOpen,
+			enabled: !commandMenuOpen && !settingsOpen && !findFileOpen && !findTextOpen,
 			ignoreInputs: true,
 			preventDefault: true,
 		},
@@ -370,13 +403,18 @@ export function EmptyEditor() {
 				)}
 			>
 				<AsciiBanner className={cn("w-full", compact ? "max-w-sm" : "max-w-lg")} />
-				<div className={cn("grid w-full max-w-sm", compact ? "grid-cols-2 gap-2" : "gap-4")}>
+				<div className={cn("grid w-full max-w-sm gap-1", compact && "grid-cols-2")}>
 					{emptyEditorCommands.map(({ Icon, id, label, shortcut }) => (
-						<div className="grid grid-cols-[1.5rem_1fr_1rem] items-center gap-4" key={id}>
+						<button
+							className="relative grid grid-cols-[auto_1fr_1ch] items-center gap-4 px-2 py-1.5 text-left text-primary/90 before:absolute before:inset-y-0 before:inset-s-0 before:w-1 before:bg-transparent hover:bg-accent hover:text-accent-foreground hover:before:bg-primary/60"
+							key={id}
+							type="button"
+							onClick={() => runEmptyEditorCommand(id)}
+						>
 							<Icon aria-hidden="true" className="size-4 text-primary" />
-							<span className="text-primary/90">{label}</span>
+							<span className="truncate">{label}</span>
 							<span className="text-end text-command-shortcut">{shortcut}</span>
-						</div>
+						</button>
 					))}
 				</div>
 				<div
@@ -385,7 +423,8 @@ export function EmptyEditor() {
 				>
 					<Zap aria-hidden="true" className="size-3 text-primary" />
 					<span data-anim-editor-status>
-						Neovim loaded <span className="text-status-primary">5/38</span> plugins in {loadingTimeRef.current}
+						Neovim loaded <span className="text-status-primary">5/38</span> plugins in{" "}
+						{loadingTimeRef.current}
 						ms
 					</span>
 				</div>

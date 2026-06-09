@@ -84,6 +84,25 @@ function buildTree(): TreeNode[] {
 
 const treeData = buildTree();
 
+export function getNeoTreeFilePaths(): ReadonlyMap<string, string> {
+	const paths = new Map<string, string>();
+
+	function walk(nodes: TreeNode[], parents: string[]) {
+		for (const node of nodes) {
+			if (node.type === "folder") {
+				const nextParents = node.label === "portfolio" ? parents : [...parents, node.label];
+				walk(node.children, nextParents);
+				continue;
+			}
+
+			paths.set(node.entry.id, [...parents, node.displayName].join("/"));
+		}
+	}
+
+	walk(treeData, []);
+	return paths;
+}
+
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export function NeoTree() {

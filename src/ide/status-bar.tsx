@@ -7,7 +7,7 @@ import { Clock } from "#/layout/clock";
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type StatusSide = "left" | "right";
-type StatusVariant = "primary" | "muted";
+type StatusVariant = "primary" | "muted" | "insertPrimary" | "insertMuted";
 
 type StatusItem = {
 	id: string;
@@ -23,6 +23,16 @@ const variantClass = {
 		foreground: "text-status-primary-foreground",
 		fill: "fill-status-primary",
 	},
+	insertPrimary: {
+		background: "bg-insert-background",
+		foreground: "text-insert-foreground",
+		fill: "fill-insert-background",
+	},
+	insertMuted: {
+		background: "bg-insert-foreground",
+		foreground: "text-insert-background",
+		fill: "fill-insert-foreground",
+	},
 	muted: {
 		background: "bg-status-muted",
 		foreground: "text-status-muted-foreground",
@@ -36,11 +46,12 @@ const EDITOR_BRANCH_NAME = "feat/portfolio";
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-function StatusGroup(props: { items: StatusItem[]; side: StatusSide }) {
+function StatusGroup(props: { editorMode: "normal" | "insert"; items: StatusItem[]; side: StatusSide }) {
 	return (
 		<div className="flex min-w-0 items-stretch text-tiny">
 			{props.items.map((item, index) => (
 				<StatusSegment
+					editorMode={props.editorMode}
 					isFirst={index === 0}
 					isLast={index === props.items.length - 1}
 					item={item}
@@ -54,13 +65,20 @@ function StatusGroup(props: { items: StatusItem[]; side: StatusSide }) {
 }
 
 function StatusSegment(props: {
+	editorMode: "normal" | "insert";
 	isFirst: boolean;
 	isLast: boolean;
 	item: StatusItem;
 	side: StatusSide;
 	stack: number;
 }) {
-	const variant = variantClass[props.item.variant];
+	const effectiveVariant =
+		props.editorMode === "insert"
+			? props.item.variant === "primary"
+				? "insertPrimary"
+				: "insertMuted"
+			: props.item.variant;
+	const variant = variantClass[effectiveVariant];
 
 	return (
 		<div
@@ -72,7 +90,7 @@ function StatusSegment(props: {
 			)}
 			style={{ "--status-segment-stack": props.stack } as CSSProperties}
 		>
-			{props.side === "right" && <Chevron direction="left" variant={props.item.variant} />}
+			{props.side === "right" && <Chevron direction="left" variant={effectiveVariant} />}
 
 			<div
 				className={cn(
@@ -88,7 +106,7 @@ function StatusSegment(props: {
 				{props.item.content}
 			</div>
 
-			{props.side === "left" && <Chevron direction="right" variant={props.item.variant} />}
+			{props.side === "left" && <Chevron direction="right" variant={effectiveVariant} />}
 		</div>
 	);
 }
@@ -109,6 +127,7 @@ function Chevron(props: { direction: "left" | "right"; variant: StatusVariant })
 // ─── Main component ──────────────────────────────────────────────────────────
 
 export function StatusBar({ currentFile }: { currentFile?: string }) {
+	const editorMode = useIdeStore((s) => s.editorMode);
 	const cursorLine = useIdeStore((s) => s.cursorLine);
 	const cursorColumn = useIdeStore((s) => s.cursorColumn);
 
@@ -116,7 +135,7 @@ export function StatusBar({ currentFile }: { currentFile?: string }) {
 		{
 			id: "mode",
 			variant: "primary",
-			content: <span className="font-medium">NORMAL</span>,
+			content: <span className="font-medium">{editorMode.toUpperCase()}</span>,
 		},
 		{
 			id: "branch",
@@ -165,8 +184,8 @@ export function StatusBar({ currentFile }: { currentFile?: string }) {
 
 	return (
 		<footer className="flex h-status-bar shrink-0 items-stretch justify-between border-t border-border bg-status text-status-foreground">
-			<StatusGroup items={leftItems} side="left" />
-			<StatusGroup items={rightItems} side="right" />
+			<StatusGroup editorMode={editorMode} items={leftItems} side="left" />
+			<StatusGroup editorMode={editorMode} items={rightItems} side="right" />
 		</footer>
 	);
 }

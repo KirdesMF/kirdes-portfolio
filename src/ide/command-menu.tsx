@@ -131,7 +131,7 @@ export function CommandMenu() {
 
 function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: () => void }) {
 	const commandRef = useRef<HTMLDivElement>(null);
-	const [selectedIndex, setSelectedIndex] = useState(0);
+	const [selectedId, setSelectedId] = useState(commands[0]?.id ?? "");
 
 	useEffect(() => {
 		commandRef.current?.focus();
@@ -144,6 +144,15 @@ function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: ()
 		},
 		[onClose],
 	);
+
+	function moveSelection(direction: 1 | -1) {
+		const currentIndex = commands.findIndex((cmd) => cmd.id === selectedId);
+		const nextIndex =
+			currentIndex < 0
+				? 0
+				: (currentIndex + direction + commands.length) % commands.length;
+		setSelectedId(commands[nextIndex]?.id ?? "");
+	}
 
 	function handleKeyDown(event: React.KeyboardEvent) {
 		const shortcutIndex = commands.findIndex(
@@ -158,22 +167,15 @@ function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: ()
 		}
 
 		switch (event.key) {
-			case "ArrowDown":
 			case "j":
 				event.preventDefault();
 				event.stopPropagation();
-				setSelectedIndex((prev) => (prev + 1) % commands.length);
+				moveSelection(1);
 				break;
-			case "ArrowUp":
 			case "k":
 				event.preventDefault();
 				event.stopPropagation();
-				setSelectedIndex((prev) => (prev - 1 + commands.length) % commands.length);
-				break;
-			case "Enter":
-				event.preventDefault();
-				event.stopPropagation();
-				selectCommand(commands[selectedIndex]);
+				moveSelection(-1);
 				break;
 			case "Escape":
 				event.preventDefault();
@@ -184,38 +186,40 @@ function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: ()
 	}
 
 	return (
-		<Command
-			className="relative rounded border border-border outline-none w-40"
-			onKeyDownCapture={handleKeyDown}
-			ref={commandRef}
-			shouldFilter={false}
-		>
+		<div className="relative w-40 rounded border border-border bg-popover p-1 pt-2 text-popover-foreground">
 			<div className="absolute top-0 left-3 z-raised -translate-y-1/2 bg-popover px-2 text-tiny leading-none text-primary">
 				SPACE
 			</div>
-			<CommandList className="mt-1 p-0 outline-none">
-				{commands.map((cmd, index) => (
-					<CommandItem
-						className="flex items-center gap-2 rounded-none px-2 data-[active=true]:bg-accent data-[active=true]:text-accent-foreground data-selected:bg-transparent data-selected:text-primary"
-						data-active={index === selectedIndex}
-						key={cmd.id}
-						value={cmd.id}
-						onMouseEnter={() => setSelectedIndex(index)}
-						onSelect={() => selectCommand(cmd)}
-					>
-						<span className="text-foreground">{cmd.shortcut}</span>
-						<span className="text-muted-foreground">→</span>
-						<span className="flex min-w-0 items-center gap-2">
-							<cmd.Icon className="size-2.5 shrink-0" />
-							<span className="truncate">{cmd.label}</span>
-						</span>
-					</CommandItem>
-				))}
-			</CommandList>
-			<div className="mt-3 flex items-center justify-center gap-3 text-muted-foreground">
-				<kbd className="font-bold text-primary uppercase">esc</kbd>
-				<span className="text-tiny">Close</span>
-			</div>
-		</Command>
+			<Command
+				className="rounded-none bg-transparent outline-none"
+				onKeyDownCapture={handleKeyDown}
+				ref={commandRef}
+				shouldFilter={false}
+				value={selectedId}
+				onValueChange={setSelectedId}
+			>
+				<CommandList className="p-0 outline-none">
+					{commands.map((cmd) => (
+						<CommandItem
+							className="flex items-center gap-2 rounded-none px-2 text-muted-foreground"
+							key={cmd.id}
+							value={cmd.id}
+							onSelect={() => selectCommand(cmd)}
+						>
+							<span className="text-foreground">{cmd.shortcut}</span>
+							<span className="text-muted-foreground">→</span>
+							<span className="flex min-w-0 items-center gap-2">
+								<cmd.Icon className="size-2.5 shrink-0" />
+								<span className="truncate">{cmd.label}</span>
+							</span>
+						</CommandItem>
+					))}
+				</CommandList>
+				<div className="mt-3 flex items-center justify-center gap-3 text-muted-foreground">
+					<kbd className="font-bold text-primary uppercase">esc</kbd>
+					<span className="text-tiny">Close</span>
+				</div>
+			</Command>
+		</div>
 	);
 }
