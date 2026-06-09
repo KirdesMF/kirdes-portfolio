@@ -1,6 +1,5 @@
 import { animate, createScope } from "animejs";
 import { useEffect, useRef } from "react";
-import { Separator } from "#/design-system/separator";
 import { getLocale, setLocale } from "#/paraglide/runtime";
 
 const activeLanguageClassName =
@@ -62,7 +61,7 @@ export function LanguageSwitcher() {
 	return (
 		<div className="flex items-center gap-1">
 			<LanguageButton active={currentLocale === "fr"} label="FR" locale="fr" />
-			<Separator className="h-3" orientation="vertical" />
+			<span className="text-muted-foreground/50">|</span>
 			<LanguageButton active={currentLocale === "en"} label="EN" locale="en" />
 		</div>
 	);

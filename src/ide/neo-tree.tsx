@@ -17,7 +17,7 @@ type TreeNode =
 
 function buildTree(): TreeNode[] {
 	const files: TreeNode[] = [
-		{ type: "file" as const, displayName: "package.json", entry: findFile("~", "stack.json") },
+		{ type: "file" as const, displayName: "package.json", entry: findFile("~", "package.json") },
 		{ type: "file" as const, displayName: "config.ts", entry: findFile("~", "profile.ts") },
 		{ type: "file" as const, displayName: "README.md", entry: findFile("~", "README.md") },
 		{ type: "file" as const, displayName: "TODO.md", entry: findFile("~", "TODO.md") },
