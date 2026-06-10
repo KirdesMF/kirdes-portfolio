@@ -29,6 +29,11 @@ type IdeStore = {
 	findTextOpen: boolean;
 	setFindTextOpen: (open: boolean) => void;
 
+	recentFilesOpen: boolean;
+	setRecentFilesOpen: (open: boolean) => void;
+	recentFiles: string[];
+	addRecentFile: (fileId: string) => void;
+
 	cursorLine: number;
 	cursorColumn: number;
 	setCursorPosition: (line: number, column: number) => void;
@@ -67,6 +72,14 @@ export const useIdeStore = create<IdeStore>((set) => ({
 
 	findTextOpen: false,
 	setFindTextOpen: (open) => set({ findTextOpen: open }),
+
+	recentFilesOpen: false,
+	setRecentFilesOpen: (open) => set({ recentFilesOpen: open }),
+	recentFiles: [],
+	addRecentFile: (fileId) =>
+		set((s) => ({
+			recentFiles: [fileId, ...s.recentFiles.filter((id) => id !== fileId)].slice(0, 20),
+		})),
 
 	cursorLine: 1,
 	cursorColumn: 1,

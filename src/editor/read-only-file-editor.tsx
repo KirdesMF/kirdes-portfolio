@@ -304,6 +304,8 @@ export function EmptyEditor() {
 	const findTextOpen = useIdeStore((s) => s.findTextOpen);
 	const setFindFileOpen = useIdeStore((s) => s.setFindFileOpen);
 	const setFindTextOpen = useIdeStore((s) => s.setFindTextOpen);
+	const setRecentFilesOpen = useIdeStore((s) => s.setRecentFilesOpen);
+	const recentFilesOpen = useIdeStore((s) => s.recentFilesOpen);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
 	const navigate = useNavigate();
 	const containerRef = useRef<HTMLDivElement | null>(null);
@@ -338,6 +340,9 @@ export function EmptyEditor() {
 					});
 				});
 				break;
+			case "recent-files":
+				setRecentFilesOpen(true);
+				break;
 			case "reload":
 				void navigate({ to: "/" });
 				break;
@@ -370,9 +375,13 @@ export function EmptyEditor() {
 				hotkey: "M",
 				callback: () => runEmptyEditorCommand("email"),
 			},
+			{
+				hotkey: "R",
+				callback: () => runEmptyEditorCommand("recent-files"),
+			},
 		],
 		{
-			enabled: !commandMenuOpen && !settingsOpen && !findFileOpen && !findTextOpen,
+			enabled: !commandMenuOpen && !settingsOpen && !findFileOpen && !findTextOpen && !recentFilesOpen,
 			ignoreInputs: true,
 			preventDefault: true,
 		},

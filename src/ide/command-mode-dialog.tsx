@@ -66,6 +66,7 @@ export function CommandModeDialog() {
 	return (
 		<CommandDialog
 			commandClassName="h-auto"
+			contentClassName="w-[min(92vw,42rem)]"
 			description="Run an IDE command."
 			open={open}
 			title="COMMAND"
@@ -127,6 +128,7 @@ export function CommandHistoryDialog() {
 	return (
 		<CommandDialog
 			commandClassName="h-[min(70dvh,18rem)]"
+			contentClassName="w-[min(92vw,42rem)]"
 			description="Previously executed command mode commands."
 			open={open}
 			title="COMMAND HISTORY"

@@ -2,6 +2,7 @@ import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
 	FileText,
 	FolderTreeIcon,
+	History,
 	LogOut,
 	type LucideIcon,
 	Settings,
@@ -27,6 +28,7 @@ export function CommandMenu() {
 	const open = useIdeStore((s) => s.commandMenuOpen);
 	const setOpen = useIdeStore((s) => s.setCommandMenuOpen);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
+	const setRecentFilesOpen = useIdeStore((s) => s.setRecentFilesOpen);
 	const navigate = useNavigate();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -80,6 +82,16 @@ export function CommandMenu() {
 			shortcut: "/",
 			action: () => {
 				void navigate({ to: "/editor", search: { neotree: "open" as const } });
+				setOpen(false);
+			},
+		},
+		{
+			id: "recent-files",
+			Icon: History,
+			label: "Recent Files",
+			shortcut: "r",
+			action: () => {
+				setRecentFilesOpen(true);
 				setOpen(false);
 			},
 		},
@@ -192,7 +204,7 @@ function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: ()
 	}
 
 	return (
-		<div className="relative w-40 rounded border border-border bg-popover p-1 pt-2 text-popover-foreground">
+		<div className="relative w-52 rounded border border-border bg-popover p-1 pt-2 text-popover-foreground">
 			<div className="absolute top-0 left-3 z-raised -translate-y-1/2 bg-popover px-2 text-tiny leading-none text-primary">
 				SPACE
 			</div>

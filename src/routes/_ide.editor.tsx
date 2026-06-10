@@ -1,8 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useRef } from "react";
 import { getHighlightedEditorFileRsc } from "#/editor/editor-file-highlight.fn";
 import { getDisplayFileName } from "#/editor/editor-files";
 import { EditorBody, EmptyEditor } from "#/editor/read-only-file-editor";
 import { parseIdeSearch } from "#/ide/search";
+import { useIdeStore } from "#/ide/store";
 
 export const Route = createFileRoute("/_ide/editor")({
 	validateSearch: parseIdeSearch,
@@ -22,6 +24,16 @@ function EditorRoute() {
 	const { HighlightedEditorFile } = Route.useLoaderData();
 	const { file } = Route.useSearch();
 	const navigate = useNavigate();
+	const addRecentFile = useIdeStore((s) => s.addRecentFile);
+	const prevFileRef = useRef(file);
+
+	// Record file in recent files when opened
+	useEffect(() => {
+		if (file && file !== prevFileRef.current) {
+			prevFileRef.current = file;
+			addRecentFile(file);
+		}
+	}, [file, addRecentFile]);
 
 	if (!file) return <EmptyEditor />;
 

@@ -7,6 +7,7 @@ import { CommandHistoryDialog, CommandModeDialog } from "#/ide/command-mode-dial
 import { FindFileDialog } from "#/ide/find-file-dialog";
 import { FindTextDialog } from "#/ide/find-text-dialog";
 import { NeoTree } from "#/ide/neo-tree";
+import { RecentFilesDialog } from "#/ide/recent-files-dialog";
 import { parseIdeSearch } from "#/ide/search";
 import { StatusBar } from "#/ide/status-bar";
 import { useIdeStore } from "#/ide/store";
@@ -29,6 +30,7 @@ function IdeShell() {
 	const setEditorMode = useIdeStore((s) => s.setEditorMode);
 	const findFileOpen = useIdeStore((s) => s.findFileOpen);
 	const findTextOpen = useIdeStore((s) => s.findTextOpen);
+	const recentFilesOpen = useIdeStore((s) => s.recentFilesOpen);
 	const toggleCommandMenu = useIdeStore((s) => s.toggleCommandMenu);
 
 	useHotkeys(
@@ -42,7 +44,7 @@ function IdeShell() {
 		],
 		{
 			enabled:
-				!settingsOpen && !findFileOpen && !findTextOpen && !commandModeOpen && !commandHistoryOpen,
+				!settingsOpen && !findFileOpen && !findTextOpen && !commandModeOpen && !commandHistoryOpen && !recentFilesOpen,
 			ignoreInputs: true,
 		},
 	);
@@ -61,7 +63,8 @@ function IdeShell() {
 				findFileOpen ||
 				findTextOpen ||
 				commandModeOpen ||
-				commandHistoryOpen
+				commandHistoryOpen ||
+				recentFilesOpen
 			) {
 				return;
 			}
@@ -105,6 +108,7 @@ function IdeShell() {
 			<CommandHistoryDialog />
 			<FindFileDialog />
 			<FindTextDialog />
+			<RecentFilesDialog />
 			<SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
 		</div>
 	);
