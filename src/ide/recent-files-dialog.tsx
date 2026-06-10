@@ -1,12 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { FileText, History } from "lucide-react";
 import { useMemo } from "react";
-import {
-	CommandDialog,
-	CommandEmpty,
-	CommandItem,
-	CommandList,
-} from "#/design-system/command";
+import { CommandDialog, CommandEmpty, CommandItem, CommandList } from "#/design-system/command";
 import { findEditorFile } from "#/editor/editor-files";
 import { getNeoTreeFilePaths } from "#/ide/neo-tree";
 import { useIdeStore } from "#/ide/store";
@@ -21,13 +16,12 @@ export function RecentFilesDialog() {
 	const candidates = useMemo(() => {
 		const treeFilePaths = getNeoTreeFilePaths();
 
-		return recentFiles
-			.flatMap((fileId) => {
-				const file = findEditorFile(fileId);
-				const displayName = treeFilePaths.get(fileId);
-				if (!file || !displayName) return [];
-				return [{ file, displayName }];
-			});
+		return recentFiles.flatMap((fileId) => {
+			const file = findEditorFile(fileId);
+			const displayName = treeFilePaths.get(fileId);
+			if (!file || !displayName) return [];
+			return [{ file, displayName }];
+		});
 	}, [recentFiles]);
 
 	function handleOpenChange(nextOpen: boolean) {

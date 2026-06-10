@@ -1,8 +1,4 @@
-import {
-	hotkeysCoreFeature,
-	searchFeature,
-	syncDataLoaderFeature,
-} from "@headless-tree/core";
+import { hotkeysCoreFeature, searchFeature, syncDataLoaderFeature } from "@headless-tree/core";
 import { useTree } from "@headless-tree/react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { FileText, Folder, FolderOpen, Search, X } from "lucide-react";
@@ -248,7 +244,7 @@ export function NeoTree() {
 	}, [currentFileId]);
 
 	const tree = useTree<TreeItemData>({
-		rootItemId: rootChildIds[0]!,
+		rootItemId: rootChildIds[0] ?? "",
 		initialState: { expandedItems },
 		getItemName: (item) => {
 			const data = item.getItemData();
@@ -256,7 +252,11 @@ export function NeoTree() {
 		},
 		isItemFolder: (item) => item.getItemData().kind === "folder",
 		dataLoader: {
-			getItem: (itemId) => treeItems[itemId]!,
+			getItem: (itemId) => {
+				const item = treeItems[itemId];
+				if (!item) throw new Error(`Missing tree item: ${itemId}`);
+				return item;
+			},
 			getChildren: (itemId) => folderChildren[itemId] ?? [],
 		},
 		indent: 16,
@@ -377,8 +377,7 @@ export function NeoTree() {
 			>
 				{tree.getItems().map((item) => {
 					const itemData = item.getItemData();
-					const isActiveFile =
-						itemData.kind === "file" && itemData.entry.id === currentFileId;
+					const isActiveFile = itemData.kind === "file" && itemData.entry.id === currentFileId;
 
 					return (
 						<button
@@ -411,12 +410,7 @@ export function NeoTree() {
 							)}
 
 							{/* Label */}
-							<span
-								className={cn(
-									"truncate",
-									item.isFolder() && "font-medium",
-								)}
-							>
+							<span className={cn("truncate", item.isFolder() && "font-medium")}>
 								{item.getItemName()}
 								{item.isFolder() ? "/" : ""}
 							</span>

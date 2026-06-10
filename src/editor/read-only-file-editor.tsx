@@ -381,7 +381,8 @@ export function EmptyEditor() {
 			},
 		],
 		{
-			enabled: !commandMenuOpen && !settingsOpen && !findFileOpen && !findTextOpen && !recentFilesOpen,
+			enabled:
+				!commandMenuOpen && !settingsOpen && !findFileOpen && !findTextOpen && !recentFilesOpen,
 			ignoreInputs: true,
 			preventDefault: true,
 		},

@@ -44,7 +44,12 @@ function IdeShell() {
 		],
 		{
 			enabled:
-				!settingsOpen && !findFileOpen && !findTextOpen && !commandModeOpen && !commandHistoryOpen && !recentFilesOpen,
+				!settingsOpen &&
+				!findFileOpen &&
+				!findTextOpen &&
+				!commandModeOpen &&
+				!commandHistoryOpen &&
+				!recentFilesOpen,
 			ignoreInputs: true,
 		},
 	);
@@ -91,6 +96,7 @@ function IdeShell() {
 		setCommandModeOpen,
 		setEditorMode,
 		settingsOpen,
+		recentFilesOpen,
 	]);
 
 	return (
