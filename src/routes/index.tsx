@@ -1,66 +1,101 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { createTimeline, steps } from "animejs";
-import { useEffect } from "react";
-import { useScrambleRef } from "#/design-system/use-scramble-ref";
-
-const bootLines = ["initializing shell", "loading profile", "mounting neovim"] as const;
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { animate, createScope, createTimeline, stagger, steps } from "animejs";
+import { splitText } from "animejs/text";
+import { useLayoutEffect, useState } from "react";
+import { INTRO_COMMANDS, IntroTranscript } from "#/terminal/intro-content";
 
 export const Route = createFileRoute("/")({
 	component: RouteComponent,
 });
 
+const CHAR_MS = 35;
+const PAUSE_AFTER_TYPE = 250;
+const PAUSE_AFTER_OUT = 700;
+const FINAL_PAUSE = 2000;
+
 function RouteComponent() {
-	const navigate = Route.useNavigate();
-	const rootRef = useScrambleRef<HTMLDivElement>({
-		selector: "[data-boot-line]",
-		staggerMs: 250,
-	});
+	const navigate = useNavigate();
+	const [reduceMotion, setReduceMotion] = useState(false);
 
-	useEffect(() => {
-		const tl = createTimeline({
-			defaults: { ease: "out" },
-			onComplete: () => {
-				navigate({
-					replace: true,
-					to: "/editor",
-				});
-			},
+	useLayoutEffect(() => {
+		const scope = createScope({
+			mediaQueries: { reduceMotion: "(prefers-reduced-motion)" },
+		}).add((self) => {
+			setReduceMotion(self?.matches.reduceMotion ?? false);
 		});
-		tl.add(
-			"[data-loading-bar]",
+		return () => scope.revert();
+	}, []);
 
-			{
-				duration: 1500,
-				scaleX: [0, 1],
-				ease: steps(10),
-			},
-		);
+	useLayoutEffect(() => {
+		if (reduceMotion) {
+			const t = setTimeout(() => navigate({ replace: true, to: "/editor" }), 2000);
+			return () => clearTimeout(t);
+		}
+
+		const tl = createTimeline({
+			defaults: { ease: "linear" },
+			onComplete: () => navigate({ replace: true, to: "/editor" }),
+		});
+
+		const charAnims: Array<ReturnType<typeof animate>> = [];
+		const splitters: Array<ReturnType<typeof splitText>> = [];
+
+		// Hide all entries at once
+		tl.set("[data-intro-entry]", { opacity: 0 }, 0);
+
+		// Show first entry wrapper immediately
+		tl.add('[data-intro-entry="0"]', { opacity: 1, duration: 0 }, 0);
+		tl.label("cmd-0", 0);
+
+		for (let i = 0; i < INTRO_COMMANDS.length; i++) {
+			const text = INTRO_COMMANDS[i];
+			const typeDuration = text.length * CHAR_MS;
+			const charStagger = typeDuration / text.length;
+
+			// Show next entry wrapper at the previous reveal point
+			if (i > 0) {
+				const prevReveal = `reveal-${i - 1}`;
+				tl.add(`[data-intro-entry="${i}"]`, { opacity: 1, duration: 0 }, prevReveal);
+				tl.label(`cmd-${i}`, `${prevReveal}+=${PAUSE_AFTER_OUT}`);
+			}
+
+			// Split and animate chars
+			const splitter = splitText(`[data-intro-cmd="${i}"]`, { chars: true });
+			splitters.push(splitter);
+
+			const charAnim = animate(splitter.chars, {
+				opacity: [0, 1],
+				duration: 1,
+				ease: steps(1),
+				delay: stagger(charStagger),
+				autoplay: false,
+			});
+			charAnims.push(charAnim);
+			tl.sync(charAnim, `cmd-${i}`);
+
+			// Label reveal point, pop the output
+			tl.label(`reveal-${i}`, `cmd-${i}+=${typeDuration + PAUSE_AFTER_TYPE}`);
+			tl.add(
+				`[data-intro-out="${i}"]`,
+				{ opacity: [0, 1], duration: 1, ease: steps(1) },
+				`reveal-${i}`,
+			);
+		}
+
+		// Final pause before redirect
+		tl.call(() => {}, `reveal-${INTRO_COMMANDS.length - 1}+=${FINAL_PAUSE}`);
 
 		return () => {
 			tl.revert();
+			for (const a of charAnims) a.revert();
+			for (const s of splitters) s.revert();
 		};
-	}, [navigate]);
+	}, [reduceMotion, navigate]);
 
 	return (
 		<main className="flex h-dvh items-center justify-center bg-background font-mono text-xs text-foreground">
-			<div
-				ref={rootRef}
-				className="flex w-full max-w-md flex-col gap-2 rounded border border-border bg-background/80 p-4"
-			>
-				<div className="mb-2 text-muted-foreground">kirdes terminal boot</div>
-
-				{bootLines.map((text) => (
-					<div className="flex gap-2" key={text}>
-						<span className="text-primary">›</span>
-						<span data-boot-line>{text}</span>
-					</div>
-				))}
-
-				<div className="h-4 dot-pattern mt-4">
-					<svg aria-hidden="true" width="100%" height="100%">
-						<rect data-loading-bar width="100%" height="100%" className="fill-foreground" />
-					</svg>
-				</div>
+			<div className="w-full max-w-xl rounded border border-border bg-background/80 p-4">
+				<IntroTranscript skipAnimation={reduceMotion} />
 			</div>
 		</main>
 	);
