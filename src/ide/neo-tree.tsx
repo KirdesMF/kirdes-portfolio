@@ -1,119 +1,204 @@
+import {
+	hotkeysCoreFeature,
+	searchFeature,
+	syncDataLoaderFeature,
+} from "@headless-tree/core";
+import { useTree } from "@headless-tree/react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
-import { FileText, Folder, FolderOpen, X } from "lucide-react";
-import { useState } from "react";
+import { FileText, Folder, FolderOpen, Search, X } from "lucide-react";
+import { useEffect, useMemo, useRef } from "react";
 import { cn } from "#/design-system/cn";
 import { editorFiles } from "#/editor/editor-files";
 import type { EditorFileEntry } from "#/editor/editor-files.types";
 
-// ─── Static tree definition ──────────────────────────────────────────────────
+// ─── Flat tree data for headless-tree ────────────────────────────────────────
+
+type TreeItemData =
+	| { kind: "folder"; label: string }
+	| { kind: "file"; entry: EditorFileEntry; displayName: string };
+
+/** Flat record: itemId → payload. */
+const treeItems: Record<string, TreeItemData> = {};
+
+/** Map from folder itemId → child itemIds. */
+const folderChildren: Record<string, string[]> = {};
+
+/** Root-level child itemIds (portfolio folder children). */
+const rootChildIds: string[] = [];
+
+// ── Helpers ──
+
+function nextFolderId(): string {
+	return `folder:${Object.keys(treeItems).length}`;
+}
 
 function findFile(folder: string, name: string): EditorFileEntry | undefined {
 	return editorFiles.find((f) => f.folder === folder && f.name === name);
 }
 
-type TreeNode =
-	| { type: "folder"; label: string; children: TreeNode[] }
-	| { type: "file"; entry: EditorFileEntry; displayName: string };
+// ── Build flat structure from the same data as before ──
 
-function buildTree(): TreeNode[] {
-	const files: TreeNode[] = [
-		{ type: "file" as const, displayName: "package.json", entry: findFile("~", "package.json") },
-		{ type: "file" as const, displayName: "config.ts", entry: findFile("~", "profile.ts") },
-		{ type: "file" as const, displayName: "README.md", entry: findFile("~", "README.md") },
-		{ type: "file" as const, displayName: "TODO.md", entry: findFile("~", "TODO.md") },
-		{ type: "file" as const, displayName: "AGENTS.md", entry: findFile("~", "infos.txt") },
-	].filter((f) => f.entry !== undefined) as Array<{
-		type: "file";
-		entry: EditorFileEntry;
-		displayName: string;
-	}>;
+function buildFlatTree() {
+	// Root folder: "portfolio"
+	const rootId = nextFolderId();
+	treeItems[rootId] = { kind: "folder", label: "portfolio" };
 
-	const aboutChildren: TreeNode[] = [
-		{ type: "file" as const, displayName: "route.tsx", entry: findFile("about", "route.tsx") },
-		{ type: "file" as const, displayName: "skills.json", entry: findFile("about", "skills.json") },
-		{ type: "file" as const, displayName: "values.md", entry: findFile("about", "values.md") },
-	].filter((f) => f.entry !== undefined) as Array<{
-		type: "file";
-		entry: EditorFileEntry;
-		displayName: string;
-	}>;
+	const fileEntries: Array<{ displayName: string; entry: EditorFileEntry }> = [];
+	for (const [displayName, name] of [
+		["package.json", "package.json"],
+		["config.ts", "profile.ts"],
+		["README.md", "README.md"],
+		["TODO.md", "TODO.md"],
+		["AGENTS.md", "infos.txt"],
+	] as const) {
+		const entry = findFile("~", name);
+		if (entry) fileEntries.push({ displayName, entry });
+	}
 
-	const projectsChildren: TreeNode[] = [
-		{
-			type: "file" as const,
-			displayName: "list.json",
-			entry: findFile("work/projects", "list.json"),
-		},
-	].filter((f) => f.entry !== undefined) as Array<{
-		type: "file";
-		entry: EditorFileEntry;
-		displayName: string;
-	}>;
+	// ── about ──
+	const aboutFileEntries: Array<{ displayName: string; entry: EditorFileEntry }> = [];
+	for (const [displayName, name] of [
+		["route.tsx", "route.tsx"],
+		["skills.json", "skills.json"],
+		["values.md", "values.md"],
+	] as const) {
+		const entry = findFile("about", name);
+		if (entry) aboutFileEntries.push({ displayName, entry });
+	}
 
-	const workChildren: TreeNode[] = [
-		{ type: "file" as const, displayName: "route.tsx", entry: findFile("work", "route.tsx") },
-		{
-			type: "file" as const,
-			displayName: "experience.json",
-			entry: findFile("work", "experience.json"),
-		},
-		{ type: "file" as const, displayName: "freelance.md", entry: findFile("work", "freelance.md") },
-		{
-			type: "folder" as const,
-			label: "projects",
-			children: projectsChildren,
-		},
-	].filter((f) => f.type === "folder" || f.entry !== undefined) as TreeNode[];
+	// ── projects ──
+	const projectsFileEntries: Array<{ displayName: string; entry: EditorFileEntry }> = [];
+	{
+		const entry = findFile("work/projects", "list.json");
+		if (entry) projectsFileEntries.push({ displayName: "list.json", entry });
+	}
 
-	const contactChildren: TreeNode[] = [
-		{ type: "file" as const, displayName: "route.tsx", entry: findFile("contact", "route.tsx") },
-		{ type: "file" as const, displayName: "links.json", entry: findFile("contact", "links.json") },
-		{ type: "file" as const, displayName: "contact.md", entry: findFile("contact", "contact.md") },
-	].filter((f) => f.entry !== undefined) as Array<{
-		type: "file";
-		entry: EditorFileEntry;
-		displayName: string;
-	}>;
+	// ── work ──
+	const workFileEntries: Array<{ displayName: string; entry: EditorFileEntry }> = [];
+	for (const [displayName, name] of [
+		["route.tsx", "route.tsx"],
+		["experience.json", "experience.json"],
+		["freelance.md", "freelance.md"],
+	] as const) {
+		const entry = findFile("work", name);
+		if (entry) workFileEntries.push({ displayName, entry });
+	}
 
-	return [
-		{
-			type: "folder",
-			label: "portfolio",
-			children: [
-				{
-					type: "folder",
-					label: "src",
-					children: [
-						{ type: "folder", label: "about", children: aboutChildren },
-						{ type: "folder", label: "work", children: workChildren },
-						{ type: "folder", label: "contact", children: contactChildren },
-					],
-				},
-				...files,
-			],
-		},
-	];
+	// ── contact ──
+	const contactFileEntries: Array<{ displayName: string; entry: EditorFileEntry }> = [];
+	for (const [displayName, name] of [
+		["route.tsx", "route.tsx"],
+		["links.json", "links.json"],
+		["contact.md", "contact.md"],
+	] as const) {
+		const entry = findFile("contact", name);
+		if (entry) contactFileEntries.push({ displayName, entry });
+	}
+
+	// ── Build folders ──
+
+	function addFolder(label: string, childIds: string[]): string {
+		const id = nextFolderId();
+		treeItems[id] = { kind: "folder", label };
+		folderChildren[id] = childIds;
+		return id;
+	}
+
+	function addFile(entry: EditorFileEntry, displayName: string): string {
+		// Use entry.id as the item ID so the "auto-expand to file" logic works directly
+		const id = entry.id;
+		treeItems[id] = { kind: "file", entry, displayName };
+		return id;
+	}
+
+	// Projects folder
+	const projectsChildIds = projectsFileEntries.map((f) => addFile(f.entry, f.displayName));
+	const projectsId = addFolder("projects", projectsChildIds);
+
+	// About folder
+	const aboutChildIds = aboutFileEntries.map((f) => addFile(f.entry, f.displayName));
+	const aboutId = addFolder("about", aboutChildIds);
+
+	// Work folder (includes projects subfolder)
+	const workFileIds = workFileEntries.map((f) => addFile(f.entry, f.displayName));
+	const workId = addFolder("work", [...workFileIds, projectsId]);
+
+	// Contact folder
+	const contactChildIds = contactFileEntries.map((f) => addFile(f.entry, f.displayName));
+	const contactId = addFolder("contact", contactChildIds);
+
+	// Src folder
+	const srcId = addFolder("src", [aboutId, workId, contactId]);
+
+	// Root-level files
+	const fileIds = fileEntries.map((f) => addFile(f.entry, f.displayName));
+
+	// Root (portfolio) folder children
+	folderChildren[rootId] = [srcId, ...fileIds];
+	rootChildIds.push(rootId);
 }
 
-const treeData = buildTree();
+// Build once at module level
+buildFlatTree();
 
+// ─── Public API: used by FindFileDialog and FindTextDialog ────────────────────
+
+/**
+ * Returns a flat Map from file entry.id → display path (e.g. "portfolio/src/about/route.tsx").
+ */
 export function getNeoTreeFilePaths(): ReadonlyMap<string, string> {
 	const paths = new Map<string, string>();
 
-	function walk(nodes: TreeNode[], parents: string[]) {
-		for (const node of nodes) {
-			if (node.type === "folder") {
-				const nextParents = node.label === "portfolio" ? parents : [...parents, node.label];
-				walk(node.children, nextParents);
-				continue;
-			}
+	function walk(itemId: string, parents: string[]) {
+		const item = treeItems[itemId];
+		if (!item) return;
 
-			paths.set(node.entry.id, [...parents, node.displayName].join("/"));
+		if (item.kind === "folder") {
+			const label = item.label;
+			// Skip "portfolio" from the path (matching old behavior)
+			const nextParents = label === "portfolio" ? parents : [...parents, label];
+			const children = folderChildren[itemId] ?? [];
+			for (const childId of children) {
+				walk(childId, nextParents);
+			}
+		} else {
+			paths.set(item.entry.id, [...parents, item.displayName].join("/"));
 		}
 	}
 
-	walk(treeData, []);
+	for (const childId of rootChildIds) {
+		walk(childId, []);
+	}
+
 	return paths;
+}
+
+/** Compute ancestor folder IDs for a given file entry.id, for auto-expand. */
+function getAncestorFolderIds(fileId: string): string[] {
+	function findAncestors(folderId: string, currentAncestors: string[]): string[] | null {
+		const children = folderChildren[folderId];
+		if (!children) return null;
+
+		if (children.includes(fileId)) {
+			return [...currentAncestors, folderId];
+		}
+
+		for (const childId of children) {
+			if (treeItems[childId]?.kind === "folder") {
+				const result = findAncestors(childId, [...currentAncestors, folderId]);
+				if (result) return result;
+			}
+		}
+
+		return null;
+	}
+
+	for (const rootId of rootChildIds) {
+		const ancestors = findAncestors(rootId, [rootId]);
+		if (ancestors) return ancestors;
+	}
+
+	return [];
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -121,16 +206,110 @@ export function getNeoTreeFilePaths(): ReadonlyMap<string, string> {
 export function NeoTree() {
 	const navigate = useNavigate();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
-	const [expanded, setExpanded] = useState<Set<string>>(() => new Set(["portfolio", "src"]));
+	const search = useRouterState({ select: (s) => s.location.search }) as {
+		file?: string;
+		neotree?: string;
+	};
 
-	function toggleExpand(label: string) {
-		setExpanded((prev) => {
-			const next = new Set(prev);
-			if (next.has(label)) next.delete(label);
-			else next.add(label);
-			return next;
-		});
-	}
+	const currentFileId = search.file;
+	const prevFileIdRef = useRef(currentFileId);
+
+	// Compute which folder IDs to expand initially, based on the currently
+	// selected file (so opening a file auto-expands its folder).
+	const expandedItems: string[] = useMemo(() => {
+		const rootId = rootChildIds[0];
+		if (!rootId) return [];
+
+		// Always expand the root folder and the "src" folder
+		const expanded = [rootId];
+		for (const childId of folderChildren[rootId] ?? []) {
+			if (treeItems[childId]?.kind === "folder") {
+				expanded.push(childId);
+				// Also expand immediate children of src (about, work, contact)
+				for (const grandChildId of folderChildren[childId] ?? []) {
+					if (treeItems[grandChildId]?.kind === "folder") {
+						expanded.push(grandChildId);
+					}
+				}
+			}
+		}
+
+		// If a file is selected, expand its ancestor chain
+		if (currentFileId) {
+			const ancestors = getAncestorFolderIds(currentFileId);
+			for (const ancestorId of ancestors) {
+				if (!expanded.includes(ancestorId)) {
+					expanded.push(ancestorId);
+				}
+			}
+		}
+
+		return expanded;
+	}, [currentFileId]);
+
+	const tree = useTree<TreeItemData>({
+		rootItemId: rootChildIds[0]!,
+		initialState: { expandedItems },
+		getItemName: (item) => {
+			const data = item.getItemData();
+			return data.kind === "folder" ? data.label : data.displayName;
+		},
+		isItemFolder: (item) => item.getItemData().kind === "folder",
+		dataLoader: {
+			getItem: (itemId) => treeItems[itemId]!,
+			getChildren: (itemId) => folderChildren[itemId] ?? [],
+		},
+		indent: 16,
+		features: [syncDataLoaderFeature, hotkeysCoreFeature, searchFeature],
+		onPrimaryAction: (item) => {
+			const data = item.getItemData();
+			if (data.kind === "file") {
+				void navigate({
+					to: "/editor",
+					search: { file: data.entry.id, neotree: "open" as const },
+				});
+			}
+		},
+	});
+
+	// When a file is selected externally (e.g. from Find File dialog),
+	// expand ancestor folders, then focus and scroll to the file.
+	useEffect(() => {
+		if (currentFileId && currentFileId !== prevFileIdRef.current) {
+			prevFileIdRef.current = currentFileId;
+
+			// Expand ancestor folders
+			const ancestors = getAncestorFolderIds(currentFileId);
+			for (const ancestorId of ancestors) {
+				tree.getItemInstance(ancestorId)?.expand();
+			}
+
+			// Focus and scroll to the file (defer for DOM update after expand)
+			requestAnimationFrame(() => {
+				tree.getItemInstance(currentFileId)?.setFocused();
+				tree.updateDomFocus();
+			});
+		}
+	}, [currentFileId, tree]);
+
+	// When search is active, auto-expand folders that contain matching items.
+	useEffect(() => {
+		if (!tree.isSearchOpen()) return;
+
+		const matchingItems = tree.getSearchMatchingItems();
+		const toExpand = new Set<string>();
+
+		for (const item of matchingItems) {
+			const ancestors = getAncestorFolderIds(item.getId());
+			for (const ancestorId of ancestors) {
+				toExpand.add(ancestorId);
+			}
+		}
+
+		for (const folderId of toExpand) {
+			tree.getItemInstance(folderId)?.expand();
+		}
+	});
 
 	function closeNeoTree() {
 		void navigate({
@@ -144,6 +323,7 @@ export function NeoTree() {
 
 	return (
 		<aside className="flex w-56 shrink-0 flex-col border-r border-border bg-background">
+			{/* Header */}
 			<div className="flex h-status-bar shrink-0 items-center justify-between border-b border-border px-3 text-tiny text-muted-foreground">
 				<span className="font-medium uppercase tracking-wider text-muted-foreground/70">
 					EXPLORER
@@ -158,95 +338,92 @@ export function NeoTree() {
 				</button>
 			</div>
 
-			<div className="min-h-0 flex-1 overflow-y-auto p-2 font-mono text-xs scrollbar-gutter-both">
-				{treeData.map((node) => (
-					<TreeNodeItem
-						expanded={expanded}
-						key={node.type === "folder" ? node.label : node.entry.id}
-						node={node}
-						onToggle={toggleExpand}
-					/>
-				))}
+			{/* Search bar — container always visible, input only when searching */}
+			<div className="relative shrink-0 border-b-2 border-border px-3 py-1.5">
+				<span className="absolute top-0 left-3 z-raised -translate-y-1/2 bg-background px-2 font-mono text-tiny leading-none text-primary">
+					SEARCH
+				</span>
+				{tree.isSearchOpen() ? (
+					<div className="flex items-center gap-1.5 pt-0.5">
+						<Search className="size-3 shrink-0 text-muted-foreground/60" />
+						<input
+							{...tree.getSearchInputElementProps()}
+							className="min-w-0 flex-1 bg-transparent font-mono text-xs text-foreground outline-none placeholder:text-muted-foreground/50"
+							placeholder="Filter tree..."
+						/>
+						<span className="shrink-0 font-mono text-tiny text-muted-foreground/60 tabular-nums">
+							{tree.getSearchMatchingItems().length}
+						</span>
+					</div>
+				) : (
+					<button
+						className="flex w-full items-center gap-1.5 pt-0.5 text-left font-mono text-xs text-muted-foreground/50 hover:text-muted-foreground"
+						type="button"
+						onClick={() => {
+							tree.openSearch();
+							tree.getSearchInputElement()?.focus();
+						}}
+					>
+						<Search className="size-3 shrink-0" />
+						Type to search...
+					</button>
+				)}
+			</div>
+
+			{/* Tree items */}
+			<div
+				{...tree.getContainerProps()}
+				className="min-h-0 flex-1 overflow-y-auto p-2 font-mono text-xs scrollbar-gutter-both outline-none"
+			>
+				{tree.getItems().map((item) => {
+					const itemData = item.getItemData();
+					const isActiveFile =
+						itemData.kind === "file" && itemData.entry.id === currentFileId;
+
+					return (
+						<button
+							{...item.getProps()}
+							key={item.getId()}
+							className={cn(
+								"flex w-full items-center gap-1.5 py-0.5 text-left text-muted-foreground transition",
+								"focus-visible:outline-none",
+								// Active file highlight
+								isActiveFile && "bg-accent/40 text-primary",
+								// Focused item
+								item.isFocused() && !isActiveFile && "bg-accent/30 text-foreground",
+								// Search match highlight
+								item.isMatchingSearch() && !item.isFocused() && "text-foreground",
+							)}
+							style={{
+								paddingLeft: `${item.getItemMeta().level * 16 + 8}px`,
+							}}
+							type="button"
+						>
+							{/* Icon */}
+							{item.isFolder() ? (
+								item.isExpanded() ? (
+									<FolderOpen className="size-3 shrink-0" />
+								) : (
+									<Folder className="size-3 shrink-0" />
+								)
+							) : (
+								<FileText className="size-3 shrink-0" />
+							)}
+
+							{/* Label */}
+							<span
+								className={cn(
+									"truncate",
+									item.isFolder() && "font-medium",
+								)}
+							>
+								{item.getItemName()}
+								{item.isFolder() ? "/" : ""}
+							</span>
+						</button>
+					);
+				})}
 			</div>
 		</aside>
-	);
-}
-
-// ─── Tree node renderer ──────────────────────────────────────────────────────
-
-function TreeNodeItem({
-	expanded,
-	node,
-	onToggle,
-	depth = 0,
-}: {
-	expanded: Set<string>;
-	node: TreeNode;
-	onToggle: (label: string) => void;
-	depth?: number;
-}) {
-	const navigate = useNavigate();
-	const search = useRouterState({ select: (s) => s.location.search }) as { file?: string };
-
-	if (node.type === "file") {
-		const isActive = search.file === node.entry.id;
-
-		return (
-			<button
-				className={cn(
-					"flex w-full items-center gap-1.5 py-0.5 text-left text-muted-foreground transition hover:text-foreground",
-					isActive && "text-primary",
-				)}
-				style={{ paddingLeft: `${depth * 16 + 8}px` }}
-				type="button"
-				onClick={() => {
-					void navigate({
-						to: "/editor",
-						search: { file: node.entry.id, neotree: "open" as const },
-					});
-				}}
-			>
-				<FileText className="size-3 shrink-0" />
-				<span className="truncate">{node.displayName}</span>
-			</button>
-		);
-	}
-
-	// Folder node
-	const isOpen = expanded.has(node.label);
-
-	return (
-		<div>
-			<button
-				className={cn(
-					"flex w-full items-center gap-1.5 py-0.5 text-left text-muted-foreground transition hover:text-foreground",
-					isOpen && "text-foreground/80",
-				)}
-				style={{ paddingLeft: `${depth * 16 + 8}px` }}
-				type="button"
-				onClick={() => onToggle(node.label)}
-			>
-				{isOpen ? (
-					<FolderOpen className="size-3 shrink-0" />
-				) : (
-					<Folder className="size-3 shrink-0" />
-				)}
-				<span className="truncate font-medium">{node.label}/</span>
-			</button>
-
-			{isOpen && (
-				<div>
-					{node.children.map((child) => (
-						<TreeNodeItem
-							depth={depth + 1}
-							expanded={expanded}
-							key={child.type === "folder" ? child.label : child.entry.id}
-							node={child}
-							onToggle={onToggle}
-						/>
-					))}
-				</div>
-			)}
-		</div>
 	);
 }

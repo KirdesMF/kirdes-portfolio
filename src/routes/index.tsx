@@ -93,10 +93,17 @@ function RouteComponent() {
 	}, [reduceMotion, navigate]);
 
 	return (
-		<main className="flex h-dvh items-center justify-center bg-background font-mono text-xs text-foreground">
+		<main className="relative flex h-dvh items-center justify-center bg-background font-mono text-xs text-foreground">
 			<div className="w-full max-w-xl rounded border border-border bg-background/80 p-4">
 				<IntroTranscript skipAnimation={reduceMotion} />
 			</div>
+			<button
+				className="absolute right-4 bottom-4 text-muted-foreground/50 transition hover:text-foreground"
+				type="button"
+				onClick={() => navigate({ replace: true, to: "/editor" })}
+			>
+				[skip intro]
+			</button>
 		</main>
 	);
 }

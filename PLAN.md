@@ -1,48 +1,29 @@
-# Intro Animation Revamp — Plan
+# Neo-Tree Refactor with Headless Tree — Plan
 
 ## Context
 
-The current intro (`/` route, `src/routes/index.tsx`) is a minimal boot screen with 3 scrambled text lines and a loading bar that auto-redirects to `/editor`. It doesn't reflect the terminal-centric design of the rest of the app.
+The current `NeoTree` component (`src/ide/neo-tree.tsx`) is a hand-built tree with manual state management for expanding/collapsing folders. It works but lacks:
 
-**Goal:** Replace it with a cinematic terminal-style intro that simulates a developer's terminal session — typing commands, seeing real-looking outputs, then launching `nvim .` which transitions into the app (`/editor`).
+- **Keyboard navigation** — no arrow keys, Enter to open files, etc.
+- **Accessibility** — no ARIA attributes, screen-reader support
+- **Search/filter** — no way to filter the tree by typing (like LazyVim's file explorer)
 
-**Two-phase approach:** Build the static (non-animated) terminal transcript first, then layer on a timeline animation for typing / output reveals.
+**Goal:** Replace the manual tree implementation with [`headless-tree`](https://headless-tree.lukasbach.com/) (already available on npm as `@headless-tree/core` + `@headless-tree/react`), which provides all of the above out of the box. Keep it simple: open/close folders, keyboard nav, search. No drag-and-drop.
+
+A follow-up will add an inline search bar to filter the tree in-place (the `searchFeature` from headless-tree makes this trivial — we just need to render the search input).
 
 ---
 
 ## Approach
 
-### Phase 1 — Static Terminal Transcript
-
-Create a self-contained component that renders a **non-interactive** terminal view (styled like the existing `TerminalPane`) with pre-defined command/output pairs.
-
-**Command sequence (Option B — Git workflow):**
-1. `git branch` → output from existing `GitOutput` component
-2. `git log --oneline -3` → output from existing `GitOutput` component
-3. `ls` → output from existing `LsOutput` / `TerminalRouteList` component
-4. `nvim .` → a custom "launching neovim" output, then triggers redirect
-
-All outputs already exist as React components in the terminal module — we reuse them directly.
-
-**Files to create/modify:**
-- `src/routes/index.tsx` — replace current boot screen with static intro, then add animation
-- (Optionally) `src/terminal/intro-content.tsx` — the static layout + content, if extracted
-
-### Phase 2 — Typing Animation Timeline
-
-Use **animejs v4 `createTimeline`** (already in the project) to animate the static content:
-
-1. **Type each command** character-by-character into a prompt line
-2. **Pause** (simulate processing time)
-3. **Reveal output** (fade-in or instant)
-4. **Repeat** for next command
-5. After `nvim .` output is shown, **navigate to `/editor`**
-
-For the typewriter effect: use a React state variable holding the current "typed" text, driven by animejs timeline `call()` callbacks that append characters at a controlled rate. This avoids needing a custom DOM text-splitter.
-
-Alternatively, use animejs `TextSplitter` to split text into characters, then stagger-opacity animate them (more performant but more complex DOM structure).
-
-**Recommendation:** Use the state-driven approach for simplicity — the intro only runs once and has ~4 short commands.
+1. **Install** `@headless-tree/core` and `@headless-tree/react`
+2. **Transform the existing tree data** (`TreeNode[]`) into a flat ID→payload map compatible with headless-tree's `syncDataLoaderFeature`
+3. **Replace the manual React tree rendering** with headless-tree's `useTree` hook, spreading `tree.getContainerProps()` and `item.getProps()` for built-in ARIA and keyboard event handlers
+4. **Add `hotkeysCoreFeature`** for arrow-key navigation, Enter to invoke primary action, Left/Right to collapse/expand
+5. **Add `searchFeature`** for typeahead search (type while focused → filter highlights matching items, arrow keys navigate matches)
+6. **Render the search input** when `tree.isSearchOpen()` is true, styled like the existing prompt/command inputs
+7. **Auto-expand folders** when a file is selected (derive expanded item IDs from the current `file` search param)
+8. **Preserve the exported `getNeoTreeFilePaths()`** function — it's used by `FindFileDialog` and `FindTextDialog`
 
 ---
 
@@ -50,45 +31,95 @@ Alternatively, use animejs `TextSplitter` to split text into characters, then st
 
 | File | What changes |
 |------|-------------|
-| `src/routes/index.tsx` | Replace entire component: new static terminal layout + animation timeline |
-| `src/terminal/intro-content.tsx` (new, optional) | Static transcript layout (command prompts + outputs), extracted for clarity |
+| `package.json` | Add `@headless-tree/core` and `@headless-tree/react` dependencies |
+| `src/ide/neo-tree.tsx` | Full rewrite: use `useTree` hook, render flat items, add search input, keep `getNeoTreeFilePaths` export |
 
-## Files to Reuse (no changes needed)
+No other files need changes — the public API (`getNeoTreeFilePaths`) and the URL search param interface (`neotree: "open" | "closed"`, `file: string`) stay the same.
+
+---
+
+## Reuse
 
 | File | What we reuse |
 |------|-------------|
-| `src/terminal/terminal-command-outputs.tsx` | `GitOutput` component for git branch / git log outputs |
-| `src/terminal/terminal-route-list.tsx` | `TerminalRouteList` for `ls` output (folders + files) |
-| `src/editor/editor-files.ts` | `editorFiles`, `folderRoutes` data for `ls` |
-| `src/terminal/terminal-pane.tsx` | Visual patterns: prompt line structure (`~/code on feat/portfolio`, move-right icon, git branch icon) |
-| `src/terminal/terminal-history.tsx` | `TerminalHistoryEntry` type pattern |
-| `src/design-system/cn.ts` | `cn` utility |
-| `animejs` (`createTimeline`, `stagger`, etc.) | Animation engine (already v4.4.1 in `package.json`) |
+| `src/editor/editor-files.ts` | `editorFiles` data — the tree payloads come from here |
+| `src/editor/editor-files.types.ts` | `EditorFileEntry` type |
+| `src/design-system/cn.ts` | `cn` utility for conditional classes |
+| `src/ide/search.ts` | `IdeSearch` type — the `file` + `neotree` search params |
+| `src/routes/_ide.tsx` | Already renders `<NeoTree />` when `neotree === "open"` — no change needed |
+| `lucide-react` | `FileText`, `Folder`, `FolderOpen`, `X`, `Search`, `ChevronRight` icons — already in the project |
+
+---
+
+## Data Transformation Strategy
+
+The current tree is a nested `TreeNode[]`. Headless-tree needs:
+
+- A flat `Record<itemId, payload>` for `getItem()`
+- A `getChildren(itemId)` that returns child IDs
+
+We'll transform the nested tree into:
+
+```ts
+// Payload type
+type TreeItemData = 
+  | { kind: "folder"; label: string; children: string[] }  // string[] = child IDs
+  | { kind: "file"; entry: EditorFileEntry; displayName: string };
+
+// Flat map: itemId → TreeItemData
+// Root is "root", children are "root/src", "root/src/about", "root/README.md", etc.
+```
+
+The existing `buildTree()` function can be adapted to produce this flat structure instead of the nested one.
 
 ---
 
 ## Steps
 
-- [x] **1. Create static intro component** — Build a non-interactive terminal view with all 4 command prompts and their outputs rendered statically (everything visible at once). Match the visual style of `TerminalPane` (prompt line, branch name, arrow icon, monospace font, colors).
+- [ ] **1. Install dependencies** — `bun add @headless-tree/core @headless-tree/react`
 
-- [x] **2. Add the `nvim .` output** — Custom output for the final command (e.g., a "Launching Neovim..." message or a Vim startup screen ASCII art). This is the cue before redirect.
+- [ ] **2. Build the flat tree data structure** — Rewrite the tree-building logic to produce:
+  - A `Record<string, TreeItemData>` for `getItem`
+  - A `getChildren(itemId)` function
+  - Keep the existing `getNeoTreeFilePaths()` working (walk the flat structure to build path map)
 
-- [x] **3. Wire static component into `src/routes/index.tsx`** — Replace the current boot animation with the static transcript. At this point the page shows all content immediately (no animation).
+- [ ] **3. Implement `useTree` hook with core features** — In the `NeoTree` component:
+  - `syncDataLoaderFeature` — for the static tree data
+  - `hotkeysCoreFeature` — for arrow keys, Enter, Home/End, Left/Right expand/collapse
+  - `searchFeature` — for typeahead search/filter
+  - Configure `rootItemId`, `getItemName`, `isItemFolder`, `indent`
+  - Set `onPrimaryAction` to navigate to the editor when a file is clicked/Entered
 
-- [x] **4. Implement typewriter animation hook** — Create a reusable hook or inline logic that types text character-by-character into a state variable, driven by animejs timeline `call()` steps. Support configurable typing speed and pauses.
+- [ ] **4. Render the tree using headless-tree's flat item list** — Replace the recursive `TreeNodeItem` with:
+  - A container `<div>` spreading `tree.getContainerProps()`
+  - Map over `tree.getItems()` rendering each item as a `<button>` spreading `item.getProps()`
+  - Use `item.getItemMeta().level` for indentation (already built-in)
+  - Render folder/file icons based on `item.isFolder()` and `item.isExpanded()`
+  - Highlight the active file using `search.file` from router state
 
-- [x] **5. Build the animation timeline** — Sequence the 4 commands with: type command → short pause → reveal output → longer pause → next command. After the final `nvim .` output appears, call `navigate({ replace: true, to: "/editor" })`.
+- [ ] **5. Add the search input** — When `tree.isSearchOpen()`:
+  - Render an `<input>` spreading `tree.getSearchInputElementProps()` at the top of the tree panel
+  - Style it like the existing command/search inputs (small monospace, border-bottom)
+  - Show match count: `{tree.getSearchMatchingItems().length} matches`
+  - Highlight matching items via `item.isMatchingSearch()`
 
-- [x] **6. Polish timing and feel** — Tune typing speed, inter-command pauses, output fade-in duration. Ensure the intro doesn't drag but feels deliberate (~4-6 seconds total). Add a subtle cursor blink at the end of each typed command.
+- [ ] **6. Auto-expand to selected file** — When `search.file` is set (a file is open in the editor):
+  - Compute the ancestor folder IDs of that file
+  - Pass them to `initialState.expandedItems` so the path is expanded on mount
+  - Use `item.setFocused()` + `tree.updateDomFocus()` to scroll to and focus the file
 
-- [x] **7. Handle reduced motion** — Respect `prefers-reduced-motion`: if set, show the static version immediately (skip animation) and redirect after a short delay.
+- [ ] **7. Clean up old code** — Remove the old `TreeNode` type, `buildTree`, `TreeNodeItem`, manual `expanded` state, and manual `toggleExpand`
 
 ---
 
 ## Verification
 
-1. **Static check:** Before animation is added, visit `/` — all 4 commands and their outputs are visible at once, styled like the terminal.
-2. **Animation check:** After animation is added, visit `/` — commands type out one by one, outputs appear after each, and after `nvim .` the page redirects to `/editor`.
-3. **Reduced motion:** Enable `prefers-reduced-motion` in devtools — the static content appears immediately, then redirects after ~1.5s.
-4. **No regressions:** Navigate to `/editor`, `/terminal`, `/about`, `/contact`, `/work` — all existing routes work normally.
-5. **Reload command:** The `reload` command in the terminal still redirects to `/` and the intro plays again.
+1. **Open/close folders** — Click folder arrows or use Left/Right arrow keys to collapse/expand
+2. **Keyboard navigation** — Use Up/Down arrows to move focus; Enter to open a file; Home/End for first/last
+3. **File selection** — Click a file or press Enter on it → navigates to `/editor?file=xxx&neotree=open`, file opens in editor
+4. **Search** — Type while focused on the tree → search input appears, tree filters to matching items, arrow keys navigate matches, Escape closes search
+5. **Auto-expand** — Open a file via Find File dialog (`Cmd+P`) → neo-tree opens with the file's folder path expanded and the file focused
+6. **Accessibility** — Inspect the DOM: container has `role="tree"`, items have `role="treeitem"`, `aria-expanded`, `aria-selected`, `aria-level`, etc.
+7. **Find File / Find Text still work** — `Cmd+P` and text search still list files correctly (they use `getNeoTreeFilePaths()`)
+8. **Close button** — The X button in the EXPLORER header still closes the tree
+9. **Mobile** — Tree still renders correctly at narrow widths
