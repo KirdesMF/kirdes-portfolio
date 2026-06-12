@@ -8,10 +8,10 @@ export const Route = createFileRoute("/")({
 	component: RouteComponent,
 });
 
-const CHAR_MS = 35;
-const PAUSE_AFTER_TYPE = 250;
-const PAUSE_AFTER_OUT = 700;
-const FINAL_PAUSE = 2000;
+const CHAR_MS = 18;
+const PAUSE_AFTER_TYPE = 120;
+const PAUSE_AFTER_OUT = 250;
+const FINAL_PAUSE = 1000;
 
 function RouteComponent() {
 	const navigate = useNavigate();
@@ -28,7 +28,7 @@ function RouteComponent() {
 
 	useLayoutEffect(() => {
 		if (reduceMotion) {
-			const t = setTimeout(() => navigate({ replace: true, to: "/editor" }), 2000);
+			const t = setTimeout(() => navigate({ replace: true, to: "/editor" }), 800);
 			return () => clearTimeout(t);
 		}
 

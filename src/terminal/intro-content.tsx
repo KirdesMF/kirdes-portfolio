@@ -1,6 +1,6 @@
 import { createTimeline } from "animejs";
 import { GitBranch, MoveRight } from "lucide-react";
-import { type ReactNode, useEffect, useId, useMemo, useRef, useState } from "react";
+import { type ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import { getRandomNumber } from "#/utils/random-number";
 import { GitOutput } from "./terminal-command-outputs";
 
@@ -148,40 +148,35 @@ const BLOCKS: ReadonlyArray<{ id: number }> = [
 	{ id: 5 },
 ];
 
-const TINT_CLASSES = [
-	"bg-primary/30",
-	"bg-primary/45",
-	"bg-primary/60",
-	"bg-primary/75",
-	"bg-primary/90",
-	"bg-primary",
-] as const;
-
 function ThinkingLoader() {
-	const [peak, setPeak] = useState(0);
-	const peakRef = useRef({ value: 0 });
+	const blockRefs = useRef<Array<HTMLSpanElement | null>>([]);
 
 	useEffect(() => {
-		const tl = createTimeline({ loop: true });
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
 		const steps = 12;
 		const max = BLOCK_COUNT - 1;
+		const renderPeak = (peak: number) => {
+			for (const block of BLOCKS) {
+				const node = blockRefs.current[block.id];
+				if (!node) continue;
+
+				const dist = Math.abs(block.id - peak);
+				node.style.opacity = String(1 - Math.min(dist / max, 1) * 0.7);
+			}
+		};
+
+		renderPeak(0);
+
+		const tl = createTimeline({ loop: true });
 
 		for (let i = 0; i <= steps; i++) {
 			const pos = (i / steps) * max;
-			tl.call(() => {
-				peakRef.current.value = pos;
-				setPeak(pos);
-			}, i * 60);
+			tl.call(() => renderPeak(pos), i * 60);
 		}
 		for (let i = 1; i <= steps; i++) {
 			const pos = max - (i / steps) * max;
-			tl.call(
-				() => {
-					peakRef.current.value = pos;
-					setPeak(pos);
-				},
-				(steps + i) * 60,
-			);
+			tl.call(() => renderPeak(pos), (steps + i) * 60);
 		}
 
 		return () => {
@@ -190,13 +185,17 @@ function ThinkingLoader() {
 	}, []);
 
 	return (
-		<span className="inline-flex align-middle">
-			{BLOCKS.map((b) => {
-				const dist = Math.abs(b.id - peak);
-				const tintIdx = Math.min(Math.round(dist), TINT_CLASSES.length - 1);
-
-				return <span className={`inline-block size-[1ch] ${TINT_CLASSES[tintIdx]}`} key={b.id} />;
-			})}
+		<span aria-hidden="true" className="inline-flex align-middle">
+			{BLOCKS.map((b) => (
+				<span
+					className="inline-block size-[1ch] bg-primary"
+					key={b.id}
+					ref={(node) => {
+						blockRefs.current[b.id] = node;
+					}}
+					style={{ opacity: b.id === 0 ? 1 : 0.3 }}
+				/>
+			))}
 		</span>
 	);
 }
