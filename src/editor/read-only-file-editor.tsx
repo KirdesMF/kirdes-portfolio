@@ -306,7 +306,10 @@ export function EmptyEditor() {
 	const setFindTextOpen = useIdeStore((s) => s.setFindTextOpen);
 	const setRecentFilesOpen = useIdeStore((s) => s.setRecentFilesOpen);
 	const recentFilesOpen = useIdeStore((s) => s.recentFilesOpen);
+	const helpOpen = useIdeStore((s) => s.helpOpen);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
+	const emptyEditorHotkeysBlocked =
+		commandMenuOpen || helpOpen || settingsOpen || findFileOpen || findTextOpen || recentFilesOpen;
 	const navigate = useNavigate();
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const rootRef = useScrambleRef<HTMLDivElement>({
@@ -381,8 +384,7 @@ export function EmptyEditor() {
 			},
 		],
 		{
-			enabled:
-				!commandMenuOpen && !settingsOpen && !findFileOpen && !findTextOpen && !recentFilesOpen,
+			enabled: !emptyEditorHotkeysBlocked,
 			ignoreInputs: true,
 			preventDefault: true,
 		},

@@ -6,6 +6,7 @@ import { CommandMenu } from "#/ide/command-menu";
 import { CommandHistoryDialog, CommandModeDialog } from "#/ide/command-mode-dialog";
 import { FindFileDialog } from "#/ide/find-file-dialog";
 import { FindTextDialog } from "#/ide/find-text-dialog";
+import { HelpDialog } from "#/ide/help-dialog";
 import { NeoTree } from "#/ide/neo-tree";
 import { RecentFilesDialog } from "#/ide/recent-files-dialog";
 import { parseIdeSearch } from "#/ide/search";
@@ -31,7 +32,17 @@ function IdeShell() {
 	const findFileOpen = useIdeStore((s) => s.findFileOpen);
 	const findTextOpen = useIdeStore((s) => s.findTextOpen);
 	const recentFilesOpen = useIdeStore((s) => s.recentFilesOpen);
+	const helpOpen = useIdeStore((s) => s.helpOpen);
+	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
 	const toggleCommandMenu = useIdeStore((s) => s.toggleCommandMenu);
+	const dialogHotkeysBlocked =
+		settingsOpen ||
+		helpOpen ||
+		findFileOpen ||
+		findTextOpen ||
+		commandModeOpen ||
+		commandHistoryOpen ||
+		recentFilesOpen;
 
 	useHotkeys(
 		[
@@ -41,15 +52,15 @@ function IdeShell() {
 					if (!commandMenuOpen) toggleCommandMenu();
 				},
 			},
+			{
+				hotkey: "H",
+				callback: () => {
+					if (!commandMenuOpen) setHelpOpen(true);
+				},
+			},
 		],
 		{
-			enabled:
-				!settingsOpen &&
-				!findFileOpen &&
-				!findTextOpen &&
-				!commandModeOpen &&
-				!commandHistoryOpen &&
-				!recentFilesOpen,
+			enabled: !dialogHotkeysBlocked,
 			ignoreInputs: true,
 		},
 	);
@@ -61,16 +72,7 @@ function IdeShell() {
 				target instanceof HTMLElement &&
 				(target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
 
-			if (
-				event.key !== ":" ||
-				isEditable ||
-				settingsOpen ||
-				findFileOpen ||
-				findTextOpen ||
-				commandModeOpen ||
-				commandHistoryOpen ||
-				recentFilesOpen
-			) {
+			if (event.key !== ":" || isEditable || dialogHotkeysBlocked) {
 				return;
 			}
 
@@ -87,16 +89,11 @@ function IdeShell() {
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [
-		commandHistoryOpen,
 		commandMenuOpen,
-		commandModeOpen,
-		findFileOpen,
-		findTextOpen,
+		dialogHotkeysBlocked,
 		setCommandHistoryOpen,
 		setCommandModeOpen,
 		setEditorMode,
-		settingsOpen,
-		recentFilesOpen,
 	]);
 
 	return (
@@ -116,6 +113,7 @@ function IdeShell() {
 			<FindTextDialog />
 			<RecentFilesDialog />
 			<SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+			<HelpDialog open={helpOpen} onOpenChange={setHelpOpen} />
 		</div>
 	);
 }
