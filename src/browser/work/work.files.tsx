@@ -81,6 +81,8 @@ export const workFiles: ReadonlyArray<EditorFileInput> = [
 			"- offline-ready markdown workspace",
 			"- backlink graph for project context",
 			"- encrypted team sync prototype",
+			"",
+			"[← back to projects](./index.md)",
 		),
 	},
 	{
@@ -97,6 +99,8 @@ export const workFiles: ReadonlyArray<EditorFileInput> = [
 			"- rule-based automation builder",
 			"- live status timeline",
 			"- typed event stream viewer",
+			"",
+			"[← back to projects](./index.md)",
 		),
 	},
 	{
@@ -113,6 +117,8 @@ export const workFiles: ReadonlyArray<EditorFileInput> = [
 			"- token-driven component previews",
 			"- theme comparison workspace",
 			"- accessibility checklist flows",
+			"",
+			"[← back to projects](./index.md)",
 		),
 	},
 ];
