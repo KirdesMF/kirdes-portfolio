@@ -1,19 +1,26 @@
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
+	Briefcase,
+	Eye,
 	FileText,
 	FolderTreeIcon,
 	History,
+	Link,
 	LogOut,
 	type LucideIcon,
 	Settings,
+	Sun,
 	Terminal,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { copyToClipboard } from "#/design-system/clipboard";
 import { Command, CommandItem, CommandList } from "#/design-system/command";
 import { Drawer, DrawerContent, DrawerHandle } from "#/design-system/drawer";
 import { Popover, PopoverContent, PopoverTrigger } from "#/design-system/popover";
+import { toastManager } from "#/design-system/toast";
 import { useIsMobile } from "#/design-system/use-media-query";
 import { useIdeStore } from "#/ide/store";
+import { useTheme } from "#/theme/theme-provider";
 
 type Item = {
 	id: string;
@@ -23,6 +30,14 @@ type Item = {
 	action: () => void;
 };
 
+function getPreviewRoute(fileId?: string): "/about" | "/work" | "/contact" | "/editor" {
+	const folder = fileId?.split("/")[0];
+	if (folder === "about") return "/about";
+	if (folder === "work") return "/work";
+	if (folder === "contact") return "/contact";
+	return "/editor";
+}
+
 export function CommandMenu() {
 	const isMobile = useIsMobile();
 	const open = useIdeStore((s) => s.commandMenuOpen);
@@ -30,7 +45,11 @@ export function CommandMenu() {
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
 	const setRecentFilesOpen = useIdeStore((s) => s.setRecentFilesOpen);
 	const navigate = useNavigate();
-	const pathname = useRouterState({ select: (s) => s.location.pathname });
+	const search = useRouterState({ select: (s) => s.location.search }) as {
+		file?: string;
+		neotree?: "open" | "closed";
+	};
+	const { appearance, setAppearance } = useTheme();
 
 	const commands: Item[] = [
 		{
@@ -50,28 +69,15 @@ export function CommandMenu() {
 			},
 		},
 		{
-			id: "explorer-focus",
-			Icon: FolderTreeIcon,
-			label: "Explorer Focus",
-			shortcut: "E",
+			id: "projects",
+			Icon: Briefcase,
+			label: "Projects",
+			shortcut: "p",
 			action: () => {
 				void navigate({
-					to: pathname,
-					search: (prev) => ({
-						...prev,
-						neotree: "open",
-					}),
+					to: "/editor",
+					search: { file: "work/projects/index.md", neotree: "open" as const },
 				});
-				setOpen(false);
-			},
-		},
-		{
-			id: "terminal",
-			Icon: Terminal,
-			label: "Terminal",
-			shortcut: "t",
-			action: () => {
-				void navigate({ to: "/terminal" });
 				setOpen(false);
 			},
 		},
@@ -96,6 +102,66 @@ export function CommandMenu() {
 			},
 		},
 		{
+			id: "open-preview",
+			Icon: Eye,
+			label: "Open Preview",
+			shortcut: "o",
+			action: () => {
+				void navigate({ to: getPreviewRoute(search.file) });
+				setOpen(false);
+			},
+		},
+		{
+			id: "copy-link",
+			Icon: Link,
+			label: "Copy Link",
+			shortcut: "y",
+			action: () => {
+				const url = window.location.href;
+				void copyToClipboard(url).then((copied) => {
+					toastManager.add({
+						description: copied ? url : "Clipboard permission denied.",
+						title: copied ? "Link copied" : "Copy failed",
+						type: copied ? "success" : "error",
+					});
+				});
+				setOpen(false);
+			},
+		},
+		{
+			id: "theme-mode",
+			Icon: Sun,
+			label: "Theme Mode",
+			shortcut: "T",
+			action: () => {
+				const modeCycle = ["system", "light", "dark"] as const;
+				const modeLabels: Record<string, string> = {
+					system: "System",
+					light: "Light",
+					dark: "Dark",
+				};
+				const currentIndex = modeCycle.indexOf(appearance.mode);
+				const nextMode = modeCycle[(currentIndex + 1) % modeCycle.length];
+				setAppearance({ ...appearance, mode: nextMode });
+				toastManager.add({
+					description: `Theme mode set to ${modeLabels[nextMode]}.`,
+					title: "Theme updated",
+					type: "success",
+				});
+				setOpen(false);
+			},
+		},
+		{
+			id: "terminal",
+			Icon: Terminal,
+			label: "Terminal",
+			shortcut: "t",
+			action: () => {
+				void navigate({ to: "/terminal" });
+				setOpen(false);
+			},
+		},
+		{
 			id: "settings",
 			Icon: Settings,
 			label: "Settings",
@@ -111,7 +177,14 @@ export function CommandMenu() {
 			label: "Quit",
 			shortcut: "q",
 			action: () => {
-				void navigate({ to: "/" });
+				if (search.file) {
+					void navigate({
+						to: "/editor",
+						search: { neotree: search.neotree ?? ("closed" as const) },
+					});
+				} else {
+					void navigate({ to: "/" });
+				}
 				setOpen(false);
 			},
 		},
@@ -173,9 +246,7 @@ function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: ()
 			return;
 		}
 
-		const shortcutIndex = commands.findIndex(
-			(cmd) => cmd.shortcut === event.key && cmd.id !== "explorer-focus",
-		);
+		const shortcutIndex = commands.findIndex((cmd) => cmd.shortcut === event.key);
 
 		if (shortcutIndex >= 0) {
 			event.preventDefault();

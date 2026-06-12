@@ -635,14 +635,17 @@
 
 /* Shiki editor-code */
 
-.editor-code pre.shiki {
-	background-color: transparent;
-	color: var(--shiki-light, inherit);
+.editor-code pre {
 	font: inherit;
 	line-height: 1.6;
 	margin: 0;
 	min-width: max-content;
 	tab-size: 2;
+}
+
+.editor-code pre.shiki {
+	background-color: transparent;
+	color: var(--shiki-light, inherit);
 }
 
 .editor-code pre.shiki span {
@@ -659,13 +662,11 @@
 
 .editor-code code {
 	display: block;
-	counter-reset: line;
 }
 
 .editor-code .line {
-	display: inline-block;
+	display: block;
 	min-height: 1lh;
-	min-width: 100%;
 	padding-inline-start: 5ch;
 	position: relative;
 }
@@ -675,8 +676,7 @@
 }
 
 .editor-code .line::before {
-	content: counter(line);
-	counter-increment: line;
+	content: attr(data-line);
 	font-variant-numeric: tabular-nums;
 	inset-inline-start: 0;
 	opacity: 0.35;
@@ -694,4 +694,60 @@
 
 .editor-code .line:hover::before {
 	opacity: 1;
+}
+
+.editor-code .line-active {
+	background: color-mix(in oklch, var(--editor-line) 50%, transparent);
+	border-radius: var(--radius);
+}
+
+.editor-code .line-active::before {
+	opacity: 1;
+}
+
+.editor-code .token {
+	color: var(--token-light);
+}
+
+.dark .editor-code .token {
+	color: var(--token-dark);
+}
+
+.editor-code .cursor-block {
+	display: inline-block;
+	inset-block-start: 0;
+	inset-inline-start: calc(5ch + var(--cursor-column));
+	overflow: hidden;
+	pointer-events: none;
+	position: absolute;
+	width: 1ch;
+}
+
+.editor-code .cursor-block::before {
+	background-color: white;
+	content: "";
+	inset: 0;
+	mix-blend-mode: difference;
+	position: absolute;
+}
+
+.editor-code .cursor-text {
+	opacity: 0;
+}
+
+.editor-code .editor-link {
+	background: none;
+	border: 0;
+	color: inherit;
+	cursor: pointer;
+	display: inline;
+	font: inherit;
+	line-height: inherit;
+	margin: 0;
+	padding: 0;
+	text-decoration: none;
+}
+
+.editor-code .editor-link:hover {
+	text-decoration: underline;
 }

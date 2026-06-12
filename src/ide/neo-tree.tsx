@@ -1,11 +1,12 @@
-import { hotkeysCoreFeature, searchFeature, syncDataLoaderFeature } from "@headless-tree/core";
+import { hotkeysCoreFeature, syncDataLoaderFeature } from "@headless-tree/core";
 import { useTree } from "@headless-tree/react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
-import { FileText, Folder, FolderOpen, Search, X } from "lucide-react";
-import { useEffect, useMemo, useRef } from "react";
+import { FileText, Folder, FolderOpen, X } from "lucide-react";
+import { useEffect, useMemo } from "react";
 import { cn } from "#/design-system/cn";
 import { editorFiles } from "#/editor/editor-files";
 import type { EditorFileEntry } from "#/editor/editor-files.types";
+import { useIdeStore } from "#/ide/store";
 
 // ─── Flat tree data for headless-tree ────────────────────────────────────────
 
@@ -64,9 +65,9 @@ function buildFlatTree() {
 
 	// ── projects ──
 	const projectsFileEntries: Array<{ displayName: string; entry: EditorFileEntry }> = [];
-	{
-		const entry = findFile("work/projects", "list.json");
-		if (entry) projectsFileEntries.push({ displayName: "list.json", entry });
+	for (const name of ["index.md", "atlas-notes.md", "signal-forge.md", "orbit-ui.md"] as const) {
+		const entry = findFile("work/projects", name);
+		if (entry) projectsFileEntries.push({ displayName: name, entry });
 	}
 
 	// ── work ──
@@ -201,6 +202,7 @@ function getAncestorFolderIds(fileId: string): string[] {
 
 export function NeoTree() {
 	const navigate = useNavigate();
+	const requestEditorFocus = useIdeStore((s) => s.requestEditorFocus);
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
 	const search = useRouterState({ select: (s) => s.location.search }) as {
 		file?: string;
@@ -208,7 +210,6 @@ export function NeoTree() {
 	};
 
 	const currentFileId = search.file;
-	const prevFileIdRef = useRef(currentFileId);
 
 	// Compute which folder IDs to expand initially, based on the currently
 	// selected file (so opening a file auto-expands its folder).
@@ -260,7 +261,7 @@ export function NeoTree() {
 			getChildren: (itemId) => folderChildren[itemId] ?? [],
 		},
 		indent: 16,
-		features: [syncDataLoaderFeature, hotkeysCoreFeature, searchFeature],
+		features: [syncDataLoaderFeature, hotkeysCoreFeature],
 		onPrimaryAction: (item) => {
 			const data = item.getItemData();
 			if (data.kind === "file") {
@@ -268,48 +269,26 @@ export function NeoTree() {
 					to: "/editor",
 					search: { file: data.entry.id, neotree: "open" as const },
 				});
+				requestEditorFocus();
 			}
 		},
 	});
 
-	// When a file is selected externally (e.g. from Find File dialog),
-	// expand ancestor folders, then focus and scroll to the file.
+	// Focus the tree when opened, preferring the selected file.
 	useEffect(() => {
-		if (currentFileId && currentFileId !== prevFileIdRef.current) {
-			prevFileIdRef.current = currentFileId;
-
-			// Expand ancestor folders
+		if (currentFileId) {
 			const ancestors = getAncestorFolderIds(currentFileId);
 			for (const ancestorId of ancestors) {
 				tree.getItemInstance(ancestorId)?.expand();
 			}
-
-			// Focus and scroll to the file (defer for DOM update after expand)
-			requestAnimationFrame(() => {
-				tree.getItemInstance(currentFileId)?.setFocused();
-				tree.updateDomFocus();
-			});
 		}
+
+		requestAnimationFrame(() => {
+			const itemId = currentFileId ?? rootChildIds[0];
+			if (itemId) tree.getItemInstance(itemId)?.setFocused();
+			tree.updateDomFocus();
+		});
 	}, [currentFileId, tree]);
-
-	// When search is active, auto-expand folders that contain matching items.
-	useEffect(() => {
-		if (!tree.isSearchOpen()) return;
-
-		const matchingItems = tree.getSearchMatchingItems();
-		const toExpand = new Set<string>();
-
-		for (const item of matchingItems) {
-			const ancestors = getAncestorFolderIds(item.getId());
-			for (const ancestorId of ancestors) {
-				toExpand.add(ancestorId);
-			}
-		}
-
-		for (const folderId of toExpand) {
-			tree.getItemInstance(folderId)?.expand();
-		}
-	});
 
 	function closeNeoTree() {
 		void navigate({
@@ -338,38 +317,6 @@ export function NeoTree() {
 				</button>
 			</div>
 
-			{/* Search bar — container always visible, input only when searching */}
-			<div className="relative shrink-0 border-b-2 border-border px-3 py-1.5">
-				<span className="absolute top-0 left-3 z-raised -translate-y-1/2 bg-background px-2 font-mono text-tiny leading-none text-primary">
-					SEARCH
-				</span>
-				{tree.isSearchOpen() ? (
-					<div className="flex items-center gap-1.5 pt-0.5">
-						<Search className="size-3 shrink-0 text-muted-foreground/60" />
-						<input
-							{...tree.getSearchInputElementProps()}
-							className="min-w-0 flex-1 bg-transparent font-mono text-xs text-foreground outline-none placeholder:text-muted-foreground/50"
-							placeholder="Filter tree..."
-						/>
-						<span className="shrink-0 font-mono text-tiny text-muted-foreground/60 tabular-nums">
-							{tree.getSearchMatchingItems().length}
-						</span>
-					</div>
-				) : (
-					<button
-						className="flex w-full items-center gap-1.5 pt-0.5 text-left font-mono text-xs text-muted-foreground/50 hover:text-muted-foreground"
-						type="button"
-						onClick={() => {
-							tree.openSearch();
-							tree.getSearchInputElement()?.focus();
-						}}
-					>
-						<Search className="size-3 shrink-0" />
-						Type to search...
-					</button>
-				)}
-			</div>
-
 			{/* Tree items */}
 			<div
 				{...tree.getContainerProps()}
@@ -390,8 +337,6 @@ export function NeoTree() {
 								isActiveFile && "bg-accent/40 text-primary",
 								// Focused item
 								item.isFocused() && !isActiveFile && "bg-accent/30 text-foreground",
-								// Search match highlight
-								item.isMatchingSearch() && !item.isFocused() && "text-foreground",
 							)}
 							style={{
 								paddingLeft: `${item.getItemMeta().level * 16 + 8}px`,

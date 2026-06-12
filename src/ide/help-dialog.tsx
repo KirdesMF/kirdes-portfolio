@@ -29,7 +29,10 @@ const keybindingGroups = [
 	{
 		label: "Navigation",
 		rows: [
-			{ keys: "p", desc: "Projects" },
+			{ keys: "Space p", desc: "Projects" },
+			{ keys: "Space o", desc: "Open Preview" },
+			{ keys: "Space y", desc: "Copy Link" },
+			{ keys: "Space T", desc: "Theme Mode" },
 			{ keys: "c", desc: "Settings" },
 			{ keys: "m", desc: "Email" },
 			{ keys: "s", desc: "Social medias" },
@@ -38,7 +41,7 @@ const keybindingGroups = [
 	{
 		label: "Editor",
 		rows: [
-			{ keys: "q", desc: "Quit / leave editor" },
+			{ keys: "Space q", desc: "Close file / quit" },
 			{ keys: "Shift+R", desc: "Reload" },
 		],
 	},

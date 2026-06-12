@@ -1,93 +1,78 @@
-# Help Dialog Keybindings — Plan
+# Clickable Markdown Links — Plan
 
-## Goal
+## Context
 
-Add an IDE help dialog that opens with the `h` shortcut and shows this app's keybindings. Keep it styled like the existing settings/help dialogs. Small, local change only.
+Markdown project files now include links such as `[Atlas Notes](./atlas-notes.md)`. The editor renders Shiki token data through a client-side `CodeFileEditor`, so links currently appear as plain text. We want markdown links clickable now, while keeping the design extensible enough to support links in other file types later.
 
 ## Findings
 
-- `src/ide/store.ts` already has `helpOpen` and `setHelpOpen`.
-- `src/ide/app-header.tsx` already has a `[help]` button that calls `setHelpOpen(true)`, but no IDE help dialog is mounted.
-- `src/routes/_ide.tsx` is the global IDE shell and owns global shortcuts (`Space`, `:`) and dialog mounting.
-- Existing dialog style to copy: `src/settings-dialog.tsx`.
-- Do not use `src/terminal/help-dialog.tsx`; it is deprecated.
-- Existing responsive pattern: `useIsMobile()` switches between `Dialog` and `Drawer`, with shared inner content.
-- Existing tests for this pattern: `src/settings-dialog.test.tsx`.
+- `src/editor/editor-file-highlight.server.ts` tokenizes files with Shiki and returns plain token data (`FileTokenLine[]`). This is safe because it avoids raw HTML.
+- `src/editor/code-file-editor.tsx` is the interactive client renderer with cursor/focus/keyboard behavior. Links should be rendered here so they can navigate on click.
+- Shiki can split markdown link syntax across multiple tokens, so link detection must operate on the full line text, then map link ranges back onto token fragments.
+- Existing helpers can be reused:
+  - `findEditorFile()` / `resolveFile()` from `src/editor/editor-files.ts` for known editor files.
+  - `useNavigate()` from TanStack Router for internal navigation.
+- Current editor file selection uses search params (`/editor?file=...&neotree=open`). Keep that model for this feature; prettier file URLs can be planned separately later.
+- Current cursor math uses raw text lengths; clickable rendering must preserve the exact visible source text (`[label](target)`) so cursor positioning remains stable.
 
-## Files to Change
+## Approach
 
-| File | Change |
-| --- | --- |
-| `src/ide/help-dialog.tsx` | New IDE help/keybindings dialog using existing `Dialog`/`Drawer` style. |
-| `src/ide/help-dialog.test.tsx` | New focused component tests for desktop/mobile rendering and Escape close. |
-| `src/routes/_ide.tsx` | Mount the IDE help dialog; wire `h` shortcut; include `helpOpen` in shortcut guards. |
+Add range-based link detection and rendering without changing Shiki tokenization or using `dangerouslySetInnerHTML`.
 
-No store change planned: `helpOpen` already exists.
+1. Create a small pure helper module for link detection/resolution.
+   - Detect markdown inline links on full line text: `[label](target)`.
+   - Return ranges `{ start, end, target }` using raw source-text offsets.
+   - Keep this helper generic enough that future non-markdown link detectors can return the same range shape.
 
-## Keybindings to Show
+2. Render clickable ranges in `CodeFileEditor`.
+   - Concatenate each line’s token text.
+   - Find link ranges for markdown files only for now.
+   - While rendering tokens, split token text at range boundaries.
+   - Wrap link fragments in accessible clickable elements while preserving exact source text.
+   - Cursor overlay remains independent and should continue using raw text.
 
-Use a small static list that documents current app-level shortcuts:
+3. Resolve click targets safely.
+   - External safe protocols: `https:`, `http:`, `mailto:` render as `<a href target="_blank" rel="noreferrer noopener">`.
+   - Relative links (`./x.md`, `../x.md`) resolve against the current file folder and open only if `findEditorFile()` finds a known file.
+   - Absolute file-like links (`/work/projects/x.md`) open only if they resolve to a known editor file.
+   - App routes (`/about`, `/work`, `/contact`, `/editor`, `/terminal`) navigate via router.
+   - Reject unsafe protocols such as `javascript:`, `data:`, and `vbscript:`.
 
-- `h` — Help
-- `Space` — Command menu
-- `:` — Command mode
-- `f` — Find file
-- `g` — Find text
-- `r` — Recent files
-- `p` — Projects
-- `c` — Config/settings
-- `m` — Email
-- `s` — Social medias / settings where applicable
-- `q` — Quit / leave editor
-- `Shift+R` — Reload
+4. Keep current architecture.
+   - Do not reintroduce server-rendered HTML or `dangerouslySetInnerHTML`.
+   - Do not convert markdown to rendered markdown; the editor should still show source text.
 
-Group labels can be simple: `Global`, `Editor`, `Command menu`.
+## Files to modify
 
-## Implementation Steps
+- `src/editor/markdown-links.ts` — new pure helper for link range detection and safe target classification/resolution.
+- `src/editor/markdown-links.test.ts` — unit tests for link ranges and safe target handling.
+- `src/editor/code-file-editor.tsx` — render link ranges over existing token text and navigate/copy safely.
+- `src/routes/_ide.editor.tsx` — pass `result.language` to `CodeFileEditor` so link detection is markdown-only for now.
+- `src/editor/editor-file-highlight.server.ts` — likely no behavior change; only update/export types if needed for `language`/metadata compatibility.
 
-1. Create `src/ide/help-dialog.tsx`.
-   - Copy the responsive `Dialog`/`Drawer` structure from `SettingsDialog` only.
-   - Use the same bordered card/title styling as `SettingsDialog`.
-   - Render grouped rows with `Kbd`.
-   - Footer: `ESC close`.
-   - Do not import from or mirror `src/terminal/help-dialog.tsx`.
+## Reuse
 
-2. Update `src/routes/_ide.tsx`.
-   - Import `HelpDialog`.
-   - Read `helpOpen` and `setHelpOpen` from `useIdeStore`.
-   - Add `h` hotkey via `useHotkeys` to call `setHelpOpen(true)`.
-   - Do not trigger `h` when inputs or other dialogs/menus are active.
-   - Add `helpOpen` to existing shortcut guards for `Space` and `:`.
-   - Render `<HelpDialog open={helpOpen} onOpenChange={setHelpOpen} />` with the other dialogs.
+- `findEditorFile()` from `src/editor/editor-files.ts` for internal file validation.
+- `useNavigate()` from `@tanstack/react-router` for internal navigation.
+- Existing `CodeFileEditor` token rendering and cursor overlay.
+- Existing markdown project files in `src/browser/work/work.files.tsx` for manual smoke testing.
 
-3. Add `src/ide/help-dialog.test.tsx`.
-   - Assert desktop dialog renders keybinding rows.
-   - Assert open dialog switches to mobile drawer on resize.
-   - Assert Escape calls `onOpenChange(false)`.
+## Steps
+
+- [ ] Add `markdown-links` helper with `findMarkdownLinkRanges(lineText)` and safe target classification.
+- [ ] Add focused tests for markdown link detection, unsafe protocol rejection, external links, app routes, and relative editor-file links.
+- [ ] Update `CodeFileEditor` props to include `language` and use link rendering only when `language === "markdown"`.
+- [ ] In `CodeFileEditor`, render token fragments intersecting link ranges as clickable links while preserving the exact source text.
+- [ ] For internal file links, keep the current search-param URL model and navigate to `/editor` with `{ file, neotree: "open" }`; for app routes, navigate to that route; for external safe links, use normal anchor behavior.
+- [ ] Pass `result.language` from `src/routes/_ide.editor.tsx` into `CodeFileEditor`.
 
 ## Verification
 
-Run cheapest relevant checks:
-
-```bash
-bunx vitest run src/ide/help-dialog.test.tsx
-bun run typecheck
-```
-
-If time permits or touched files suggest it:
-
-```bash
-bun run test
-bun run lint
-```
-
-## After Approval Workflow
-
-- Implementation agent: `worker-cheap` (localized, low-risk React changes).
-- Pass this plan path: `/Users/kirdes/code/kirdes-portfolio/PLAN.md`.
-- Then run `reviewer` on changed files.
-- Main agent performs final verification and final fixes if needed.
-
-## Token Usage Note
-
-At final response, report token usage for main agent and subagents if the harness exposes it. If exact usage is not available from Pi/subagent output, state that exact token usage was not exposed and list the agents used.
+- Run `bun run check`.
+- Run `bun run typecheck`.
+- Run `bun run test src/editor/markdown-links.test.ts`.
+- Manual smoke checks:
+  - Open `work/projects/index.md`.
+  - Click `[Atlas Notes](./atlas-notes.md)` and verify it opens `work/projects/atlas-notes.md`.
+  - Verify cursor position/line layout does not shift around links.
+  - Verify external links open safely with `noopener noreferrer` behavior.

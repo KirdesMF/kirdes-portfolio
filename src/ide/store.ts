@@ -36,8 +36,13 @@ type IdeStore = {
 
 	cursorLine: number;
 	cursorColumn: number;
+	cursorLineCount: number;
 	setCursorPosition: (line: number, column: number) => void;
+	setCursorLineCount: (count: number) => void;
 	resetCursor: () => void;
+
+	editorFocusRequest: number;
+	requestEditorFocus: () => void;
 };
 
 export const useIdeStore = create<IdeStore>((set) => ({
@@ -83,6 +88,11 @@ export const useIdeStore = create<IdeStore>((set) => ({
 
 	cursorLine: 1,
 	cursorColumn: 1,
+	cursorLineCount: 1,
 	setCursorPosition: (line, column) => set({ cursorLine: line, cursorColumn: column }),
+	setCursorLineCount: (count) => set({ cursorLineCount: Math.max(count, 1) }),
 	resetCursor: () => set({ cursorLine: 1, cursorColumn: 1 }),
+
+	editorFocusRequest: 0,
+	requestEditorFocus: () => set((s) => ({ editorFocusRequest: s.editorFocusRequest + 1 })),
 }));

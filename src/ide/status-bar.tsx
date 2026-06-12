@@ -44,6 +44,12 @@ const variantClass = {
 
 const EDITOR_BRANCH_NAME = "feat/portfolio";
 
+function getCursorProgress(line: number, lineCount: number): string {
+	if (line <= 1) return "Top";
+	if (line >= lineCount) return "Bot";
+	return `${Math.floor((line / lineCount) * 100)}%`;
+}
+
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
 function StatusGroup(props: {
@@ -134,6 +140,8 @@ export function StatusBar({ currentFile }: { currentFile?: string }) {
 	const editorMode = useIdeStore((s) => s.editorMode);
 	const cursorLine = useIdeStore((s) => s.cursorLine);
 	const cursorColumn = useIdeStore((s) => s.cursorColumn);
+	const cursorLineCount = useIdeStore((s) => s.cursorLineCount);
+	const cursorProgress = getCursorProgress(cursorLine, cursorLineCount);
 
 	const leftItems: StatusItem[] = [
 		{
@@ -168,7 +176,7 @@ export function StatusBar({ currentFile }: { currentFile?: string }) {
 			variant: "muted",
 			content: (
 				<span className="tabular-nums">
-					L{cursorLine}:C{cursorColumn}
+					{cursorProgress} {cursorLine}:{cursorColumn}
 				</span>
 			),
 		},

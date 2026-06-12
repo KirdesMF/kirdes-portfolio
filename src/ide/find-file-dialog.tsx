@@ -16,6 +16,7 @@ export function FindFileDialog() {
 	const open = useIdeStore((s) => s.findFileOpen);
 	const setOpen = useIdeStore((s) => s.setFindFileOpen);
 	const setEditorMode = useIdeStore((s) => s.setEditorMode);
+	const requestEditorFocus = useIdeStore((s) => s.requestEditorFocus);
 	const navigate = useNavigate();
 	const [search, setSearch] = useState("");
 
@@ -52,6 +53,7 @@ export function FindFileDialog() {
 		});
 		setOpen(false);
 		setEditorMode("normal");
+		requestEditorFocus();
 	}
 
 	return (

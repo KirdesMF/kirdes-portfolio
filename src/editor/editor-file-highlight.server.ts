@@ -8,9 +8,16 @@ import { createHighlighterCore } from "shiki/core";
 import { createJavaScriptRegexEngine } from "shiki/engine/javascript";
 import { findEditorFile } from "#/editor/editor-files";
 
+export type FileTokenLine = Array<{
+	content: string;
+	offset: number;
+	lightColor?: string;
+	darkColor?: string;
+}>;
+
 type HighlightResult =
 	| { found: false; fileName: string }
-	| { found: true; fileName: string; html: string; language: string };
+	| { found: true; fileName: string; lines: FileTokenLine[]; language: string };
 
 const highlighterPromise = createHighlighterCore({
 	engine: createJavaScriptRegexEngine(),
@@ -18,15 +25,14 @@ const highlighterPromise = createHighlighterCore({
 	themes: [githubDarkDefault, githubLightDefault],
 });
 
-export async function highlightToHtml(fileName: string): Promise<HighlightResult> {
+export async function highlightFileTokens(fileName: string): Promise<HighlightResult> {
 	const file = findEditorFile(fileName);
 	if (file === null) {
 		return { found: false, fileName };
 	}
 
 	const highlighter = await highlighterPromise;
-	const html = highlighter.codeToHtml(file.content, {
-		defaultColor: false,
+	const tokens = highlighter.codeToTokensWithThemes(file.content, {
 		lang: file.language,
 		themes: {
 			light: "github-light-default",
@@ -34,10 +40,19 @@ export async function highlightToHtml(fileName: string): Promise<HighlightResult
 		},
 	});
 
+	const lines = tokens.map((line) =>
+		line.map((token) => ({
+			content: token.content,
+			offset: token.offset,
+			lightColor: token.variants.light?.color,
+			darkColor: token.variants.dark?.color,
+		})),
+	);
+
 	return {
 		found: true,
 		fileName: file.name,
-		html,
+		lines,
 		language: file.language,
 	};
 }

@@ -10,6 +10,7 @@ export function RecentFilesDialog() {
 	const open = useIdeStore((s) => s.recentFilesOpen);
 	const setOpen = useIdeStore((s) => s.setRecentFilesOpen);
 	const setEditorMode = useIdeStore((s) => s.setEditorMode);
+	const requestEditorFocus = useIdeStore((s) => s.requestEditorFocus);
 	const recentFiles = useIdeStore((s) => s.recentFiles);
 	const navigate = useNavigate();
 
@@ -36,6 +37,7 @@ export function RecentFilesDialog() {
 		});
 		setOpen(false);
 		setEditorMode("normal");
+		requestEditorFocus();
 	}
 
 	return (
