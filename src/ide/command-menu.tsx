@@ -16,7 +16,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import { copyToClipboard } from "#/design-system/clipboard";
 import { Command, CommandItem, CommandList } from "#/design-system/command";
-import { Drawer, DrawerContent, DrawerHandle } from "#/design-system/drawer";
+import { Drawer, DrawerContent, DrawerHandle, DrawerPopup } from "#/design-system/drawer";
 import { Popover, PopoverContent, PopoverTrigger } from "#/design-system/popover";
 import { toastManager } from "#/design-system/toast";
 import { useIsMobile } from "#/design-system/use-media-query";
@@ -206,10 +206,12 @@ export function CommandMenu() {
 	if (isMobile) {
 		return (
 			<Drawer open={open} onOpenChange={setOpen}>
-				<DrawerContent className="px-3 pb-3">
+				<DrawerPopup className="px-3 pb-3">
 					<DrawerHandle />
-					<CommandMenuInner commands={commands} onClose={() => setOpen(false)} />
-				</DrawerContent>
+					<DrawerContent>
+						<CommandMenuInner commands={commands} onClose={() => setOpen(false)} />
+					</DrawerContent>
+				</DrawerPopup>
 			</Drawer>
 		);
 	}
@@ -288,7 +290,7 @@ function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: ()
 	}
 
 	return (
-		<div className="relative w-52 rounded border border-border bg-popover p-1 pt-2 text-popover-foreground">
+		<div className="relative w-full rounded border border-border bg-popover p-1 pt-2 text-popover-foreground">
 			<div className="absolute top-0 left-3 z-raised -translate-y-1/2 bg-popover px-2 text-tiny leading-none text-primary">
 				SPACE
 			</div>

@@ -6,6 +6,7 @@ import {
 	DrawerContent,
 	DrawerDescription,
 	DrawerHandle,
+	DrawerPopup,
 	DrawerTitle,
 } from "#/design-system/drawer";
 import { Separator } from "#/design-system/separator";
@@ -47,10 +48,12 @@ export function SettingsDialog(props: SettingsDialogProps) {
 	if (isMobile) {
 		return (
 			<Drawer open={props.open} onOpenChange={props.onOpenChange}>
-				<DrawerContent className="px-3 pb-3">
+				<DrawerPopup className="px-3 pb-3">
 					<DrawerHandle />
-					<SettingsDialogInner Description={DrawerDescription} Title={DrawerTitle} />
-				</DrawerContent>
+					<DrawerContent>
+						<SettingsDialogInner Description={DrawerDescription} Title={DrawerTitle} />
+					</DrawerContent>
+				</DrawerPopup>
 			</Drawer>
 		);
 	}

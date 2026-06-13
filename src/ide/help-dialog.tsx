@@ -4,6 +4,7 @@ import {
 	DrawerContent,
 	DrawerDescription,
 	DrawerHandle,
+	DrawerPopup,
 	DrawerTitle,
 } from "#/design-system/drawer";
 import { Kbd } from "#/design-system/kbd";
@@ -52,10 +53,12 @@ export function HelpDialog(props: HelpDialogProps) {
 	if (isMobile) {
 		return (
 			<Drawer open={props.open} onOpenChange={props.onOpenChange}>
-				<DrawerContent className="px-3 pb-3">
+				<DrawerPopup className="px-3 pb-3">
 					<DrawerHandle />
-					<HelpDialogInner Description={DrawerDescription} Title={DrawerTitle} />
-				</DrawerContent>
+					<DrawerContent>
+						<HelpDialogInner Description={DrawerDescription} Title={DrawerTitle} />
+					</DrawerContent>
+				</DrawerPopup>
 			</Drawer>
 		);
 	}

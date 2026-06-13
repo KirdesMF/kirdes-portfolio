@@ -4,7 +4,7 @@ import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { FileText, Folder, FolderOpen, X } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { cn } from "#/design-system/cn";
-import { Drawer, DrawerContent } from "#/design-system/drawer";
+import { Drawer, DrawerContent, DrawerPopup } from "#/design-system/drawer";
 import { useIsMobile } from "#/design-system/use-media-query";
 import { editorFiles } from "#/editor/editor-files";
 import type { EditorFileEntry } from "#/editor/editor-files.types";
@@ -378,9 +378,9 @@ export function NeoTree() {
 
 	return isMobile ? (
 		<Drawer open={search.neotree === "open"} swipeDirection="left" onOpenChange={closeNeoTree}>
-			<DrawerContent side="left" className="bg-background px-0 pb-0">
-				{treeContent}
-			</DrawerContent>
+			<DrawerPopup side="left" className="bg-background px-0 pb-0">
+				<DrawerContent>{treeContent}</DrawerContent>
+			</DrawerPopup>
 		</Drawer>
 	) : (
 		<aside className="flex w-56 shrink-0 flex-col border-r border-border bg-background">

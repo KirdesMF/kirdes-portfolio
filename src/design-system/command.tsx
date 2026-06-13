@@ -8,6 +8,7 @@ import {
 	DrawerContent,
 	DrawerDescription,
 	DrawerHandle,
+	DrawerPopup,
 	DrawerTitle,
 } from "#/design-system/drawer";
 import { useIsMobile } from "#/design-system/use-media-query";
@@ -87,10 +88,10 @@ export function CommandDialog({
 	if (isMobile) {
 		return (
 			<Drawer open={open} onOpenChange={onOpenChange}>
-				<DrawerContent className={cn("px-3 pb-3", contentClassName)}>
+				<DrawerPopup className={cn("px-3 pb-3", contentClassName)}>
 					<DrawerHandle />
-					{inner(DrawerTitle, DrawerDescription)}
-				</DrawerContent>
+					<DrawerContent>{inner(DrawerTitle, DrawerDescription)}</DrawerContent>
+				</DrawerPopup>
 			</Drawer>
 		);
 	}

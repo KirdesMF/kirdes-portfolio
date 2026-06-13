@@ -5,9 +5,12 @@ import { cn } from "#/design-system/cn";
 type DrawerProps = ComponentProps<typeof BaseDrawer.Root>;
 type DrawerTriggerProps = ComponentProps<typeof BaseDrawer.Trigger>;
 type DrawerCloseProps = ComponentProps<typeof BaseDrawer.Close>;
-type DrawerContentProps = Omit<ComponentProps<typeof BaseDrawer.Popup>, "className"> & {
+type DrawerPopupProps = Omit<ComponentProps<typeof BaseDrawer.Popup>, "className"> & {
 	className?: string;
 	side?: "bottom" | "left" | "right" | "top";
+};
+type DrawerContentProps = Omit<ComponentProps<typeof BaseDrawer.Content>, "className"> & {
+	className?: string;
 };
 type DrawerTitleProps = Omit<ComponentProps<typeof BaseDrawer.Title>, "className"> & {
 	className?: string;
@@ -29,12 +32,12 @@ export function DrawerClose(props: DrawerCloseProps): ReactNode {
 	return <BaseDrawer.Close data-slot="drawer-close" {...props} />;
 }
 
-export function DrawerContent({
+export function DrawerPopup({
 	children,
 	className,
 	side = "bottom",
 	...props
-}: DrawerContentProps): ReactNode {
+}: DrawerPopupProps): ReactNode {
 	const isLeft = side === "left";
 
 	return (
@@ -64,6 +67,16 @@ export function DrawerContent({
 				</BaseDrawer.Popup>
 			</BaseDrawer.Viewport>
 		</BaseDrawer.Portal>
+	);
+}
+
+export function DrawerContent({ className, ...props }: DrawerContentProps): ReactNode {
+	return (
+		<BaseDrawer.Content
+			className={cn("flex min-h-0 flex-1 flex-col", className)}
+			data-slot="drawer-content"
+			{...props}
+		/>
 	);
 }
 
