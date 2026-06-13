@@ -7,6 +7,7 @@ type DrawerTriggerProps = ComponentProps<typeof BaseDrawer.Trigger>;
 type DrawerCloseProps = ComponentProps<typeof BaseDrawer.Close>;
 type DrawerContentProps = Omit<ComponentProps<typeof BaseDrawer.Popup>, "className"> & {
 	className?: string;
+	side?: "bottom" | "left" | "right" | "top";
 };
 type DrawerTitleProps = Omit<ComponentProps<typeof BaseDrawer.Title>, "className"> & {
 	className?: string;
@@ -28,7 +29,14 @@ export function DrawerClose(props: DrawerCloseProps): ReactNode {
 	return <BaseDrawer.Close data-slot="drawer-close" {...props} />;
 }
 
-export function DrawerContent({ children, className, ...props }: DrawerContentProps): ReactNode {
+export function DrawerContent({
+	children,
+	className,
+	side = "bottom",
+	...props
+}: DrawerContentProps): ReactNode {
+	const isLeft = side === "left";
+
 	return (
 		<BaseDrawer.Portal>
 			<BaseDrawer.Backdrop
@@ -36,14 +44,17 @@ export function DrawerContent({ children, className, ...props }: DrawerContentPr
 				data-slot="drawer-backdrop"
 			/>
 			<BaseDrawer.Viewport
-				className="fixed inset-0 grid grid-rows-[1fr_auto] touch-none pt-12"
+				className={cn(
+					"fixed inset-0 touch-none",
+					isLeft ? "grid grid-cols-[auto_1fr]" : "grid grid-rows-[1fr_auto] pt-12",
+				)}
 				data-slot="drawer-viewport"
 			>
 				<BaseDrawer.Popup
 					className={cn(
-						"row-start-2 flex max-h-[min(88dvh,42rem)] min-h-0 w-full flex-col rounded-t-2xl border-t border-border bg-popover text-popover-foreground shadow-lg outline-none touch-none",
-						"transform-[translateY(var(--drawer-swipe-movement-y))] transition-[transform,opacity] duration-300 ease-out will-change-transform",
-						"data-starting-style:transform-[translateY(100%)] data-ending-style:transform-[translateY(100%)] data-ending-style:duration-[calc(var(--drawer-swipe-strength)*300ms)] data-swiping:select-none data-swiping:duration-0",
+						isLeft
+							? "col-start-1 flex h-full w-56 flex-col border-r border-border bg-popover text-popover-foreground shadow-lg outline-none touch-none transform-[translateX(var(--drawer-swipe-movement-x))] transition-[transform,opacity] duration-300 ease-out will-change-transform data-starting-style:transform-[translateX(-100%)] data-ending-style:transform-[translateX(-100%)] data-ending-style:duration-[calc(var(--drawer-swipe-strength)*300ms)] data-swiping:select-none data-swiping:duration-0"
+							: "row-start-2 flex max-h-[min(88dvh,42rem)] min-h-0 w-full flex-col border-t border-border bg-popover text-popover-foreground shadow-lg outline-none touch-none transform-[translateY(var(--drawer-swipe-movement-y))] transition-[transform,opacity] duration-300 ease-out will-change-transform data-starting-style:transform-[translateY(100%)] data-ending-style:transform-[translateY(100%)] data-ending-style:duration-[calc(var(--drawer-swipe-strength)*300ms)] data-swiping:select-none data-swiping:duration-0",
 						className,
 					)}
 					data-slot="drawer-popup"

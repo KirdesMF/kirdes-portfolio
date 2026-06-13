@@ -22,7 +22,7 @@ export const Route = createFileRoute("/_ide")({
 });
 
 function IdeShell() {
-	const { neotree, file } = Route.useSearch();
+	const { file } = Route.useSearch();
 	const settingsOpen = useIdeStore((s) => s.settingsOpen);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
 	const commandMenuOpen = useIdeStore((s) => s.commandMenuOpen);
@@ -86,8 +86,8 @@ function IdeShell() {
 	return (
 		<div className="flex h-dvh flex-col">
 			<AppHeader />
-			<div className="flex min-h-0 flex-1">
-				{neotree === "open" ? <NeoTree /> : null}
+			<div className="relative flex min-h-0 flex-1">
+				<NeoTree />
 				<main className="min-w-0 flex-1 overflow-hidden">
 					<Outlet />
 				</main>

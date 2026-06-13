@@ -4,6 +4,8 @@ import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { FileText, Folder, FolderOpen, X } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { cn } from "#/design-system/cn";
+import { Drawer, DrawerContent } from "#/design-system/drawer";
+import { useIsMobile } from "#/design-system/use-media-query";
 import { editorFiles } from "#/editor/editor-files";
 import type { EditorFileEntry } from "#/editor/editor-files.types";
 import { useIdeStore } from "#/ide/store";
@@ -210,6 +212,7 @@ export function NeoTree() {
 	};
 
 	const currentFileId = search.file;
+	const isMobile = useIsMobile();
 
 	// Compute which folder IDs to expand initially, based on the currently
 	// selected file (so opening a file auto-expands its folder).
@@ -267,7 +270,10 @@ export function NeoTree() {
 			if (data.kind === "file") {
 				void navigate({
 					to: "/editor",
-					search: { file: data.entry.id, neotree: "open" as const },
+					search: {
+						file: data.entry.id,
+						neotree: isMobile ? "closed" : "open",
+					},
 				});
 				requestEditorFocus();
 			}
@@ -300,8 +306,8 @@ export function NeoTree() {
 		});
 	}
 
-	return (
-		<aside className="flex w-56 shrink-0 flex-col border-r border-border bg-background">
+	const treeContent = (
+		<>
 			{/* Header */}
 			<div className="flex h-status-bar shrink-0 items-center justify-between border-b border-border px-3 text-tiny text-muted-foreground">
 				<span className="font-medium uppercase tracking-wider text-muted-foreground/70">
@@ -363,6 +369,22 @@ export function NeoTree() {
 					);
 				})}
 			</div>
+		</>
+	);
+
+	if (!isMobile && search.neotree !== "open") {
+		return null;
+	}
+
+	return isMobile ? (
+		<Drawer open={search.neotree === "open"} swipeDirection="left" onOpenChange={closeNeoTree}>
+			<DrawerContent side="left" className="bg-background px-0 pb-0">
+				{treeContent}
+			</DrawerContent>
+		</Drawer>
+	) : (
+		<aside className="flex w-56 shrink-0 flex-col border-r border-border bg-background">
+			{treeContent}
 		</aside>
 	);
 }

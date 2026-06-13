@@ -1,58 +1,70 @@
-# Plan: Empty editor contacts/settings commands
+# Mobile Neo-Tree Plan
 
 ## Context
-- In `src/editor/read-only-file-editor.tsx`, the empty editor command list currently includes separate `Config`, `Email`, and `Social Medias` commands.
-- Desired change: group email/social links under a `Contacts` command, rename `Config` to `Settings`, adjust shortcuts, and add an always-visible GitHub link above the app status bar.
-- Current relevant shortcuts: `Config` uses `c`, `Email` uses `m`, `Social Medias` displays `s`; only `Email` currently has behavior. `Settings` in the global command menu already uses `s`.
-- User decision: do not add a top-level direct GitHub command/shortcut; keep GitHub in Contacts and add a bottom-right `[github]` app link instead.
 
-## Approach
-- Keep the change surgical and centered on the empty editor UI plus any minimal shared dialog/store plumbing needed.
-- Add a contacts command dialog that opens from the empty editor `Contacts` command and lists keyboard-arrow-navigable items:
-  - email
-  - x.com
-  - linkedin
-  - github
-- Rename the empty editor `config` command to `settings`/`Settings` and assign shortcut `s`.
-- Assign the empty editor `Contacts` command shortcut to `c`.
-- Do not add a direct GitHub empty-editor command or shortcut; keep `g` mapped to Find Text.
-- Add a persistent bottom-right `[github]` anchor in the IDE shell, positioned just above the status bar, linking to GitHub and using the same shimmer animation style as the active language button.
+The IDE shell (`src/routes/_ide.tsx`) renders `NeoTree` as a fixed-width (`w-56`) sidebar that pushes the editor/main content to the right. On viewports below 768 px the current layout still allocates space to the sidebar, leaving a very small content area.
 
-## Files to modify
-- `src/editor/read-only-file-editor.tsx`
-- Likely `src/ide/store.ts`
-- Likely `src/routes/_ide.tsx`
-- Likely new small dialog component, e.g. `src/ide/contacts-dialog.tsx`
-- New contact data file, e.g. `src/contact/contact-info.ts`
-- Potentially a small new component such as `src/ide/github-link.tsx`, or inline JSX in `src/routes/_ide.tsx` if simpler.
+Goal: adapt the explorer so it works well on mobile without breaking the desktop sidebar experience.
+
+## Options Considered
+
+| Option | UX | Pros | Cons |
+|--------|----|------|------|
+| **A. Overlay sidebar** (slide-in from left, covers content) | Keeps sidebar paradigm, leaves editor visible behind | Low disruption, easy to toggle, natural for a tree | Smaller hit area than full-screen |
+| **B. Full-screen explorer** | Tree takes whole screen | Maximum readability, simplest to implement | Hides editor context, feels like a page switch |
+| **C. Bottom drawer** | Reuses existing `Drawer` component | Consistent with command-menu/settings mobile UX | Less natural for a vertical tree, limited height |
+
+## Current Reuse Points
+
+- `useIsMobile()` — `src/design-system/use-media-query.ts` (matches `max-width: 767px`, same boundary as Tailwind `md:`).
+- `Drawer` primitives — `src/design-system/drawer.tsx` (used for command-menu/settings on mobile). Anchored bottom; swipe-down to close.
+- `Dialog` primitives — `src/design-system/dialog.tsx`.
+- `NeoTree` is URL-controlled via `neotree=open|closed` in `src/ide/search.ts`.
+- `AppHeader` already toggles the explorer via `neotree` search param.
+
+## Decision
+
+**Overlay sidebar on mobile** (Option A). The explorer will slide in from the left and overlay the editor content. When a file is tapped on mobile, the explorer closes automatically.
+
+## Recommended Approach
+
+Keep the desktop sidebar (`w-56 shrink-0 border-r`) unchanged. On mobile (`useIsMobile()` / Tailwind `md:` variants), render the same tree as a fixed/absolute panel that overlays the main content instead of pushing it:
+
+- Slide in from the left (`-translate-x-full` → `translate-x-0`).
+- Semi-opaque backdrop overlay that closes the explorer when tapped.
+- Auto-close the explorer when a file is selected by navigating with `neotree: "closed"`.
+- Close button in the header remains functional.
+
+## Files to Modify
+
+- `src/ide/neo-tree.tsx` — add mobile overlay layout, backdrop, and close-on-file-select behavior.
+- `src/routes/_ide.tsx` — make the flex row parent `relative` so the mobile panel can be absolutely positioned; render `<NeoTree />` unconditionally or conditionally unchanged (`neotree` param still controls open/closed).
+- `src/ide/app-header.tsx` — no required changes, but verify the `[explorer]` toggle is reachable on mobile.
+- `src/ide/search.ts` — no changes.
 
 ## Reuse
-- Reuse `CommandDialog`, `CommandList`, `CommandGroup`, and `CommandItem` from `src/design-system/command.tsx` so Contacts can be navigated with arrow keys rather than tabbing.
-- Reuse the active language shimmer pattern from `src/ide/language-switcher.tsx` for the persistent `[github]` link; extract a tiny shared shimmer label helper only if needed to avoid duplication.
-- Store canonical contact values in a new shared data file:
-  - email: `cedgourville@gmail.com`
-  - x.com handle: `@cedricgourville` / URL `https://x.com/cedricgourville`
-  - linkedin: `https://www.linkedin.com/in/cedric-gourville/`
-  - github: `kirdesmf` / URL `https://github.com/kirdesmf`
-- Reuse `copyToClipboard` and `toastManager` patterns from the existing email command in `src/editor/read-only-file-editor.tsx` if the email item copies to clipboard.
+
+- `useIsMobile()` from `src/design-system/use-media-query.ts`.
+- Existing `closeNeoTree()` navigation logic inside `NeoTree`.
+- Existing tree rendering and keyboard handling from `@headless-tree/react`.
 
 ## Steps
-- [ ] Add `contactsOpen` state and setter to the IDE store.
-- [ ] Create a shared contact info module with the new contact values and consume it from the contacts dialog and GitHub link.
-- [ ] Render a new `ContactsDialog` from the IDE shell alongside existing dialogs.
-- [ ] Implement `ContactsDialog` with the command component primitives so arrow keys move through email/x.com/LinkedIn/GitHub items and Enter activates the selected item.
-- [ ] Add a bottom-right shimmered `[github]` link in the IDE shell just above `<StatusBar />`, using `target="_blank"` and `rel="noreferrer"`.
-- [ ] In `EmptyEditor`, include `contactsOpen` in hotkey blocking.
-- [ ] Replace `config` command with `settings` (`Settings`, shortcut `s`) and update command handler/hotkey.
-- [ ] Replace the separate `email` and `social-medias` entries with one `contacts` command (`Contacts`, shortcut `c`) that opens the contacts dialog.
-- [ ] Build the contacts dialog list using existing command-dialog styling and shared contact URLs.
-- [ ] Make the email item copy `cedgourville@gmail.com` to clipboard with the existing toast pattern; make x.com/LinkedIn/GitHub items open their URLs in a new tab/window.
+
+- [x] Introduce `useIsMobile()` in `NeoTree`.
+- [x] Extract the shared tree JSX into a reusable inner component so the mobile wrapper and desktop `<aside>` share the same markup.
+- [x] On mobile, render a `<div>`/`Fragment` containing:
+  - A fixed/absolute positioned panel (`left-0`, `top-status-bar`, `bottom-status-bar`, `w-56`, `z-raised` or higher).
+  - A backdrop that calls `closeNeoTree()` on click.
+- [x] Update the file `onPrimaryAction` to close the explorer when `isMobile` is true.
+- [x] Add `relative` to the layout row in `src/routes/_ide.tsx` so absolute positioning is scoped correctly.
+- [x] Verify desktop styles are unchanged (`w-56 shrink-0 border-r bg-background`).
+- [x] Add subtle enter/exit transition (translate + opacity) for the mobile panel.
 
 ## Verification
-- [ ] Run `bun run typecheck` and `bun run check`.
-- [ ] Manually open the editor empty state and confirm the command list shows `Contacts c` and `Settings s`.
-- [ ] Press `c` and verify contacts dialog opens and lists email, x.com, LinkedIn, and GitHub.
-- [ ] Verify contacts dialog supports ArrowUp/ArrowDown selection and Enter activation.
-- [ ] Press `s` and verify settings opens.
-- [ ] Confirm `g` still opens Find Text and no shortcut conflict is introduced.
-- [ ] Confirm `[github]` is visible at bottom right above the status bar, has the active-language-style shimmer, and opens `https://github.com/kirdesmf`.
+
+- [x] Resize browser to < 768 px and open `/editor?neotree=open`.
+- [x] Confirm the explorer overlays the editor and does not shrink it.
+- [x] Tap a file → the file opens and the explorer closes.
+- [x] Tap the backdrop → the explorer closes.
+- [x] Resize browser to ≥ 768 px and confirm the sidebar pushes content as before.
+- [x] Run the existing test suite to ensure no regressions.
