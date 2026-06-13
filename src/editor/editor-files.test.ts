@@ -3,7 +3,7 @@ import { findEditorFile, getVisibleFileNames, lsFiles, resolveFile } from "./edi
 
 describe("editor files", () => {
 	it("finds files by full id case-insensitively", () => {
-		expect(findEditorFile("about/readme.md")?.id).toBe("about/README.md");
+		expect(findEditorFile("about/route.tsx")?.id).toBe("about/route.tsx");
 		expect(findEditorFile("missing.md")).toBeNull();
 	});
 
@@ -13,7 +13,7 @@ describe("editor files", () => {
 	});
 
 	it("prefers current folder before root and global files", () => {
-		expect(resolveFile("README.md", "/terminal/about")?.id).toBe("about/README.md");
+		expect(resolveFile("route.tsx", "/terminal/about")?.id).toBe("about/route.tsx");
 		expect(resolveFile("infos.txt", "/terminal/about")?.id).toBe("~/infos.txt");
 		expect(resolveFile("links.json", "/terminal/about")?.id).toBe("contact/links.json");
 	});
@@ -37,7 +37,7 @@ describe("editor files", () => {
 
 		expect(ids).toContain("work/experience.json");
 		expect(ids).toContain("~/infos.txt");
-		expect(ids).not.toContain("~/README.md");
+		expect(ids).toContain("~/README.md");
 	});
 
 	it("returns unique visible file names", () => {

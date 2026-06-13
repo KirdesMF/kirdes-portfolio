@@ -5,6 +5,7 @@ import {
 	FileText,
 	FolderTreeIcon,
 	History,
+	Languages,
 	Link,
 	LogOut,
 	type LucideIcon,
@@ -20,6 +21,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "#/design-system/popover
 import { toastManager } from "#/design-system/toast";
 import { useIsMobile } from "#/design-system/use-media-query";
 import { useIdeStore } from "#/ide/store";
+import { getLocale, setLocale } from "#/paraglide/runtime";
 import { useTheme } from "#/theme/theme-provider";
 
 type Item = {
@@ -149,6 +151,17 @@ export function CommandMenu() {
 					type: "success",
 				});
 				setOpen(false);
+			},
+		},
+		{
+			id: "language",
+			Icon: Languages,
+			label: "Toggle Language",
+			shortcut: "l",
+			action: () => {
+				const nextLocale = getLocale() === "en" ? "fr" : "en";
+				setOpen(false);
+				setLocale(nextLocale);
 			},
 		},
 		{

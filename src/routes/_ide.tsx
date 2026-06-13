@@ -1,15 +1,17 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { contactInfo } from "#/contact/contact-info";
 import { AppHeader } from "#/ide/app-header";
 import { CommandMenu } from "#/ide/command-menu";
 import { CommandHistoryDialog, CommandModeDialog } from "#/ide/command-mode-dialog";
+import { ContactsDialog } from "#/ide/contacts-dialog";
 import { FindFileDialog } from "#/ide/find-file-dialog";
 import { FindTextDialog } from "#/ide/find-text-dialog";
 import { HelpDialog } from "#/ide/help-dialog";
 import { NeoTree } from "#/ide/neo-tree";
 import { RecentFilesDialog } from "#/ide/recent-files-dialog";
 import { parseIdeSearch } from "#/ide/search";
+import { ShimmerLabel } from "#/ide/shimmer-label";
 import { StatusBar } from "#/ide/status-bar";
 import { useIdeStore } from "#/ide/store";
 import { SettingsDialog } from "#/settings-dialog";
@@ -34,7 +36,10 @@ function IdeShell() {
 	const recentFilesOpen = useIdeStore((s) => s.recentFilesOpen);
 	const helpOpen = useIdeStore((s) => s.helpOpen);
 	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
+	const contactsOpen = useIdeStore((s) => s.contactsOpen);
+	const setContactsOpen = useIdeStore((s) => s.setContactsOpen);
 	const toggleCommandMenu = useIdeStore((s) => s.toggleCommandMenu);
+
 	const dialogHotkeysBlocked =
 		settingsOpen ||
 		helpOpen ||
@@ -42,7 +47,8 @@ function IdeShell() {
 		findTextOpen ||
 		commandModeOpen ||
 		commandHistoryOpen ||
-		recentFilesOpen;
+		recentFilesOpen ||
+		contactsOpen;
 
 	useHotkeys(
 		[
@@ -53,9 +59,21 @@ function IdeShell() {
 				},
 			},
 			{
-				hotkey: "H",
+				hotkey: { key: "?", shift: true },
 				callback: () => {
 					if (!commandMenuOpen) setHelpOpen(true);
+				},
+			},
+			{
+				hotkey: { key: ":", shift: true },
+				callback: () => {
+					if (commandMenuOpen) {
+						setCommandHistoryOpen(true);
+						return;
+					}
+
+					setCommandModeOpen(true);
+					setEditorMode("command");
 				},
 			},
 		],
@@ -64,37 +82,6 @@ function IdeShell() {
 			ignoreInputs: true,
 		},
 	);
-
-	useEffect(() => {
-		function handleKeyDown(event: KeyboardEvent) {
-			const target = event.target;
-			const isEditable =
-				target instanceof HTMLElement &&
-				(target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
-
-			if (event.key !== ":" || isEditable || dialogHotkeysBlocked) {
-				return;
-			}
-
-			event.preventDefault();
-			if (commandMenuOpen) {
-				setCommandHistoryOpen(true);
-				return;
-			}
-
-			setCommandModeOpen(true);
-			setEditorMode("command");
-		}
-
-		window.addEventListener("keydown", handleKeyDown);
-		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [
-		commandMenuOpen,
-		dialogHotkeysBlocked,
-		setCommandHistoryOpen,
-		setCommandModeOpen,
-		setEditorMode,
-	]);
 
 	return (
 		<div className="flex h-dvh flex-col">
@@ -105,6 +92,16 @@ function IdeShell() {
 					<Outlet />
 				</main>
 			</div>
+			<div className="pointer-events-none fixed right-3 bottom-[calc(var(--spacing-status-bar)+0.25rem)]">
+				<a
+					href={contactInfo.github.url}
+					target="_blank"
+					rel="noreferrer"
+					className="pointer-events-auto text-tiny text-muted-foreground/70 transition hover:text-foreground"
+				>
+					<ShimmerLabel>[github]</ShimmerLabel>
+				</a>
+			</div>
 			<StatusBar currentFile={file} />
 			<CommandMenu />
 			<CommandModeDialog />
@@ -114,6 +111,7 @@ function IdeShell() {
 			<RecentFilesDialog />
 			<SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
 			<HelpDialog open={helpOpen} onOpenChange={setHelpOpen} />
+			<ContactsDialog open={contactsOpen} onOpenChange={setContactsOpen} />
 		</div>
 	);
 }

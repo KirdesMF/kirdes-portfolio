@@ -10,25 +10,25 @@ describe("HelpDialog", () => {
 		installMatchMedia(false);
 		render(<HelpDialog open onOpenChange={vi.fn()} />);
 
-		expect(screen.getByText("Keyboard Shortcuts")).toBeTruthy();
-		expect(screen.getByText("Help")).toBeTruthy();
-		expect(screen.getByText("Command menu")).toBeTruthy();
+		expect(screen.getByText(":help keymaps")).toBeTruthy();
+		expect(screen.getByText("Open help")).toBeTruthy();
+		expect(screen.getByText("Open leader menu")).toBeTruthy();
 		expect(screen.getByText("Find file")).toBeTruthy();
-		expect(screen.getByText("Global")).toBeTruthy();
-		expect(screen.getByText("Navigation")).toBeTruthy();
-		expect(screen.getByText("Editor")).toBeTruthy();
+		expect(screen.getByText("Normal mode")).toBeTruthy();
+		expect(screen.getByText("Leader mappings")).toBeTruthy();
+		expect(screen.getByText("Buffer")).toBeTruthy();
 	});
 
 	it("switches to mobile drawer on resize", () => {
 		const media = installMatchMedia(false);
 		render(<HelpDialog open onOpenChange={vi.fn()} />);
 
-		expect(screen.getByText("Help")).toBeTruthy();
+		expect(screen.getByText("Open help")).toBeTruthy();
 		expect(document.querySelector('[data-slot="drawer-popup"]')).toBeNull();
 
 		media.setMatches(true);
 
-		expect(screen.getByText("Help")).toBeTruthy();
+		expect(screen.getByText("Open help")).toBeTruthy();
 		expect(document.querySelector('[data-slot="drawer-popup"]')).toBeTruthy();
 	});
 

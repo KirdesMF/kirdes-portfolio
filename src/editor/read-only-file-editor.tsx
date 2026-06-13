@@ -3,10 +3,10 @@ import { useNavigate } from "@tanstack/react-router";
 import {
 	Braces,
 	Briefcase,
-	DoorOpenIcon,
 	FileText,
 	FileType,
 	GitBranch,
+	HelpCircle,
 	History,
 	type LucideIcon,
 	Mail,
@@ -15,15 +15,12 @@ import {
 	RotateCw,
 	Search,
 	Settings,
-	Share2,
 	X,
 	Zap,
 } from "lucide-react";
 import { type CSSProperties, type ReactNode, useEffect, useId, useRef, useState } from "react";
-import { copyToClipboard } from "#/design-system/clipboard";
 import { cn } from "#/design-system/cn";
 import { Separator } from "#/design-system/separator";
-import { toastManager } from "#/design-system/toast";
 import { useScrambleRef } from "#/design-system/use-scramble-ref";
 import { AsciiBanner } from "#/editor/ascii-banner/ascii-banner";
 import { getDisplayFileName } from "#/editor/editor-files";
@@ -73,11 +70,10 @@ const emptyEditorCommands: Array<{
 	{ id: "projects", Icon: Briefcase, label: "Projects", shortcut: "p" },
 	{ id: "find-text", Icon: FileText, label: "Find Text", shortcut: "g" },
 	{ id: "recent-files", Icon: History, label: "Recent Files", shortcut: "r" },
-	{ id: "config", Icon: Settings, label: "Config", shortcut: "c" },
-	{ id: "email", Icon: Mail, label: "Email", shortcut: "m" },
-	{ id: "social-medias", Icon: Share2, label: "Social Medias", shortcut: "s" },
+	{ id: "contacts", Icon: Mail, label: "Contacts", shortcut: "c" },
+	{ id: "settings", Icon: Settings, label: "Settings", shortcut: "s" },
 	{ id: "reload", Icon: RotateCw, label: "Reload", shortcut: "R" },
-	{ id: "quit", Icon: DoorOpenIcon, label: "Quit", shortcut: "q" },
+	{ id: "help", Icon: HelpCircle, label: "Help", shortcut: "?" },
 ];
 
 function getFileIcon(fileName: string): LucideIcon | null {
@@ -307,9 +303,18 @@ export function EmptyEditor() {
 	const setRecentFilesOpen = useIdeStore((s) => s.setRecentFilesOpen);
 	const recentFilesOpen = useIdeStore((s) => s.recentFilesOpen);
 	const helpOpen = useIdeStore((s) => s.helpOpen);
+	const contactsOpen = useIdeStore((s) => s.contactsOpen);
+	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
+	const setContactsOpen = useIdeStore((s) => s.setContactsOpen);
 	const emptyEditorHotkeysBlocked =
-		commandMenuOpen || helpOpen || settingsOpen || findFileOpen || findTextOpen || recentFilesOpen;
+		commandMenuOpen ||
+		helpOpen ||
+		settingsOpen ||
+		contactsOpen ||
+		findFileOpen ||
+		findTextOpen ||
+		recentFilesOpen;
 	const navigate = useNavigate();
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const rootRef = useScrambleRef<HTMLDivElement>({
@@ -331,20 +336,17 @@ export function EmptyEditor() {
 			case "find-text":
 				setFindTextOpen(true);
 				break;
-			case "config":
+			case "settings":
 				setSettingsOpen(true);
 				break;
-			case "email":
-				void copyToClipboard("cedric@kirdes.dev").then((copied) => {
-					toastManager.add({
-						description: copied ? "cedric@kirdes.dev" : "Clipboard permission denied.",
-						title: copied ? "Email copied" : "Copy failed",
-						type: copied ? "success" : "error",
-					});
-				});
+			case "contacts":
+				setContactsOpen(true);
 				break;
 			case "recent-files":
 				setRecentFilesOpen(true);
+				break;
+			case "help":
+				setHelpOpen(true);
 				break;
 			case "reload":
 				void navigate({ to: "/" });
@@ -368,15 +370,15 @@ export function EmptyEditor() {
 			},
 			{
 				hotkey: "C",
-				callback: () => runEmptyEditorCommand("config"),
+				callback: () => runEmptyEditorCommand("contacts"),
+			},
+			{
+				hotkey: "S",
+				callback: () => runEmptyEditorCommand("settings"),
 			},
 			{
 				hotkey: "G",
 				callback: () => runEmptyEditorCommand("find-text"),
-			},
-			{
-				hotkey: "M",
-				callback: () => runEmptyEditorCommand("email"),
 			},
 			{
 				hotkey: "R",

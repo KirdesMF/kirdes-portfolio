@@ -23,6 +23,9 @@ type IdeStore = {
 	helpOpen: boolean;
 	setHelpOpen: (open: boolean) => void;
 
+	contactsOpen: boolean;
+	setContactsOpen: (open: boolean) => void;
+
 	findFileOpen: boolean;
 	setFindFileOpen: (open: boolean) => void;
 
@@ -71,6 +74,9 @@ export const useIdeStore = create<IdeStore>((set) => ({
 
 	helpOpen: false,
 	setHelpOpen: (open) => set({ helpOpen: open }),
+
+	contactsOpen: false,
+	setContactsOpen: (open) => set({ contactsOpen: open }),
 
 	findFileOpen: false,
 	setFindFileOpen: (open) => set({ findFileOpen: open }),

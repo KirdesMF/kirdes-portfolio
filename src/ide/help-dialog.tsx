@@ -16,33 +16,33 @@ type HelpDialogProps = {
 
 const keybindingGroups = [
 	{
-		label: "Global",
+		label: "Normal mode",
 		rows: [
-			{ keys: "h", desc: "Help" },
-			{ keys: "Space", desc: "Command menu" },
-			{ keys: ":", desc: "Command mode" },
+			{ keys: "?", desc: "Open help" },
+			{ keys: "Space", desc: "Open leader menu" },
+			{ keys: ":", desc: "Enter command-line mode" },
 			{ keys: "f", desc: "Find file" },
 			{ keys: "g", desc: "Find text" },
 			{ keys: "r", desc: "Recent files" },
 		],
 	},
 	{
-		label: "Navigation",
+		label: "Leader mappings",
 		rows: [
-			{ keys: "Space p", desc: "Projects" },
-			{ keys: "Space o", desc: "Open Preview" },
-			{ keys: "Space y", desc: "Copy Link" },
-			{ keys: "Space T", desc: "Theme Mode" },
-			{ keys: "c", desc: "Settings" },
-			{ keys: "m", desc: "Email" },
-			{ keys: "s", desc: "Social medias" },
+			{ keys: "Space p", desc: "Open projects" },
+			{ keys: "Space o", desc: "Open preview" },
+			{ keys: "Space y", desc: "Yank link" },
+			{ keys: "Space T", desc: "Cycle theme mode" },
+			{ keys: "Space l", desc: "Toggle language" },
+			{ keys: "c", desc: "Open contacts" },
+			{ keys: "s", desc: "Open settings" },
 		],
 	},
 	{
-		label: "Editor",
+		label: "Buffer",
 		rows: [
-			{ keys: "Space q", desc: "Close file / quit" },
-			{ keys: "Shift+R", desc: "Reload" },
+			{ keys: "Space q", desc: "Close buffer / quit" },
+			{ keys: "Shift+R", desc: "Reload workspace" },
 		],
 	},
 ];
@@ -78,13 +78,13 @@ function HelpDialogInner(props: {
 	return (
 		<div className="relative flex min-h-0 flex-1 flex-col rounded border-2 border-border bg-popover p-4 text-popover-foreground">
 			<Title className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-2 border-border z-raised">
-				Keyboard Shortcuts
+				:help keymaps
 			</Title>
 
 			<div className="min-h-0 flex-1 grid gap-5 overflow-y-auto touch-auto py-3">
 				<Description className="border-b border-border pb-3">
-					Press the keys below to trigger actions. Close this dialog with{" "}
-					<Kbd className="text-xs">Esc</Kbd>.
+					Normal-mode mappings for this portfolio. Use <Kbd className="text-xs">Space</Kbd> as the
+					leader key and <Kbd className="text-xs">Esc</Kbd> to close floating windows.
 				</Description>
 
 				{keybindingGroups.map((group) => (
@@ -108,7 +108,7 @@ function HelpDialogInner(props: {
 			</div>
 
 			<div className="border-t border-border pt-3 text-center text-tiny text-muted-foreground">
-				<Kbd className="text-tiny">Esc</Kbd> close
+				<Kbd className="text-tiny">Esc</Kbd> close · <Kbd className="text-tiny">?</Kbd> reopen help
 			</div>
 		</div>
 	);
