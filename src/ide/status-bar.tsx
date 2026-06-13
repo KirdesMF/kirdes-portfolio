@@ -13,6 +13,7 @@ type StatusItem = {
 	id: string;
 	variant: StatusVariant;
 	content: ReactNode;
+	className?: string;
 };
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
@@ -68,6 +69,7 @@ function StatusGroup(props: {
 					key={item.id}
 					side={props.side}
 					stack={props.side === "left" ? props.items.length - index : index + 1}
+					className={item.className}
 				/>
 			))}
 		</div>
@@ -81,6 +83,7 @@ function StatusSegment(props: {
 	item: StatusItem;
 	side: StatusSide;
 	stack: number;
+	className?: string;
 }) {
 	const effectiveVariant =
 		props.editorMode === "insert" || props.editorMode === "command"
@@ -97,6 +100,7 @@ function StatusSegment(props: {
 				variant.foreground,
 				props.side === "left" && !props.isFirst && "-ms-2.5",
 				props.side === "right" && !props.isLast && "-me-2.5",
+				props.className,
 			)}
 			style={{ "--status-segment-stack": props.stack } as CSSProperties}
 		>
@@ -165,6 +169,7 @@ export function StatusBar({ currentFile }: { currentFile?: string }) {
 						id: "file",
 						variant: "primary" as const,
 						content: <span className="truncate">{currentFile}</span>,
+						className: "hidden sm:flex",
 					} as StatusItem,
 				]
 			: []),
@@ -179,6 +184,7 @@ export function StatusBar({ currentFile }: { currentFile?: string }) {
 					{cursorProgress} {cursorLine}:{cursorColumn}
 				</span>
 			),
+			className: "hidden sm:flex",
 		},
 		{
 			id: "time",
