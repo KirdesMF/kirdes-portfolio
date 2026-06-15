@@ -8,7 +8,7 @@
 /** Extract folder name from a terminal route, e.g. "/terminal/about" → "about". */
 export function getTerminalFolder(route: string | null | undefined): string | null {
 	if (!route || route === "/terminal") return null;
-	if (route === "/terminal/home") return "~";
+	if (route === "/terminal/start") return "~";
 
 	const parts = route.split("/");
 	return parts[parts.length - 1] ?? null;
@@ -22,12 +22,12 @@ type FormatOptions = {
 /**
  * Format a terminal route as a cwd string, e.g. "/terminal/about" → "~/about".
  *
- * Works for nested routes too: "/terminal/work/intent" → "~/work/intent".
+ * Works for nested routes too: "/terminal/contact/social" → "~/contact/social".
  *
  * ```ts
  * formatTerminalCwd("/terminal")        // "~"
  * formatTerminalCwd("/terminal/about")  // "~/about"
- * formatTerminalCwd("/terminal/work/intent")  // "~/work/intent"
+ * formatTerminalCwd("/terminal/contact/social")  // "~/contact/social"
  * formatTerminalCwd("/terminal", { trailingSlash: true }) // "~/"
  * ```
  */
@@ -40,7 +40,7 @@ export function formatTerminalCwd(
 	}
 
 	// Replace /terminal/ prefix to preserve full subpath (including nested routes)
-	const subpath = route === "/terminal/home" ? "home" : route.replace("/terminal/", "");
+	const subpath = route.replace("/terminal/", "");
 	const suffix = options?.trailingSlash ? "/" : "";
 
 	return `~/${subpath}${suffix}`;

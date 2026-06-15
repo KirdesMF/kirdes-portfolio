@@ -329,8 +329,8 @@ export function EmptyEditor() {
 				break;
 			case "projects":
 				void navigate({
-					to: "/editor",
-					search: { file: "work/projects/index.md", neotree: "open" as const },
+					to: "/projects",
+					search: { neotree: "open" as const },
 				});
 				break;
 			case "find-text":

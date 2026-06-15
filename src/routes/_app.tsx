@@ -1,5 +1,5 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
 import { contactInfo } from "#/contact/contact-info";
 import { AppHeader } from "#/ide/app-header";
 import { CommandMenu } from "#/ide/command-menu";
@@ -10,19 +10,21 @@ import { FindTextDialog } from "#/ide/find-text-dialog";
 import { HelpDialog } from "#/ide/help-dialog";
 import { NeoTree } from "#/ide/neo-tree";
 import { RecentFilesDialog } from "#/ide/recent-files-dialog";
+import { findEditorFileByRoute } from "#/editor/editor-files";
 import { parseIdeSearch } from "#/ide/search";
 import { ShimmerLabel } from "#/ide/shimmer-label";
 import { StatusBar } from "#/ide/status-bar";
 import { useIdeStore } from "#/ide/store";
 import { SettingsDialog } from "#/settings-dialog";
 
-export const Route = createFileRoute("/_ide")({
+export const Route = createFileRoute("/_app")({
 	validateSearch: parseIdeSearch,
 	component: IdeShell,
 });
 
 function IdeShell() {
-	const { file } = Route.useSearch();
+	const pathname = useRouterState({ select: (s) => s.location.pathname });
+	const currentFile = findEditorFileByRoute(pathname)?.id;
 	const settingsOpen = useIdeStore((s) => s.settingsOpen);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
 	const commandMenuOpen = useIdeStore((s) => s.commandMenuOpen);
@@ -102,7 +104,7 @@ function IdeShell() {
 					<ShimmerLabel>[github]</ShimmerLabel>
 				</a>
 			</div>
-			<StatusBar currentFile={file} />
+			<StatusBar currentFile={currentFile} />
 			<CommandMenu />
 			<CommandModeDialog />
 			<CommandHistoryDialog />

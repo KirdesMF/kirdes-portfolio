@@ -8,8 +8,8 @@ describe("editor files", () => {
 	});
 
 	it("resolves absolute file paths", () => {
-		expect(resolveFile("/work/experience.json")?.id).toBe("work/experience.json");
-		expect(resolveFile("/work")?.id).toBeUndefined();
+		expect(resolveFile("/projects/index.md")?.id).toBe("projects/index.md");
+		expect(resolveFile("/projects")?.id).toBeUndefined();
 	});
 
 	it("prefers current folder before root and global files", () => {
@@ -24,25 +24,25 @@ describe("editor files", () => {
 		expect(result.folders.map((folder) => folder.folder)).toEqual([
 			"~",
 			"about",
-			"work",
 			"contact",
+			"projects",
 		]);
 		expect(result.files.map((file) => file.id)).toContain("~/README.md");
 		expect(result.files.map((file) => file.id)).not.toContain("about/README.md");
 	});
 
 	it("lists local files plus root fallback files in sections", () => {
-		const result = lsFiles("/terminal/work");
+		const result = lsFiles("/terminal/contact");
 		const ids = result.files.map((file) => file.id);
 
-		expect(ids).toContain("work/experience.json");
+		expect(ids).toContain("contact/links.json");
 		expect(ids).toContain("~/infos.txt");
 		expect(ids).toContain("~/README.md");
 	});
 
 	it("returns unique visible file names", () => {
 		expect(
-			getVisibleFileNames("/terminal/work").filter((name) => name === "README.md"),
+			getVisibleFileNames("/terminal/contact").filter((name) => name === "README.md"),
 		).toHaveLength(1);
 	});
 

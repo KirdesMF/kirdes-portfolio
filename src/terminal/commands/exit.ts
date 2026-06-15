@@ -2,14 +2,14 @@ import { m } from "#/paraglide/messages";
 import type { CommandHandler } from "./command.types";
 
 /**
- * exit — navigate to editor (clear file).
+ * exit — navigate home.
  * exit editor — same.
  * exit all — same.
- * exit <file> — navigate to editor.
+ * exit <file> — navigate home.
  */
 export const handleExit: CommandHandler = (ctx) => {
 	if (ctx.normalized === "exit editor" || ctx.normalized === "exit all") {
-		ctx.navigate("/editor");
+		ctx.navigate("/start");
 		return true;
 	}
 
@@ -22,13 +22,13 @@ export const handleExit: CommandHandler = (ctx) => {
 			return true;
 		}
 
-		ctx.navigate("/editor");
+		ctx.navigate("/start");
 		return true;
 	}
 
 	// bare "exit"
 	if (ctx.normalized === "exit") {
-		ctx.navigate("/editor");
+		ctx.navigate("/start");
 		return true;
 	}
 

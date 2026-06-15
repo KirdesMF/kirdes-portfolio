@@ -89,34 +89,28 @@ describe("classifyLinkUrl", () => {
 
 describe("resolveMarkdownFileLink", () => {
 	it("resolves relative links against the current file folder", () => {
-		expect(resolveMarkdownFileLink("./atlas-notes.md", "work/projects/index.md")?.id).toBe(
-			"work/projects/atlas-notes.md",
+		expect(resolveMarkdownFileLink("./atlas-notes.md", "projects/index.md")?.id).toBe(
+			"projects/atlas-notes.md",
 		);
 	});
 
 	it("resolves relative links with hash fragments", () => {
-		expect(resolveMarkdownFileLink("./atlas-notes.md#intro", "work/projects/index.md")?.id).toBe(
-			"work/projects/atlas-notes.md",
+		expect(resolveMarkdownFileLink("./atlas-notes.md#intro", "projects/index.md")?.id).toBe(
+			"projects/atlas-notes.md",
 		);
 	});
 
 	it("resolves relative links with search params", () => {
-		expect(resolveMarkdownFileLink("./atlas-notes.md?view=raw", "work/projects/index.md")?.id).toBe(
-			"work/projects/atlas-notes.md",
-		);
-	});
-
-	it("resolves parent directory links", () => {
-		expect(resolveMarkdownFileLink("../freelance.md", "work/projects/index.md")?.id).toBe(
-			"work/freelance.md",
+		expect(resolveMarkdownFileLink("./atlas-notes.md?view=raw", "projects/index.md")?.id).toBe(
+			"projects/atlas-notes.md",
 		);
 	});
 
 	it("does not resolve external links as editor files", () => {
-		expect(resolveMarkdownFileLink("https://example.com", "work/projects/index.md")).toBeNull();
+		expect(resolveMarkdownFileLink("https://example.com", "projects/index.md")).toBeNull();
 	});
 
 	it("does not resolve unsafe links as editor files", () => {
-		expect(resolveMarkdownFileLink("javascript:alert(1)", "work/projects/index.md")).toBeNull();
+		expect(resolveMarkdownFileLink("javascript:alert(1)", "projects/index.md")).toBeNull();
 	});
 });

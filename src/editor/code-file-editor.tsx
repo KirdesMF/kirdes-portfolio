@@ -13,6 +13,7 @@ import {
 } from "react";
 import { cn } from "#/design-system/cn";
 import { useIdeStore } from "#/ide/store";
+import type { FileTokenLine } from "./editor-file-tokens";
 import {
 	classifyLinkUrl,
 	findMarkdownLinkRanges,
@@ -20,13 +21,6 @@ import {
 	type MarkdownLinkRange,
 	resolveMarkdownFileLink,
 } from "./markdown-links";
-
-export type FileTokenLine = Array<{
-	content: string;
-	offset: number;
-	lightColor?: string;
-	darkColor?: string;
-}>;
 
 type CodeFileEditorProps = {
 	lines: FileTokenLine[];
@@ -60,6 +54,11 @@ function getNormalModeMaxColumn(line: FileTokenLine | undefined): number {
 
 function getLineText(line: FileTokenLine): string {
 	return line.map((t) => t.content).join("");
+}
+
+function getLanguageClass(language: string | undefined): string | undefined {
+	if (!language) return undefined;
+	return `editor-code-${language.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 }
 
 const TAB_SIZE = 2;
@@ -268,7 +267,8 @@ export function CodeFileEditor({ lines, fileName, language }: CodeFileEditorProp
 	const lineRefs = useRef<(HTMLDivElement | null)[]>([]);
 	const lastKeyRef = useRef<string | null>(null);
 	const navigate = useNavigate();
-	const isMarkdown = language === "markdown";
+	const isMarkdown = language?.toLowerCase() === "markdown";
+	const languageClass = getLanguageClass(language);
 
 	// Reset cursor and focus editor when file changes
 	// biome-ignore lint/correctness/useExhaustiveDependencies: fileName is intentionally a dependency
@@ -441,8 +441,8 @@ export function CodeFileEditor({ lines, fileName, language }: CodeFileEditorProp
 			const resolved = resolveMarkdownFileLink(url, fileName);
 			if (resolved) {
 				navigate({
-					to: "/editor",
-					search: (prev) => ({ ...prev, file: resolved.id, neotree: "open" }),
+					to: resolved.route,
+					search: (prev) => ({ ...prev, neotree: "open" }),
 				});
 			}
 		},
@@ -454,9 +454,9 @@ export function CodeFileEditor({ lines, fileName, language }: CodeFileEditorProp
 			const route = getLinkPath(url);
 			if (
 				route === "/about" ||
-				route === "/work" ||
 				route === "/contact" ||
-				route === "/editor" ||
+				route === "/start" ||
+				route === "/projects" ||
 				route === "/terminal"
 			) {
 				navigate({ to: route });
@@ -475,7 +475,11 @@ export function CodeFileEditor({ lines, fileName, language }: CodeFileEditorProp
 			aria-label="Code editor"
 			aria-multiline="true"
 			aria-readonly="true"
-			className="editor-code min-h-0 flex-1 overflow-auto py-2 scrollbar-gutter-both focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary"
+			className={cn(
+				"editor-code min-h-0 flex-1 overflow-auto py-2 scrollbar-gutter-both focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary",
+				languageClass,
+			)}
+			data-language={language}
 			ref={editorRef}
 			role="textbox"
 			tabIndex={0}

@@ -15,9 +15,9 @@ import { terminalCommands } from "#/terminal/terminal-commands";
 import { terminalRoutes } from "#/terminal/terminal-routes";
 
 const routeDescriptionMessages: Record<string, () => string> = {
-	"/home": () => m.route_home(),
+	"/start": () => m.route_home(),
 	"/about": () => m.route_about(),
-	"/work": () => m.route_work(),
+	"/projects": () => "selected project notes",
 	"/contact": () => m.route_contact(),
 };
 

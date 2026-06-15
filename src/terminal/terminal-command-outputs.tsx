@@ -191,8 +191,7 @@ export function TreeAllOutput(): ReactNode {
 									<span className="text-muted-foreground/50">{`  ${branch}`}</span>
 									<Link
 										className="underline-offset-2 hover:text-primary hover:underline"
-										search={{ file: file.id }}
-										to="/editor"
+										to={file.route}
 									>
 										{file.name}
 									</Link>
@@ -213,8 +212,7 @@ export function TreeAllOutput(): ReactNode {
 								<span className="text-muted-foreground/50">{`    ${branch}`}</span>
 								<Link
 									className="underline-offset-2 hover:text-primary hover:underline"
-									search={{ file: file.id }}
-									to="/editor"
+									to={file.route}
 								>
 									{file.name}
 								</Link>
@@ -251,8 +249,7 @@ export function TreeOutput(): ReactNode {
 									<span className="text-muted-foreground/50">{`  ${branch}`}</span>
 									<Link
 										className="underline-offset-2 hover:text-primary hover:underline"
-										search={{ file: file.id }}
-										to="/editor"
+										to={file.route}
 									>
 										{file.name}
 									</Link>

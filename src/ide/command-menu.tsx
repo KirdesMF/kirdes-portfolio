@@ -32,12 +32,11 @@ type Item = {
 	action: () => void;
 };
 
-function getPreviewRoute(fileId?: string): "/about" | "/work" | "/contact" | "/editor" {
-	const folder = fileId?.split("/")[0];
-	if (folder === "about") return "/about";
-	if (folder === "work") return "/work";
-	if (folder === "contact") return "/contact";
-	return "/editor";
+function getPreviewRoute(pathname: string): "/about" | "/contact" | "/start" | "/projects" {
+	if (pathname.startsWith("/about")) return "/about";
+	if (pathname.startsWith("/contact")) return "/contact";
+	if (pathname.startsWith("/projects")) return "/projects";
+	return "/start";
 }
 
 export function CommandMenu() {
@@ -47,9 +46,9 @@ export function CommandMenu() {
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
 	const setRecentFilesOpen = useIdeStore((s) => s.setRecentFilesOpen);
 	const navigate = useNavigate();
+	const pathname = useRouterState({ select: (s) => s.location.pathname });
 	const search = useRouterState({ select: (s) => s.location.search }) as {
-		file?: string;
-		neotree?: "open" | "closed";
+		neotree?: "open";
 	};
 	const { appearance, setAppearance } = useTheme();
 
@@ -61,10 +60,10 @@ export function CommandMenu() {
 			shortcut: "e",
 			action: () => {
 				void navigate({
-					to: "/editor",
+					to: pathname,
 					search: (prev) => ({
 						...prev,
-						neotree: prev.neotree === "open" ? "closed" : "open",
+						neotree: prev.neotree === "open" ? undefined : "open",
 					}),
 				});
 				setOpen(false);
@@ -77,8 +76,8 @@ export function CommandMenu() {
 			shortcut: "p",
 			action: () => {
 				void navigate({
-					to: "/editor",
-					search: { file: "work/projects/index.md", neotree: "open" as const },
+					to: "/projects",
+					search: { neotree: "open" as const },
 				});
 				setOpen(false);
 			},
@@ -89,7 +88,7 @@ export function CommandMenu() {
 			label: "Editor",
 			shortcut: "/",
 			action: () => {
-				void navigate({ to: "/editor", search: { neotree: "open" as const } });
+				void navigate({ to: "/start", search: { neotree: "open" as const } });
 				setOpen(false);
 			},
 		},
@@ -109,7 +108,7 @@ export function CommandMenu() {
 			label: "Open Preview",
 			shortcut: "o",
 			action: () => {
-				void navigate({ to: getPreviewRoute(search.file) });
+				void navigate({ to: getPreviewRoute(pathname) });
 				setOpen(false);
 			},
 		},
@@ -190,10 +189,10 @@ export function CommandMenu() {
 			label: "Quit",
 			shortcut: "q",
 			action: () => {
-				if (search.file) {
+				if (pathname !== "/start") {
 					void navigate({
-						to: "/editor",
-						search: { neotree: search.neotree ?? ("closed" as const) },
+						to: "/start",
+						search: { neotree: search.neotree },
 					});
 				} else {
 					void navigate({ to: "/" });

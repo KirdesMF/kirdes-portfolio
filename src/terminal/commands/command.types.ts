@@ -17,7 +17,7 @@ export type CommandContext = {
 	/** Return to the boot splash route. */
 	reload: () => void;
 
-	/** Current route path (e.g. "/editor", "/terminal", "/about") */
+	/** Current route path (e.g. "/start", "/terminal", "/about") */
 	currentRoute: string;
 
 	/** Resolve a filename to a file entry (context-aware) */

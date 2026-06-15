@@ -48,7 +48,7 @@ function buildFlatTree() {
 		["config.ts", "profile.ts"],
 		["README.md", "README.md"],
 		["TODO.md", "TODO.md"],
-		["AGENTS.md", "infos.txt"],
+		["AGENTS.md", "AGENTS.md"],
 	] as const) {
 		const entry = findFile("~", name);
 		if (entry) fileEntries.push({ displayName, entry });
@@ -68,19 +68,8 @@ function buildFlatTree() {
 	// ── projects ──
 	const projectsFileEntries: Array<{ displayName: string; entry: EditorFileEntry }> = [];
 	for (const name of ["index.md", "atlas-notes.md", "signal-forge.md", "orbit-ui.md"] as const) {
-		const entry = findFile("work/projects", name);
+		const entry = findFile("projects", name);
 		if (entry) projectsFileEntries.push({ displayName: name, entry });
-	}
-
-	// ── work ──
-	const workFileEntries: Array<{ displayName: string; entry: EditorFileEntry }> = [];
-	for (const [displayName, name] of [
-		["route.tsx", "route.tsx"],
-		["experience.json", "experience.json"],
-		["freelance.md", "freelance.md"],
-	] as const) {
-		const entry = findFile("work", name);
-		if (entry) workFileEntries.push({ displayName, entry });
 	}
 
 	// ── contact ──
@@ -104,8 +93,8 @@ function buildFlatTree() {
 	}
 
 	function addFile(entry: EditorFileEntry, displayName: string): string {
-		// Use entry.id as the item ID so the "auto-expand to file" logic works directly
-		const id = entry.id;
+		// Use entry.route as the item ID so the active route maps directly to the tree item.
+		const id = entry.route;
 		treeItems[id] = { kind: "file", entry, displayName };
 		return id;
 	}
@@ -118,16 +107,12 @@ function buildFlatTree() {
 	const aboutChildIds = aboutFileEntries.map((f) => addFile(f.entry, f.displayName));
 	const aboutId = addFolder("about", aboutChildIds);
 
-	// Work folder (includes projects subfolder)
-	const workFileIds = workFileEntries.map((f) => addFile(f.entry, f.displayName));
-	const workId = addFolder("work", [...workFileIds, projectsId]);
-
 	// Contact folder
 	const contactChildIds = contactFileEntries.map((f) => addFile(f.entry, f.displayName));
 	const contactId = addFolder("contact", contactChildIds);
 
 	// Src folder
-	const srcId = addFolder("src", [aboutId, workId, contactId]);
+	const srcId = addFolder("src", [aboutId, projectsId, contactId]);
 
 	// Root-level files
 	const fileIds = fileEntries.map((f) => addFile(f.entry, f.displayName));
@@ -207,11 +192,10 @@ export function NeoTree() {
 	const requestEditorFocus = useIdeStore((s) => s.requestEditorFocus);
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
 	const search = useRouterState({ select: (s) => s.location.search }) as {
-		file?: string;
-		neotree?: string;
+		neotree?: "open";
 	};
 
-	const currentFileId = search.file;
+	const currentRoute = pathname.replace(/\/$/, "") || "/start";
 	const isMobile = useIsMobile();
 
 	// Compute which folder IDs to expand initially, based on the currently
@@ -225,7 +209,7 @@ export function NeoTree() {
 		for (const childId of folderChildren[rootId] ?? []) {
 			if (treeItems[childId]?.kind === "folder") {
 				expanded.push(childId);
-				// Also expand immediate children of src (about, work, contact)
+				// Also expand immediate children of src (about, projects, contact)
 				for (const grandChildId of folderChildren[childId] ?? []) {
 					if (treeItems[grandChildId]?.kind === "folder") {
 						expanded.push(grandChildId);
@@ -234,9 +218,9 @@ export function NeoTree() {
 			}
 		}
 
-		// If a file is selected, expand its ancestor chain
-		if (currentFileId) {
-			const ancestors = getAncestorFolderIds(currentFileId);
+		// If a file route is selected, expand its ancestor chain
+		if (currentRoute) {
+			const ancestors = getAncestorFolderIds(currentRoute);
 			for (const ancestorId of ancestors) {
 				if (!expanded.includes(ancestorId)) {
 					expanded.push(ancestorId);
@@ -245,7 +229,7 @@ export function NeoTree() {
 		}
 
 		return expanded;
-	}, [currentFileId]);
+	}, [currentRoute]);
 
 	const tree = useTree<TreeItemData>({
 		rootItemId: rootChildIds[0] ?? "",
@@ -269,39 +253,36 @@ export function NeoTree() {
 			const data = item.getItemData();
 			if (data.kind === "file") {
 				void navigate({
-					to: "/editor",
-					search: {
-						file: data.entry.id,
-						neotree: isMobile ? "closed" : "open",
-					},
+					to: data.entry.route,
+					search: { neotree: isMobile ? undefined : "open" },
 				});
 				requestEditorFocus();
 			}
 		},
 	});
 
-	// Focus the tree when opened, preferring the selected file.
+	// Focus the tree when opened, preferring the selected file route.
 	useEffect(() => {
-		if (currentFileId) {
-			const ancestors = getAncestorFolderIds(currentFileId);
+		if (currentRoute) {
+			const ancestors = getAncestorFolderIds(currentRoute);
 			for (const ancestorId of ancestors) {
 				tree.getItemInstance(ancestorId)?.expand();
 			}
 		}
 
 		requestAnimationFrame(() => {
-			const itemId = currentFileId ?? rootChildIds[0];
+			const itemId = currentRoute ?? rootChildIds[0];
 			if (itemId) tree.getItemInstance(itemId)?.setFocused();
 			tree.updateDomFocus();
 		});
-	}, [currentFileId, tree]);
+	}, [currentRoute, tree]);
 
 	function closeNeoTree() {
 		void navigate({
 			to: pathname,
 			search: (prev) => ({
 				...prev,
-				neotree: "closed" as const,
+				neotree: undefined,
 			}),
 		});
 	}
@@ -330,7 +311,7 @@ export function NeoTree() {
 			>
 				{tree.getItems().map((item) => {
 					const itemData = item.getItemData();
-					const isActiveFile = itemData.kind === "file" && itemData.entry.id === currentFileId;
+					const isActiveFile = itemData.kind === "file" && itemData.entry.route === currentRoute;
 
 					return (
 						<button

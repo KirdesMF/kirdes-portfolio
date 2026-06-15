@@ -9,16 +9,31 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IdeRouteImport } from './routes/_ide'
+import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as IdeWorkRouteImport } from './routes/_ide.work'
-import { Route as IdeTerminalRouteImport } from './routes/_ide.terminal'
-import { Route as IdeEditorRouteImport } from './routes/_ide.editor'
-import { Route as IdeContactRouteImport } from './routes/_ide.contact'
-import { Route as IdeAboutRouteImport } from './routes/_ide.about'
+import { Route as AppTodoRouteImport } from './routes/_app/todo'
+import { Route as AppTerminalRouteImport } from './routes/_app/terminal'
+import { Route as AppStartRouteImport } from './routes/_app/start'
+import { Route as AppStackRouteImport } from './routes/_app/stack'
+import { Route as AppReadmeRouteImport } from './routes/_app/readme'
+import { Route as AppPackageRouteImport } from './routes/_app/package'
+import { Route as AppInfosRouteImport } from './routes/_app/infos'
+import { Route as AppEditorRouteImport } from './routes/_app/editor'
+import { Route as AppConfigRouteImport } from './routes/_app/config'
+import { Route as AppAgentsRouteImport } from './routes/_app/agents'
+import { Route as AppProjectsIndexRouteImport } from './routes/_app/projects/index'
+import { Route as AppContactIndexRouteImport } from './routes/_app/contact/index'
+import { Route as AppAboutIndexRouteImport } from './routes/_app/about/index'
+import { Route as AppProjectsSignalRouteImport } from './routes/_app/projects/signal'
+import { Route as AppProjectsOrbitRouteImport } from './routes/_app/projects/orbit'
+import { Route as AppProjectsAtlasRouteImport } from './routes/_app/projects/atlas'
+import { Route as AppContactSourceRouteImport } from './routes/_app/contact/source'
+import { Route as AppContactLinksRouteImport } from './routes/_app/contact/links'
+import { Route as AppAboutValuesRouteImport } from './routes/_app/about/values'
+import { Route as AppAboutSkillsRouteImport } from './routes/_app/about/skills'
 
-const IdeRoute = IdeRouteImport.update({
-  id: '/_ide',
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -26,86 +41,263 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IdeWorkRoute = IdeWorkRouteImport.update({
-  id: '/work',
-  path: '/work',
-  getParentRoute: () => IdeRoute,
+const AppTodoRoute = AppTodoRouteImport.update({
+  id: '/todo',
+  path: '/todo',
+  getParentRoute: () => AppRoute,
 } as any)
-const IdeTerminalRoute = IdeTerminalRouteImport.update({
+const AppTerminalRoute = AppTerminalRouteImport.update({
   id: '/terminal',
   path: '/terminal',
-  getParentRoute: () => IdeRoute,
+  getParentRoute: () => AppRoute,
 } as any)
-const IdeEditorRoute = IdeEditorRouteImport.update({
+const AppStartRoute = AppStartRouteImport.update({
+  id: '/start',
+  path: '/start',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppStackRoute = AppStackRouteImport.update({
+  id: '/stack',
+  path: '/stack',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReadmeRoute = AppReadmeRouteImport.update({
+  id: '/readme',
+  path: '/readme',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPackageRoute = AppPackageRouteImport.update({
+  id: '/package',
+  path: '/package',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInfosRoute = AppInfosRouteImport.update({
+  id: '/infos',
+  path: '/infos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEditorRoute = AppEditorRouteImport.update({
   id: '/editor',
   path: '/editor',
-  getParentRoute: () => IdeRoute,
+  getParentRoute: () => AppRoute,
 } as any)
-const IdeContactRoute = IdeContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => IdeRoute,
+const AppConfigRoute = AppConfigRouteImport.update({
+  id: '/config',
+  path: '/config',
+  getParentRoute: () => AppRoute,
 } as any)
-const IdeAboutRoute = IdeAboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => IdeRoute,
+const AppAgentsRoute = AppAgentsRouteImport.update({
+  id: '/agents',
+  path: '/agents',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProjectsIndexRoute = AppProjectsIndexRouteImport.update({
+  id: '/projects/',
+  path: '/projects/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppContactIndexRoute = AppContactIndexRouteImport.update({
+  id: '/contact/',
+  path: '/contact/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAboutIndexRoute = AppAboutIndexRouteImport.update({
+  id: '/about/',
+  path: '/about/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProjectsSignalRoute = AppProjectsSignalRouteImport.update({
+  id: '/projects/signal',
+  path: '/projects/signal',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProjectsOrbitRoute = AppProjectsOrbitRouteImport.update({
+  id: '/projects/orbit',
+  path: '/projects/orbit',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProjectsAtlasRoute = AppProjectsAtlasRouteImport.update({
+  id: '/projects/atlas',
+  path: '/projects/atlas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppContactSourceRoute = AppContactSourceRouteImport.update({
+  id: '/contact/source',
+  path: '/contact/source',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppContactLinksRoute = AppContactLinksRouteImport.update({
+  id: '/contact/links',
+  path: '/contact/links',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAboutValuesRoute = AppAboutValuesRouteImport.update({
+  id: '/about/values',
+  path: '/about/values',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAboutSkillsRoute = AppAboutSkillsRouteImport.update({
+  id: '/about/skills',
+  path: '/about/skills',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof IdeAboutRoute
-  '/contact': typeof IdeContactRoute
-  '/editor': typeof IdeEditorRoute
-  '/terminal': typeof IdeTerminalRoute
-  '/work': typeof IdeWorkRoute
+  '/agents': typeof AppAgentsRoute
+  '/config': typeof AppConfigRoute
+  '/editor': typeof AppEditorRoute
+  '/infos': typeof AppInfosRoute
+  '/package': typeof AppPackageRoute
+  '/readme': typeof AppReadmeRoute
+  '/stack': typeof AppStackRoute
+  '/start': typeof AppStartRoute
+  '/terminal': typeof AppTerminalRoute
+  '/todo': typeof AppTodoRoute
+  '/about/skills': typeof AppAboutSkillsRoute
+  '/about/values': typeof AppAboutValuesRoute
+  '/contact/links': typeof AppContactLinksRoute
+  '/contact/source': typeof AppContactSourceRoute
+  '/projects/atlas': typeof AppProjectsAtlasRoute
+  '/projects/orbit': typeof AppProjectsOrbitRoute
+  '/projects/signal': typeof AppProjectsSignalRoute
+  '/about/': typeof AppAboutIndexRoute
+  '/contact/': typeof AppContactIndexRoute
+  '/projects/': typeof AppProjectsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof IdeAboutRoute
-  '/contact': typeof IdeContactRoute
-  '/editor': typeof IdeEditorRoute
-  '/terminal': typeof IdeTerminalRoute
-  '/work': typeof IdeWorkRoute
+  '/agents': typeof AppAgentsRoute
+  '/config': typeof AppConfigRoute
+  '/editor': typeof AppEditorRoute
+  '/infos': typeof AppInfosRoute
+  '/package': typeof AppPackageRoute
+  '/readme': typeof AppReadmeRoute
+  '/stack': typeof AppStackRoute
+  '/start': typeof AppStartRoute
+  '/terminal': typeof AppTerminalRoute
+  '/todo': typeof AppTodoRoute
+  '/about/skills': typeof AppAboutSkillsRoute
+  '/about/values': typeof AppAboutValuesRoute
+  '/contact/links': typeof AppContactLinksRoute
+  '/contact/source': typeof AppContactSourceRoute
+  '/projects/atlas': typeof AppProjectsAtlasRoute
+  '/projects/orbit': typeof AppProjectsOrbitRoute
+  '/projects/signal': typeof AppProjectsSignalRoute
+  '/about': typeof AppAboutIndexRoute
+  '/contact': typeof AppContactIndexRoute
+  '/projects': typeof AppProjectsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_ide': typeof IdeRouteWithChildren
-  '/_ide/about': typeof IdeAboutRoute
-  '/_ide/contact': typeof IdeContactRoute
-  '/_ide/editor': typeof IdeEditorRoute
-  '/_ide/terminal': typeof IdeTerminalRoute
-  '/_ide/work': typeof IdeWorkRoute
+  '/_app': typeof AppRouteWithChildren
+  '/_app/agents': typeof AppAgentsRoute
+  '/_app/config': typeof AppConfigRoute
+  '/_app/editor': typeof AppEditorRoute
+  '/_app/infos': typeof AppInfosRoute
+  '/_app/package': typeof AppPackageRoute
+  '/_app/readme': typeof AppReadmeRoute
+  '/_app/stack': typeof AppStackRoute
+  '/_app/start': typeof AppStartRoute
+  '/_app/terminal': typeof AppTerminalRoute
+  '/_app/todo': typeof AppTodoRoute
+  '/_app/about/skills': typeof AppAboutSkillsRoute
+  '/_app/about/values': typeof AppAboutValuesRoute
+  '/_app/contact/links': typeof AppContactLinksRoute
+  '/_app/contact/source': typeof AppContactSourceRoute
+  '/_app/projects/atlas': typeof AppProjectsAtlasRoute
+  '/_app/projects/orbit': typeof AppProjectsOrbitRoute
+  '/_app/projects/signal': typeof AppProjectsSignalRoute
+  '/_app/about/': typeof AppAboutIndexRoute
+  '/_app/contact/': typeof AppContactIndexRoute
+  '/_app/projects/': typeof AppProjectsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/contact' | '/editor' | '/terminal' | '/work'
+  fullPaths:
+    | '/'
+    | '/agents'
+    | '/config'
+    | '/editor'
+    | '/infos'
+    | '/package'
+    | '/readme'
+    | '/stack'
+    | '/start'
+    | '/terminal'
+    | '/todo'
+    | '/about/skills'
+    | '/about/values'
+    | '/contact/links'
+    | '/contact/source'
+    | '/projects/atlas'
+    | '/projects/orbit'
+    | '/projects/signal'
+    | '/about/'
+    | '/contact/'
+    | '/projects/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/editor' | '/terminal' | '/work'
+  to:
+    | '/'
+    | '/agents'
+    | '/config'
+    | '/editor'
+    | '/infos'
+    | '/package'
+    | '/readme'
+    | '/stack'
+    | '/start'
+    | '/terminal'
+    | '/todo'
+    | '/about/skills'
+    | '/about/values'
+    | '/contact/links'
+    | '/contact/source'
+    | '/projects/atlas'
+    | '/projects/orbit'
+    | '/projects/signal'
+    | '/about'
+    | '/contact'
+    | '/projects'
   id:
     | '__root__'
     | '/'
-    | '/_ide'
-    | '/_ide/about'
-    | '/_ide/contact'
-    | '/_ide/editor'
-    | '/_ide/terminal'
-    | '/_ide/work'
+    | '/_app'
+    | '/_app/agents'
+    | '/_app/config'
+    | '/_app/editor'
+    | '/_app/infos'
+    | '/_app/package'
+    | '/_app/readme'
+    | '/_app/stack'
+    | '/_app/start'
+    | '/_app/terminal'
+    | '/_app/todo'
+    | '/_app/about/skills'
+    | '/_app/about/values'
+    | '/_app/contact/links'
+    | '/_app/contact/source'
+    | '/_app/projects/atlas'
+    | '/_app/projects/orbit'
+    | '/_app/projects/signal'
+    | '/_app/about/'
+    | '/_app/contact/'
+    | '/_app/projects/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  IdeRoute: typeof IdeRouteWithChildren
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_ide': {
-      id: '/_ide'
+    '/_app': {
+      id: '/_app'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IdeRouteImport
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -115,65 +307,200 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_ide/work': {
-      id: '/_ide/work'
-      path: '/work'
-      fullPath: '/work'
-      preLoaderRoute: typeof IdeWorkRouteImport
-      parentRoute: typeof IdeRoute
+    '/_app/todo': {
+      id: '/_app/todo'
+      path: '/todo'
+      fullPath: '/todo'
+      preLoaderRoute: typeof AppTodoRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_ide/terminal': {
-      id: '/_ide/terminal'
+    '/_app/terminal': {
+      id: '/_app/terminal'
       path: '/terminal'
       fullPath: '/terminal'
-      preLoaderRoute: typeof IdeTerminalRouteImport
-      parentRoute: typeof IdeRoute
+      preLoaderRoute: typeof AppTerminalRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_ide/editor': {
-      id: '/_ide/editor'
+    '/_app/start': {
+      id: '/_app/start'
+      path: '/start'
+      fullPath: '/start'
+      preLoaderRoute: typeof AppStartRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/stack': {
+      id: '/_app/stack'
+      path: '/stack'
+      fullPath: '/stack'
+      preLoaderRoute: typeof AppStackRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/readme': {
+      id: '/_app/readme'
+      path: '/readme'
+      fullPath: '/readme'
+      preLoaderRoute: typeof AppReadmeRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/package': {
+      id: '/_app/package'
+      path: '/package'
+      fullPath: '/package'
+      preLoaderRoute: typeof AppPackageRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/infos': {
+      id: '/_app/infos'
+      path: '/infos'
+      fullPath: '/infos'
+      preLoaderRoute: typeof AppInfosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/editor': {
+      id: '/_app/editor'
       path: '/editor'
       fullPath: '/editor'
-      preLoaderRoute: typeof IdeEditorRouteImport
-      parentRoute: typeof IdeRoute
+      preLoaderRoute: typeof AppEditorRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_ide/contact': {
-      id: '/_ide/contact'
+    '/_app/config': {
+      id: '/_app/config'
+      path: '/config'
+      fullPath: '/config'
+      preLoaderRoute: typeof AppConfigRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/agents': {
+      id: '/_app/agents'
+      path: '/agents'
+      fullPath: '/agents'
+      preLoaderRoute: typeof AppAgentsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/projects/': {
+      id: '/_app/projects/'
+      path: '/projects'
+      fullPath: '/projects/'
+      preLoaderRoute: typeof AppProjectsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/contact/': {
+      id: '/_app/contact/'
       path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof IdeContactRouteImport
-      parentRoute: typeof IdeRoute
+      fullPath: '/contact/'
+      preLoaderRoute: typeof AppContactIndexRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_ide/about': {
-      id: '/_ide/about'
+    '/_app/about/': {
+      id: '/_app/about/'
       path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof IdeAboutRouteImport
-      parentRoute: typeof IdeRoute
+      fullPath: '/about/'
+      preLoaderRoute: typeof AppAboutIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/projects/signal': {
+      id: '/_app/projects/signal'
+      path: '/projects/signal'
+      fullPath: '/projects/signal'
+      preLoaderRoute: typeof AppProjectsSignalRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/projects/orbit': {
+      id: '/_app/projects/orbit'
+      path: '/projects/orbit'
+      fullPath: '/projects/orbit'
+      preLoaderRoute: typeof AppProjectsOrbitRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/projects/atlas': {
+      id: '/_app/projects/atlas'
+      path: '/projects/atlas'
+      fullPath: '/projects/atlas'
+      preLoaderRoute: typeof AppProjectsAtlasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/contact/source': {
+      id: '/_app/contact/source'
+      path: '/contact/source'
+      fullPath: '/contact/source'
+      preLoaderRoute: typeof AppContactSourceRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/contact/links': {
+      id: '/_app/contact/links'
+      path: '/contact/links'
+      fullPath: '/contact/links'
+      preLoaderRoute: typeof AppContactLinksRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/about/values': {
+      id: '/_app/about/values'
+      path: '/about/values'
+      fullPath: '/about/values'
+      preLoaderRoute: typeof AppAboutValuesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/about/skills': {
+      id: '/_app/about/skills'
+      path: '/about/skills'
+      fullPath: '/about/skills'
+      preLoaderRoute: typeof AppAboutSkillsRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
-interface IdeRouteChildren {
-  IdeAboutRoute: typeof IdeAboutRoute
-  IdeContactRoute: typeof IdeContactRoute
-  IdeEditorRoute: typeof IdeEditorRoute
-  IdeTerminalRoute: typeof IdeTerminalRoute
-  IdeWorkRoute: typeof IdeWorkRoute
+interface AppRouteChildren {
+  AppAgentsRoute: typeof AppAgentsRoute
+  AppConfigRoute: typeof AppConfigRoute
+  AppEditorRoute: typeof AppEditorRoute
+  AppInfosRoute: typeof AppInfosRoute
+  AppPackageRoute: typeof AppPackageRoute
+  AppReadmeRoute: typeof AppReadmeRoute
+  AppStackRoute: typeof AppStackRoute
+  AppStartRoute: typeof AppStartRoute
+  AppTerminalRoute: typeof AppTerminalRoute
+  AppTodoRoute: typeof AppTodoRoute
+  AppAboutSkillsRoute: typeof AppAboutSkillsRoute
+  AppAboutValuesRoute: typeof AppAboutValuesRoute
+  AppContactLinksRoute: typeof AppContactLinksRoute
+  AppContactSourceRoute: typeof AppContactSourceRoute
+  AppProjectsAtlasRoute: typeof AppProjectsAtlasRoute
+  AppProjectsOrbitRoute: typeof AppProjectsOrbitRoute
+  AppProjectsSignalRoute: typeof AppProjectsSignalRoute
+  AppAboutIndexRoute: typeof AppAboutIndexRoute
+  AppContactIndexRoute: typeof AppContactIndexRoute
+  AppProjectsIndexRoute: typeof AppProjectsIndexRoute
 }
 
-const IdeRouteChildren: IdeRouteChildren = {
-  IdeAboutRoute: IdeAboutRoute,
-  IdeContactRoute: IdeContactRoute,
-  IdeEditorRoute: IdeEditorRoute,
-  IdeTerminalRoute: IdeTerminalRoute,
-  IdeWorkRoute: IdeWorkRoute,
+const AppRouteChildren: AppRouteChildren = {
+  AppAgentsRoute: AppAgentsRoute,
+  AppConfigRoute: AppConfigRoute,
+  AppEditorRoute: AppEditorRoute,
+  AppInfosRoute: AppInfosRoute,
+  AppPackageRoute: AppPackageRoute,
+  AppReadmeRoute: AppReadmeRoute,
+  AppStackRoute: AppStackRoute,
+  AppStartRoute: AppStartRoute,
+  AppTerminalRoute: AppTerminalRoute,
+  AppTodoRoute: AppTodoRoute,
+  AppAboutSkillsRoute: AppAboutSkillsRoute,
+  AppAboutValuesRoute: AppAboutValuesRoute,
+  AppContactLinksRoute: AppContactLinksRoute,
+  AppContactSourceRoute: AppContactSourceRoute,
+  AppProjectsAtlasRoute: AppProjectsAtlasRoute,
+  AppProjectsOrbitRoute: AppProjectsOrbitRoute,
+  AppProjectsSignalRoute: AppProjectsSignalRoute,
+  AppAboutIndexRoute: AppAboutIndexRoute,
+  AppContactIndexRoute: AppContactIndexRoute,
+  AppProjectsIndexRoute: AppProjectsIndexRoute,
 }
 
-const IdeRouteWithChildren = IdeRoute._addFileChildren(IdeRouteChildren)
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  IdeRoute: IdeRouteWithChildren,
+  AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

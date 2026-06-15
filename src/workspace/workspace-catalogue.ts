@@ -3,10 +3,8 @@ import aboutSectionSource from "#/browser/about/about-section.tsx?raw";
 import { contactFiles } from "#/browser/contact/contact.files";
 import contactSectionSource from "#/browser/contact/contact-section.tsx?raw";
 import homeSectionSource from "#/browser/home/home-section.tsx?raw";
+import { projectsFiles } from "#/browser/projects/projects.files";
 import { rootFiles } from "#/browser/root.files";
-import { workFiles } from "#/browser/work/work.files";
-import workDetailSectionSource from "#/browser/work/work-detail-section.tsx?raw";
-import workSectionSource from "#/browser/work/work-section.tsx?raw";
 import type { EditorFileInput, FileGroup } from "#/editor/editor-files.types";
 
 export type WorkspaceView = {
@@ -27,7 +25,7 @@ export type WorkspaceViewMetadata = {
 
 export const workspaceViews: ReadonlyArray<WorkspaceView> = [
 	{
-		route: "/editor",
+		route: "/start",
 		folder: "~",
 		label: "home",
 		renderer: "src/browser/home/home-section.tsx",
@@ -41,13 +39,6 @@ export const workspaceViews: ReadonlyArray<WorkspaceView> = [
 		files: aboutFiles,
 	},
 	{
-		route: "/work",
-		folder: "work",
-		label: "work",
-		renderer: "src/browser/work/work-section.tsx",
-		files: workFiles,
-	},
-	{
 		route: "/contact",
 		folder: "contact",
 		label: "contact",
@@ -56,9 +47,10 @@ export const workspaceViews: ReadonlyArray<WorkspaceView> = [
 	},
 ] as const;
 
-export const workspaceFileGroups: ReadonlyArray<FileGroup> = workspaceViews.map(
-	({ files, folder, label, route }) => ({ folder, label, route, files }),
-);
+export const workspaceFileGroups: ReadonlyArray<FileGroup> = [
+	...workspaceViews.map(({ files, folder, label, route }) => ({ folder, label, route, files })),
+	{ folder: "projects", label: "projects", route: "/projects", files: projectsFiles },
+];
 
 export const workspaceViewMetadata: Record<string, WorkspaceViewMetadata> = Object.fromEntries(
 	workspaceViews.map((view) => [
@@ -85,18 +77,6 @@ export const workspaceSourceFiles: ReadonlyArray<EditorFileInput> = [
 		folder: "src/browser/about",
 		language: "tsx",
 		content: aboutSectionSource,
-	},
-	{
-		name: "work-section.tsx",
-		folder: "src/browser/work",
-		language: "tsx",
-		content: workSectionSource,
-	},
-	{
-		name: "work-detail-section.tsx",
-		folder: "src/browser/work",
-		language: "tsx",
-		content: workDetailSectionSource,
 	},
 	{
 		name: "contact-section.tsx",

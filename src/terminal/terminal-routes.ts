@@ -1,25 +1,22 @@
 import { terminalCommands } from "./terminal-commands";
 
 export const terminalNavigationItems = [
-	{ command: "/home", label: "home", to: "/editor" },
+	{ command: "/start", label: "home", to: "/start" },
 	{ command: "/about", label: "about", to: "/about" },
-	{ command: "/work", label: "work", to: "/work" },
+	{ command: "/projects", label: "projects", to: "/projects" },
 	{ command: "/contact", label: "contact", to: "/contact" },
 ] as const;
 
 export const terminalRoutes = terminalNavigationItems.map(({ command }) => command);
 
 export type TerminalRouteCommand = (typeof terminalNavigationItems)[number]["command"];
-export type TerminalRoutePath =
-	| (typeof terminalNavigationItems)[number]["to"]
-	| "/editor"
-	| "/terminal";
+export type TerminalRoutePath = (typeof terminalNavigationItems)[number]["to"] | "/terminal";
 
 export const commandNames = [...terminalRoutes, ...terminalCommands] as const;
 
 function normalizeRouteTarget(input: string): string {
 	const normalized = input.trim().toLowerCase();
-	if (normalized === "" || normalized === "~") return "/home";
+	if (normalized === "" || normalized === "~") return "/start";
 	if (normalized.startsWith("/")) return normalized;
 
 	return `/${normalized}`;
@@ -27,7 +24,7 @@ function normalizeRouteTarget(input: string): string {
 
 export function getTerminalRoutePath(pathname: string): TerminalRoutePath {
 	const item = terminalNavigationItems.find(({ to }) => to === pathname);
-	return item?.to ?? "/editor";
+	return item?.to ?? "/start";
 }
 
 export function parseTerminalRouteTarget(input: string): TerminalRoutePath | null {

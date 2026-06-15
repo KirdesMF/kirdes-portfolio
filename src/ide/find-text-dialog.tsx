@@ -58,9 +58,12 @@ export function FindTextDialog() {
 	}
 
 	function selectMatch(match: TextMatch) {
+		const file = findEditorFile(match.fileId);
+		if (!file) return;
+
 		void navigate({
-			to: "/editor",
-			search: { file: match.fileId, neotree: "open" as const },
+			to: file.route,
+			search: { neotree: "open" as const },
 		});
 		setOpen(false);
 		setEditorMode("normal");

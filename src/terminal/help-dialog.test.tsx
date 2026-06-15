@@ -14,12 +14,12 @@ describe("HelpDialog", () => {
 		const media = installMatchMedia(false);
 		render(<HelpDialog open onOpenChange={vi.fn()} />);
 
-		expect(screen.getByText("/home")).toBeTruthy();
+		expect(screen.getByText("/start")).toBeTruthy();
 		expect(document.querySelector('[data-slot="drawer-popup"]')).toBeNull();
 
 		media.setMatches(true);
 
-		expect(screen.getByText("/home")).toBeTruthy();
+		expect(screen.getByText("/start")).toBeTruthy();
 		expect(document.querySelector('[data-slot="drawer-popup"]')).toBeTruthy();
 	});
 

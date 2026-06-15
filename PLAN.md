@@ -1,70 +1,64 @@
-# Mobile Neo-Tree Plan
+# Plan: first try mobile wrapping with current Shiki renderer
 
 ## Context
 
-The IDE shell (`src/routes/_ide.tsx`) renders `NeoTree` as a fixed-width (`w-56`) sidebar that pushes the editor/main content to the right. On viewports below 768 px the current layout still allocates space to the sidebar, leaving a very small content area.
+- Current editor file rendering uses `getFileTokens` → `highlightFileTokens`, backed by Shiki server-side tokenization in `src/editor/editor-file-highlight.server.ts`.
+- `CodeFileEditor` (`src/editor/code-file-editor.tsx`) renders Shiki tokens as inline `<span>` elements inside one block per source line.
+- The mobile pain is horizontal scrolling caused mainly by code-style CSS in `src/styles.css`, especially `.editor-code pre { min-width: max-content; }`.
+- The files are intended to be simple/readable review files: markdown, JSON, TS/TSX/HTML-like content with JSX tags and text nodes, not full application source with imports and complex code.
+- Before building a custom renderer, first test whether the existing Shiki output can wrap well enough by changing CSS only/minimally.
 
-Goal: adapt the explorer so it works well on mobile without breaking the desktop sidebar experience.
+## Approach
 
-## Options Considered
+- Keep Shiki and the current token pipeline unchanged.
+- First adjust editor CSS so Shiki token spans can wrap on mobile instead of forcing horizontal scroll.
+- Let browser wrapping handle text nodes naturally. For TSX/HTML-like content such as:
 
-| Option | UX | Pros | Cons |
-|--------|----|------|------|
-| **A. Overlay sidebar** (slide-in from left, covers content) | Keeps sidebar paradigm, leaves editor visible behind | Low disruption, easy to toggle, natural for a tree | Smaller hit area than full-screen |
-| **B. Full-screen explorer** | Tree takes whole screen | Maximum readability, simplest to implement | Hides editor context, feels like a page switch |
-| **C. Bottom drawer** | Reuses existing `Drawer` component | Consistent with command-menu/settings mobile UX | Less natural for a vertical tree, limited height |
+  ```tsx
+  <p>
+    hello there my name is Cedric
+  </p>
+  ```
 
-## Current Reuse Points
+  acceptable mobile display is:
 
-- `useIsMobile()` — `src/design-system/use-media-query.ts` (matches `max-width: 767px`, same boundary as Tailwind `md:`).
-- `Drawer` primitives — `src/design-system/drawer.tsx` (used for command-menu/settings on mobile). Anchored bottom; swipe-down to close.
-- `Dialog` primitives — `src/design-system/dialog.tsx`.
-- `NeoTree` is URL-controlled via `neotree=open|closed` in `src/ide/search.ts`.
-- `AppHeader` already toggles the explorer via `neotree` search param.
+  ```tsx
+  <p>
+    hello there my
+    name is Cedric
+  </p>
+  ```
 
-## Decision
+- Do not introduce `/lab/renderer` or a custom engine yet. After testing the Shiki wrapping behavior, decide whether a custom renderer is still needed.
+- Keep cursor and line numbers for now, but treat them as part of the experiment: if wrapping makes cursor/line-number behavior too awkward, that becomes evidence for the later simplified custom renderer.
 
-**Overlay sidebar on mobile** (Option A). The explorer will slide in from the left and overlay the editor content. When a file is tapped on mobile, the explorer closes automatically.
+## Files to modify
 
-## Recommended Approach
-
-Keep the desktop sidebar (`w-56 shrink-0 border-r`) unchanged. On mobile (`useIsMobile()` / Tailwind `md:` variants), render the same tree as a fixed/absolute panel that overlays the main content instead of pushing it:
-
-- Slide in from the left (`-translate-x-full` → `translate-x-0`).
-- Semi-opaque backdrop overlay that closes the explorer when tapped.
-- Auto-close the explorer when a file is selected by navigating with `neotree: "closed"`.
-- Close button in the header remains functional.
-
-## Files to Modify
-
-- `src/ide/neo-tree.tsx` — add mobile overlay layout, backdrop, and close-on-file-select behavior.
-- `src/routes/_ide.tsx` — make the flex row parent `relative` so the mobile panel can be absolutely positioned; render `<NeoTree />` unconditionally or conditionally unchanged (`neotree` param still controls open/closed).
-- `src/ide/app-header.tsx` — no required changes, but verify the `[explorer]` toggle is reachable on mobile.
-- `src/ide/search.ts` — no changes.
+- `src/styles.css` — adjust `.editor-code`/Shiki CSS to allow wrapping and reduce horizontal scrolling.
+- Possibly `src/editor/code-file-editor.tsx` — only if a small class/data attribute is needed to scope wrapping by language or viewport; avoid token/rendering refactors in this first step.
 
 ## Reuse
 
-- `useIsMobile()` from `src/design-system/use-media-query.ts`.
-- Existing `closeNeoTree()` navigation logic inside `NeoTree`.
-- Existing tree rendering and keyboard handling from `@headless-tree/react`.
+- Existing Shiki tokenization in `src/editor/editor-file-highlight.server.ts`.
+- Existing `CodeFileEditor` rendering and markdown link handling in `src/editor/code-file-editor.tsx`.
+- Existing editor theme variables in `src/styles.css`.
 
 ## Steps
 
-- [x] Introduce `useIsMobile()` in `NeoTree`.
-- [x] Extract the shared tree JSX into a reusable inner component so the mobile wrapper and desktop `<aside>` share the same markup.
-- [x] On mobile, render a `<div>`/`Fragment` containing:
-  - A fixed/absolute positioned panel (`left-0`, `top-status-bar`, `bottom-status-bar`, `w-56`, `z-raised` or higher).
-  - A backdrop that calls `closeNeoTree()` on click.
-- [x] Update the file `onPrimaryAction` to close the explorer when `isMobile` is true.
-- [x] Add `relative` to the layout row in `src/routes/_ide.tsx` so absolute positioning is scoped correctly.
-- [x] Verify desktop styles are unchanged (`w-56 shrink-0 border-r bg-background`).
-- [x] Add subtle enter/exit transition (translate + opacity) for the mobile panel.
+- [x] Remove or override `min-width: max-content` for mobile/wrapping mode.
+- [x] Add wrapping-friendly CSS to the current editor output, likely using `white-space: pre-wrap`, `overflow-wrap`, and `tab-size: 2`.
+- [x] Preserve indentation as much as possible without JS line splitting.
+- [x] Ensure Shiki token spans still inherit their light/dark colors correctly.
+- [x] Test whether line numbers, active line background, scrolling, and cursor overlay remain acceptable when a source line wraps visually.
+- [x] If the CSS-only approach is good enough, keep Shiki for now and skip the custom renderer.
+- [x] If cursor/line numbers/text wrapping are still a poor fit, plan the next step: a separate `/lab/renderer` prototype without cursor or line numbers and with semantic CSS token classes.
 
 ## Verification
 
-- [x] Resize browser to < 768 px and open `/editor?neotree=open`.
-- [x] Confirm the explorer overlays the editor and does not shrink it.
-- [x] Tap a file → the file opens and the explorer closes.
-- [x] Tap the backdrop → the explorer closes.
-- [x] Resize browser to ≥ 768 px and confirm the sidebar pushes content as before.
-- [x] Run the existing test suite to ensure no regressions.
+- Run `bun run typecheck`.
+- Run `bun run lint` or `bun run check`.
+- Manually open markdown, JSON, TSX, and HTML-like/JSX files in the existing editor.
+- Manually test narrow/mobile widths: text should wrap instead of forcing page/editor horizontal scrolling.
+- Verify simple JSX text nodes wrap naturally while tags/attributes remain readable.
+- Verify dark/light Shiki colors still work.
+- Verify cursor, line numbers, active line, hover background, and markdown links remain acceptable enough for the current editor experience.

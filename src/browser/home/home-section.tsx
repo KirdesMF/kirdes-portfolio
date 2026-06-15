@@ -4,7 +4,7 @@ import { Separator } from "#/design-system/separator";
 import { m } from "#/paraglide/messages";
 import { workspaceViewMetadata } from "#/workspace/workspace-catalogue";
 
-const meta = workspaceViewMetadata["/terminal/home"];
+const meta = workspaceViewMetadata["/terminal/start"];
 
 export function HomeSection(): ReactNode {
 	return (

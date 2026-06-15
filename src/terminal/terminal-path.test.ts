@@ -8,10 +8,10 @@ describe("getTerminalFolder", () => {
 	});
 
 	it("extracts folder name from route", () => {
-		expect(getTerminalFolder("/terminal/home")).toBe("~");
+		expect(getTerminalFolder("/terminal/start")).toBe("~");
 		expect(getTerminalFolder("/terminal/about")).toBe("about");
-		expect(getTerminalFolder("/terminal/work")).toBe("work");
-		expect(getTerminalFolder("/terminal/work/something")).toBe("something");
+		expect(getTerminalFolder("/terminal/contact")).toBe("contact");
+		expect(getTerminalFolder("/terminal/contact/social")).toBe("social");
 	});
 });
 
@@ -25,15 +25,15 @@ describe("formatTerminalCwd", () => {
 	});
 
 	it("formats sub-route", () => {
-		expect(formatTerminalCwd("/terminal/home")).toBe("~/home");
+		expect(formatTerminalCwd("/terminal/start")).toBe("~/start");
 		expect(formatTerminalCwd("/terminal/about")).toBe("~/about");
-		expect(formatTerminalCwd("/terminal/work")).toBe("~/work");
+		expect(formatTerminalCwd("/terminal/contact")).toBe("~/contact");
 	});
 
 	it("formats nested sub-routes", () => {
-		expect(formatTerminalCwd("/terminal/work/intent")).toBe("~/work/intent");
-		expect(formatTerminalCwd("/terminal/work/intent", { trailingSlash: true })).toBe(
-			"~/work/intent/",
+		expect(formatTerminalCwd("/terminal/contact/social")).toBe("~/contact/social");
+		expect(formatTerminalCwd("/terminal/contact/social", { trailingSlash: true })).toBe(
+			"~/contact/social/",
 		);
 	});
 

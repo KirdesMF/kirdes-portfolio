@@ -3,7 +3,7 @@ import { TerminalPane } from "#/terminal/terminal-pane";
 import { useTerminalController } from "#/terminal/use-terminal-controller";
 import { useTheme } from "#/theme/theme-provider";
 
-export const Route = createFileRoute("/_ide/terminal")({
+export const Route = createFileRoute("/_app/terminal")({
 	component: TerminalRoute,
 });
 
@@ -24,7 +24,7 @@ function TerminalRoute() {
 					aria-label="Close terminal"
 					className="cursor-pointer text-muted-foreground/70 transition hover:text-foreground"
 					type="button"
-					onClick={() => navigate({ to: "/editor" })}
+					onClick={() => navigate({ to: "/start" })}
 				>
 					[close]
 				</button>

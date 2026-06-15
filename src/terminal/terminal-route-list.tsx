@@ -36,8 +36,7 @@ export function TerminalRouteList({
 					<Link
 						className="text-foreground/80 underline-offset-2 hover:text-primary hover:underline"
 						key={file.id}
-						search={{ file: file.id }}
-						to="/editor"
+						to={file.route}
 					>
 						{file.name}
 					</Link>

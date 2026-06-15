@@ -1,13 +1,13 @@
 export const routeDescriptions: Record<string, string> = {
-	"/home": "home — portfolio root",
+	"/start": "home — portfolio root",
 	"/about": "about — background, values, and philosophy",
-	"/work": "work — projects and professional experience",
+	"/projects": "projects — selected project notes",
 	"/contact": "contact — get in touch with me",
 };
 
 export const manPages: Record<string, string> = {
-	cat: "cat <file> — print file contents to the terminal.\n  Resolves relative to current folder, falls back to root.\n  Examples:\n    cat README.md\n    cat /work/experience.json",
-	cd: "cd [directory] — navigate to a route/directory.\n  Without arguments, goes home (~).\n  cd .. also goes home (single-level navigation).\n  Examples:\n    cd about\n    cd /work\n    cd ..",
+	cat: "cat <file> — print file contents to the terminal.\n  Resolves relative to current folder, falls back to root.\n  Examples:\n    cat README.md\n    cat /projects/index.md",
+	cd: "cd [directory] — navigate to a route/directory.\n  Without arguments, goes home (~).\n  cd .. also goes home (single-level navigation).\n  Examples:\n    cd about\n    cd /contact\n    cd ..",
 	clear: "clear — clear the terminal screen.",
 	config: "config — open appearance settings. Alias for settings.",
 	exit: "exit [file] — close a file or the editor.\n  Without arguments, closes the active file or editor.\n  Examples:\n    exit README.md\n    exit editor\n    exit all",

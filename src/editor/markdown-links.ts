@@ -27,7 +27,7 @@ export function findMarkdownLinkRanges(lineText: string): MarkdownLinkRange[] {
 
 const EXTERNAL_PROTOCOL_RE = /^(https?|mailto):/i;
 const ANY_PROTOCOL_RE = /^[a-z][a-z0-9+.-]*:/i;
-const APP_ROUTES = new Set(["/about", "/work", "/contact", "/editor", "/terminal"]);
+const APP_ROUTES = new Set(["/about", "/contact", "/start", "/projects", "/terminal"]);
 
 export type LinkTarget = "external" | "app-route" | "internal-file" | "unsafe";
 

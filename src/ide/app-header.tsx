@@ -14,7 +14,7 @@ export function AppHeader() {
 			to: pathname,
 			search: (prev) => ({
 				...prev,
-				neotree: prev.neotree === "open" ? "closed" : "open",
+				neotree: prev.neotree === "open" ? undefined : "open",
 			}),
 		});
 	}

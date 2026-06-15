@@ -20,7 +20,7 @@ export function CommandModeDialog() {
 	const { appearance, setAppearance } = useTheme();
 	const navigate = useNavigate();
 	const searchParams = useRouterState({
-		select: (s) => s.location.search as { neotree?: "open" | "closed"; file?: string },
+		select: (s) => s.location.search as { neotree?: "open" },
 	});
 	const [input, setInput] = useState("");
 	const [error, setError] = useState("");

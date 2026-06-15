@@ -4,8 +4,39 @@ import type { EditorFileEntry, EditorFileInput, FolderRoute } from "./editor-fil
 
 // ─── Build unique entries ─────────────────────────────────────────────────────
 
+const fileRoutesById: Readonly<Record<string, string>> = {
+	"~/README.md": "/readme",
+	"~/TODO.md": "/todo",
+	"~/AGENTS.md": "/agents",
+	"~/profile.ts": "/config",
+	"~/package.json": "/package",
+	"~/stack.json": "/stack",
+	"~/infos.txt": "/infos",
+	"about/route.tsx": "/about",
+	"about/skills.json": "/about/skills",
+	"about/values.md": "/about/values",
+	"projects/index.md": "/projects",
+	"projects/atlas-notes.md": "/projects/atlas",
+	"projects/signal-forge.md": "/projects/signal",
+	"projects/orbit-ui.md": "/projects/orbit",
+	"contact/contact.md": "/contact",
+	"contact/route.tsx": "/contact/source",
+	"contact/links.json": "/contact/links",
+};
+
+function getFallbackRoute(id: string): string {
+	const routeBase = id
+		.replace(/^~\//, "/")
+		.replace(/^src\//, "/source/")
+		.replace(/\.[^.]+$/, "")
+		.replace(/\/index$/, "")
+		.replace(/\/route$/, "");
+	return routeBase.startsWith("/") ? routeBase : `/${routeBase}`;
+}
+
 function buildEntry(input: EditorFileInput): EditorFileEntry {
-	return { ...input, id: `${input.folder}/${input.name}` };
+	const id = `${input.folder}/${input.name}`;
+	return { ...input, id, route: fileRoutesById[id] ?? getFallbackRoute(id) };
 }
 
 function buildAllFiles(): ReadonlyArray<EditorFileEntry> {
@@ -27,6 +58,8 @@ export const folderRoutes: ReadonlyArray<FolderRoute> = workspaceFileGroups.map(
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getFolderForRoute(route: string): string {
+	if (route === "/start" || ["/agents", "/config", "/infos", "/package", "/readme", "/stack", "/todo"].includes(route)) return "~";
+	if (route === "/projects" || route.startsWith("/projects/")) return "projects";
 	return getTerminalFolder(route) ?? "~";
 }
 
@@ -36,12 +69,31 @@ function getFilesInFolder(folder: string): ReadonlyArray<EditorFileEntry> {
 
 /** Direct lookup by full id (e.g. "about/README.md"). */
 export function findEditorFile(id: string): EditorFileEntry | null {
-	return editorFiles.find((f) => f.id.toLowerCase() === id.trim().toLowerCase()) ?? null;
+	const normalized = id.trim().toLowerCase();
+	return (
+		editorFiles.find((f) => f.id.toLowerCase() === normalized) ??
+		editorFiles.find((f) => f.folder === "~" && f.name.toLowerCase() === normalized) ??
+		null
+	);
 }
 
 /** Check if a string is a valid file id. */
 export function isEditorFileName(id: string): id is EditorFileName {
 	return findEditorFile(id) !== null;
+}
+
+export function findEditorFileByRoute(route: string): EditorFileEntry | null {
+	const pathname = route.trim().split("?")[0]?.replace(/\/$/, "") || "/start";
+	return editorFiles.find((f) => f.route === pathname) ?? null;
+}
+
+export function getEditorFileRoute(id: string): string {
+	return findEditorFile(id)?.route ?? "/start";
+}
+
+export function getDisplayRouteName(route: string): string {
+	const file = findEditorFileByRoute(route);
+	return file ? getDisplayFileName(file.id) : route;
 }
 
 export function getDisplayFileName(id: string): string {

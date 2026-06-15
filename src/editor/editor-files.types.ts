@@ -8,6 +8,8 @@ export type EditorFileInput = {
 export type EditorFileEntry = EditorFileInput & {
 	/** Unique identifier, e.g. "~/README.md", "about/skills.json" */
 	readonly id: string;
+	/** Public route that renders this file, e.g. "/readme". */
+	readonly route: string;
 };
 
 export type FolderRoute = {

@@ -28,13 +28,13 @@ function RouteComponent() {
 
 	useLayoutEffect(() => {
 		if (reduceMotion) {
-			const t = setTimeout(() => navigate({ replace: true, to: "/editor" }), 800);
+			const t = setTimeout(() => navigate({ replace: true, to: "/start" }), 800);
 			return () => clearTimeout(t);
 		}
 
 		const tl = createTimeline({
 			defaults: { ease: "linear" },
-			onComplete: () => navigate({ replace: true, to: "/editor" }),
+			onComplete: () => navigate({ replace: true, to: "/start" }),
 		});
 
 		const charAnims: Array<ReturnType<typeof animate>> = [];
@@ -100,7 +100,7 @@ function RouteComponent() {
 			<button
 				className="absolute right-4 bottom-4 text-muted-foreground/50 transition hover:text-foreground"
 				type="button"
-				onClick={() => navigate({ replace: true, to: "/editor" })}
+				onClick={() => navigate({ replace: true, to: "/start" })}
 			>
 				[skip intro]
 			</button>
