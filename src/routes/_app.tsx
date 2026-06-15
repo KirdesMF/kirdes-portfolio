@@ -1,6 +1,7 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
 import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
 import { contactInfo } from "#/contact/contact-info";
+import { findEditorFileByRoute } from "#/editor/editor-files";
 import { AppHeader } from "#/ide/app-header";
 import { CommandMenu } from "#/ide/command-menu";
 import { CommandHistoryDialog, CommandModeDialog } from "#/ide/command-mode-dialog";
@@ -10,7 +11,6 @@ import { FindTextDialog } from "#/ide/find-text-dialog";
 import { HelpDialog } from "#/ide/help-dialog";
 import { NeoTree } from "#/ide/neo-tree";
 import { RecentFilesDialog } from "#/ide/recent-files-dialog";
-import { findEditorFileByRoute } from "#/editor/editor-files";
 import { parseIdeSearch } from "#/ide/search";
 import { ShimmerLabel } from "#/ide/shimmer-label";
 import { StatusBar } from "#/ide/status-bar";

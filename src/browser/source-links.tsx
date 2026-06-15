@@ -16,7 +16,10 @@ export function SourceLinks({ meta: m, to: _to = "/start" }: SourceLinksProps) {
 				<span>
 					renderer:{" "}
 					{rendererFile ? (
-						<Link className="text-primary underline-offset-2 hover:underline" to={rendererFile.route}>
+						<Link
+							className="text-primary underline-offset-2 hover:underline"
+							to={rendererFile.route}
+						>
 							{getDisplayFileName(m.renderer)}
 						</Link>
 					) : (
@@ -30,7 +33,10 @@ export function SourceLinks({ meta: m, to: _to = "/start" }: SourceLinksProps) {
 						return (
 							<span key={file}>
 								{contentFile ? (
-									<Link className="text-primary underline-offset-2 hover:underline" to={contentFile.route}>
+									<Link
+										className="text-primary underline-offset-2 hover:underline"
+										to={contentFile.route}
+									>
 										{file}
 									</Link>
 								) : (

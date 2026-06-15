@@ -58,7 +58,11 @@ export const folderRoutes: ReadonlyArray<FolderRoute> = workspaceFileGroups.map(
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getFolderForRoute(route: string): string {
-	if (route === "/start" || ["/agents", "/config", "/infos", "/package", "/readme", "/stack", "/todo"].includes(route)) return "~";
+	if (
+		route === "/start" ||
+		["/agents", "/config", "/infos", "/package", "/readme", "/stack", "/todo"].includes(route)
+	)
+		return "~";
 	if (route === "/projects" || route.startsWith("/projects/")) return "projects";
 	return getTerminalFolder(route) ?? "~";
 }

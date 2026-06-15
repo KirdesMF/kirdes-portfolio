@@ -13,5 +13,9 @@ export const Route = createFileRoute("/_app/projects/")({
 function RouteComponent() {
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
 	const result = Route.useLoaderData();
-	return pathname === "/projects" ? <RouteFileEditor fileId={fileId} result={result} /> : <Outlet />;
+	return pathname === "/projects" ? (
+		<RouteFileEditor fileId={fileId} result={result} />
+	) : (
+		<Outlet />
+	);
 }
