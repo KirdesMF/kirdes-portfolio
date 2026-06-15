@@ -3,7 +3,7 @@ import { SourceLinks } from "#/browser/source-links";
 import { m } from "#/paraglide/messages";
 import { workspaceViewMetadata } from "#/workspace/workspace-catalogue";
 
-const meta = workspaceViewMetadata["/terminal/about"];
+const meta = workspaceViewMetadata["/about"];
 
 export function AboutSection(): ReactNode {
 	return (
