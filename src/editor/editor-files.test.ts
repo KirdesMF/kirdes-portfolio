@@ -49,7 +49,7 @@ describe("editor files", () => {
 	it("opens source files from the current implementation", () => {
 		const contactSource = findEditorFile("src/browser/contact/contact-section.tsx");
 
-		expect(contactSource?.content).toContain("linkedin.com/in/kirdesmf");
+		expect(contactSource?.content).toContain("contactInfo.linkedin.handle");
 		expect(contactSource?.content).toContain('workspaceViewMetadata["/contact"]');
 	});
 });

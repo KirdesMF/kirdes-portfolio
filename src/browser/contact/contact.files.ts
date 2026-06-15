@@ -1,3 +1,4 @@
+import { contactInfo } from "#/contact/contact-info";
 import { json, md } from "#/editor/editor-file-builders";
 import type { EditorFileInput } from "#/editor/editor-files.types";
 
@@ -28,10 +29,10 @@ export const contactFiles: ReadonlyArray<EditorFileInput> = [
 		folder: "contact",
 		language: "json",
 		content: json({
-			twitter: "@kirdesmf",
-			github: "github.com/kirdesmf",
-			linkedin: "linkedin.com/in/kirdesmf",
-			email: "cedric@kirdes.dev",
+			twitter: contactInfo.x.handle,
+			github: `github.com/${contactInfo.github.handle}`,
+			linkedin: `linkedin.com/in/${contactInfo.linkedin.handle}`,
+			email: contactInfo.email,
 			website: "https://kirdes.dev",
 		}),
 	},
@@ -42,10 +43,10 @@ export const contactFiles: ReadonlyArray<EditorFileInput> = [
 		content: md(
 			"# contact",
 			"",
-			"**email** — [cedric@kirdes.dev](mailto:cedric@kirdes.dev) (fastest)",
-			"**x** — [@kirdesmf](https://x.com/kirdesmf)",
-			"**github** — [github.com/kirdesmf](https://github.com/kirdesmf)",
-			"**linkedin** — [linkedin.com/in/kirdesmf](https://linkedin.com/in/kirdesmf)",
+			`**email** — [${contactInfo.email}](mailto:${contactInfo.email}) (fastest)`,
+			`**x** — [${contactInfo.x.handle}](${contactInfo.x.url})`,
+			`**github** — [github.com/${contactInfo.github.handle}](${contactInfo.github.url})`,
+			`**linkedin** — [linkedin.com/in/${contactInfo.linkedin.handle}](${contactInfo.linkedin.url})`,
 			"",
 			"Prefer async communication. I'll get back to you within a day.",
 		),

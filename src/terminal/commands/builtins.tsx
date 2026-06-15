@@ -1,3 +1,4 @@
+import { contactInfo } from "#/contact/contact-info";
 import { copyToClipboard } from "#/design-system/clipboard";
 import { Separator } from "#/design-system/separator";
 import { m } from "#/paraglide/messages";
@@ -63,7 +64,7 @@ function handleTree(ctx: CommandContext): boolean {
 function handleEmail(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "email") return false;
 	ctx.pushHistory(<EmailOutput />);
-	void copyToClipboard("cedric@kirdes.dev");
+	void copyToClipboard(contactInfo.email);
 	return true;
 }
 
@@ -74,7 +75,7 @@ function openLink(url: string): void {
 
 function handleGithub(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "github") return false;
-	const url = "https://github.com/kirdesmf";
+	const url = contactInfo.github.url;
 	openLink(url);
 	ctx.pushHistory(
 		<div className="flex items-center gap-1">
@@ -94,7 +95,7 @@ function handleGithub(ctx: CommandContext): boolean {
 
 function handleLinkedin(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "linkedin") return false;
-	const url = "https://linkedin.com/in/kirdesmf";
+	const url = contactInfo.linkedin.url;
 	openLink(url);
 	ctx.pushHistory(
 		<div className="flex items-center gap-1">
@@ -114,7 +115,7 @@ function handleLinkedin(ctx: CommandContext): boolean {
 
 function handleX(ctx: CommandContext): boolean {
 	if (ctx.normalized !== "x") return false;
-	const url = "https://x.com/kirdesmf";
+	const url = contactInfo.x.url;
 	openLink(url);
 	ctx.pushHistory(
 		<div className="flex items-center gap-1">
@@ -144,33 +145,33 @@ function handleSocial(ctx: CommandContext): boolean {
 				<span className="text-muted-foreground/70">github</span>
 				<a
 					className="text-primary underline-offset-2 hover:underline"
-					href="https://github.com/kirdesmf"
+					href={contactInfo.github.url}
 					rel="noopener noreferrer"
 					target="_blank"
 				>
-					github.com/kirdesmf
+					github.com/{contactInfo.github.handle}
 				</a>
 				<span className="text-muted-foreground/50 block">↗</span>
 
 				<span className="text-muted-foreground/70">linkedin</span>
 				<a
 					className="text-primary underline-offset-2 hover:underline"
-					href="https://linkedin.com/in/kirdesmf"
+					href={contactInfo.linkedin.url}
 					rel="noopener noreferrer"
 					target="_blank"
 				>
-					linkedin.com/in/kirdesmf
+					linkedin.com/in/{contactInfo.linkedin.handle}
 				</a>
 				<span className="text-muted-foreground/50">↗</span>
 
 				<span className="text-muted-foreground/70">x.com</span>
 				<a
 					className="text-primary underline-offset-2 hover:underline"
-					href="https://x.com/kirdesmf"
+					href={contactInfo.x.url}
 					rel="noopener noreferrer"
 					target="_blank"
 				>
-					x.com/kirdesmf
+					x.com/{contactInfo.x.handle.replace("@", "")}
 				</a>
 				<span className="text-muted-foreground/50">↗</span>
 			</div>

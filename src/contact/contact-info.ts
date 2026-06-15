@@ -5,6 +5,7 @@ export const contactInfo = {
 		url: "https://x.com/cedricgourville",
 	},
 	linkedin: {
+		handle: "cedric-gourville",
 		url: "https://www.linkedin.com/in/cedric-gourville/",
 	},
 	github: {

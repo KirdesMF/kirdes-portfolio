@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { contactInfo } from "#/contact/contact-info";
 import { copyToClipboard } from "#/design-system/clipboard";
 import { Separator } from "#/design-system/separator";
 import { m } from "#/paraglide/messages";
@@ -28,19 +29,19 @@ export function InfosOutput(): ReactNode {
 						className="underline-offset-2 hover:text-primary hover:underline"
 						type="button"
 						onClick={() => {
-							void copyToClipboard("cedric@kirdes.dev");
+							void copyToClipboard(contactInfo.email);
 						}}
 					>
-						cedric@kirdes.dev
+						{contactInfo.email}
 					</button>
 					<span> / </span>
 					<a
-						href="https://github.com/kirdesmf"
+						href={contactInfo.github.url}
 						className="underline-offset-2 hover:text-primary hover:underline"
 						target="_blank"
 						rel="noreferrer"
 					>
-						github.com/kirdesmf
+						github.com/{contactInfo.github.handle}
 					</a>
 				</div>
 				<div>
@@ -76,7 +77,7 @@ export function WhoamiOutput(): ReactNode {
 export function EmailOutput(): ReactNode {
 	return (
 		<div className="flex flex-col gap-0.5">
-			<p>cedric@kirdes.dev</p>
+			<p>{contactInfo.email}</p>
 			<p className="text-muted-foreground">{m.email_copy_requested()}</p>
 		</div>
 	);

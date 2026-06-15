@@ -1,3 +1,5 @@
+import { contactInfo } from "#/contact/contact-info";
+
 export const routeDescriptions: Record<string, string> = {
 	"/start": "home — portfolio root",
 	"/about": "about — background, values, and philosophy",
@@ -11,13 +13,13 @@ export const manPages: Record<string, string> = {
 	clear: "clear — clear the terminal screen.",
 	config: "config — open appearance settings. Alias for settings.",
 	exit: "exit [file] — close a file or the editor.\n  Without arguments, closes the active file or editor.\n  Examples:\n    exit README.md\n    exit editor\n    exit all",
-	email: "email — copy cedric@kirdes.dev to clipboard.",
+	email: `email — copy ${contactInfo.email} to clipboard.`,
 	git: "git [command] — fake git operations.\n  Not a real git repo — the branch is for aesthetic purposes.\n  Subcommands: status, branch, log, commit",
-	github: "github — open github.com/kirdesmf in a new window.",
+	github: `github — open ${contactInfo.github.url} in a new window.`,
 	lang: "lang [--en|--fr] — get or set the display language.",
-	linkedin: "linkedin — open linkedin.com/in/kirdesmf in a new window.",
+	linkedin: `linkedin — open ${contactInfo.linkedin.url} in a new window.`,
 	social: "social — list all social media links.",
-	x: "x — open x.com/kirdesmf in a new window.",
+	x: `x — open ${contactInfo.x.url} in a new window.`,
 	help: "help — open available routes and commands.",
 	history: "history — show command history.",
 	ls: "ls — list directories and files.\n  Context-aware: shows current folder's files + root files.\n  At root (~), shows all route folders + root files.",

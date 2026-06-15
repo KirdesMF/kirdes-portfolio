@@ -1,3 +1,4 @@
+import { contactInfo } from "#/contact/contact-info";
 import { json, md } from "#/editor/editor-file-builders";
 import type { EditorFileInput } from "#/editor/editor-files.types";
 
@@ -95,7 +96,7 @@ export const rootFiles: ReadonlyArray<EditorFileInput> = [
 		content: md(
 			"LOCATION    Paris, France",
 			"FOCUS       frontend architecture — design systems — dev tooling",
-			"CONTACT     cedric@kirdes.dev / github.com/kirdesmf",
+			`CONTACT     ${contactInfo.email} / github.com/${contactInfo.github.handle}`,
 			"STATUS      open for freelance & collaboration",
 		),
 	},

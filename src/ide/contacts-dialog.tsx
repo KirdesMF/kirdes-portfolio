@@ -44,7 +44,7 @@ const contactItems = [
 		id: "linkedin",
 		Icon: Linkedin,
 		label: "LinkedIn",
-		detail: "cedric-gourville",
+		detail: contactInfo.linkedin.handle,
 		action: () => {
 			window.open(contactInfo.linkedin.url, "_blank", "noreferrer");
 		},
