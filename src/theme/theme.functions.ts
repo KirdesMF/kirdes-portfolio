@@ -19,7 +19,7 @@ export const getInitialAppearanceSettings = createServerFn({ method: "GET" }).ha
 );
 
 export const setAppearanceSettings = createServerFn({ method: "POST" })
-	.inputValidator(
+	.validator(
 		(data: unknown): AppearanceSettings =>
 			sanitizeAppearanceSettings((data ?? {}) as Partial<AppearanceSettings>),
 	)

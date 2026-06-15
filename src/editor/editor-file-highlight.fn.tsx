@@ -20,5 +20,5 @@ function parseHighlightEditorFileInput(input: unknown): { fileName: string } {
 }
 
 export const getFileTokens = createServerFn({ method: "GET" })
-	.inputValidator(parseHighlightEditorFileInput)
+	.validator(parseHighlightEditorFileInput)
 	.handler(async ({ data }) => highlightFileTokens(data.fileName));
