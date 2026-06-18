@@ -1,27 +1,17 @@
 import { getTerminalFolder } from "#/terminal/terminal-path";
-import { workspaceFileGroups, workspaceSourceFiles } from "#/workspace/workspace-catalogue";
+import { workspaceFileGroups } from "#/workspace/workspace-catalogue";
 import type { EditorFileEntry, EditorFileInput, FolderRoute } from "./editor-files.types";
 
 // ─── Build unique entries ─────────────────────────────────────────────────────
 
 const fileRoutesById: Readonly<Record<string, string>> = {
 	"~/README.md": "/readme",
-	"~/TODO.md": "/todo",
-	"~/AGENTS.md": "/agents",
-	"~/profile.ts": "/config",
-	"~/package.json": "/package",
-	"~/stack.json": "/stack",
-	"~/infos.txt": "/infos",
-	"about/route.tsx": "/about",
-	"about/skills.json": "/about/skills",
-	"about/values.md": "/about/values",
-	"projects/index.md": "/projects",
-	"projects/atlas-notes.md": "/projects/atlas",
-	"projects/signal-forge.md": "/projects/signal",
-	"projects/orbit-ui.md": "/projects/orbit",
-	"contact/contact.md": "/contact",
-	"contact/route.tsx": "/contact/source",
-	"contact/links.json": "/contact/links",
+	"~/ROADMAP.md": "/roadmap",
+	"src/routes/about.md": "/about",
+	"src/routes/contact.md": "/contact",
+	"src/routes/projects/index.md": "/projects",
+	"src/routes/projects/project-1.md": "/projects/project-1",
+	"src/routes/projects/project-2.md": "/projects/project-2",
 };
 
 function getFallbackRoute(id: string): string {
@@ -40,9 +30,9 @@ function buildEntry(input: EditorFileInput): EditorFileEntry {
 }
 
 function buildAllFiles(): ReadonlyArray<EditorFileEntry> {
-	const contentFiles = workspaceFileGroups.flatMap((group) => group.files.map(buildEntry));
-	const sourceFileEntries = workspaceSourceFiles.map(buildEntry);
-	return [...contentFiles, ...sourceFileEntries];
+	return workspaceFileGroups.flatMap((group) =>
+		group.files.map((name) => buildEntry({ folder: group.folder, name })),
+	);
 }
 
 // ─── Exports ──────────────────────────────────────────────────────────────────
@@ -51,19 +41,25 @@ export const editorFiles = buildAllFiles();
 
 export type EditorFileName = (typeof editorFiles)[number]["id"];
 
-export const folderRoutes: ReadonlyArray<FolderRoute> = workspaceFileGroups.map(
-	({ folder, label, route }) => ({ folder, label, route }),
-);
+export const folderRoutes: ReadonlyArray<FolderRoute> = (() => {
+	const seen = new Set<string>();
+	return workspaceFileGroups
+		.map(({ folder, label, route }) => ({ folder, label, route }))
+		.filter((fr) => {
+			if (seen.has(fr.folder)) return false;
+			seen.add(fr.folder);
+			return true;
+		});
+})();
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getFolderForRoute(route: string): string {
-	if (
-		route === "/start" ||
-		["/agents", "/config", "/infos", "/package", "/readme", "/stack", "/todo"].includes(route)
-	)
-		return "~";
-	if (route === "/projects" || route.startsWith("/projects/")) return "projects";
+	const normalized = route.replace(/^\/terminal/, "") || "/start";
+	if (normalized === "/start" || ["/readme", "/roadmap"].includes(normalized)) return "~";
+	if (normalized === "/about" || normalized === "/contact") return "src/routes";
+	if (normalized === "/projects" || normalized.startsWith("/projects/"))
+		return "src/routes/projects";
 	return getTerminalFolder(route) ?? "~";
 }
 
@@ -120,17 +116,27 @@ export function getDisplayFileName(id: string): string {
 export function resolveFile(name: string, currentRoute?: string): EditorFileEntry | null {
 	const normalized = name.trim();
 
-	// Absolute path: /about/README.md → folder="about", name="README.md"
+	// Absolute path: map to virtual folder structure via route lookup
 	if (normalized.startsWith("/")) {
-		const parts = normalized.split("/").filter(Boolean);
-		if (parts.length >= 2) {
-			// Could be /about/README.md or /about with no file
-			const folder = parts[0]?.toLowerCase();
-			const fileName = parts.slice(1).join("/");
-			return (
-				editorFiles.find((f) => f.folder.toLowerCase() === folder && f.name === fileName) ?? null
-			);
+		// First, try the full id (strip leading /)
+		const idLookup = normalized.slice(1);
+		const direct = findEditorFile(idLookup);
+		if (direct) return direct;
+
+		// Try route-based lookup: /projects/project-1.md → route /projects/project-1, file project-1.md
+		const lastSlash = normalized.lastIndexOf("/");
+		if (lastSlash > 0) {
+			const routePart = normalized.slice(0, lastSlash) || "/";
+			const fileName = normalized.slice(lastSlash + 1);
+			const folder = getFolderForRoute(routePart);
+			if (folder) {
+				const found = editorFiles.find(
+					(f) => f.folder === folder && f.name.toLowerCase() === fileName.toLowerCase(),
+				);
+				if (found) return found;
+			}
 		}
+
 		return null;
 	}
 

@@ -201,25 +201,6 @@ export function TreeAllOutput(): ReactNode {
 					</div>
 				);
 			})}
-			<div>
-				<span className="text-muted-foreground/70">src/browser/</span>
-				{editorFiles
-					.filter((f) => f.folder.startsWith("src/browser/"))
-					.map((file, i, arr) => {
-						const branch = i === arr.length - 1 ? "└── " : "├── ";
-						return (
-							<div className="flex items-center gap-1" key={file.id}>
-								<span className="text-muted-foreground/50">{`    ${branch}`}</span>
-								<Link
-									className="underline-offset-2 hover:text-primary hover:underline"
-									to={file.route}
-								>
-									{file.name}
-								</Link>
-							</div>
-						);
-					})}
-			</div>
 		</div>
 	);
 }

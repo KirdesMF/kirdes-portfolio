@@ -2,7 +2,7 @@ import { ClockIcon, GitBranch } from "lucide-react";
 import type { CSSProperties, ReactNode } from "react";
 import { cn } from "#/design-system/cn";
 import { useIdeStore } from "#/ide/store";
-import { Clock } from "#/layout/clock";
+import { Clock } from "#/ide/clock";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 

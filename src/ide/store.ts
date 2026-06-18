@@ -2,6 +2,13 @@ import { create } from "zustand";
 
 type EditorMode = "normal" | "insert" | "command";
 
+export type WorkspaceTab = {
+	id: string;
+	label: string;
+	route: string;
+	kind: "file" | "terminal";
+};
+
 type IdeStore = {
 	editorMode: EditorMode;
 	setEditorMode: (mode: EditorMode) => void;
@@ -46,6 +53,12 @@ type IdeStore = {
 
 	editorFocusRequest: number;
 	requestEditorFocus: () => void;
+
+	workspaceTabs: WorkspaceTab[];
+	activeWorkspaceTabId: string | null;
+	openWorkspaceTab: (tab: WorkspaceTab) => void;
+	closeWorkspaceTab: (id: string) => void;
+	setActiveWorkspaceTab: (id: string) => void;
 };
 
 export const useIdeStore = create<IdeStore>((set) => ({
@@ -101,4 +114,21 @@ export const useIdeStore = create<IdeStore>((set) => ({
 
 	editorFocusRequest: 0,
 	requestEditorFocus: () => set((s) => ({ editorFocusRequest: s.editorFocusRequest + 1 })),
+
+	workspaceTabs: [],
+	activeWorkspaceTabId: null,
+	openWorkspaceTab: (tab) =>
+		set((s) => {
+			const exists = s.workspaceTabs.find((t) => t.id === tab.id);
+			return {
+				workspaceTabs: exists ? s.workspaceTabs : [...s.workspaceTabs, tab],
+				activeWorkspaceTabId: tab.id,
+			};
+		}),
+	closeWorkspaceTab: (id) =>
+		set((s) => ({
+			workspaceTabs: s.workspaceTabs.filter((t) => t.id !== id),
+			activeWorkspaceTabId: s.activeWorkspaceTabId === id ? null : s.activeWorkspaceTabId,
+		})),
+	setActiveWorkspaceTab: (id) => set({ activeWorkspaceTabId: id }),
 }));

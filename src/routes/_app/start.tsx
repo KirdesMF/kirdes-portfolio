@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { HomeEditorRoute } from "#/editor/route-file-editor";
+import { EmptyEditor } from "#/editor/empty-editor";
 
 export const Route = createFileRoute("/_app/start")({
-	component: HomeEditorRoute,
+	component: EmptyEditor,
 });

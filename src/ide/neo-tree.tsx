@@ -35,56 +35,9 @@ function findFile(folder: string, name: string): EditorFileEntry | undefined {
 	return editorFiles.find((f) => f.folder === folder && f.name === name);
 }
 
-// ── Build flat structure from the same data as before ──
+// ── Build explicit flat tree ──
 
 function buildFlatTree() {
-	// Root folder: "portfolio"
-	const rootId = nextFolderId();
-	treeItems[rootId] = { kind: "folder", label: "portfolio" };
-
-	const fileEntries: Array<{ displayName: string; entry: EditorFileEntry }> = [];
-	for (const [displayName, name] of [
-		["package.json", "package.json"],
-		["config.ts", "profile.ts"],
-		["README.md", "README.md"],
-		["TODO.md", "TODO.md"],
-		["AGENTS.md", "AGENTS.md"],
-	] as const) {
-		const entry = findFile("~", name);
-		if (entry) fileEntries.push({ displayName, entry });
-	}
-
-	// ── about ──
-	const aboutFileEntries: Array<{ displayName: string; entry: EditorFileEntry }> = [];
-	for (const [displayName, name] of [
-		["route.tsx", "route.tsx"],
-		["skills.json", "skills.json"],
-		["values.md", "values.md"],
-	] as const) {
-		const entry = findFile("about", name);
-		if (entry) aboutFileEntries.push({ displayName, entry });
-	}
-
-	// ── projects ──
-	const projectsFileEntries: Array<{ displayName: string; entry: EditorFileEntry }> = [];
-	for (const name of ["index.md", "atlas-notes.md", "signal-forge.md", "orbit-ui.md"] as const) {
-		const entry = findFile("projects", name);
-		if (entry) projectsFileEntries.push({ displayName: name, entry });
-	}
-
-	// ── contact ──
-	const contactFileEntries: Array<{ displayName: string; entry: EditorFileEntry }> = [];
-	for (const [displayName, name] of [
-		["route.tsx", "route.tsx"],
-		["links.json", "links.json"],
-		["contact.md", "contact.md"],
-	] as const) {
-		const entry = findFile("contact", name);
-		if (entry) contactFileEntries.push({ displayName, entry });
-	}
-
-	// ── Build folders ──
-
 	function addFolder(label: string, childIds: string[]): string {
 		const id = nextFolderId();
 		treeItems[id] = { kind: "folder", label };
@@ -93,32 +46,41 @@ function buildFlatTree() {
 	}
 
 	function addFile(entry: EditorFileEntry, displayName: string): string {
-		// Use entry.route as the item ID so the active route maps directly to the tree item.
 		const id = entry.route;
 		treeItems[id] = { kind: "file", entry, displayName };
 		return id;
 	}
 
-	// Projects folder
-	const projectsChildIds = projectsFileEntries.map((f) => addFile(f.entry, f.displayName));
-	const projectsId = addFolder("projects", projectsChildIds);
+	function optionalFile(folder: string, name: string): string[] {
+		const entry = findFile(folder, name);
+		return entry ? [addFile(entry, name)] : [];
+	}
 
-	// About folder
-	const aboutChildIds = aboutFileEntries.map((f) => addFile(f.entry, f.displayName));
-	const aboutId = addFolder("about", aboutChildIds);
+	// ── src/routes/projects/ ──
+	const projectsFolderId = addFolder("projects", [
+		...optionalFile("src/routes/projects", "index.md"),
+		...optionalFile("src/routes/projects", "project-1.md"),
+		...optionalFile("src/routes/projects", "project-2.md"),
+	]);
 
-	// Contact folder
-	const contactChildIds = contactFileEntries.map((f) => addFile(f.entry, f.displayName));
-	const contactId = addFolder("contact", contactChildIds);
+	// ── src/routes/ ──
+	const routesFolderId = addFolder("routes", [
+		...optionalFile("src/routes", "about.md"),
+		...optionalFile("src/routes", "contact.md"),
+		projectsFolderId,
+	]);
 
-	// Src folder
-	const srcId = addFolder("src", [aboutId, projectsId, contactId]);
+	// ── src/ ──
+	const srcFolderId = addFolder("src", [routesFolderId]);
 
-	// Root-level files
-	const fileIds = fileEntries.map((f) => addFile(f.entry, f.displayName));
+	// ── Root-level files ──
+	const rootFiles = [
+		...optionalFile("~", "README.md"),
+		...optionalFile("~", "ROADMAP.md"),
+	];
 
-	// Root (portfolio) folder children
-	folderChildren[rootId] = [srcId, ...fileIds];
+	// ── portfolio/ ──
+	const rootId = addFolder("portfolio", [srcFolderId, ...rootFiles]);
 	rootChildIds.push(rootId);
 }
 
@@ -128,7 +90,7 @@ buildFlatTree();
 // ─── Public API: used by FindFileDialog and FindTextDialog ────────────────────
 
 /**
- * Returns a flat Map from file entry.id → display path (e.g. "portfolio/src/about/route.tsx").
+ * Returns a flat Map from file entry.id → display path (e.g. "portfolio/src/routes/about.md").
  */
 export function getNeoTreeFilePaths(): ReadonlyMap<string, string> {
 	const paths = new Map<string, string>();
@@ -139,7 +101,6 @@ export function getNeoTreeFilePaths(): ReadonlyMap<string, string> {
 
 		if (item.kind === "folder") {
 			const label = item.label;
-			// Skip "portfolio" from the path (matching old behavior)
 			const nextParents = label === "portfolio" ? parents : [...parents, label];
 			const children = folderChildren[itemId] ?? [];
 			for (const childId of children) {
@@ -209,10 +170,16 @@ export function NeoTree() {
 		for (const childId of folderChildren[rootId] ?? []) {
 			if (treeItems[childId]?.kind === "folder") {
 				expanded.push(childId);
-				// Also expand immediate children of src (about, projects, contact)
+				// Also expand immediate children of src (routes)
 				for (const grandChildId of folderChildren[childId] ?? []) {
 					if (treeItems[grandChildId]?.kind === "folder") {
 						expanded.push(grandChildId);
+						// Also expand routes children (projects)
+						for (const greatGrandChildId of folderChildren[grandChildId] ?? []) {
+							if (treeItems[greatGrandChildId]?.kind === "folder") {
+								expanded.push(greatGrandChildId);
+							}
+						}
 					}
 				}
 			}

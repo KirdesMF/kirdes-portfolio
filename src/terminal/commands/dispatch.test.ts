@@ -8,8 +8,6 @@ function makeFakeFile(overrides?: Partial<EditorFileEntry>): EditorFileEntry {
 		id: "~/README.md",
 		name: "README.md",
 		folder: "~",
-		language: "markdown",
-		content: "# Hello, world!",
 		route: "/readme",
 		...overrides,
 	};

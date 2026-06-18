@@ -1,9 +1,8 @@
 import { m } from "#/paraglide/messages";
-import { InfosOutput } from "#/terminal/terminal-profile-outputs";
 import type { CommandHandler } from "./command.types";
 
 /**
- * cat <file> — print file contents to terminal.
+ * cat <file> — acknowledge virtual files until terminal content is rebuilt.
  */
 export const handleCat: CommandHandler = (ctx) => {
 	if (!ctx.normalized.startsWith("cat ")) return false;
@@ -12,13 +11,11 @@ export const handleCat: CommandHandler = (ctx) => {
 	const file = ctx.resolveFile(target, ctx.currentRoute);
 
 	if (file) {
-		if (file.name === "infos.txt") {
-			ctx.pushHistory(<InfosOutput />);
-		} else {
-			ctx.pushHistory(
-				<pre className="whitespace-pre-wrap font-mono text-foreground/90">{file.content}</pre>,
-			);
-		}
+		ctx.pushHistory(
+			<span className="text-muted-foreground">
+				{file.name} renders as a page. Terminal file content is being rebuilt.
+			</span>,
+		);
 		return true;
 	}
 

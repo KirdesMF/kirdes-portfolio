@@ -1,18 +1,11 @@
-import { aboutFiles } from "#/browser/about/about.files";
-import aboutSectionSource from "#/browser/about/about-section.tsx?raw";
-import { contactFiles } from "#/browser/contact/contact.files";
-import contactSectionSource from "#/browser/contact/contact-section.tsx?raw";
-import homeSectionSource from "#/browser/home/home-section.tsx?raw";
-import { projectsFiles } from "#/browser/projects/projects.files";
-import { rootFiles } from "#/browser/root.files";
-import type { EditorFileInput, FileGroup } from "#/editor/editor-files.types";
+import type { FileGroup } from "#/editor/editor-files.types";
 
 export type WorkspaceView = {
 	readonly route: string;
 	readonly folder: string;
 	readonly label: string;
 	readonly renderer: string;
-	readonly files: ReadonlyArray<EditorFileInput>;
+	readonly files: ReadonlyArray<string>;
 };
 
 export type WorkspaceViewMetadata = {
@@ -28,28 +21,35 @@ export const workspaceViews: ReadonlyArray<WorkspaceView> = [
 		route: "/start",
 		folder: "~",
 		label: "home",
-		renderer: "src/browser/home/home-section.tsx",
-		files: rootFiles,
+		renderer: "src/routes/_app/start.tsx",
+		files: ["README.md", "ROADMAP.md"],
 	},
 	{
 		route: "/about",
-		folder: "about",
+		folder: "src/routes",
 		label: "about",
-		renderer: "src/browser/about/about-section.tsx",
-		files: aboutFiles,
+		renderer: "src/routes/_app/_workspace/about.tsx",
+		files: ["about.md"],
 	},
 	{
 		route: "/contact",
-		folder: "contact",
+		folder: "src/routes",
 		label: "contact",
-		renderer: "src/browser/contact/contact-section.tsx",
-		files: contactFiles,
+		renderer: "src/routes/_app/_workspace/contact.tsx",
+		files: ["contact.md"],
 	},
 ] as const;
 
 export const workspaceFileGroups: ReadonlyArray<FileGroup> = [
-	...workspaceViews.map(({ files, folder, label, route }) => ({ folder, label, route, files })),
-	{ folder: "projects", label: "projects", route: "/projects", files: projectsFiles },
+	{ folder: "~", label: "home", route: "/start", files: ["README.md", "ROADMAP.md"] },
+	{ folder: "src/routes", label: "about", route: "/about", files: ["about.md"] },
+	{ folder: "src/routes", label: "contact", route: "/contact", files: ["contact.md"] },
+	{
+		folder: "src/routes/projects",
+		label: "projects",
+		route: "/projects",
+		files: ["index.md", "project-1.md", "project-2.md"],
+	},
 ];
 
 export const workspaceViewMetadata: Record<string, WorkspaceViewMetadata> = Object.fromEntries(
@@ -60,31 +60,10 @@ export const workspaceViewMetadata: Record<string, WorkspaceViewMetadata> = Obje
 			folder: view.folder,
 			label: view.label,
 			renderer: view.renderer,
-			contentFiles: view.files.map((file) => file.name),
+			contentFiles: view.files,
 		},
 	]),
 );
-
-export const workspaceSourceFiles: ReadonlyArray<EditorFileInput> = [
-	{
-		name: "home-section.tsx",
-		folder: "src/browser/home",
-		language: "tsx",
-		content: homeSectionSource,
-	},
-	{
-		name: "about-section.tsx",
-		folder: "src/browser/about",
-		language: "tsx",
-		content: aboutSectionSource,
-	},
-	{
-		name: "contact-section.tsx",
-		folder: "src/browser/contact",
-		language: "tsx",
-		content: contactSectionSource,
-	},
-];
 
 export function getWorkspaceViewByRoute(route: string): WorkspaceViewMetadata | null {
 	return workspaceViewMetadata[route] ?? null;

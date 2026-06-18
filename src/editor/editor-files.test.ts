@@ -3,19 +3,21 @@ import { findEditorFile, getVisibleFileNames, lsFiles, resolveFile } from "./edi
 
 describe("editor files", () => {
 	it("finds files by full id case-insensitively", () => {
-		expect(findEditorFile("about/route.tsx")?.id).toBe("about/route.tsx");
+		expect(findEditorFile("src/routes/about.md")?.id).toBe("src/routes/about.md");
+		expect(findEditorFile("src/routes/CONTACT.MD")?.id).toBe("src/routes/contact.md");
 		expect(findEditorFile("missing.md")).toBeNull();
 	});
 
 	it("resolves absolute file paths", () => {
-		expect(resolveFile("/projects/index.md")?.id).toBe("projects/index.md");
+		expect(resolveFile("/projects/index.md")?.id).toBe("src/routes/projects/index.md");
+		expect(resolveFile("/projects/project-1.md")?.id).toBe("src/routes/projects/project-1.md");
 		expect(resolveFile("/projects")?.id).toBeUndefined();
 	});
 
 	it("prefers current folder before root and global files", () => {
-		expect(resolveFile("route.tsx", "/terminal/about")?.id).toBe("about/route.tsx");
-		expect(resolveFile("infos.txt", "/terminal/about")?.id).toBe("~/infos.txt");
-		expect(resolveFile("links.json", "/terminal/about")?.id).toBe("contact/links.json");
+		expect(resolveFile("about.md", "/terminal/about")?.id).toBe("src/routes/about.md");
+		expect(resolveFile("README.md", "/terminal/about")?.id).toBe("~/README.md");
+		expect(resolveFile("contact.md", "/terminal/about")?.id).toBe("src/routes/contact.md");
 	});
 
 	it("lists root files at the terminal home", () => {
@@ -23,33 +25,31 @@ describe("editor files", () => {
 
 		expect(result.folders.map((folder) => folder.folder)).toEqual([
 			"~",
-			"about",
-			"contact",
-			"projects",
+			"src/routes",
+			"src/routes/projects",
 		]);
 		expect(result.files.map((file) => file.id)).toContain("~/README.md");
-		expect(result.files.map((file) => file.id)).not.toContain("about/README.md");
+		expect(result.files.map((file) => file.id)).toContain("~/ROADMAP.md");
+		expect(result.files.map((file) => file.id)).not.toContain("src/routes/about.md");
 	});
 
 	it("lists local files plus root fallback files in sections", () => {
 		const result = lsFiles("/terminal/contact");
 		const ids = result.files.map((file) => file.id);
 
-		expect(ids).toContain("contact/links.json");
-		expect(ids).toContain("~/infos.txt");
+		expect(ids).toContain("src/routes/contact.md");
 		expect(ids).toContain("~/README.md");
 	});
 
 	it("returns unique visible file names", () => {
 		expect(
-			getVisibleFileNames("/terminal/contact").filter((name) => name === "README.md"),
+			getVisibleFileNames("/terminal/contact").filter((name) => name === "about.md"),
 		).toHaveLength(1);
 	});
 
-	it("opens source files from the current implementation", () => {
-		const contactSource = findEditorFile("src/browser/contact/contact-section.tsx");
-
-		expect(contactSource?.content).toContain("contactInfo.linkedin.handle");
-		expect(contactSource?.content).toContain('workspaceViewMetadata["/contact"]');
+	it("does not return removed files", () => {
+		expect(findEditorFile("src/routes/about.tsx")).toBeNull();
+		expect(findEditorFile("src/routes/contact.tsx")).toBeNull();
+		expect(findEditorFile("src/routes/projects/index.tsx")).toBeNull();
 	});
 });

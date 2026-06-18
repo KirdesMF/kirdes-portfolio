@@ -1,4 +1,4 @@
-import { contactInfo } from "#/contact/contact-info";
+import { contactInfo } from "#/data";
 import { copyToClipboard } from "#/design-system/clipboard";
 import { Separator } from "#/design-system/separator";
 import { m } from "#/paraglide/messages";

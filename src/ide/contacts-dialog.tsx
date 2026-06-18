@@ -1,5 +1,5 @@
 import { Github, Linkedin, Mail, Twitter } from "lucide-react";
-import { contactInfo } from "#/contact/contact-info";
+import { contactInfo } from "#/data";
 import { copyToClipboard } from "#/design-system/clipboard";
 import {
 	CommandDialog,

@@ -18,6 +18,8 @@ const initialState = {
 	cursorColumn: 1,
 	cursorLineCount: 1,
 	editorFocusRequest: 0,
+	workspaceTabs: [] as import("./store").WorkspaceTab[],
+	activeWorkspaceTabId: null as string | null,
 };
 
 beforeEach(() => {
@@ -143,5 +145,66 @@ describe("requestEditorFocus", () => {
 		expect(useIdeStore.getState().editorFocusRequest).toBe(1);
 		requestEditorFocus();
 		expect(useIdeStore.getState().editorFocusRequest).toBe(2);
+	});
+});
+
+describe("workspaceTabs", () => {
+	const tabA = { id: "file-a", label: "File A", route: "/a", kind: "file" as const };
+	const tabB = { id: "file-b", label: "File B", route: "/b", kind: "file" as const };
+
+	it("starts empty", () => {
+		const s = useIdeStore.getState();
+		expect(s.workspaceTabs).toEqual([]);
+		expect(s.activeWorkspaceTabId).toBeNull();
+	});
+
+	it("openWorkspaceTab adds and sets active", () => {
+		const { openWorkspaceTab } = useIdeStore.getState();
+		openWorkspaceTab(tabA);
+		const s = useIdeStore.getState();
+		expect(s.workspaceTabs).toEqual([tabA]);
+		expect(s.activeWorkspaceTabId).toBe("file-a");
+	});
+
+	it("openWorkspaceTab deduplicates by id", () => {
+		const { openWorkspaceTab } = useIdeStore.getState();
+		openWorkspaceTab(tabA);
+		openWorkspaceTab(tabA);
+		expect(useIdeStore.getState().workspaceTabs).toHaveLength(1);
+	});
+
+	it("openWorkspaceTab sets existing tab as active without duplicating", () => {
+		const { openWorkspaceTab } = useIdeStore.getState();
+		openWorkspaceTab(tabA);
+		openWorkspaceTab(tabB);
+		openWorkspaceTab(tabA);
+		const s = useIdeStore.getState();
+		expect(s.workspaceTabs).toEqual([tabA, tabB]);
+		expect(s.activeWorkspaceTabId).toBe("file-a");
+	});
+
+	it("closeWorkspaceTab removes a tab", () => {
+		const { openWorkspaceTab, closeWorkspaceTab } = useIdeStore.getState();
+		openWorkspaceTab(tabA);
+		openWorkspaceTab(tabB);
+		closeWorkspaceTab("file-a");
+		expect(useIdeStore.getState().workspaceTabs).toEqual([tabB]);
+	});
+
+	it("closeWorkspaceTab clears activeWorkspaceTabId when closing active tab", () => {
+		const { openWorkspaceTab, closeWorkspaceTab } = useIdeStore.getState();
+		openWorkspaceTab(tabA);
+		closeWorkspaceTab("file-a");
+		const s = useIdeStore.getState();
+		expect(s.workspaceTabs).toEqual([]);
+		expect(s.activeWorkspaceTabId).toBeNull();
+	});
+
+	it("setActiveWorkspaceTab changes active", () => {
+		const { openWorkspaceTab, setActiveWorkspaceTab } = useIdeStore.getState();
+		openWorkspaceTab(tabA);
+		openWorkspaceTab(tabB);
+		setActiveWorkspaceTab("file-a");
+		expect(useIdeStore.getState().activeWorkspaceTabId).toBe("file-a");
 	});
 });

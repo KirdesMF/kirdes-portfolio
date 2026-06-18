@@ -1,6 +1,6 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
 import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
-import { contactInfo } from "#/contact/contact-info";
+import { contactInfo } from "#/data";
 import { findEditorFileByRoute } from "#/editor/editor-files";
 import { AppHeader } from "#/ide/app-header";
 import { CommandMenu } from "#/ide/command-menu";

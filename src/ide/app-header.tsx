@@ -24,21 +24,21 @@ export function AppHeader() {
 			{/* Left: menu */}
 			<div className="flex items-center gap-3">
 				<button
-					className="cursor-pointer text-muted-foreground/70 transition hover:text-foreground"
+					className="cursor-pointer text-muted-foreground transition hover:text-foreground"
 					type="button"
 					onClick={toggleCommandMenu}
 				>
 					[menu]
 				</button>
 				<button
-					className="cursor-pointer text-muted-foreground/70 transition hover:text-foreground"
+					className="cursor-pointer text-muted-foreground transition hover:text-foreground"
 					type="button"
 					onClick={toggleExplorer}
 				>
 					[explorer]
 				</button>
 				<button
-					className="cursor-pointer text-muted-foreground/70 transition hover:text-foreground"
+					className="cursor-pointer text-muted-foreground transition hover:text-foreground"
 					type="button"
 					onClick={() => setHelpOpen(true)}
 				>
@@ -49,7 +49,7 @@ export function AppHeader() {
 			{/* Right: settings, language */}
 			<div className="flex items-center gap-3">
 				<button
-					className="cursor-pointer text-muted-foreground/70 transition hover:text-foreground"
+					className="cursor-pointer text-muted-foreground transition hover:text-foreground"
 					type="button"
 					onClick={() => setSettingsOpen(true)}
 				>

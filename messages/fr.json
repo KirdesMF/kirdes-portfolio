@@ -50,21 +50,21 @@
 
 	"about_comment": "/* à propos */",
 	"about_role": "ingénieur produit / architecte d'interfaces",
-	"about_guidance": "consultez cat README.md pour les détails, skills.json pour les compétences, et values.md pour les principes.",
+	"about_guidance": "consultez cat about.tsx pour le profil et le style de travail.",
 
 	"contact_comment": "/* contacts */",
 	"contact_twitter_label": "twitter",
 	"contact_email_label": "email",
 	"contact_github_label": "github",
 	"contact_linkedin_label": "linkedin",
-	"contact_guidance": "consultez cat links.json pour les données structurées, ou contact.md pour plus d'infos.",
+	"contact_guidance": "consultez cat contact.tsx pour les canaux et cartes de contact.",
 
 	"work_comment": "/* projets */",
 	"work_column_name": "NOM",
 	"work_column_version": "VERSION",
 	"work_column_status": "STATUT",
 	"work_column_description": "DESCRIPTION",
-	"work_guidance": "cliquez sur un nom de projet pour les détails. consultez cat projects.json pour les données structurées.",
+	"work_guidance": "cliquez sur un nom de projet pour les détails. consultez cat project-1.md et project-2.md pour les études de cas.",
 
 	"work_detail_not_found": "projet {name} introuvable.",
 	"work_detail_back": "retour aux projets",
@@ -78,15 +78,6 @@
 	"whoami_title": "[QUI SUIS-JE]",
 	"whoami_role": "ingénieur produit / architecte d'interfaces",
 	"whoami_visit": "pour en savoir plus, visitez",
-
-	"infos_title": "[INFORMATIONS]",
-	"infos_location_label": "LOCALISATION",
-	"infos_location_value": "Paris, France",
-	"infos_focus_label": "SPÉCIALITÉ",
-	"infos_focus_value": "architecture frontend — design systems — outils développeur",
-	"infos_contact_label": "CONTACT",
-	"infos_status_label": "STATUT",
-	"infos_status_value": "ouvert au freelance & collaboration",
 
 	"email_copy_requested": "copie demandée",
 

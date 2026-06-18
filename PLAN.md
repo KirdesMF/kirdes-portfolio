@@ -1,64 +1,57 @@
-# Plan: first try mobile wrapping with current Shiki renderer
+# Plan: Remove Shiki and convert editor files to plain TSX pages
 
 ## Context
-
-- Current editor file rendering uses `getFileTokens` → `highlightFileTokens`, backed by Shiki server-side tokenization in `src/editor/editor-file-highlight.server.ts`.
-- `CodeFileEditor` (`src/editor/code-file-editor.tsx`) renders Shiki tokens as inline `<span>` elements inside one block per source line.
-- The mobile pain is horizontal scrolling caused mainly by code-style CSS in `src/styles.css`, especially `.editor-code pre { min-width: max-content; }`.
-- The files are intended to be simple/readable review files: markdown, JSON, TS/TSX/HTML-like content with JSX tags and text nodes, not full application source with imports and complex code.
-- Before building a custom renderer, first test whether the existing Shiki output can wrap well enough by changing CSS only/minimally.
+- The current file editor uses Shiki tokenization through `src/editor/editor-file-highlight.server.ts` and `src/editor/editor-file-highlight.fn.tsx`.
+- Workspace routes load highlighted tokens with `getFileTokens` and render `RouteFileEditor`/`CodeFileEditor`/`MarkdownFileViewer`.
+- `src/styles.css` has both `.markdown-file-viewer` styles and a `/* Shiki editor-code */` section with token/cursor/line styles.
+- Browser content is currently split between `src/browser/*.files.ts` virtual file data and `src/browser/*/*-section.tsx` source files imported as raw strings by `src/workspace/workspace-catalogue.ts`.
+- The goal is to remove Shiki entirely, stop treating visible files as highlighted code/markdown documents, and make the editor area render plain TSX page components with placeholder content for now.
+- `src/ide/neo-tree.tsx` should keep the same tree structure, but route/content files should be named `.md` even though opening them renders real TSX pages.
+- `README.md` and `ROADMAP.md` stay as root `.md` files; `config.ts` should be removed from the visible workspace entirely.
 
 ## Approach
-
-- Keep Shiki and the current token pipeline unchanged.
-- First adjust editor CSS so Shiki token spans can wrap on mobile instead of forcing horizontal scroll.
-- Let browser wrapping handle text nodes naturally. For TSX/HTML-like content such as:
-
-  ```tsx
-  <p>
-    hello there my name is Cedric
-  </p>
-  ```
-
-  acceptable mobile display is:
-
-  ```tsx
-  <p>
-    hello there my
-    name is Cedric
-  </p>
-  ```
-
-- Do not introduce `/lab/renderer` or a custom engine yet. After testing the Shiki wrapping behavior, decide whether a custom renderer is still needed.
-- Keep cursor and line numbers for now, but treat them as part of the experiment: if wrapping makes cursor/line-number behavior too awkward, that becomes evidence for the later simplified custom renderer.
+- Replace Shiki-backed editor rendering with a small plain React page wrapper and route-local placeholder page components.
+- Keep route navigation, workspace tabs, terminal catalogue lookup, and NeoTree behavior, but change route/content virtual file metadata/display names to `.md` and remove the `/config` file entry.
+- Remove Shiki-specific token types, server functions, token styling, markdown parser/viewer, markdown link helpers, and dependency entries.
+- Collapse/clean `src/browser/` and `src/editor/` so they no longer contain duplicated source-as-string content or syntax-highlighted editor infrastructure.
 
 ## Files to modify
-
-- `src/styles.css` — adjust `.editor-code`/Shiki CSS to allow wrapping and reduce horizontal scrolling.
-- Possibly `src/editor/code-file-editor.tsx` — only if a small class/data attribute is needed to scope wrapping by language or viewport; avoid token/rendering refactors in this first step.
+- `package.json`
+- `bun.lock`
+- `src/styles.css`
+- `src/ide/neo-tree.tsx`
+- `src/editor/*`
+- `src/browser/*`
+- `src/workspace/workspace-catalogue.ts`
+- `src/routes/_app/_workspace/*.tsx` including removal of `config.tsx`
+- `src/routes/_app/_workspace/**/index.tsx`
+- `src/routes/_app/_workspace/projects/*.tsx`
 
 ## Reuse
-
-- Existing Shiki tokenization in `src/editor/editor-file-highlight.server.ts`.
-- Existing `CodeFileEditor` rendering and markdown link handling in `src/editor/code-file-editor.tsx`.
-- Existing editor theme variables in `src/styles.css`.
+- Reuse `src/ide/neo-tree.tsx` tree/navigation structure and only change file names/lookups as needed.
+- Reuse `src/editor/editor-files.ts` route lookup helpers and adapt their file IDs/routes to `.md` display names.
+- Reuse `src/routes/_app/_workspace.tsx` tab-opening flow; it already maps the current route back to `findEditorFileByRoute`.
+- Reuse the existing TanStack routes under `src/routes/_app/_workspace/` as the place to render the new plain TSX placeholder pages.
+- Reuse non-Shiki editor shell UI from `src/editor/read-only-file-editor.tsx` if a status/tabs wrapper is still needed.
 
 ## Steps
-
-- [x] Remove or override `min-width: max-content` for mobile/wrapping mode.
-- [x] Add wrapping-friendly CSS to the current editor output, likely using `white-space: pre-wrap`, `overflow-wrap`, and `tab-size: 2`.
-- [x] Preserve indentation as much as possible without JS line splitting.
-- [x] Ensure Shiki token spans still inherit their light/dark colors correctly.
-- [x] Test whether line numbers, active line background, scrolling, and cursor overlay remain acceptable when a source line wraps visually.
-- [x] If the CSS-only approach is good enough, keep Shiki for now and skip the custom renderer.
-- [x] If cursor/line numbers/text wrapping are still a poor fit, plan the next step: a separate `/lab/renderer` prototype without cursor or line numbers and with semantic CSS token classes.
+- [ ] Remove the `shiki` dependency from `package.json` and regenerate/update `bun.lock` during implementation.
+- [ ] Delete or replace Shiki-specific files: `editor-file-highlight.server.ts`, `editor-file-highlight.fn.tsx`, `editor-file-tokens.ts`, and the token-based `code-file-editor.tsx` path.
+- [ ] Replace route loaders that call `getFileTokens` with direct TSX route components rendering placeholder page content.
+- [ ] Update `RouteFileEditor` or replace it with a simpler TSX page wrapper that no longer expects highlighted tokens.
+- [ ] Update `src/browser/*.files.ts` catalogues (or move them out of `browser/`) so route/content files such as about/contact/projects index are `.md` while routes continue to open the corresponding real pages.
+- [ ] Remove the root `config.ts` entry from `src/browser/root.files.ts`, `fileRoutesById`, NeoTree root files, terminal-visible files, and related tests/references.
+- [ ] Remove the `/config` workspace route file (`src/routes/_app/_workspace/config.tsx`) and rely on route generation to drop it.
+- [ ] Remove `workspaceSourceFiles` and raw `?raw` imports from `src/workspace/workspace-catalogue.ts` unless another feature still needs source-file search entries.
+- [ ] Keep `src/ide/neo-tree.tsx` structurally the same, but change explicit filenames such as `about.tsx`, `contact.tsx`, and `index.tsx` to their new `.md` display names/IDs.
+- [ ] Update terminal/search tests or outputs that mention `src/browser/`, `.tsx` virtual source files, or syntax-highlighted markdown.
+- [ ] Clear Shiki/editor-code and markdown-viewer CSS from `src/styles.css`; keep only styles still used by the new editor/page shell.
+- [ ] Clean unused browser/editor files and imports after the new TSX page path is in place.
+- [ ] Run typecheck/tests/lint and fix references to removed Shiki/editor modules.
 
 ## Verification
-
 - Run `bun run typecheck`.
+- Run `bun run test`.
 - Run `bun run lint` or `bun run check`.
-- Manually open markdown, JSON, TSX, and HTML-like/JSX files in the existing editor.
-- Manually test narrow/mobile widths: text should wrap instead of forcing page/editor horizontal scrolling.
-- Verify simple JSX text nodes wrap naturally while tags/attributes remain readable.
-- Verify dark/light Shiki colors still work.
-- Verify cursor, line numbers, active line, hover background, and markdown links remain acceptable enough for the current editor experience.
+- Manually open the app, navigate files through NeoTree, and confirm route/content files are named `.md`, `README.md`/`ROADMAP.md` remain, `config.ts` is gone, and each opened file renders a TSX placeholder page.
+- Search for `shiki`, `getFileTokens`, `FileTokenLine`, and `editor-code` to confirm Shiki/token rendering is gone.

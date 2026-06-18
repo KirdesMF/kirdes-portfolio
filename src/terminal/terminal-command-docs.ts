@@ -1,4 +1,4 @@
-import { contactInfo } from "#/contact/contact-info";
+import { contactInfo } from "#/data";
 
 export const routeDescriptions: Record<string, string> = {
 	"/start": "home — portfolio root",
