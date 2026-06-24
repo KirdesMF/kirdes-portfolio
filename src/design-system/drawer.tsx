@@ -56,8 +56,8 @@ export function DrawerPopup({
 				<BaseDrawer.Popup
 					className={cn(
 						isLeft
-							? "col-start-1 flex h-full w-56 flex-col border-r border-border bg-popover text-popover-foreground shadow-lg outline-none touch-none transform-[translateX(var(--drawer-swipe-movement-x))] transition-[transform,opacity] duration-300 ease-out will-change-transform data-starting-style:transform-[translateX(-100%)] data-ending-style:transform-[translateX(-100%)] data-ending-style:duration-[calc(var(--drawer-swipe-strength)*300ms)] data-swiping:select-none data-swiping:duration-0"
-							: "row-start-2 flex max-h-[min(88dvh,42rem)] min-h-0 w-full flex-col border-t border-border bg-popover text-popover-foreground shadow-lg outline-none touch-none transform-[translateY(var(--drawer-swipe-movement-y))] transition-[transform,opacity] duration-300 ease-out will-change-transform data-starting-style:transform-[translateY(100%)] data-ending-style:transform-[translateY(100%)] data-ending-style:duration-[calc(var(--drawer-swipe-strength)*300ms)] data-swiping:select-none data-swiping:duration-0",
+							? "col-start-1 flex h-full w-56 flex-col border-r-thin border-border bg-popover text-popover-foreground shadow-lg outline-none touch-none transform-[translateX(var(--drawer-swipe-movement-x))] transition-[transform,opacity] duration-300 ease-out will-change-transform data-starting-style:transform-[translateX(-100%)] data-ending-style:transform-[translateX(-100%)] data-ending-style:duration-[calc(var(--drawer-swipe-strength)*300ms)] data-swiping:select-none data-swiping:duration-0"
+							: "row-start-2 flex max-h-[min(88dvh,42rem)] min-h-0 w-full flex-col border-t-thin border-border bg-popover text-popover-foreground shadow-lg outline-none touch-none transform-[translateY(var(--drawer-swipe-movement-y))] transition-[transform,opacity] duration-300 ease-out will-change-transform data-starting-style:transform-[translateY(100%)] data-ending-style:transform-[translateY(100%)] data-ending-style:duration-[calc(var(--drawer-swipe-strength)*300ms)] data-swiping:select-none data-swiping:duration-0",
 						className,
 					)}
 					data-slot="drawer-popup"

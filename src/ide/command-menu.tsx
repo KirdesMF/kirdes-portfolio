@@ -1,8 +1,6 @@
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
 	Briefcase,
-	Eye,
-	FileText,
 	FolderTreeIcon,
 	History,
 	Languages,
@@ -10,6 +8,7 @@ import {
 	LogOut,
 	type LucideIcon,
 	Settings,
+	SpaceIcon,
 	Sun,
 	Terminal,
 } from "lucide-react";
@@ -31,13 +30,6 @@ type Item = {
 	shortcut: string;
 	action: () => void;
 };
-
-function getPreviewRoute(pathname: string): "/about" | "/contact" | "/start" | "/projects" {
-	if (pathname.startsWith("/about")) return "/about";
-	if (pathname.startsWith("/contact")) return "/contact";
-	if (pathname.startsWith("/projects")) return "/projects";
-	return "/start";
-}
 
 export function CommandMenu() {
 	const isMobile = useIsMobile();
@@ -83,32 +75,12 @@ export function CommandMenu() {
 			},
 		},
 		{
-			id: "editor",
-			Icon: FileText,
-			label: "Editor",
-			shortcut: "/",
-			action: () => {
-				void navigate({ to: "/start", search: { neotree: "open" as const } });
-				setOpen(false);
-			},
-		},
-		{
 			id: "recent-files",
 			Icon: History,
 			label: "Recent Files",
 			shortcut: "r",
 			action: () => {
 				setRecentFilesOpen(true);
-				setOpen(false);
-			},
-		},
-		{
-			id: "open-preview",
-			Icon: Eye,
-			label: "Open Preview",
-			shortcut: "o",
-			action: () => {
-				void navigate({ to: getPreviewRoute(pathname) });
 				setOpen(false);
 			},
 		},
@@ -219,7 +191,7 @@ export function CommandMenu() {
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger
 				aria-label="Open command menu"
-				className="pointer-events-none fixed right-0 bottom-status-bar size-px opacity-0"
+				className="pointer-events-none fixed right-[calc(0.75rem+var(--border-width-thin))] bottom-[calc(var(--spacing-status-bar)*2)] size-0 opacity-0"
 			/>
 			<PopoverContent align="end" className="p-0" initialFocus side="top" sideOffset={0}>
 				<CommandMenuInner commands={commands} onClose={() => setOpen(false)} />
@@ -289,9 +261,9 @@ function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: ()
 	}
 
 	return (
-		<div className="relative w-full rounded border border-border bg-popover p-1 pt-2 text-popover-foreground">
-			<div className="absolute top-0 left-3 z-raised -translate-y-1/2 bg-popover px-2 text-tiny leading-none text-primary">
-				SPACE
+		<div className="relative w-full border-thin border-border bg-popover p-1 pt-2 text-popover-foreground">
+			<div className="absolute top-0 left-3 z-raised -translate-y-1/2 bg-popover px-2 text-primary">
+				<SpaceIcon className="size-3" />
 			</div>
 			<Command
 				className="rounded-none bg-transparent outline-none"

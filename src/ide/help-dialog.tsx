@@ -79,8 +79,8 @@ function HelpDialogInner(props: {
 	const { Description, Title } = props;
 
 	return (
-		<div className="relative flex min-h-0 flex-1 flex-col rounded border-2 border-border bg-popover p-4 text-popover-foreground">
-			<Title className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-2 border-border z-raised">
+		<div className="relative flex min-h-0 flex-1 flex-col border-thin border-border bg-popover p-4 text-popover-foreground">
+			<Title className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-thin border-border z-raised">
 				:help keymaps
 			</Title>
 
@@ -98,7 +98,7 @@ function HelpDialogInner(props: {
 						<div className="grid gap-1">
 							{group.rows.map((row) => (
 								<div
-									className="flex items-center justify-between rounded border border-border px-3 py-1.5"
+									className="flex items-center justify-between border-thin border-border px-3 py-1.5"
 									key={row.keys}
 								>
 									<span className="text-xs">{row.desc}</span>

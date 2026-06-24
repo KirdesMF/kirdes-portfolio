@@ -49,7 +49,7 @@ export function Command({ className, ...props }: CommandProps): ReactNode {
 	return (
 		<BaseCommand
 			className={cn(
-				"flex min-h-0 w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground",
+				"flex min-h-0 w-full flex-col overflow-hidden bg-popover text-popover-foreground",
 				className,
 			)}
 			{...props}
@@ -71,8 +71,8 @@ export function CommandDialog({
 		Title: typeof DialogTitle | typeof DrawerTitle,
 		Description: typeof DialogDescription | typeof DrawerDescription,
 	) => (
-		<div className="relative flex min-h-0 flex-col rounded border-2 border-border bg-popover p-3 text-popover-foreground">
-			<Title className="absolute top-0 inset-s-1/2 z-raised -translate-1/2 border-x-2 border-border bg-popover px-2 text-primary leading-none">
+		<div className="relative flex min-h-0 flex-col border-thin border-border bg-popover p-3 text-popover-foreground">
+			<Title className="absolute top-0 inset-s-1/2 z-raised -translate-1/2 border-x-thin border-border bg-popover px-2 text-primary leading-none">
 				{title}
 			</Title>
 			<Description className="sr-only">{description}</Description>

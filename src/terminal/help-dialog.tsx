@@ -94,8 +94,8 @@ function HelpDialogInner(props: {
 	const { Description, Title } = props;
 
 	return (
-		<div className="relative flex min-h-0 flex-1 flex-col rounded border-2 border-border bg-popover p-4 text-popover-foreground">
-			<Title className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-2 border-border z-raised">
+		<div className="relative flex min-h-0 flex-1 flex-col border-thin border-border bg-popover p-4 text-popover-foreground">
+			<Title className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-thin border-border z-raised">
 				{m.help_title()}
 			</Title>
 
@@ -149,7 +149,7 @@ function HelpRow(props: {
 		props.icon === "route" ? FolderIcon : props.icon === "help" ? CircleHelpIcon : TerminalIcon;
 
 	return (
-		<div className="grid grid-cols-[auto_auto_auto_minmax(0,1fr)] items-center gap-2 rounded px-1 py-0.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground">
+		<div className="grid grid-cols-[auto_auto_auto_minmax(0,1fr)] items-center gap-2 px-1 py-0.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground">
 			<span className="text-right font-medium text-primary">{props.shortcut}</span>
 			<ChevronRightIcon className="size-3.5 text-muted-foreground/70" />
 			<Icon className={cn("size-3.5 text-primary")} />

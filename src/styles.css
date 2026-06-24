@@ -15,22 +15,6 @@
 	background-size: 2.5px 2.5px;
 }
 
-@utility scanlines {
-	--amount: 2%;
-	content: "";
-	position: fixed;
-	inset: 0;
-	pointer-events: none;
-	z-index: var(--z-screen-effect);
-	background: repeating-linear-gradient(
-		0deg,
-		transparent,
-		transparent 2px,
-		color-mix(in oklch, var(--foreground) var(--amount), transparent) 2px,
-		color-mix(in oklch, var(--foreground) var(--amount), transparent) 3px
-	);
-}
-
 :root {
 	--background: oklch(0.9816 0.0017 247.839);
 	--foreground: oklch(0.2621 0.0095 248.1897);
@@ -73,13 +57,14 @@
 	--ascii-banner-block: color-mix(in oklch, var(--status-primary) 28%, var(--foreground));
 	--ascii-banner-glow: var(--status-primary);
 	--ascii-banner-shimmer: color-mix(in oklch, var(--status-primary) 18%, white);
-	--font-sans: Inter, system-ui, sans-serif;
+	--font-sans: system-ui, sans-serif;
 	--font-serif: Georgia, serif;
 	--font-mono: Geist Mono, ui-monospace, monospace;
 	--radius: 0.375rem;
 	--tracking-normal: 0.01em;
 	--spacing: 0.25rem;
 	--spacing-status-bar: 1.5rem;
+	--border-width-thin: 0.5px;
 	--z-raised: 20;
 	--z-screen-effect: 100;
 }
@@ -122,6 +107,7 @@
 	--color-status-muted-foreground: var(--status-muted-foreground);
 
 	--spacing-status-bar: var(--spacing-status-bar);
+	--border-width-thin: var(--border-width-thin);
 
 	--color-status-open: var(--availability-open);
 	--color-status-shimmer: var(--foreground);

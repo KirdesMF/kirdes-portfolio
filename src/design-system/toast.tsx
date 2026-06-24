@@ -62,7 +62,7 @@ export function ToastRoot({ className, ...props }: ToastRootProps): ReactNode {
 	return (
 		<BaseToast.Root
 			className={cn(
-				"relative rounded border-2 border-border bg-popover pt-2 text-popover-foreground shadow-lg",
+				"relative border-thin border-border bg-popover pt-2 text-popover-foreground shadow-lg",
 				className,
 			)}
 			{...props}
@@ -93,7 +93,7 @@ export function ToastAction({ className, ...props }: ToastActionProps): ReactNod
 	return (
 		<BaseToast.Action
 			className={cn(
-				"shrink-0 border border-border px-2 py-1 text-xs text-primary hover:bg-accent hover:text-accent-foreground",
+				"shrink-0 border-thin border-border px-2 py-1 text-xs text-primary hover:bg-accent hover:text-accent-foreground",
 				className,
 			)}
 			{...props}
@@ -129,7 +129,7 @@ export function Toaster() {
 			<ToastViewport>
 				{toasts.map((toast) => (
 					<ToastRoot key={toast.id} toast={toast}>
-						<div className="absolute top-0 left-3 z-raised -translate-y-1/2 border-x-2 border-border bg-popover px-2 text-primary text-tiny leading-none">
+						<div className="absolute top-0 left-3 z-raised -translate-y-1/2 border-x-thin border-border bg-popover px-2 text-primary text-tiny leading-none">
 							{toast.type?.toUpperCase() ?? "TOAST"}
 						</div>
 						<ToastContent>

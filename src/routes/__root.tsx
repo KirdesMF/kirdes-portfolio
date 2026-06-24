@@ -51,7 +51,16 @@ function RootDocument({ children }: { children: ReactNode }) {
 				<HeadContent />
 				<ScriptOnce>{themeBootScript}</ScriptOnce>
 			</head>
-			<body className="h-dvh overflow-hidden bg-background font-mono font-extralight text-xs text-foreground before:scanlines">
+			<body className="h-dvh overflow-hidden bg-background font-mono font-extralight text-xs text-foreground">
+				<svg
+					aria-hidden="true"
+					className="pointer-events-none fixed inset-0 z-screen-effect size-full opacity-80 mix-blend-screen [filter:grayscale(100%)] dark:opacity-20"
+				>
+					<filter id="noise-bg-fx">
+						<feTurbulence baseFrequency="0.8" />
+					</filter>
+					<rect width="100%" height="100%" filter="url(#noise-bg-fx)" />
+				</svg>
 				<div className="relative isolate h-full">
 					<ThemeProvider initialAppearance={initialAppearance}>
 						<ToastProvider>

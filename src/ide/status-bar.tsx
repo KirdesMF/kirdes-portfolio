@@ -1,8 +1,8 @@
 import { ClockIcon, GitBranch } from "lucide-react";
 import type { CSSProperties, ReactNode } from "react";
 import { cn } from "#/design-system/cn";
-import { useIdeStore } from "#/ide/store";
 import { Clock } from "#/ide/clock";
+import { useIdeStore } from "#/ide/store";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -201,7 +201,7 @@ export function StatusBar({ currentFile }: { currentFile?: string }) {
 	];
 
 	return (
-		<footer className="flex h-status-bar shrink-0 items-stretch justify-between border-t border-border bg-status text-status-foreground">
+		<footer className="flex h-status-bar shrink-0 items-stretch justify-between border-t-thin border-border bg-status text-status-foreground">
 			<StatusGroup editorMode={editorMode} items={leftItems} side="left" />
 			<StatusGroup editorMode={editorMode} items={rightItems} side="right" />
 		</footer>

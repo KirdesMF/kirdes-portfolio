@@ -105,7 +105,6 @@ export function EmptyEditor() {
 			{ hotkey: "F", callback: () => runEmptyEditorCommand("find-file") },
 			{ hotkey: "P", callback: () => runEmptyEditorCommand("projects") },
 			{ hotkey: "C", callback: () => runEmptyEditorCommand("contacts") },
-			{ hotkey: "S", callback: () => runEmptyEditorCommand("settings") },
 			{ hotkey: "G", callback: () => runEmptyEditorCommand("find-text") },
 			{ hotkey: "R", callback: () => runEmptyEditorCommand("recent-files") },
 		],

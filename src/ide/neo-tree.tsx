@@ -1,7 +1,7 @@
 import { hotkeysCoreFeature, syncDataLoaderFeature } from "@headless-tree/core";
 import { useTree } from "@headless-tree/react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
-import { FileText, Folder, FolderOpen, X } from "lucide-react";
+import { ChevronsLeft, FileText, Folder, FolderOpen } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { cn } from "#/design-system/cn";
 import { Drawer, DrawerContent, DrawerPopup } from "#/design-system/drawer";
@@ -74,10 +74,7 @@ function buildFlatTree() {
 	const srcFolderId = addFolder("src", [routesFolderId]);
 
 	// ── Root-level files ──
-	const rootFiles = [
-		...optionalFile("~", "README.md"),
-		...optionalFile("~", "ROADMAP.md"),
-	];
+	const rootFiles = [...optionalFile("~", "README.md"), ...optionalFile("~", "ROADMAP.md")];
 
 	// ── portfolio/ ──
 	const rootId = addFolder("portfolio", [srcFolderId, ...rootFiles]);
@@ -256,36 +253,22 @@ export function NeoTree() {
 
 	const treeContent = (
 		<>
-			{/* Header */}
-			<div className="flex h-status-bar shrink-0 items-center justify-between border-b border-border px-3 text-tiny text-muted-foreground">
-				<span className="font-medium uppercase tracking-wider text-muted-foreground/70">
-					EXPLORER
-				</span>
-				<button
-					aria-label="Close explorer"
-					className="cursor-pointer text-muted-foreground/70 hover:text-foreground"
-					type="button"
-					onClick={closeNeoTree}
-				>
-					<X className="size-3.5" />
-				</button>
-			</div>
-
 			{/* Tree items */}
 			<div
 				{...tree.getContainerProps()}
-				className="min-h-0 flex-1 overflow-y-auto p-2 font-mono text-xs scrollbar-gutter-both outline-none"
+				className="min-h-0 flex-1 overflow-y-auto p-2 font-mono text-xs outline-none"
 			>
 				{tree.getItems().map((item) => {
 					const itemData = item.getItemData();
 					const isActiveFile = itemData.kind === "file" && itemData.entry.route === currentRoute;
+					const level = item.getItemMeta().level;
 
 					return (
 						<button
 							{...item.getProps()}
 							key={item.getId()}
 							className={cn(
-								"flex w-full items-center gap-1.5 py-0.5 text-left text-muted-foreground transition",
+								"relative flex w-full items-center gap-1.5 py-0.5 text-left text-muted-foreground transition",
 								"focus-visible:outline-none",
 								// Active file highlight
 								isActiveFile && "bg-accent/40 text-primary",
@@ -293,10 +276,29 @@ export function NeoTree() {
 								item.isFocused() && !isActiveFile && "bg-accent/30 text-foreground",
 							)}
 							style={{
-								paddingLeft: `${item.getItemMeta().level * 16 + 8}px`,
+								paddingLeft: `${level * 16 + 8}px`,
 							}}
 							type="button"
 						>
+							{level > 0 && (
+								<span aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-0">
+									{Array.from({ length: level }, (_, depth) => ({
+										key: `tree-line-${level}-${depth}`,
+										left: depth * 16 + 14,
+									})).map((line) => (
+										<span
+											className="absolute top-0 h-full w-px bg-border/70"
+											key={line.key}
+											style={{ left: `${line.left}px` }}
+										/>
+									))}
+									<span
+										className="absolute top-1/2 h-px w-2.5 bg-border/70"
+										style={{ left: `${(level - 1) * 16 + 14}px` }}
+									/>
+								</span>
+							)}
+
 							{/* Icon */}
 							{item.isFolder() ? (
 								item.isExpanded() ? (
@@ -331,8 +333,23 @@ export function NeoTree() {
 			</DrawerPopup>
 		</Drawer>
 	) : (
-		<aside className="flex w-56 shrink-0 flex-col border-r border-border bg-background">
-			{treeContent}
+		<aside className="relative w-56 shrink-0 overflow-hidden pt-3 pb-0 pl-3">
+			<div className="flex size-full flex-col overflow-hidden border-thin border-r-0 border-border bg-background">
+				{treeContent}
+
+				{/* Close button at bottom-right */}
+				<button
+					aria-label="Close explorer"
+					className="cursor-pointer self-end p-2 text-muted-foreground/50 hover:text-foreground"
+					type="button"
+					onClick={closeNeoTree}
+				>
+					<ChevronsLeft className="size-4" />
+				</button>
+			</div>
+			<div className="pointer-events-none absolute top-3 left-5 z-raised -translate-y-1/2 bg-background px-2 text-primary text-tiny">
+				[e] explorer
+			</div>
 		</aside>
 	);
 }

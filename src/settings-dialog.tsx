@@ -11,6 +11,7 @@ import {
 } from "#/design-system/drawer";
 import { Separator } from "#/design-system/separator";
 import { useIsMobile } from "#/design-system/use-media-query";
+import { LanguageSwitcher } from "#/ide/language-switcher";
 import { m } from "#/paraglide/messages";
 import {
 	type AppearanceMode,
@@ -75,8 +76,8 @@ function SettingsDialogInner(props: {
 	const { Description, Title } = props;
 
 	return (
-		<div className="relative flex min-h-0 flex-1 flex-col rounded border-2 border-border bg-popover p-4 text-popover-foreground">
-			<Title className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-2 border-border z-raised">
+		<div className="relative flex min-h-0 flex-1 flex-col border-thin border-border bg-popover p-4 text-popover-foreground">
+			<Title className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-thin border-border z-raised">
 				{m.settings_title()}
 			</Title>
 
@@ -84,6 +85,11 @@ function SettingsDialogInner(props: {
 				<Description className="border-b border-border pb-3">
 					{m.settings_description()}
 				</Description>
+				<section className="grid gap-2">
+					<h2 className="font-medium">Language</h2>
+					<LanguageSwitcher />
+				</section>
+
 				<section className="grid gap-2">
 					<h2 className="font-medium">Mode</h2>
 					<div className="grid gap-2 sm:grid-cols-3">
@@ -95,7 +101,7 @@ function SettingsDialogInner(props: {
 								<button
 									type="button"
 									className={cn(
-										"flex items-center justify-between gap-2 rounded border border-border px-2 py-1.5",
+										"flex items-center justify-between gap-2 border-thin border-border px-2 py-1.5",
 										selected && "bg-primary text-primary-foreground",
 									)}
 									aria-pressed={selected}
@@ -151,7 +157,7 @@ function ThemeList<TTheme extends LightThemeId | DarkThemeId>(props: {
 						<button
 							type="button"
 							className={cn(
-								"flex items-center justify-between gap-3 rounded border border-border px-2 py-2 text-left",
+								"flex items-center justify-between gap-3 border-thin border-border px-2 py-2 text-left",
 								selected && "bg-accent text-accent-foreground",
 							)}
 							aria-label={`Select ${themeLabels[theme.value]}`}
@@ -164,7 +170,7 @@ function ThemeList<TTheme extends LightThemeId | DarkThemeId>(props: {
 								<span className="truncate text-xs">{theme.label}</span>
 							</span>
 							{selected && (
-								<span className="rounded border border-border px-1.5 py-0.5 text-xs">
+								<span className="border-thin border-border px-1.5 py-0.5 text-xs">
 									{m.settings_current()}
 								</span>
 							)}
@@ -179,7 +185,7 @@ function ThemeList<TTheme extends LightThemeId | DarkThemeId>(props: {
 function ThemePalette(props: { theme: ThemeId }) {
 	return (
 		<span
-			className="flex overflow-hidden rounded border border-border"
+			className="flex overflow-hidden border-thin border-border"
 			data-theme={props.theme}
 			aria-hidden="true"
 		>

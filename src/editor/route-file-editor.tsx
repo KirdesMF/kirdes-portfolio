@@ -2,14 +2,19 @@ import { type ReactNode, useEffect } from "react";
 import { findEditorFile } from "#/editor/editor-files";
 import { useIdeStore } from "#/ide/store";
 
-export function RouteFileEditor({ children, fileId }: { children: ReactNode; fileId: string }) {
+export function useTrackRouteFile(fileId: string, options?: { enabled?: boolean }) {
 	const addRecentFile = useIdeStore((s) => s.addRecentFile);
 	const activeFile = findEditorFile(fileId);
 	const activeFileId = activeFile?.id ?? fileId;
+	const enabled = options?.enabled ?? true;
 
 	useEffect(() => {
-		addRecentFile(activeFileId);
-	}, [activeFileId, addRecentFile]);
+		if (enabled) addRecentFile(activeFileId);
+	}, [activeFileId, addRecentFile, enabled]);
+}
+
+export function RouteFileEditor({ children, fileId }: { children: ReactNode; fileId: string }) {
+	useTrackRouteFile(fileId);
 
 	return (
 		<section className="relative flex h-full min-h-0 w-full flex-col border-border text-sm">

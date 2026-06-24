@@ -2,7 +2,7 @@ import { act } from "@testing-library/react";
 
 export function installMatchMedia(initialMatches = false) {
 	let matches = initialMatches;
-	const listeners = new Set<(event: MediaQueryListEvent) => void>();
+	const listeners = new Set<EventListenerOrEventListenerObject>();
 
 	const mediaQueryList = {
 		get matches() {
@@ -10,14 +10,14 @@ export function installMatchMedia(initialMatches = false) {
 		},
 		media: "",
 		onchange: null,
-		addEventListener: (_event: "change", listener: (event: MediaQueryListEvent) => void) => {
+		addEventListener: (_event: "change", listener: EventListenerOrEventListenerObject) => {
 			listeners.add(listener);
 		},
-		removeEventListener: (_event: "change", listener: (event: MediaQueryListEvent) => void) => {
+		removeEventListener: (_event: "change", listener: EventListenerOrEventListenerObject) => {
 			listeners.delete(listener);
 		},
-		addListener: (listener: (event: MediaQueryListEvent) => void) => listeners.add(listener),
-		removeListener: (listener: (event: MediaQueryListEvent) => void) => listeners.delete(listener),
+		addListener: (listener: EventListenerOrEventListenerObject) => listeners.add(listener),
+		removeListener: (listener: EventListenerOrEventListenerObject) => listeners.delete(listener),
 		dispatchEvent: () => true,
 	} as MediaQueryList;
 
@@ -32,7 +32,13 @@ export function installMatchMedia(initialMatches = false) {
 			act(() => {
 				matches = nextMatches;
 				const event = { matches, media: mediaQueryList.media } as MediaQueryListEvent;
-				for (const listener of listeners) listener(event);
+				for (const listener of listeners) {
+					if (typeof listener === "function") {
+						listener(event);
+					} else {
+						listener.handleEvent(event);
+					}
+				}
 			});
 		},
 	};
