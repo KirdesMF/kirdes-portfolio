@@ -2,6 +2,8 @@ import { useHotkeys } from "@tanstack/react-hotkeys";
 import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { SpaceIcon } from "lucide-react";
 import { type ReactNode, useState } from "react";
+import { contactInfo } from "#/data";
+import { ScrambleText } from "#/design-system/scramble-text";
 import { findEditorFileByRoute } from "#/editor/editor-files";
 import { CommandMenu } from "#/ide/command-menu";
 import { CommandHistoryDialog, CommandModeDialog } from "#/ide/command-mode-dialog";
@@ -192,8 +194,21 @@ function IdeShell() {
 					)}
 				</main>
 			</div>
-			<footer className="flex h-status-bar shrink-0 items-center justify-end bg-background px-3 text-tiny text-muted-foreground">
-				<div className="flex items-center gap-3">
+			<footer className="flex h-status-bar shrink-0 items-center justify-between bg-background ps-3 text-tiny text-muted-foreground">
+				<div className="flex h-full items-center gap-2">
+					<div className="flex h-full items-center bg-status-muted px-4 text-status-muted-foreground">
+						<ScrambleText text={`©${new Date().getFullYear()}`} />
+					</div>
+					<a
+						className="flex h-full items-center bg-status-muted px-4 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground"
+						href={contactInfo.github.url}
+						target="_blank"
+						rel="noreferrer"
+					>
+						github
+					</a>
+				</div>
+				<div className="flex items-center gap-3 px-3">
 					<button
 						className="cursor-pointer transition hover:text-foreground"
 						type="button"
