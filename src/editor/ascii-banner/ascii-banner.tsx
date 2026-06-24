@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ScrambleText } from "#/design-system/scramble-text";
 import { BANNER_ART } from "./banner-art";
 import {
@@ -69,6 +69,25 @@ function usePrefersReducedMotion() {
 	}, []);
 
 	return ref;
+}
+
+function NameLabel() {
+	const [expanded, setExpanded] = useState(false);
+	const text = expanded ? "cedric gourville" : "ced grvl";
+
+	return (
+		<button
+			aria-label="cedric gourville"
+			className="cursor-default text-left"
+			type="button"
+			onBlur={() => setExpanded(false)}
+			onFocus={() => setExpanded(true)}
+			onMouseEnter={() => setExpanded(true)}
+			onMouseLeave={() => setExpanded(false)}
+		>
+			<ScrambleText key={text} text={text} />
+		</button>
+	);
 }
 
 function VersionLabel() {
@@ -242,9 +261,14 @@ export function AsciiBanner({
 			}}
 		>
 			<div className="grid gap-1">
-				<span className="justify-self-end text-status-primary text-xs leading-none">
-					<VersionLabel />
-				</span>
+				<div className="flex items-center justify-between text-status-primary text-xs leading-none">
+					<span>
+						<NameLabel />
+					</span>
+					<span>
+						<VersionLabel />
+					</span>
+				</div>
 				<canvas className="mx-auto block max-w-full" ref={canvasRef} />
 			</div>
 		</div>
