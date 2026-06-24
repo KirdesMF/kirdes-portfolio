@@ -2,6 +2,7 @@ import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
 	Briefcase,
 	FolderTreeIcon,
+	HelpCircle,
 	History,
 	Languages,
 	Link,
@@ -37,6 +38,7 @@ export function CommandMenu() {
 	const setOpen = useIdeStore((s) => s.setCommandMenuOpen);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
 	const setRecentFilesOpen = useIdeStore((s) => s.setRecentFilesOpen);
+	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
 	const navigate = useNavigate();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
 	const search = useRouterState({ select: (s) => s.location.search }) as {
@@ -152,6 +154,16 @@ export function CommandMenu() {
 			shortcut: "s",
 			action: () => {
 				setSettingsOpen(true);
+				setOpen(false);
+			},
+		},
+		{
+			id: "help",
+			Icon: HelpCircle,
+			label: "Help",
+			shortcut: "?",
+			action: () => {
+				setHelpOpen(true);
 				setOpen(false);
 			},
 		},

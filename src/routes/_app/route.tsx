@@ -194,9 +194,9 @@ function IdeShell() {
 					)}
 				</main>
 			</div>
-			<footer className="flex h-status-bar shrink-0 items-center justify-between bg-background ps-3 text-tiny text-muted-foreground">
+			<footer className="flex h-status-bar shrink-0 items-center justify-between bg-background text-tiny text-muted-foreground ps-3">
 				<div className="flex h-full items-center gap-2">
-					<div className="flex h-full items-center bg-status-muted px-4 text-status-muted-foreground">
+					<div className="hidden h-full items-center bg-status-muted px-4 text-status-muted-foreground md:flex">
 						<ScrambleText text={`©${new Date().getFullYear()}`} />
 					</div>
 					<a
@@ -208,34 +208,34 @@ function IdeShell() {
 						github
 					</a>
 				</div>
-				<div className="flex items-center gap-3 px-3">
+				<div className="flex h-full items-center gap-2 pe-3">
 					<button
-						className="cursor-pointer transition hover:text-foreground"
-						type="button"
-						onClick={() => setHelpOpen(true)}
-					>
-						[? help]
-					</button>
-					<button
-						className="cursor-pointer transition hover:text-foreground"
+						className="flex h-full cursor-pointer items-center bg-status-muted px-4 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground"
 						type="button"
 						onClick={toggleCommandMenu}
 					>
-						[<SpaceIcon className="inline size-3 align-[-0.125em]" /> menu]
+						<SpaceIcon className="me-1 inline size-3 align-[-0.125em]" /> menu
 					</button>
 					<button
-						className="cursor-pointer transition hover:text-foreground"
+						className="flex h-full cursor-pointer items-center bg-status-muted px-4 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground"
 						type="button"
 						onClick={toggleExplorer}
 					>
-						[e explorer]
+						e explorer
 					</button>
 					<button
-						className="cursor-pointer transition hover:text-foreground"
+						className="hidden h-full cursor-pointer items-center bg-status-muted px-4 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground md:flex"
 						type="button"
 						onClick={() => setSettingsOpen(true)}
 					>
-						[s settings]
+						s settings
+					</button>
+					<button
+						className="hidden h-full cursor-pointer items-center bg-status-muted px-4 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground md:flex"
+						type="button"
+						onClick={() => setHelpOpen(true)}
+					>
+						? help
 					</button>
 				</div>
 			</footer>

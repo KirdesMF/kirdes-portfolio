@@ -76,17 +76,13 @@ function NameLabel() {
 	const text = expanded ? "cedric gourville" : "ced grvl";
 
 	return (
-		<button
-			aria-label="cedric gourville"
-			className="cursor-default text-left"
-			type="button"
-			onBlur={() => setExpanded(false)}
-			onFocus={() => setExpanded(true)}
+		<p
+			className="cursor-default"
 			onMouseEnter={() => setExpanded(true)}
 			onMouseLeave={() => setExpanded(false)}
 		>
 			<ScrambleText key={text} text={text} />
-		</button>
+		</p>
 	);
 }
 
@@ -262,9 +258,7 @@ export function AsciiBanner({
 		>
 			<div className="grid gap-1">
 				<div className="flex items-center justify-between text-status-primary text-xs leading-none">
-					<span>
-						<NameLabel />
-					</span>
+					<NameLabel />
 					<span>
 						<VersionLabel />
 					</span>

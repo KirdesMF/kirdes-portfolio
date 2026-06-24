@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import {
 	Briefcase,
 	FileText,
+	FolderTreeIcon,
 	HelpCircle,
 	History,
 	type LucideIcon,
@@ -25,6 +26,7 @@ const emptyEditorCommands: Array<{
 	label: string;
 	shortcut: string;
 }> = [
+	{ id: "explorer", Icon: FolderTreeIcon, label: "Explorer", shortcut: "e" },
 	{ id: "find-file", Icon: Search, label: "Find File", shortcut: "f" },
 	{ id: "projects", Icon: Briefcase, label: "Projects", shortcut: "p" },
 	{ id: "find-text", Icon: FileText, label: "Find Text", shortcut: "g" },
@@ -69,6 +71,12 @@ export function EmptyEditor() {
 
 	function runEmptyEditorCommand(commandId: string) {
 		switch (commandId) {
+			case "explorer":
+				void navigate({
+					to: "/start",
+					search: { neotree: "open" as const },
+				});
+				break;
 			case "find-file":
 				setFindFileOpen(true);
 				break;
