@@ -54,7 +54,7 @@ function RootDocument({ children }: { children: ReactNode }) {
 			<body className="h-dvh overflow-hidden bg-background font-mono font-extralight text-xs text-foreground">
 				<svg
 					aria-hidden="true"
-					className="pointer-events-none fixed inset-0 z-screen-effect size-full opacity-80 mix-blend-screen [filter:grayscale(100%)] dark:opacity-20"
+					className="pointer-events-none fixed inset-0 z-screen-effect size-full opacity-80 mix-blend-screen grayscale dark:opacity-20"
 				>
 					<filter id="noise-bg-fx">
 						<feTurbulence baseFrequency="0.8" />
