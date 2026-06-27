@@ -253,8 +253,8 @@ function IdeShell() {
 	);
 
 	return (
-		<div className="flex h-dvh flex-col">
-			<div className="relative flex min-h-0 flex-1">
+		<div className="flex h-dvh flex-col pb-2">
+			<div className="relative flex min-h-0 flex-1 pb-2">
 				<NeoTree />
 				<main
 					className={`relative min-w-0 flex-1 overflow-hidden ${search.neotree === "open" ? "pt-3 pr-3 pb-0 pl-0" : "px-3 pt-3 pb-0"}`}
