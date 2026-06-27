@@ -45,7 +45,7 @@ const variantClass = {
 
 const EDITOR_BRANCH_NAME = "feat/portfolio";
 
-function getCursorProgress(line: number, lineCount: number): string {
+function getPageProgress(line: number, lineCount: number): string {
 	if (line <= 1) return "Top";
 	if (line >= lineCount) return "Bot";
 	return `${Math.floor((line / lineCount) * 100)}%`;
@@ -140,12 +140,19 @@ function Chevron(props: { direction: "left" | "right"; variant: StatusVariant })
 
 // ─── Main component ──────────────────────────────────────────────────────────
 
-export function StatusBar({ currentFile }: { currentFile?: string }) {
+export function StatusBar({
+	currentFile,
+	pageLine,
+	pageLineCount,
+}: {
+	currentFile?: string;
+	pageLine?: number | null;
+	pageLineCount?: number | null;
+}) {
 	const editorMode = useIdeStore((s) => s.editorMode);
-	const cursorLine = useIdeStore((s) => s.cursorLine);
-	const cursorColumn = useIdeStore((s) => s.cursorColumn);
-	const cursorLineCount = useIdeStore((s) => s.cursorLineCount);
-	const cursorProgress = getCursorProgress(cursorLine, cursorLineCount);
+	const activePageLine = pageLine ?? 1;
+	const activePageLineCount = pageLineCount ?? 1;
+	const pageProgress = getPageProgress(activePageLine, activePageLineCount);
 
 	const leftItems: StatusItem[] = [
 		{
@@ -177,11 +184,11 @@ export function StatusBar({ currentFile }: { currentFile?: string }) {
 
 	const rightItems: StatusItem[] = [
 		{
-			id: "cursor",
+			id: "page-line",
 			variant: "muted",
 			content: (
 				<span className="tabular-nums">
-					{cursorProgress} {cursorLine}:{cursorColumn}
+					{pageProgress} {activePageLine}/{activePageLineCount}
 				</span>
 			),
 			className: "hidden sm:flex",
