@@ -7,6 +7,10 @@
 	* {
 		@apply scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent;
 	}
+
+	*:focus-visible {
+		@apply outline-none ring-2 ring-focus-ring;
+	}
 }
 
 @utility dot-pattern {
@@ -35,6 +39,7 @@
 	--border: oklch(0.9288 0.0126 255.5078);
 	--input: oklch(0.9288 0.0126 255.5078);
 	--ring: oklch(0.7107 0.0351 256.7878);
+	--focus-ring: var(--insert-background);
 	--editor: var(--background);
 	--editor-foreground: var(--foreground);
 	--editor-line: var(--muted);
@@ -91,6 +96,7 @@
 	--color-border: var(--border);
 	--color-input: var(--input);
 	--color-ring: var(--ring);
+	--color-focus-ring: var(--focus-ring);
 	--color-editor: var(--editor);
 	--color-editor-foreground: var(--editor-foreground);
 	--color-editor-line: var(--editor-line);
@@ -139,6 +145,7 @@
 	--tracking-wider: calc(var(--tracking-normal) + 0.05em);
 	--tracking-widest: calc(var(--tracking-normal) + 0.1em);
 
+	--text-xxs: 0.5rem;
 	--text-tiny: 0.625rem;
 }
 

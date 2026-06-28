@@ -129,7 +129,7 @@ function NvimLaunchOutput(): ReactNode {
 				<span className="text-foreground/80">NVIM v0.11.0</span>
 			</p>
 			<p className="text-muted-foreground/70">
-				Opening project in editor… <ThinkingLoader />
+				Opening work in editor… <ThinkingLoader />
 			</p>
 		</div>
 	);

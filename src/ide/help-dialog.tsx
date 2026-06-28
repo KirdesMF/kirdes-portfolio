@@ -30,9 +30,6 @@ const keybindingGroups = [
 	{
 		label: "Leader mappings",
 		rows: [
-			{ keys: "Space p", desc: "Open projects" },
-			{ keys: "Space o", desc: "Open preview" },
-			{ keys: "Space y", desc: "Yank link" },
 			{ keys: "Space T", desc: "Cycle theme mode" },
 			{ keys: "Space l", desc: "Toggle language" },
 			{ keys: "c", desc: "Open contacts" },

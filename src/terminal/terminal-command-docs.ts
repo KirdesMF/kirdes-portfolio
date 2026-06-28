@@ -3,12 +3,12 @@ import { contactInfo } from "#/data";
 export const routeDescriptions: Record<string, string> = {
 	"/start": "home — portfolio root",
 	"/about": "about — background, values, and philosophy",
-	"/projects": "projects — selected project notes",
+	"/works": "works — selected work notes",
 	"/contact": "contact — get in touch with me",
 };
 
 export const manPages: Record<string, string> = {
-	cat: "cat <file> — print file contents to the terminal.\n  Resolves relative to current folder, falls back to root.\n  Examples:\n    cat README.md\n    cat /projects/index.md",
+	cat: "cat <file> — print file contents to the terminal.\n  Resolves relative to current folder, falls back to root.\n  Examples:\n    cat README.md\n    cat /works/index.md",
 	cd: "cd [directory] — navigate to a route/directory.\n  Without arguments, goes home (~).\n  cd .. also goes home (single-level navigation).\n  Examples:\n    cd about\n    cd /contact\n    cd ..",
 	clear: "clear — clear the terminal screen.",
 	config: "config — open appearance settings. Alias for settings.",

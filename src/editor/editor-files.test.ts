@@ -9,9 +9,9 @@ describe("editor files", () => {
 	});
 
 	it("resolves absolute file paths", () => {
-		expect(resolveFile("/projects/index.md")?.id).toBe("src/routes/projects/index.md");
-		expect(resolveFile("/projects/project-1.md")?.id).toBeUndefined();
-		expect(resolveFile("/projects")?.id).toBeUndefined();
+		expect(resolveFile("/works/index.md")?.id).toBe("src/routes/works/index.md");
+		expect(resolveFile("/works/work-1.md")?.id).toBeUndefined();
+		expect(resolveFile("/works")?.id).toBeUndefined();
 	});
 
 	it("prefers current folder before root and global files", () => {
@@ -26,7 +26,7 @@ describe("editor files", () => {
 		expect(result.folders.map((folder) => folder.folder)).toEqual([
 			"~",
 			"src/routes",
-			"src/routes/projects",
+			"src/routes/works",
 		]);
 		expect(result.files.map((file) => file.id)).toContain("~/README.md");
 		expect(result.files.map((file) => file.id)).toContain("~/ROADMAP.md");
@@ -50,8 +50,8 @@ describe("editor files", () => {
 	it("does not return removed files", () => {
 		expect(findEditorFile("src/routes/about.tsx")).toBeNull();
 		expect(findEditorFile("src/routes/contact.tsx")).toBeNull();
-		expect(findEditorFile("src/routes/projects/index.tsx")).toBeNull();
-		expect(findEditorFile("src/routes/projects/project-1.md")).toBeNull();
-		expect(findEditorFile("src/routes/projects/project-2.md")).toBeNull();
+		expect(findEditorFile("src/routes/works/index.tsx")).toBeNull();
+		expect(findEditorFile("src/routes/works/work-1.md")).toBeNull();
+		expect(findEditorFile("src/routes/works/work-2.md")).toBeNull();
 	});
 });

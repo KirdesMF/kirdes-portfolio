@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { RouteFileEditor } from "#/editor/route-file-editor";
 
-const fileId = "src/routes/projects/index.md";
+const fileId = "src/routes/works/index.md";
 
-const projectRows = [
+const workRows = [
 	["terminal-portfolio", "10.3 KB", "Interactive terminal portfolio shell"],
 	["workspace-ui", "5.8 KB", "Editor frame, tabs, file tree"],
 	["ascii-banner", "4.8 KB", "Canvas banner, shimmer effects"],
@@ -11,7 +11,7 @@ const projectRows = [
 	["theme-system", "4.5 KB", "Light/dark IDE color palettes"],
 	["availability-status", "3.5 KB", "Work status, contact context"],
 	["page-line-status", "3.4 KB", "Scroll-aware line number status"],
-	["project-notes", "2.7 KB", "Markdown-inspired case studies"],
+	["work-notes", "2.7 KB", "Markdown-inspired case studies"],
 	["settings-drawer", "2.3 KB", "Theme, language preferences"],
 	["neo-tree", "2.0 KB", "Workspace file navigation"],
 	["contact-dialog", "1.9 KB", "Focused links, quick reach out"],
@@ -19,7 +19,7 @@ const projectRows = [
 ] as const;
 
 const tableColumns = [
-	{ header: "Project", width: 28 },
+	{ header: "Work", width: 28 },
 	{ header: "Size", width: 8 },
 	{ header: "Description", width: 36 },
 ] as const;
@@ -32,15 +32,15 @@ function row(values: readonly string[]) {
 	return `| ${values.map((value, index) => value.padEnd(tableColumns[index]?.width ?? value.length)).join(" | ")} |`;
 }
 
-const projectsTable = [
+const worksTable = [
 	divider(),
 	row(tableColumns.map((column) => column.header)),
 	divider(),
-	...projectRows.map((project) => row(project)),
+	...workRows.map((work) => row(work)),
 	divider(),
 ].join("\n");
 
-export const Route = createFileRoute("/_app/_workspace/projects/")({
+export const Route = createFileRoute("/_app/_workspace/works/")({
 	component: RouteComponent,
 });
 
@@ -49,11 +49,11 @@ function RouteComponent() {
 		<RouteFileEditor fileId={fileId}>
 			<article className="space-y-10 font-mono text-foreground">
 				<h1 className="font-normal text-xl text-muted-foreground uppercase tracking-wide">
-					<span className="text-muted-foreground/35">##</span> PROJECTS
+					<span className="text-muted-foreground/35">##</span> WORKS
 				</h1>
 
 				<div className="overflow-x-auto pb-2">
-					<pre className="min-w-max text-xs leading-5">{projectsTable}</pre>
+					<pre className="min-w-max text-xs leading-5">{worksTable}</pre>
 				</div>
 			</article>
 		</RouteFileEditor>

@@ -20,7 +20,7 @@ import { Route as AppWorkspaceReadmeRouteImport } from './routes/_app/_workspace
 import { Route as AppWorkspaceEditorRouteImport } from './routes/_app/_workspace/editor'
 import { Route as AppWorkspaceContactRouteImport } from './routes/_app/_workspace/contact'
 import { Route as AppWorkspaceAboutRouteImport } from './routes/_app/_workspace/about'
-import { Route as AppWorkspaceProjectsIndexRouteImport } from './routes/_app/_workspace/projects/index'
+import { Route as AppWorkspaceWorksIndexRouteImport } from './routes/_app/_workspace/works/index'
 
 const LoadingRoute = LoadingRouteImport.update({
   id: '/loading',
@@ -75,12 +75,11 @@ const AppWorkspaceAboutRoute = AppWorkspaceAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => AppWorkspaceRouteRoute,
 } as any)
-const AppWorkspaceProjectsIndexRoute =
-  AppWorkspaceProjectsIndexRouteImport.update({
-    id: '/projects/',
-    path: '/projects/',
-    getParentRoute: () => AppWorkspaceRouteRoute,
-  } as any)
+const AppWorkspaceWorksIndexRoute = AppWorkspaceWorksIndexRouteImport.update({
+  id: '/works/',
+  path: '/works/',
+  getParentRoute: () => AppWorkspaceRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -92,7 +91,7 @@ export interface FileRoutesByFullPath {
   '/readme': typeof AppWorkspaceReadmeRoute
   '/roadmap': typeof AppWorkspaceRoadmapRoute
   '/terminal': typeof AppWorkspaceTerminalRoute
-  '/projects/': typeof AppWorkspaceProjectsIndexRoute
+  '/works/': typeof AppWorkspaceWorksIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -104,7 +103,7 @@ export interface FileRoutesByTo {
   '/readme': typeof AppWorkspaceReadmeRoute
   '/roadmap': typeof AppWorkspaceRoadmapRoute
   '/terminal': typeof AppWorkspaceTerminalRoute
-  '/projects': typeof AppWorkspaceProjectsIndexRoute
+  '/works': typeof AppWorkspaceWorksIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -119,7 +118,7 @@ export interface FileRoutesById {
   '/_app/_workspace/readme': typeof AppWorkspaceReadmeRoute
   '/_app/_workspace/roadmap': typeof AppWorkspaceRoadmapRoute
   '/_app/_workspace/terminal': typeof AppWorkspaceTerminalRoute
-  '/_app/_workspace/projects/': typeof AppWorkspaceProjectsIndexRoute
+  '/_app/_workspace/works/': typeof AppWorkspaceWorksIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -133,7 +132,7 @@ export interface FileRouteTypes {
     | '/readme'
     | '/roadmap'
     | '/terminal'
-    | '/projects/'
+    | '/works/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -145,7 +144,7 @@ export interface FileRouteTypes {
     | '/readme'
     | '/roadmap'
     | '/terminal'
-    | '/projects'
+    | '/works'
   id:
     | '__root__'
     | '/'
@@ -159,7 +158,7 @@ export interface FileRouteTypes {
     | '/_app/_workspace/readme'
     | '/_app/_workspace/roadmap'
     | '/_app/_workspace/terminal'
-    | '/_app/_workspace/projects/'
+    | '/_app/_workspace/works/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -247,11 +246,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWorkspaceAboutRouteImport
       parentRoute: typeof AppWorkspaceRouteRoute
     }
-    '/_app/_workspace/projects/': {
-      id: '/_app/_workspace/projects/'
-      path: '/projects'
-      fullPath: '/projects/'
-      preLoaderRoute: typeof AppWorkspaceProjectsIndexRouteImport
+    '/_app/_workspace/works/': {
+      id: '/_app/_workspace/works/'
+      path: '/works'
+      fullPath: '/works/'
+      preLoaderRoute: typeof AppWorkspaceWorksIndexRouteImport
       parentRoute: typeof AppWorkspaceRouteRoute
     }
   }
@@ -264,7 +263,7 @@ interface AppWorkspaceRouteRouteChildren {
   AppWorkspaceReadmeRoute: typeof AppWorkspaceReadmeRoute
   AppWorkspaceRoadmapRoute: typeof AppWorkspaceRoadmapRoute
   AppWorkspaceTerminalRoute: typeof AppWorkspaceTerminalRoute
-  AppWorkspaceProjectsIndexRoute: typeof AppWorkspaceProjectsIndexRoute
+  AppWorkspaceWorksIndexRoute: typeof AppWorkspaceWorksIndexRoute
 }
 
 const AppWorkspaceRouteRouteChildren: AppWorkspaceRouteRouteChildren = {
@@ -274,7 +273,7 @@ const AppWorkspaceRouteRouteChildren: AppWorkspaceRouteRouteChildren = {
   AppWorkspaceReadmeRoute: AppWorkspaceReadmeRoute,
   AppWorkspaceRoadmapRoute: AppWorkspaceRoadmapRoute,
   AppWorkspaceTerminalRoute: AppWorkspaceTerminalRoute,
-  AppWorkspaceProjectsIndexRoute: AppWorkspaceProjectsIndexRoute,
+  AppWorkspaceWorksIndexRoute: AppWorkspaceWorksIndexRoute,
 }
 
 const AppWorkspaceRouteRouteWithChildren =

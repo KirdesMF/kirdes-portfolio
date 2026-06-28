@@ -1,7 +1,8 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { animate, createScope, stagger } from "animejs";
 import {
-	Briefcase,
+	Compass,
 	FileText,
 	FolderTreeIcon,
 	HelpCircle,
@@ -11,14 +12,13 @@ import {
 	RotateCw,
 	Search,
 	Settings,
-	Zap,
 } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "#/design-system/cn";
+import { CommandDialog, CommandInput, CommandItem, CommandList } from "#/design-system/command";
 import { useScrambleRef } from "#/design-system/use-scramble-ref";
 import { AsciiBanner } from "#/editor/ascii-banner/ascii-banner";
 import { useIdeStore } from "#/ide/store";
-import { getRandomNumber } from "#/utils/random-number";
 
 const emptyEditorCommands: Array<{
 	id: string;
@@ -28,7 +28,7 @@ const emptyEditorCommands: Array<{
 }> = [
 	{ id: "explorer", Icon: FolderTreeIcon, label: "Explorer", shortcut: "e" },
 	{ id: "find-file", Icon: Search, label: "Find File", shortcut: "f" },
-	{ id: "projects", Icon: Briefcase, label: "Projects", shortcut: "p" },
+	{ id: "navigation", Icon: Compass, label: "Navigation", shortcut: "n" },
 	{ id: "find-text", Icon: FileText, label: "Find Text", shortcut: "g" },
 	{ id: "recent-files", Icon: History, label: "Recent Files", shortcut: "r" },
 	{ id: "contacts", Icon: Mail, label: "Contacts", shortcut: "c" },
@@ -37,16 +37,61 @@ const emptyEditorCommands: Array<{
 	{ id: "help", Icon: HelpCircle, label: "Help", shortcut: "?" },
 ];
 
+const navigationItems = [
+	{ label: "About", route: "/about" },
+	{ label: "Contact", route: "/contact" },
+	{ label: "Works", route: "/works" },
+] as const;
+
+const loaderCells = Array.from({ length: 9 }, (_, index) => index);
+const diagonalOrder = [0, 1, 2, 1, 2, 3, 2, 3, 4] as const;
+
+function TinyDiagonalLoader() {
+	const rootRef = useRef<HTMLDivElement | null>(null);
+
+	useEffect(() => {
+		const scope = createScope({
+			mediaQueries: { reduceMotion: "(prefers-reduced-motion: reduce)" },
+			root: rootRef,
+		}).add((self) => {
+			if (self?.matches.reduceMotion) return;
+			animate("[data-tiny-loader-cell]", {
+				delay: stagger(75, { use: "data-index" }),
+				duration: 900,
+				loop: true,
+				opacity: [0.25, 1, 0.25],
+			});
+		});
+
+		return () => scope.revert();
+	}, []);
+
+	return (
+		<div aria-hidden="true" className="grid grid-cols-3 gap-0.5" ref={rootRef}>
+			{loaderCells.map((cell) => (
+				<span
+					className="size-1 border-thin border-current bg-current text-primary"
+					data-index={diagonalOrder[cell]}
+					data-tiny-loader-cell=""
+					key={cell}
+				/>
+			))}
+		</div>
+	);
+}
+
 export function EmptyEditor() {
-	const loadingTimeId = useId();
-	const loadingTimeRef = useRef(getRandomNumber({ hash: loadingTimeId, max: 100, min: 20 }));
 	const [compact, setCompact] = useState(false);
+	const [navigationOpen, setNavigationOpen] = useState(false);
+	const [navigationSearch, setNavigationSearch] = useState("");
+	const search = useRouterState({ select: (s) => s.location.search }) as { neotree?: "open" };
 	const commandMenuOpen = useIdeStore((s) => s.commandMenuOpen);
 	const settingsOpen = useIdeStore((s) => s.settingsOpen);
 	const findFileOpen = useIdeStore((s) => s.findFileOpen);
 	const findTextOpen = useIdeStore((s) => s.findTextOpen);
 	const setFindFileOpen = useIdeStore((s) => s.setFindFileOpen);
 	const setFindTextOpen = useIdeStore((s) => s.setFindTextOpen);
+	const setEditorMode = useIdeStore((s) => s.setEditorMode);
 	const setRecentFilesOpen = useIdeStore((s) => s.setRecentFilesOpen);
 	const recentFilesOpen = useIdeStore((s) => s.recentFilesOpen);
 	const helpOpen = useIdeStore((s) => s.helpOpen);
@@ -61,7 +106,8 @@ export function EmptyEditor() {
 		contactsOpen ||
 		findFileOpen ||
 		findTextOpen ||
-		recentFilesOpen;
+		recentFilesOpen ||
+		navigationOpen;
 	const navigate = useNavigate();
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const rootRef = useScrambleRef<HTMLDivElement>({
@@ -80,11 +126,9 @@ export function EmptyEditor() {
 			case "find-file":
 				setFindFileOpen(true);
 				break;
-			case "projects":
-				void navigate({
-					to: "/projects",
-					search: { neotree: "open" as const },
-				});
+			case "navigation":
+				setNavigationOpen(true);
+				setEditorMode("insert");
 				break;
 			case "find-text":
 				setFindTextOpen(true);
@@ -111,7 +155,7 @@ export function EmptyEditor() {
 		[
 			{ hotkey: "Shift+R", callback: () => runEmptyEditorCommand("reload") },
 			{ hotkey: "F", callback: () => runEmptyEditorCommand("find-file") },
-			{ hotkey: "P", callback: () => runEmptyEditorCommand("projects") },
+			{ hotkey: "N", callback: () => runEmptyEditorCommand("navigation") },
 			{ hotkey: "C", callback: () => runEmptyEditorCommand("contacts") },
 			{ hotkey: "G", callback: () => runEmptyEditorCommand("find-text") },
 			{ hotkey: "R", callback: () => runEmptyEditorCommand("recent-files") },
@@ -122,6 +166,23 @@ export function EmptyEditor() {
 			preventDefault: true,
 		},
 	);
+
+	const filteredNavigationItems = navigationItems.filter((item) =>
+		item.label.toLowerCase().includes(navigationSearch.trim().toLowerCase()),
+	);
+
+	function openNavigationRoute(route: (typeof navigationItems)[number]["route"]) {
+		void navigate({ to: route, search });
+		setNavigationOpen(false);
+		setNavigationSearch("");
+		setEditorMode("normal");
+	}
+
+	function handleNavigationOpenChange(open: boolean) {
+		setNavigationOpen(open);
+		setEditorMode(open ? "insert" : "normal");
+		if (!open) setNavigationSearch("");
+	}
 
 	useEffect(() => {
 		const container = containerRef.current;
@@ -176,14 +237,46 @@ export function EmptyEditor() {
 					className="flex items-center justify-center gap-1.5 text-primary/70 text-tiny"
 					ref={rootRef}
 				>
-					<Zap aria-hidden="true" className="size-3 text-primary" />
-					<span data-anim-editor-status>
-						Neovim loaded <span className="text-status-primary">5/38</span> plugins in{" "}
-						{loadingTimeRef.current}
-						ms
-					</span>
+					<TinyDiagonalLoader />
+					<Link
+						className="text-primary/70 transition hover:text-primary"
+						search={search}
+						to="/contact"
+					>
+						<span data-anim-editor-status>open to freelance and full-time opportunities</span>
+					</Link>
 				</div>
 			</div>
+			<CommandDialog
+				commandClassName="h-[min(70dvh,18rem)]"
+				description="Choose a route to open in the editor."
+				open={navigationOpen}
+				title="NAVIGATION"
+				onOpenChange={handleNavigationOpenChange}
+			>
+				<CommandInput
+					autoFocus
+					className="h-9 border-b-0 px-0 text-xs"
+					placeholder="Navigate..."
+					value={navigationSearch}
+					onFocus={() => setEditorMode("insert")}
+					onValueChange={setNavigationSearch}
+				/>
+				<CommandList className="min-h-0 flex-1 p-0 pt-2">
+					{filteredNavigationItems.map((item) => (
+						<CommandItem
+							className="rounded-none px-2 text-muted-foreground"
+							key={item.route}
+							value={`${item.label} ${item.route}`}
+							onSelect={() => openNavigationRoute(item.route)}
+						>
+							<Compass className="size-3 shrink-0" />
+							<span>{item.label}</span>
+							<span className="ms-auto text-command-shortcut">{item.route}</span>
+						</CommandItem>
+					))}
+				</CommandList>
+			</CommandDialog>
 		</div>
 	);
 }

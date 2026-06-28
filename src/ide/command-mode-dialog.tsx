@@ -27,7 +27,7 @@ export function CommandModeDialog() {
 
 	const normalized = normalizeCommand(input);
 	const suggestions = useMemo(() => {
-		if (!normalized) return [];
+		if (!normalized) return commandModeCommands;
 		return commandModeCommands.filter((command) =>
 			[command.name, ...command.aliases].some((value) => value.includes(normalized)),
 		);
@@ -80,7 +80,7 @@ export function CommandModeDialog() {
 					placeholder="Type a command..."
 					value={input}
 					onKeyDown={(event) => {
-						if (event.key === "Enter") {
+						if (event.key === "Enter" && suggestions.length === 0) {
 							event.preventDefault();
 							executeInput();
 						}
@@ -93,22 +93,20 @@ export function CommandModeDialog() {
 				/>
 			</div>
 			{error ? <p className="px-2 pt-2 text-muted-foreground text-xs">{error}</p> : null}
-			{normalized ? (
-				<CommandList className="max-h-44 p-0 pt-2">
-					<CommandEmpty className="py-4">No commands found.</CommandEmpty>
-					{suggestions.map((command) => (
-						<CommandItem
-							className="rounded-none px-2 text-muted-foreground"
-							key={command.name}
-							value={command.name}
-							onSelect={() => executeInput(command.name)}
-						>
-							<span className="text-foreground">:{command.name}</span>
-							<span className="truncate">{command.description}</span>
-						</CommandItem>
-					))}
-				</CommandList>
-			) : null}
+			<CommandList className="max-h-44 p-0 pt-2">
+				<CommandEmpty className="py-4">No commands found.</CommandEmpty>
+				{suggestions.map((command) => (
+					<CommandItem
+						className="rounded-none px-2 text-muted-foreground"
+						key={command.name}
+						value={command.name}
+						onSelect={() => executeInput(command.name)}
+					>
+						<span className="text-foreground">:{command.name}</span>
+						<span className="truncate">{command.description}</span>
+					</CommandItem>
+				))}
+			</CommandList>
 		</CommandDialog>
 	);
 }
@@ -118,11 +116,26 @@ export function CommandHistoryDialog() {
 	const setOpen = useIdeStore((s) => s.setCommandHistoryOpen);
 	const setEditorMode = useIdeStore((s) => s.setEditorMode);
 	const history = useIdeStore((s) => s.commandHistory);
-	const setCommandModeOpen = useIdeStore((s) => s.setCommandModeOpen);
+	const addCommandHistory = useIdeStore((s) => s.addCommandHistory);
+	const { appearance, setAppearance } = useTheme();
+	const navigate = useNavigate();
+	const searchParams = useRouterState({
+		select: (s) => s.location.search as { neotree?: "open" },
+	});
 
 	function handleOpenChange(nextOpen: boolean) {
 		setOpen(nextOpen);
 		if (!nextOpen) setEditorMode("normal");
+	}
+
+	function executeHistoryCommand(commandText: string) {
+		const command = findCommand(commandText);
+		if (!command) return;
+
+		command.execute({ appearance, setAppearance, setLocale, navigate, searchParams });
+		addCommandHistory(commandText);
+		setOpen(false);
+		setEditorMode("normal");
 	}
 
 	return (
@@ -143,11 +156,7 @@ export function CommandHistoryDialog() {
 						className="rounded-none px-2 text-muted-foreground"
 						key={command}
 						value={command}
-						onSelect={() => {
-							setOpen(false);
-							setCommandModeOpen(true);
-							setEditorMode("command");
-						}}
+						onSelect={() => executeHistoryCommand(command)}
 					>
 						<span className="text-primary">:</span>
 						<span className="truncate">{command}</span>

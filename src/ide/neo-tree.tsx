@@ -57,11 +57,11 @@ function buildFlatTree() {
 	}
 
 	// ── src/routes/ ──
-	const projectsEntry = findFile("src/routes/projects", "index.md");
+	const worksEntry = findFile("src/routes/works", "index.md");
 	const routesFolderId = addFolder("routes", [
 		...optionalFile("src/routes", "about.md"),
 		...optionalFile("src/routes", "contact.md"),
-		...(projectsEntry ? [addFile(projectsEntry, "projects.md")] : []),
+		...(worksEntry ? [addFile(worksEntry, "works.md")] : []),
 	]);
 
 	// ── src/ ──
@@ -165,7 +165,7 @@ export function NeoTree() {
 				for (const grandChildId of folderChildren[childId] ?? []) {
 					if (treeItems[grandChildId]?.kind === "folder") {
 						expanded.push(grandChildId);
-						// Also expand routes children (projects)
+						// Also expand routes children (works)
 						for (const greatGrandChildId of folderChildren[grandChildId] ?? []) {
 							if (treeItems[greatGrandChildId]?.kind === "folder") {
 								expanded.push(greatGrandChildId);
@@ -327,7 +327,7 @@ export function NeoTree() {
 			</DrawerPopup>
 		</Drawer>
 	) : (
-		<aside className="relative w-56 shrink-0 overflow-hidden pt-3 pb-0 pl-3">
+		<aside className="relative min-h-0 w-56">
 			<div className="flex size-full flex-col overflow-hidden border-thin border-r-0 border-border bg-background">
 				{treeContent}
 
@@ -341,7 +341,7 @@ export function NeoTree() {
 					<ChevronsLeft className="size-4" />
 				</button>
 			</div>
-			<div className="pointer-events-none absolute top-3 left-5 z-raised -translate-y-1/2 bg-background px-2 text-primary text-tiny">
+			<div className="pointer-events-none absolute top-0 left-2 z-raised -translate-y-1/2 bg-background px-2 text-primary text-tiny">
 				[e] explorer
 			</div>
 		</aside>

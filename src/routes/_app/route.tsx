@@ -1,10 +1,9 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
-import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
-import { SpaceIcon } from "lucide-react";
+import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
-import { contactInfo } from "#/data";
-import { ScrambleText } from "#/design-system/scramble-text";
+
 import { findEditorFileByRoute, getDisplayFileName } from "#/editor/editor-files";
+import { SpaceIcon } from "#/icons/space-icon";
 import { CommandMenu } from "#/ide/command-menu";
 import { CommandHistoryDialog, CommandModeDialog } from "#/ide/command-mode-dialog";
 import { ContactsDialog } from "#/ide/contacts-dialog";
@@ -233,18 +232,6 @@ function IdeShell() {
 					if (!commandMenuOpen) openHome();
 				},
 			},
-			{
-				hotkey: { key: ":", shift: true },
-				callback: () => {
-					if (commandMenuOpen) {
-						setCommandHistoryOpen(true);
-						return;
-					}
-
-					setCommandModeOpen(true);
-					setEditorMode("command");
-				},
-			},
 		],
 		{
 			enabled: !dialogHotkeysBlocked,
@@ -252,13 +239,76 @@ function IdeShell() {
 		},
 	);
 
+	useEffect(() => {
+		function handleCommandModeShortcut(event: KeyboardEvent) {
+			if (event.key !== ":" || dialogHotkeysBlocked) return;
+			if (event.target instanceof HTMLElement) {
+				const target = event.target;
+				if (target.isContentEditable || target.matches("input, textarea, select")) return;
+			}
+
+			event.preventDefault();
+			event.stopPropagation();
+
+			if (commandMenuOpen) {
+				setCommandHistoryOpen(true);
+				return;
+			}
+
+			setCommandModeOpen(true);
+			setEditorMode("command");
+		}
+
+		window.addEventListener("keydown", handleCommandModeShortcut, { capture: true });
+		return () =>
+			window.removeEventListener("keydown", handleCommandModeShortcut, { capture: true });
+	}, [
+		commandMenuOpen,
+		dialogHotkeysBlocked,
+		setCommandHistoryOpen,
+		setCommandModeOpen,
+		setEditorMode,
+	]);
+
 	return (
-		<div className="flex h-dvh flex-col pb-2">
-			<div className="relative flex min-h-0 flex-1">
+		<div className="grid h-dvh grid-rows-[auto_minmax(0,1fr)] p-3">
+			<header className="flex h-status-bar shrink-0 items-stretch justify-end border-x-thin border-t-thin border-border bg-background text-tiny text-muted-foreground">
+				<nav className="flex items-center gap-2 p-2">
+					<Link
+						className="flex items-center bg-status-muted px-2.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground"
+						search={search}
+						to="/about"
+					>
+						/about
+					</Link>
+					<Link
+						className="flex items-center bg-status-muted px-2.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground"
+						search={search}
+						to="/contact"
+					>
+						/contact
+					</Link>
+					<Link
+						className="flex items-center bg-status-muted px-2.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground"
+						search={search}
+						to="/works"
+					>
+						/works
+					</Link>
+					<button
+						className="flex cursor-pointer items-center bg-status-muted px-2.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground"
+						type="button"
+						onClick={toggleCommandMenu}
+					>
+						<SpaceIcon className="me-1 inline size-3 align-[-0.125em]" /> menu
+					</button>
+				</nav>
+			</header>
+			<div
+				className={`relative grid min-h-0 ${search.neotree === "open" ? "grid-cols-[auto_minmax(0,1fr)]" : "grid-cols-1"}`}
+			>
 				<NeoTree />
-				<main
-					className={`relative min-w-0 flex-1 overflow-hidden ${search.neotree === "open" ? "pt-3 pr-3 pb-0 pl-0" : "px-3 pt-3 pb-0"}`}
-				>
+				<main className="relative min-h-0 min-w-0">
 					<div className="flex size-full flex-col overflow-hidden border-thin border-border">
 						<PageLineNumberFrame
 							enabled={showPageLineNumbers}
@@ -274,57 +324,12 @@ function IdeShell() {
 						/>
 					</div>
 					{pageTitle && (
-						<div className="pointer-events-none absolute top-3 left-5 z-raised -translate-y-1/2 bg-background px-2 text-primary text-tiny">
+						<div className="pointer-events-none absolute top-0 left-2 z-raised -translate-y-1/2 bg-background px-2 text-primary text-tiny">
 							{pageTitle}
 						</div>
 					)}
 				</main>
 			</div>
-			<footer className="flex shrink-0 items-center justify-between border-x-thin border-b-thin border-border bg-background mx-3 p-2 text-tiny text-muted-foreground">
-				<div className="flex h-full items-center gap-2">
-					<div className="hidden h-full items-center bg-status-muted px-4 text-status-muted-foreground md:flex">
-						<ScrambleText text={`©${new Date().getFullYear()}`} />
-					</div>
-					<a
-						className="flex h-full items-center bg-status-muted px-4 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground"
-						href={contactInfo.github.url}
-						target="_blank"
-						rel="noreferrer"
-					>
-						github
-					</a>
-				</div>
-				<div className="flex h-full items-center gap-2">
-					<button
-						className="flex h-full cursor-pointer items-center bg-status-muted px-4 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground"
-						type="button"
-						onClick={toggleCommandMenu}
-					>
-						<SpaceIcon className="me-1 inline size-3 align-[-0.125em]" /> menu
-					</button>
-					<button
-						className="flex h-full cursor-pointer items-center bg-status-muted px-4 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground"
-						type="button"
-						onClick={toggleExplorer}
-					>
-						e explorer
-					</button>
-					<button
-						className="hidden h-full cursor-pointer items-center bg-status-muted px-4 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground md:flex"
-						type="button"
-						onClick={() => setSettingsOpen(true)}
-					>
-						s settings
-					</button>
-					<button
-						className="hidden h-full cursor-pointer items-center bg-status-muted px-4 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground md:flex"
-						type="button"
-						onClick={() => setHelpOpen(true)}
-					>
-						? help
-					</button>
-				</div>
-			</footer>
 			<CommandMenu />
 			<CommandModeDialog />
 			<CommandHistoryDialog />

@@ -1,25 +1,30 @@
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
-	Briefcase,
+	Compass,
 	FolderTreeIcon,
 	HelpCircle,
 	History,
+	House,
 	Languages,
-	Link,
 	LogOut,
 	type LucideIcon,
 	Settings,
-	SpaceIcon,
 	Sun,
 	Terminal,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { copyToClipboard } from "#/design-system/clipboard";
-import { Command, CommandItem, CommandList } from "#/design-system/command";
+import {
+	Command,
+	CommandDialog,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from "#/design-system/command";
 import { Drawer, DrawerContent, DrawerHandle, DrawerPopup } from "#/design-system/drawer";
 import { Popover, PopoverContent, PopoverTrigger } from "#/design-system/popover";
 import { toastManager } from "#/design-system/toast";
 import { useIsMobile } from "#/design-system/use-media-query";
+import { SpaceIcon } from "#/icons/space-icon";
 import { useIdeStore } from "#/ide/store";
 import { getLocale, setLocale } from "#/paraglide/runtime";
 import { useTheme } from "#/theme/theme-provider";
@@ -32,12 +37,22 @@ type Item = {
 	action: () => void;
 };
 
+const navigationItems = [
+	{ label: "About", route: "/about" },
+	{ label: "Contact", route: "/contact" },
+	{ label: "Works", route: "/works" },
+] as const;
+
 export function CommandMenu() {
 	const isMobile = useIsMobile();
 	const open = useIdeStore((s) => s.commandMenuOpen);
 	const setOpen = useIdeStore((s) => s.setCommandMenuOpen);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
 	const setRecentFilesOpen = useIdeStore((s) => s.setRecentFilesOpen);
+	const setCommandHistoryOpen = useIdeStore((s) => s.setCommandHistoryOpen);
+	const setEditorMode = useIdeStore((s) => s.setEditorMode);
+	const [navigationOpen, setNavigationOpen] = useState(false);
+	const [navigationSearch, setNavigationSearch] = useState("");
 	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
 	const navigate = useNavigate();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -45,8 +60,37 @@ export function CommandMenu() {
 		neotree?: "open";
 	};
 	const { appearance, setAppearance } = useTheme();
+	const filteredNavigationItems = navigationItems.filter((item) =>
+		item.label.toLowerCase().includes(navigationSearch.trim().toLowerCase()),
+	);
+
+	function openNavigationRoute(route: (typeof navigationItems)[number]["route"]) {
+		void navigate({ to: route, search });
+		setNavigationOpen(false);
+		setNavigationSearch("");
+		setEditorMode("normal");
+	}
+
+	function handleNavigationOpenChange(open: boolean) {
+		setNavigationOpen(open);
+		setEditorMode(open ? "insert" : "normal");
+		if (!open) setNavigationSearch("");
+	}
 
 	const commands: Item[] = [
+		{
+			id: "home",
+			Icon: House,
+			label: "Home",
+			shortcut: "h",
+			action: () => {
+				void navigate({
+					to: "/start",
+					search,
+				});
+				setOpen(false);
+			},
+		},
 		{
 			id: "explorer",
 			Icon: FolderTreeIcon,
@@ -64,15 +108,23 @@ export function CommandMenu() {
 			},
 		},
 		{
-			id: "projects",
-			Icon: Briefcase,
-			label: "Projects",
-			shortcut: "p",
+			id: "navigation",
+			Icon: Compass,
+			label: "Navigation",
+			shortcut: "n",
 			action: () => {
-				void navigate({
-					to: "/projects",
-					search: { neotree: "open" as const },
-				});
+				setNavigationOpen(true);
+				setEditorMode("insert");
+				setOpen(false);
+			},
+		},
+		{
+			id: "command-history",
+			Icon: History,
+			label: "Command History",
+			shortcut: ":",
+			action: () => {
+				setCommandHistoryOpen(true);
 				setOpen(false);
 			},
 		},
@@ -83,23 +135,6 @@ export function CommandMenu() {
 			shortcut: "r",
 			action: () => {
 				setRecentFilesOpen(true);
-				setOpen(false);
-			},
-		},
-		{
-			id: "copy-link",
-			Icon: Link,
-			label: "Copy Link",
-			shortcut: "y",
-			action: () => {
-				const url = window.location.href;
-				void copyToClipboard(url).then((copied) => {
-					toastManager.add({
-						description: copied ? url : "Clipboard permission denied.",
-						title: copied ? "Link copied" : "Copy failed",
-						type: copied ? "success" : "error",
-					});
-				});
 				setOpen(false);
 			},
 		},
@@ -186,36 +221,74 @@ export function CommandMenu() {
 		},
 	];
 
+	const navigationDialog = (
+		<CommandDialog
+			commandClassName="h-[min(70dvh,18rem)]"
+			description="Choose a route to open in the editor."
+			open={navigationOpen}
+			title="NAVIGATION"
+			onOpenChange={handleNavigationOpenChange}
+		>
+			<CommandInput
+				autoFocus
+				className="h-9 border-b-0 px-0 text-xs"
+				placeholder="Navigate..."
+				value={navigationSearch}
+				onFocus={() => setEditorMode("insert")}
+				onValueChange={setNavigationSearch}
+			/>
+			<CommandList className="min-h-0 flex-1 p-0 pt-2">
+				{filteredNavigationItems.map((item) => (
+					<CommandItem
+						className="rounded-none px-2 text-muted-foreground"
+						key={item.route}
+						value={`${item.label} ${item.route}`}
+						onSelect={() => openNavigationRoute(item.route)}
+					>
+						<Compass className="size-3 shrink-0" />
+						<span>{item.label}</span>
+						<span className="ms-auto text-command-shortcut">{item.route}</span>
+					</CommandItem>
+				))}
+			</CommandList>
+		</CommandDialog>
+	);
+
 	if (isMobile) {
 		return (
-			<Drawer open={open} onOpenChange={setOpen}>
-				<DrawerPopup className="px-3 pb-3">
-					<DrawerHandle />
-					<DrawerContent>
-						<CommandMenuInner commands={commands} onClose={() => setOpen(false)} />
-					</DrawerContent>
-				</DrawerPopup>
-			</Drawer>
+			<>
+				<Drawer open={open} onOpenChange={setOpen}>
+					<DrawerPopup className="px-3 pb-3">
+						<DrawerHandle />
+						<DrawerContent>
+							<CommandMenuInner commands={commands} onClose={() => setOpen(false)} />
+						</DrawerContent>
+					</DrawerPopup>
+				</Drawer>
+				{navigationDialog}
+			</>
 		);
 	}
 
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger
-				aria-label="Open command menu"
-				className="pointer-events-none fixed right-[calc(0.75rem+var(--border-width-thin))] bottom-[calc(var(--spacing-status-bar)*2)] size-0 opacity-0"
-			/>
-			<PopoverContent align="end" className="p-0" initialFocus side="top" sideOffset={0}>
-				<CommandMenuInner commands={commands} onClose={() => setOpen(false)} />
-			</PopoverContent>
-		</Popover>
+		<>
+			<Popover open={open} onOpenChange={setOpen}>
+				<PopoverTrigger
+					aria-label="Open command menu"
+					className="pointer-events-none fixed right-[calc(0.75rem+var(--border-width-thin))] bottom-[calc(var(--spacing-status-bar)*2)] size-0 opacity-0"
+				/>
+				<PopoverContent align="end" className="p-0" initialFocus side="top" sideOffset={0}>
+					<CommandMenuInner commands={commands} onClose={() => setOpen(false)} />
+				</PopoverContent>
+			</Popover>
+			{navigationDialog}
+		</>
 	);
 }
 
 function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: () => void }) {
 	const commandRef = useRef<HTMLDivElement>(null);
 	const [selectedId, setSelectedId] = useState(commands[0]?.id ?? "");
-	const setCommandHistoryOpen = useIdeStore((s) => s.setCommandHistoryOpen);
 
 	useEffect(() => {
 		commandRef.current?.focus();
@@ -237,13 +310,6 @@ function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: ()
 	}
 
 	function handleKeyDown(event: React.KeyboardEvent) {
-		if (event.key === ":") {
-			event.preventDefault();
-			event.stopPropagation();
-			setCommandHistoryOpen(true);
-			return;
-		}
-
 		const shortcutIndex = commands.findIndex((cmd) => cmd.shortcut === event.key);
 
 		if (shortcutIndex >= 0) {
@@ -302,9 +368,9 @@ function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: ()
 						</CommandItem>
 					))}
 				</CommandList>
-				<div className="mt-3 flex items-center justify-center gap-3 text-muted-foreground">
-					<kbd className="font-bold text-primary uppercase">esc</kbd>
-					<span className="text-tiny">Close</span>
+				<div className="mt-3 flex items-center justify-center gap-1.5 text-muted-foreground">
+					<kbd className="font-bold text-primary text-xxs uppercase">esc</kbd>
+					<span className="text-tiny">close</span>
 				</div>
 			</Command>
 		</div>

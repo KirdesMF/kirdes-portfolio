@@ -45,9 +45,9 @@ export const workspaceFileGroups: ReadonlyArray<FileGroup> = [
 	{ folder: "src/routes", label: "about", route: "/about", files: ["about.md"] },
 	{ folder: "src/routes", label: "contact", route: "/contact", files: ["contact.md"] },
 	{
-		folder: "src/routes/projects",
-		label: "projects",
-		route: "/projects",
+		folder: "src/routes/works",
+		label: "works",
+		route: "/works",
 		files: ["index.md"],
 	},
 ];

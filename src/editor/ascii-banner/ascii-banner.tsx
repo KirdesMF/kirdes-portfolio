@@ -93,8 +93,7 @@ function VersionLabel() {
 function AvailabilityLabel() {
 	return (
 		<p className="flex items-center justify-end gap-2 text-status-primary text-tiny leading-none">
-			<span className="size-1.5 animate-pulse bg-current shadow-[0_0_8px_currentColor]" />
-			<ScrambleText text="available for work" />
+			<ScrambleText text="©2026" />
 		</p>
 	);
 }

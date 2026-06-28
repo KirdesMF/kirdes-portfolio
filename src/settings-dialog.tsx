@@ -81,7 +81,7 @@ function SettingsDialogInner(props: {
 				{m.settings_title()}
 			</Title>
 
-			<div className="min-h-0 flex-1 grid gap-5 overflow-y-auto touch-auto py-3">
+			<div className="min-h-0 flex-1 grid gap-5 overflow-y-auto touch-auto px-1 py-3">
 				<Description className="border-b border-border pb-3">
 					{m.settings_description()}
 				</Description>

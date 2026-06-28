@@ -3,7 +3,7 @@ import { terminalCommands } from "./terminal-commands";
 export const terminalNavigationItems = [
 	{ command: "/start", label: "home", to: "/start" },
 	{ command: "/about", label: "about", to: "/about" },
-	{ command: "/projects", label: "projects", to: "/projects" },
+	{ command: "/works", label: "works", to: "/works" },
 	{ command: "/contact", label: "contact", to: "/contact" },
 ] as const;
 

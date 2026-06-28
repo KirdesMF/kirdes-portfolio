@@ -247,7 +247,6 @@ const loaderVariants: LoaderVariant[] = [
 
 function getAnimationConfig(variant: LoaderVariantName) {
 	const base = {
-		backgroundColor: ["transparent", "var(--color-primary)", "transparent"],
 		duration: loaderDuration,
 		loop: true,
 		loopDelay: 0,
@@ -286,7 +285,7 @@ function getAnimationConfig(variant: LoaderVariantName) {
 			...base,
 			delay: stagger(65, { use: "data-index" }),
 			duration: loaderDuration,
-			translateY: [0, -8, 0],
+			opacity: [0.2, 1, 0.2],
 		};
 	}
 
@@ -314,7 +313,6 @@ function getAnimationConfig(variant: LoaderVariantName) {
 			delay: stagger(55, { use: "data-index" }),
 			duration: loaderDuration,
 			opacity: [0.2, 1, 0.2],
-			translateX: [0, 3, 0],
 		};
 	}
 
@@ -341,8 +339,7 @@ function getAnimationConfig(variant: LoaderVariantName) {
 			...base,
 			delay: stagger(75, { use: "data-index" }),
 			duration: loaderDuration,
-			translateX: [0, 4, 0],
-			translateY: [0, -4, 0],
+			opacity: [0.25, 1, 0.25],
 		};
 	}
 
@@ -369,7 +366,7 @@ function getAnimationConfig(variant: LoaderVariantName) {
 			...base,
 			delay: stagger(60, { use: "data-index" }),
 			duration: loaderDuration,
-			translateX: [0, 3, 0],
+			opacity: [0.2, 1, 0.2],
 		};
 	}
 
@@ -378,22 +375,16 @@ function getAnimationConfig(variant: LoaderVariantName) {
 			...base,
 			delay: stagger(60, { use: "data-index" }),
 			duration: loaderDuration,
-			translateY: [0, -3, 0],
+			opacity: [0.2, 1, 0.2],
 		};
 	}
 
 	if (variant === "wave") {
 		return {
 			...base,
-			backgroundColor: [
-				"transparent",
-				"var(--color-primary)",
-				"var(--color-muted-foreground)",
-				"transparent",
-			],
 			delay: stagger(70, { use: "data-index" }),
 			duration: loaderDuration,
-			translateY: [0, -5, 0, 5, 0],
+			opacity: [0.2, 1, 0.45, 1, 0.2],
 		};
 	}
 
@@ -403,7 +394,6 @@ function getAnimationConfig(variant: LoaderVariantName) {
 			delay: stagger(65, { use: "data-index" }),
 			duration: loaderDuration,
 			opacity: [0.08, 1, 0.08],
-			translateY: [-6, 0, 6],
 		};
 	}
 
@@ -421,14 +411,13 @@ function getAnimationConfig(variant: LoaderVariantName) {
 			...base,
 			delay: stagger(80, { use: "data-index" }),
 			duration: loaderDuration,
-			translateY: [-5, 0, 5],
+			opacity: [0.2, 1, 0.2],
 		};
 	}
 
 	if (variant === "blink-wall") {
 		return {
 			...base,
-			backgroundColor: ["var(--color-primary)", "transparent", "var(--color-primary)"],
 			delay: stagger(45, { use: "data-index" }),
 			duration: loaderDuration,
 			opacity: [1, 0.16, 1],
@@ -441,7 +430,6 @@ function getAnimationConfig(variant: LoaderVariantName) {
 			delay: stagger(75, { use: "data-index" }),
 			duration: loaderDuration,
 			opacity: [0.12, 0.45, 1, 0.45, 0.12],
-			translateY: [4, 0, -4, 0, 4],
 		};
 	}
 
@@ -467,10 +455,10 @@ function GridLoader({ loader }: { loader: LoaderVariant }) {
 	}, [loader.variant]);
 
 	return (
-		<div aria-hidden="true" className="grid grid-cols-3 gap-0" ref={rootRef}>
+		<div aria-hidden="true" className="grid grid-cols-3 gap-px" ref={rootRef}>
 			{cells.map((cell) => (
 				<span
-					className="size-5 border-thin border-primary/40 bg-primary/15"
+					className="size-5 border-thin border-current bg-current text-primary"
 					data-index={loader.order[cell]}
 					data-loader-cell=""
 					key={cell}
