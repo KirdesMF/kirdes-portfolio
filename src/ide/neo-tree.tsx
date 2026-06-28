@@ -56,18 +56,12 @@ function buildFlatTree() {
 		return entry ? [addFile(entry, name)] : [];
 	}
 
-	// ── src/routes/projects/ ──
-	const projectsFolderId = addFolder("projects", [
-		...optionalFile("src/routes/projects", "index.md"),
-		...optionalFile("src/routes/projects", "project-1.md"),
-		...optionalFile("src/routes/projects", "project-2.md"),
-	]);
-
 	// ── src/routes/ ──
+	const projectsEntry = findFile("src/routes/projects", "index.md");
 	const routesFolderId = addFolder("routes", [
 		...optionalFile("src/routes", "about.md"),
 		...optionalFile("src/routes", "contact.md"),
-		projectsFolderId,
+		...(projectsEntry ? [addFile(projectsEntry, "projects.md")] : []),
 	]);
 
 	// ── src/ ──

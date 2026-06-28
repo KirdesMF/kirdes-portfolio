@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { RouteFileEditor } from "#/editor/route-file-editor";
 
 const fileId = "src/routes/projects/index.md";
@@ -45,9 +45,7 @@ export const Route = createFileRoute("/_app/_workspace/projects/")({
 });
 
 function RouteComponent() {
-	const pathname = useRouterState({ select: (s) => s.location.pathname });
-
-	return pathname === "/projects" ? (
+	return (
 		<RouteFileEditor fileId={fileId}>
 			<article className="space-y-10 font-mono text-foreground">
 				<h1 className="font-normal text-xl text-muted-foreground uppercase tracking-wide">
@@ -59,7 +57,5 @@ function RouteComponent() {
 				</div>
 			</article>
 		</RouteFileEditor>
-	) : (
-		<Outlet />
 	);
 }

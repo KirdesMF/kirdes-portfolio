@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoadingRouteImport } from './routes/loading'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppStartRouteImport } from './routes/_app/start'
@@ -20,9 +21,12 @@ import { Route as AppWorkspaceEditorRouteImport } from './routes/_app/_workspace
 import { Route as AppWorkspaceContactRouteImport } from './routes/_app/_workspace/contact'
 import { Route as AppWorkspaceAboutRouteImport } from './routes/_app/_workspace/about'
 import { Route as AppWorkspaceProjectsIndexRouteImport } from './routes/_app/_workspace/projects/index'
-import { Route as AppWorkspaceProjectsProject2RouteImport } from './routes/_app/_workspace/projects/project-2'
-import { Route as AppWorkspaceProjectsProject1RouteImport } from './routes/_app/_workspace/projects/project-1'
 
+const LoadingRoute = LoadingRouteImport.update({
+  id: '/loading',
+  path: '/loading',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -77,21 +81,10 @@ const AppWorkspaceProjectsIndexRoute =
     path: '/projects/',
     getParentRoute: () => AppWorkspaceRouteRoute,
   } as any)
-const AppWorkspaceProjectsProject2Route =
-  AppWorkspaceProjectsProject2RouteImport.update({
-    id: '/projects/project-2',
-    path: '/projects/project-2',
-    getParentRoute: () => AppWorkspaceRouteRoute,
-  } as any)
-const AppWorkspaceProjectsProject1Route =
-  AppWorkspaceProjectsProject1RouteImport.update({
-    id: '/projects/project-1',
-    path: '/projects/project-1',
-    getParentRoute: () => AppWorkspaceRouteRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/loading': typeof LoadingRoute
   '/start': typeof AppStartRoute
   '/about': typeof AppWorkspaceAboutRoute
   '/contact': typeof AppWorkspaceContactRoute
@@ -99,12 +92,11 @@ export interface FileRoutesByFullPath {
   '/readme': typeof AppWorkspaceReadmeRoute
   '/roadmap': typeof AppWorkspaceRoadmapRoute
   '/terminal': typeof AppWorkspaceTerminalRoute
-  '/projects/project-1': typeof AppWorkspaceProjectsProject1Route
-  '/projects/project-2': typeof AppWorkspaceProjectsProject2Route
   '/projects/': typeof AppWorkspaceProjectsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/loading': typeof LoadingRoute
   '/start': typeof AppStartRoute
   '/about': typeof AppWorkspaceAboutRoute
   '/contact': typeof AppWorkspaceContactRoute
@@ -112,14 +104,13 @@ export interface FileRoutesByTo {
   '/readme': typeof AppWorkspaceReadmeRoute
   '/roadmap': typeof AppWorkspaceRoadmapRoute
   '/terminal': typeof AppWorkspaceTerminalRoute
-  '/projects/project-1': typeof AppWorkspaceProjectsProject1Route
-  '/projects/project-2': typeof AppWorkspaceProjectsProject2Route
   '/projects': typeof AppWorkspaceProjectsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteRouteWithChildren
+  '/loading': typeof LoadingRoute
   '/_app/_workspace': typeof AppWorkspaceRouteRouteWithChildren
   '/_app/start': typeof AppStartRoute
   '/_app/_workspace/about': typeof AppWorkspaceAboutRoute
@@ -128,14 +119,13 @@ export interface FileRoutesById {
   '/_app/_workspace/readme': typeof AppWorkspaceReadmeRoute
   '/_app/_workspace/roadmap': typeof AppWorkspaceRoadmapRoute
   '/_app/_workspace/terminal': typeof AppWorkspaceTerminalRoute
-  '/_app/_workspace/projects/project-1': typeof AppWorkspaceProjectsProject1Route
-  '/_app/_workspace/projects/project-2': typeof AppWorkspaceProjectsProject2Route
   '/_app/_workspace/projects/': typeof AppWorkspaceProjectsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/loading'
     | '/start'
     | '/about'
     | '/contact'
@@ -143,12 +133,11 @@ export interface FileRouteTypes {
     | '/readme'
     | '/roadmap'
     | '/terminal'
-    | '/projects/project-1'
-    | '/projects/project-2'
     | '/projects/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/loading'
     | '/start'
     | '/about'
     | '/contact'
@@ -156,13 +145,12 @@ export interface FileRouteTypes {
     | '/readme'
     | '/roadmap'
     | '/terminal'
-    | '/projects/project-1'
-    | '/projects/project-2'
     | '/projects'
   id:
     | '__root__'
     | '/'
     | '/_app'
+    | '/loading'
     | '/_app/_workspace'
     | '/_app/start'
     | '/_app/_workspace/about'
@@ -171,18 +159,24 @@ export interface FileRouteTypes {
     | '/_app/_workspace/readme'
     | '/_app/_workspace/roadmap'
     | '/_app/_workspace/terminal'
-    | '/_app/_workspace/projects/project-1'
-    | '/_app/_workspace/projects/project-2'
     | '/_app/_workspace/projects/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRouteRoute: typeof AppRouteRouteWithChildren
+  LoadingRoute: typeof LoadingRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/loading': {
+      id: '/loading'
+      path: '/loading'
+      fullPath: '/loading'
+      preLoaderRoute: typeof LoadingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -260,20 +254,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWorkspaceProjectsIndexRouteImport
       parentRoute: typeof AppWorkspaceRouteRoute
     }
-    '/_app/_workspace/projects/project-2': {
-      id: '/_app/_workspace/projects/project-2'
-      path: '/projects/project-2'
-      fullPath: '/projects/project-2'
-      preLoaderRoute: typeof AppWorkspaceProjectsProject2RouteImport
-      parentRoute: typeof AppWorkspaceRouteRoute
-    }
-    '/_app/_workspace/projects/project-1': {
-      id: '/_app/_workspace/projects/project-1'
-      path: '/projects/project-1'
-      fullPath: '/projects/project-1'
-      preLoaderRoute: typeof AppWorkspaceProjectsProject1RouteImport
-      parentRoute: typeof AppWorkspaceRouteRoute
-    }
   }
 }
 
@@ -284,8 +264,6 @@ interface AppWorkspaceRouteRouteChildren {
   AppWorkspaceReadmeRoute: typeof AppWorkspaceReadmeRoute
   AppWorkspaceRoadmapRoute: typeof AppWorkspaceRoadmapRoute
   AppWorkspaceTerminalRoute: typeof AppWorkspaceTerminalRoute
-  AppWorkspaceProjectsProject1Route: typeof AppWorkspaceProjectsProject1Route
-  AppWorkspaceProjectsProject2Route: typeof AppWorkspaceProjectsProject2Route
   AppWorkspaceProjectsIndexRoute: typeof AppWorkspaceProjectsIndexRoute
 }
 
@@ -296,8 +274,6 @@ const AppWorkspaceRouteRouteChildren: AppWorkspaceRouteRouteChildren = {
   AppWorkspaceReadmeRoute: AppWorkspaceReadmeRoute,
   AppWorkspaceRoadmapRoute: AppWorkspaceRoadmapRoute,
   AppWorkspaceTerminalRoute: AppWorkspaceTerminalRoute,
-  AppWorkspaceProjectsProject1Route: AppWorkspaceProjectsProject1Route,
-  AppWorkspaceProjectsProject2Route: AppWorkspaceProjectsProject2Route,
   AppWorkspaceProjectsIndexRoute: AppWorkspaceProjectsIndexRoute,
 }
 
@@ -321,6 +297,7 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRouteRoute: AppRouteRouteWithChildren,
+  LoadingRoute: LoadingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

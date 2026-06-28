@@ -10,7 +10,7 @@ describe("editor files", () => {
 
 	it("resolves absolute file paths", () => {
 		expect(resolveFile("/projects/index.md")?.id).toBe("src/routes/projects/index.md");
-		expect(resolveFile("/projects/project-1.md")?.id).toBe("src/routes/projects/project-1.md");
+		expect(resolveFile("/projects/project-1.md")?.id).toBeUndefined();
 		expect(resolveFile("/projects")?.id).toBeUndefined();
 	});
 
@@ -51,5 +51,7 @@ describe("editor files", () => {
 		expect(findEditorFile("src/routes/about.tsx")).toBeNull();
 		expect(findEditorFile("src/routes/contact.tsx")).toBeNull();
 		expect(findEditorFile("src/routes/projects/index.tsx")).toBeNull();
+		expect(findEditorFile("src/routes/projects/project-1.md")).toBeNull();
+		expect(findEditorFile("src/routes/projects/project-2.md")).toBeNull();
 	});
 });

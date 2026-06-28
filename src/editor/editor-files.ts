@@ -10,8 +10,6 @@ const fileRoutesById: Readonly<Record<string, string>> = {
 	"src/routes/about.md": "/about",
 	"src/routes/contact.md": "/contact",
 	"src/routes/projects/index.md": "/projects",
-	"src/routes/projects/project-1.md": "/projects/project-1",
-	"src/routes/projects/project-2.md": "/projects/project-2",
 };
 
 function getFallbackRoute(id: string): string {
@@ -58,8 +56,7 @@ function getFolderForRoute(route: string): string {
 	const normalized = route.replace(/^\/terminal/, "") || "/start";
 	if (normalized === "/start" || ["/readme", "/roadmap"].includes(normalized)) return "~";
 	if (normalized === "/about" || normalized === "/contact") return "src/routes";
-	if (normalized === "/projects" || normalized.startsWith("/projects/"))
-		return "src/routes/projects";
+	if (normalized === "/projects") return "src/routes/projects";
 	return getTerminalFolder(route) ?? "~";
 }
 
@@ -99,6 +96,7 @@ export function getDisplayRouteName(route: string): string {
 export function getDisplayFileName(id: string): string {
 	const file = findEditorFile(id);
 	if (!file) return id.split("/").at(-1) ?? id;
+	if (file.id === "src/routes/projects/index.md") return "projects.md";
 	if (file.folder === "~") return file.name;
 	if (file.folder.startsWith("src/")) return file.name;
 
@@ -123,7 +121,7 @@ export function resolveFile(name: string, currentRoute?: string): EditorFileEntr
 		const direct = findEditorFile(idLookup);
 		if (direct) return direct;
 
-		// Try route-based lookup: /projects/project-1.md → route /projects/project-1, file project-1.md
+		// Try route-based lookup: /projects/index.md → route /projects, file index.md
 		const lastSlash = normalized.lastIndexOf("/");
 		if (lastSlash > 0) {
 			const routePart = normalized.slice(0, lastSlash) || "/";

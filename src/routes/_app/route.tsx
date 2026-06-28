@@ -254,7 +254,7 @@ function IdeShell() {
 
 	return (
 		<div className="flex h-dvh flex-col pb-2">
-			<div className="relative flex min-h-0 flex-1 pb-2">
+			<div className="relative flex min-h-0 flex-1">
 				<NeoTree />
 				<main
 					className={`relative min-w-0 flex-1 overflow-hidden ${search.neotree === "open" ? "pt-3 pr-3 pb-0 pl-0" : "px-3 pt-3 pb-0"}`}
@@ -280,7 +280,7 @@ function IdeShell() {
 					)}
 				</main>
 			</div>
-			<footer className="flex h-status-bar shrink-0 items-center justify-between bg-background text-tiny text-muted-foreground ps-3">
+			<footer className="flex shrink-0 items-center justify-between border-x-thin border-b-thin border-border bg-background mx-3 p-2 text-tiny text-muted-foreground">
 				<div className="flex h-full items-center gap-2">
 					<div className="hidden h-full items-center bg-status-muted px-4 text-status-muted-foreground md:flex">
 						<ScrambleText text={`©${new Date().getFullYear()}`} />
@@ -294,7 +294,7 @@ function IdeShell() {
 						github
 					</a>
 				</div>
-				<div className="flex h-full items-center gap-2 pe-3">
+				<div className="flex h-full items-center gap-2">
 					<button
 						className="flex h-full cursor-pointer items-center bg-status-muted px-4 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground"
 						type="button"
