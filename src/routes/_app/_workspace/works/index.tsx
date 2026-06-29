@@ -4,7 +4,6 @@ import { RouteFileEditor } from "#/editor/route-file-editor";
 const fileId = "src/routes/works/index.md";
 
 const workRows = [
-	["terminal-portfolio", "10.3 KB", "Interactive terminal portfolio shell"],
 	["workspace-ui", "5.8 KB", "Editor frame, tabs, file tree"],
 	["ascii-banner", "4.8 KB", "Canvas banner, shimmer effects"],
 	["command-menu", "4.7 KB", "Keyboard navigation, ranked search"],
@@ -15,7 +14,6 @@ const workRows = [
 	["settings-drawer", "2.3 KB", "Theme, language preferences"],
 	["neo-tree", "2.0 KB", "Workspace file navigation"],
 	["contact-dialog", "1.9 KB", "Focused links, quick reach out"],
-	["terminal-session", "1.8 KB", "Prompt, commands, transcript UI"],
 ] as const;
 
 const tableColumns = [

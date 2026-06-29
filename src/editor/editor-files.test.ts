@@ -15,13 +15,13 @@ describe("editor files", () => {
 	});
 
 	it("prefers current folder before root and global files", () => {
-		expect(resolveFile("about.md", "/terminal/about")?.id).toBe("src/routes/about.md");
-		expect(resolveFile("README.md", "/terminal/about")?.id).toBe("~/README.md");
-		expect(resolveFile("contact.md", "/terminal/about")?.id).toBe("src/routes/contact.md");
+		expect(resolveFile("about.md", "/about")?.id).toBe("src/routes/about.md");
+		expect(resolveFile("README.md", "/about")?.id).toBe("~/README.md");
+		expect(resolveFile("contact.md", "/about")?.id).toBe("src/routes/contact.md");
 	});
 
-	it("lists root files at the terminal home", () => {
-		const result = lsFiles("/terminal");
+	it("lists root files at root", () => {
+		const result = lsFiles();
 
 		expect(result.folders.map((folder) => folder.folder)).toEqual([
 			"~",
@@ -34,7 +34,7 @@ describe("editor files", () => {
 	});
 
 	it("lists local files plus root fallback files in sections", () => {
-		const result = lsFiles("/terminal/contact");
+		const result = lsFiles("/contact");
 		const ids = result.files.map((file) => file.id);
 
 		expect(ids).toContain("src/routes/contact.md");
@@ -42,9 +42,7 @@ describe("editor files", () => {
 	});
 
 	it("returns unique visible file names", () => {
-		expect(
-			getVisibleFileNames("/terminal/contact").filter((name) => name === "about.md"),
-		).toHaveLength(1);
+		expect(getVisibleFileNames("/contact").filter((name) => name === "about.md")).toHaveLength(1);
 	});
 
 	it("does not return removed files", () => {

@@ -295,14 +295,14 @@ function IdeShell() {
 							setEditorMode("insert");
 						}}
 					>
-						n nav
+						[n] nav
 					</button>
 					<button
 						className="flex cursor-pointer items-center bg-status-muted px-2.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground focus:bg-status-primary focus:text-status-primary-foreground focus:outline-none"
 						type="button"
 						onClick={toggleCommandMenu}
 					>
-						<SpaceIcon className="me-1 inline size-3 align-[-0.125em]" /> menu
+						[<SpaceIcon className="inline size-3 align-[-0.125em]" />] menu
 					</button>
 				</div>
 			</header>

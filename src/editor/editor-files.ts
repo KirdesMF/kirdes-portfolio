@@ -1,4 +1,3 @@
-import { getTerminalFolder } from "#/terminal/terminal-path";
 import { workspaceFileGroups } from "#/workspace/workspace-catalogue";
 import type { EditorFileEntry, EditorFileInput, FolderRoute } from "./editor-files.types";
 
@@ -53,11 +52,11 @@ export const folderRoutes: ReadonlyArray<FolderRoute> = (() => {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getFolderForRoute(route: string): string {
-	const normalized = route.replace(/^\/terminal/, "") || "/start";
+	const normalized = route || "/start";
 	if (normalized === "/start" || ["/readme", "/roadmap"].includes(normalized)) return "~";
 	if (normalized === "/about" || normalized === "/contact") return "src/routes";
 	if (normalized === "/works") return "src/routes/works";
-	return getTerminalFolder(route) ?? "~";
+	return "~";
 }
 
 function getFilesInFolder(folder: string): ReadonlyArray<EditorFileEntry> {
@@ -172,7 +171,7 @@ export function lsFiles(currentRoute?: string): {
 } {
 	const folders = folderRoutes;
 
-	if (!currentRoute || currentRoute === "/terminal") {
+	if (!currentRoute) {
 		// At root: show root files only
 		return { folders, files: getFilesInFolder("~") };
 	}

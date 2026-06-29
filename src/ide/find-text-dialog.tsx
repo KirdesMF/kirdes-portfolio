@@ -97,7 +97,7 @@ export function FindTextDialog() {
 						<span className="min-w-0">
 							<span className="block truncate text-foreground">{match.filePath}</span>
 							<span className="block truncate text-muted-foreground text-tiny">
-								Page content search will return with the terminal/content rebuild.
+								Page content search will return with the content rebuild.
 							</span>
 						</span>
 					</CommandItem>

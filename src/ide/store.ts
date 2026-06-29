@@ -6,7 +6,7 @@ export type WorkspaceTab = {
 	id: string;
 	label: string;
 	route: string;
-	kind: "file" | "terminal";
+	kind: "file";
 };
 
 type IdeStore = {

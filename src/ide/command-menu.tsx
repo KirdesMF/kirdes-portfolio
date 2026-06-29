@@ -10,7 +10,6 @@ import {
 	type LucideIcon,
 	Settings,
 	Sun,
-	Terminal,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Command, CommandItem, CommandList } from "#/design-system/command";
@@ -141,16 +140,6 @@ export function CommandMenu() {
 				const nextLocale = getLocale() === "en" ? "fr" : "en";
 				setOpen(false);
 				setLocale(nextLocale);
-			},
-		},
-		{
-			id: "terminal",
-			Icon: Terminal,
-			label: "Terminal",
-			shortcut: "t",
-			action: () => {
-				void navigate({ to: "/terminal" });
-				setOpen(false);
 			},
 		},
 		{

@@ -2,7 +2,6 @@ import { createTimeline } from "animejs";
 import { GitBranch, MoveRight } from "lucide-react";
 import { type ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import { getRandomNumber } from "#/utils/random-number";
-import { GitOutput } from "./terminal-command-outputs";
 
 // ─── Command list ─────────────────────────────────────────────────────
 
@@ -39,7 +38,7 @@ function useTranscript(): ReadonlyArray<IntroTranscriptEntry> {
 			{
 				command: "git log --oneline -3",
 				branch: "feat/portfolio",
-				output: <GitOutput subcommand="log" />,
+				output: <GitLogOutput />,
 			},
 			{
 				command: "bun install",
@@ -77,6 +76,22 @@ function GitSwitchOutput(): ReactNode {
 			<p>
 				Switched to branch <span className="text-primary">&apos;feat/portfolio&apos;</span>
 			</p>
+		</div>
+	);
+}
+
+function GitLogOutput(): ReactNode {
+	return (
+		<div className="flex flex-col whitespace-pre-wrap font-mono">
+			<p className="text-foreground/80">commit a1b2c3d4 (HEAD {"->"} feat/portfolio)</p>
+			<p className="text-muted-foreground">Date: {new Date().toLocaleDateString()}</p>
+			<p className="pl-4 text-foreground/80">refactor portfolio workspace</p>
+			<p className="mt-1 text-foreground/80">commit e5f6g7h8</p>
+			<p className="text-muted-foreground">Date: yesterday</p>
+			<p className="pl-4 text-foreground/80">add project notes</p>
+			<p className="mt-1 text-foreground/80">commit 9a0b1c2d</p>
+			<p className="text-muted-foreground">Date: last week</p>
+			<p className="pl-4 text-foreground/80">initial app shell</p>
 		</div>
 	);
 }

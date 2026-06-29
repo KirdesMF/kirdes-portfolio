@@ -48,12 +48,6 @@ export const commandModeCommands: CommandModeCommand[] = [
 		execute: ({ setLocale }) => setLocale("en"),
 	},
 	{
-		name: "terminal",
-		description: "Open the terminal.",
-		aliases: ["terminal", "term", "t"],
-		execute: ({ navigate }) => navigate({ to: "/terminal" }),
-	},
-	{
 		name: "bd",
 		description: "Close the current file.",
 		aliases: ["bd", "close"],

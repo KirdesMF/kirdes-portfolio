@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { animate, createScope, createTimeline, stagger, steps } from "animejs";
 import { splitText } from "animejs/text";
 import { useLayoutEffect, useState } from "react";
-import { INTRO_COMMANDS, IntroTranscript } from "#/terminal/intro-content";
+import { INTRO_COMMANDS, IntroTranscript } from "#/intro/intro-content";
 
 export const Route = createFileRoute("/")({
 	component: RouteComponent,

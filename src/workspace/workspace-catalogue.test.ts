@@ -7,10 +7,4 @@ describe("workspace catalogue", () => {
 		expect(workspaceViewMetadata["/about"]).toBeDefined();
 		expect(workspaceViewMetadata["/contact"]).toBeDefined();
 	});
-
-	it("does not have metadata keyed with /terminal prefix", () => {
-		expect(workspaceViewMetadata["/terminal/start"]).toBeUndefined();
-		expect(workspaceViewMetadata["/terminal/about"]).toBeUndefined();
-		expect(workspaceViewMetadata["/terminal/contact"]).toBeUndefined();
-	});
 });
