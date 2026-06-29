@@ -1,30 +1,30 @@
-import { ShimmerLabel } from "#/ide/shimmer-label";
+import { CheckIcon } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "#/design-system/toggle-group";
 import { getLocale, setLocale } from "#/paraglide/runtime";
 
-function LanguageButton({
-	active,
-	label,
-	locale,
-}: {
-	active: boolean;
-	label: string;
-	locale: "en" | "fr";
-}) {
-	return (
-		<button className="cursor-pointer" type="button" onClick={() => setLocale(locale)}>
-			{active ? <ShimmerLabel>[{label}]</ShimmerLabel> : `[${label}]`}
-		</button>
-	);
-}
+const locales = [
+	{ label: "FR", value: "fr" },
+	{ label: "EN", value: "en" },
+] as const;
 
 export function LanguageSwitcher() {
 	const currentLocale = getLocale();
 
 	return (
-		<div className="flex items-center gap-1">
-			<LanguageButton active={currentLocale === "fr"} label="FR" locale="fr" />
-			<span className="text-muted-foreground/50">|</span>
-			<LanguageButton active={currentLocale === "en"} label="EN" locale="en" />
-		</div>
+		<ToggleGroup
+			className="grid gap-2 sm:grid-cols-2"
+			value={[currentLocale]}
+			onValueChange={(value) => {
+				const nextLocale = value[0];
+				if (nextLocale) setLocale(nextLocale);
+			}}
+		>
+			{locales.map((locale) => (
+				<ToggleGroupItem key={locale.value} value={locale.value}>
+					<span>{locale.label}</span>
+					{currentLocale === locale.value && <CheckIcon className="size-3.5" />}
+				</ToggleGroupItem>
+			))}
+		</ToggleGroup>
 	);
 }

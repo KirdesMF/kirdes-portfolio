@@ -275,6 +275,14 @@ function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: ()
 			<div className="absolute top-0 left-3 z-raised -translate-y-1/2 bg-popover px-2 text-primary">
 				<SpaceIcon className="size-3" />
 			</div>
+			<button
+				aria-label="Close command menu"
+				className="absolute top-0 end-2 z-raised -translate-y-1/2 bg-popover px-1 text-primary text-tiny leading-none focus:text-accent-foreground focus:outline-none"
+				type="button"
+				onClick={onClose}
+			>
+				[X]
+			</button>
 			<Command
 				className="rounded-none bg-transparent outline-none"
 				onKeyDownCapture={handleKeyDown}

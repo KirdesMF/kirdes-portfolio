@@ -2,9 +2,16 @@ import { Command as BaseCommand } from "cmdk";
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "#/design-system/cn";
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "#/design-system/dialog";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+} from "#/design-system/dialog";
 import {
 	Drawer,
+	DrawerClose,
 	DrawerContent,
 	DrawerDescription,
 	DrawerHandle,
@@ -70,11 +77,18 @@ export function CommandDialog({
 	const inner = (
 		Title: typeof DialogTitle | typeof DrawerTitle,
 		Description: typeof DialogDescription | typeof DrawerDescription,
+		Close: typeof DialogClose | typeof DrawerClose,
 	) => (
 		<div className="relative flex min-h-0 flex-col border-thin border-border bg-popover p-3 text-popover-foreground">
 			<Title className="absolute top-0 inset-s-1/2 z-raised -translate-1/2 border-x-thin border-border bg-popover px-2 text-primary leading-none">
 				{title}
 			</Title>
+			<Close
+				aria-label="Close dialog"
+				className="absolute top-0 end-3 z-raised -translate-y-1/2 bg-popover px-1 text-primary leading-none focus:text-accent-foreground focus:outline-none"
+			>
+				[X]
+			</Close>
 			<Description className="sr-only">{description}</Description>
 			<Command
 				className={cn("rounded-none bg-transparent pt-2", commandClassName)}
@@ -90,7 +104,7 @@ export function CommandDialog({
 			<Drawer open={open} onOpenChange={onOpenChange}>
 				<DrawerPopup className={cn("px-3 pb-3", contentClassName)}>
 					<DrawerHandle />
-					<DrawerContent>{inner(DrawerTitle, DrawerDescription)}</DrawerContent>
+					<DrawerContent>{inner(DrawerTitle, DrawerDescription, DrawerClose)}</DrawerContent>
 				</DrawerPopup>
 			</Drawer>
 		);
@@ -99,7 +113,7 @@ export function CommandDialog({
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className={cn("w-[min(92vw,34rem)]", contentClassName)}>
-				{inner(DialogTitle, DialogDescription)}
+				{inner(DialogTitle, DialogDescription, DialogClose)}
 			</DialogContent>
 		</Dialog>
 	);

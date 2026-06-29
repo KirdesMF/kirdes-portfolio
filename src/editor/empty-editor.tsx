@@ -1,6 +1,6 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { animate, createScope, createTimeline, stagger } from "animejs";
+import { createScope, createTimeline } from "animejs";
 import {
 	Compass,
 	FileText,
@@ -12,6 +12,7 @@ import {
 	RotateCw,
 	Search,
 	Settings,
+	ZapIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "#/design-system/cn";
@@ -37,8 +38,6 @@ const emptyEditorCommands: Array<{
 ];
 
 const commandIndicatorPixels = Array.from({ length: 5 }, (_, index) => index);
-const loaderCells = Array.from({ length: 9 }, (_, index) => index);
-const diagonalOrder = [0, 1, 2, 1, 2, 3, 2, 3, 4] as const;
 
 function EmptyEditorCommandButton({
 	Icon,
@@ -94,7 +93,7 @@ function EmptyEditorCommandButton({
 
 	return (
 		<button
-			className="group relative grid grid-cols-[auto_1fr_1ch] items-center gap-4 px-2 py-1.5 ps-3 text-left text-primary/90 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
+			className="group relative grid grid-cols-[auto_1fr_1ch] items-center gap-4 px-2 py-1.5 text-left text-primary/90 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
 			ref={buttonRef}
 			type="button"
 			onClick={onClick}
@@ -118,40 +117,6 @@ function EmptyEditorCommandButton({
 			<span className="truncate">{label}</span>
 			<span className="text-command-shortcut text-end">{shortcut}</span>
 		</button>
-	);
-}
-
-function TinyDiagonalLoader() {
-	const rootRef = useRef<HTMLDivElement | null>(null);
-
-	useEffect(() => {
-		const scope = createScope({
-			mediaQueries: { reduceMotion: "(prefers-reduced-motion: reduce)" },
-			root: rootRef,
-		}).add((self) => {
-			if (self?.matches.reduceMotion) return;
-			animate("[data-tiny-loader-cell]", {
-				delay: stagger(75, { use: "data-index" }),
-				duration: 900,
-				loop: true,
-				opacity: [0.25, 1, 0.25],
-			});
-		});
-
-		return () => scope.revert();
-	}, []);
-
-	return (
-		<div aria-hidden="true" className="grid grid-cols-3 gap-0.5" ref={rootRef}>
-			{loaderCells.map((cell) => (
-				<span
-					className="size-1 border-thin border-current bg-current text-primary"
-					data-index={diagonalOrder[cell]}
-					data-tiny-loader-cell=""
-					key={cell}
-				/>
-			))}
-		</div>
 	);
 }
 
@@ -289,7 +254,7 @@ export function EmptyEditor() {
 					className="flex items-center justify-center gap-1.5 text-primary/70 text-tiny"
 					ref={rootRef}
 				>
-					<TinyDiagonalLoader />
+					<ZapIcon aria-hidden="true" className="size-3 text-primary" />
 					<Link
 						className="text-primary/70 transition hover:text-primary focus:text-primary focus:outline-none"
 						search={search}

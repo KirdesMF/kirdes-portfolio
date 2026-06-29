@@ -1,15 +1,24 @@
 import { CheckIcon, MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import { cn } from "#/design-system/cn";
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "#/design-system/dialog";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+} from "#/design-system/dialog";
 import {
 	Drawer,
+	DrawerClose,
 	DrawerContent,
 	DrawerDescription,
 	DrawerHandle,
 	DrawerPopup,
 	DrawerTitle,
 } from "#/design-system/drawer";
+import { RadioGroup, RadioGroupIndicator, RadioGroupItem } from "#/design-system/radio-group";
 import { Separator } from "#/design-system/separator";
+import { ToggleGroup, ToggleGroupItem } from "#/design-system/toggle-group";
 import { useIsMobile } from "#/design-system/use-media-query";
 import { LanguageSwitcher } from "#/ide/language-switcher";
 import { m } from "#/paraglide/messages";
@@ -52,7 +61,11 @@ export function SettingsDialog(props: SettingsDialogProps) {
 				<DrawerPopup className="px-3 pb-3">
 					<DrawerHandle />
 					<DrawerContent>
-						<SettingsDialogInner Description={DrawerDescription} Title={DrawerTitle} />
+						<SettingsDialogInner
+							Close={DrawerClose}
+							Description={DrawerDescription}
+							Title={DrawerTitle}
+						/>
 					</DrawerContent>
 				</DrawerPopup>
 			</Drawer>
@@ -62,24 +75,35 @@ export function SettingsDialog(props: SettingsDialogProps) {
 	return (
 		<Dialog open={props.open} onOpenChange={props.onOpenChange}>
 			<DialogContent className="flex">
-				<SettingsDialogInner Description={DialogDescription} Title={DialogTitle} />
+				<SettingsDialogInner
+					Close={DialogClose}
+					Description={DialogDescription}
+					Title={DialogTitle}
+				/>
 			</DialogContent>
 		</Dialog>
 	);
 }
 
 function SettingsDialogInner(props: {
+	Close: typeof DialogClose | typeof DrawerClose;
 	Description: typeof DialogDescription | typeof DrawerDescription;
 	Title: typeof DialogTitle | typeof DrawerTitle;
 }) {
 	const { appearance, setAppearance } = useTheme();
-	const { Description, Title } = props;
+	const { Close, Description, Title } = props;
 
 	return (
 		<div className="relative flex min-h-0 flex-1 flex-col border-thin border-border bg-popover p-4 text-popover-foreground">
 			<Title className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-thin border-border z-raised">
 				{m.settings_title()}
 			</Title>
+			<Close
+				aria-label="Close dialog"
+				className="absolute top-0 end-3 z-raised -translate-y-1/2 bg-popover px-1 text-primary leading-none focus:text-accent-foreground focus:outline-none"
+			>
+				[X]
+			</Close>
 
 			<div className="min-h-0 flex-1 grid gap-5 overflow-y-auto touch-auto px-1 py-3">
 				<Description className="border-b border-border pb-3">
@@ -92,31 +116,28 @@ function SettingsDialogInner(props: {
 
 				<section className="grid gap-2">
 					<h2 className="font-medium">Mode</h2>
-					<div className="grid gap-2 sm:grid-cols-3">
+					<ToggleGroup
+						className="grid gap-2 sm:grid-cols-3"
+						value={[appearance.mode]}
+						onValueChange={(value) => {
+							const mode = value[0];
+							if (mode) setAppearance({ ...appearance, mode });
+						}}
+					>
 						{appearanceModes.map((mode) => {
 							const ModeIcon = modeIcons[mode];
-							const selected = appearance.mode === mode;
 
 							return (
-								<button
-									type="button"
-									className={cn(
-										"flex items-center justify-between gap-2 border-thin border-border px-2 py-1.5",
-										selected && "bg-primary text-primary-foreground",
-									)}
-									aria-pressed={selected}
-									key={mode}
-									onClick={() => setAppearance({ ...appearance, mode })}
-								>
+								<ToggleGroupItem key={mode} value={mode}>
 									<span className="flex items-center gap-2">
 										<ModeIcon className="size-3.5" />
 										{modeLabels[mode]}
 									</span>
-									{selected && <CheckIcon className="size-3.5" />}
-								</button>
+									{appearance.mode === mode && <CheckIcon className="size-3.5" />}
+								</ToggleGroupItem>
 							);
 						})}
-					</div>
+					</ToggleGroup>
 				</section>
 
 				<section className="grid gap-3">
@@ -149,35 +170,23 @@ function ThemeList<TTheme extends LightThemeId | DarkThemeId>(props: {
 	return (
 		<div className="space-y-1.5">
 			<h3 className="text-muted-foreground text-xs">{props.label}</h3>
-			<div className="grid gap-2">
-				{props.themes.map((theme) => {
-					const selected = props.selectedTheme === theme.value;
-
-					return (
-						<button
-							type="button"
-							className={cn(
-								"flex items-center justify-between gap-3 border-thin border-border px-2 py-2 text-left",
-								selected && "bg-accent text-accent-foreground",
-							)}
-							aria-label={`Select ${themeLabels[theme.value]}`}
-							aria-pressed={selected}
-							key={theme.value}
-							onClick={() => props.onSelect(theme.value)}
-						>
-							<span className="flex min-w-0 items-center gap-3">
-								<ThemePalette theme={theme.value} />
-								<span className="truncate text-xs">{theme.label}</span>
-							</span>
-							{selected && (
-								<span className="border-thin border-border px-1.5 py-0.5 text-xs">
-									{m.settings_current()}
-								</span>
-							)}
-						</button>
-					);
-				})}
-			</div>
+			<RadioGroup<TTheme> value={props.selectedTheme} onValueChange={props.onSelect}>
+				{props.themes.map((theme) => (
+					<RadioGroupItem
+						aria-label={`Select ${themeLabels[theme.value]}`}
+						key={theme.value}
+						value={theme.value}
+					>
+						<span className="flex min-w-0 items-center gap-3">
+							<ThemePalette theme={theme.value} />
+							<span className="truncate text-xs">{theme.label}</span>
+						</span>
+						<RadioGroupIndicator>
+							<CheckIcon className="size-3.5" />
+						</RadioGroupIndicator>
+					</RadioGroupItem>
+				))}
+			</RadioGroup>
 		</div>
 	);
 }

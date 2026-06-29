@@ -1,6 +1,13 @@
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "#/design-system/dialog";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+} from "#/design-system/dialog";
 import {
 	Drawer,
+	DrawerClose,
 	DrawerContent,
 	DrawerDescription,
 	DrawerHandle,
@@ -53,7 +60,11 @@ export function HelpDialog(props: HelpDialogProps) {
 				<DrawerPopup className="px-3 pb-3">
 					<DrawerHandle />
 					<DrawerContent>
-						<HelpDialogInner Description={DrawerDescription} Title={DrawerTitle} />
+						<HelpDialogInner
+							Close={DrawerClose}
+							Description={DrawerDescription}
+							Title={DrawerTitle}
+						/>
 					</DrawerContent>
 				</DrawerPopup>
 			</Drawer>
@@ -63,23 +74,30 @@ export function HelpDialog(props: HelpDialogProps) {
 	return (
 		<Dialog open={props.open} onOpenChange={props.onOpenChange}>
 			<DialogContent className="flex">
-				<HelpDialogInner Description={DialogDescription} Title={DialogTitle} />
+				<HelpDialogInner Close={DialogClose} Description={DialogDescription} Title={DialogTitle} />
 			</DialogContent>
 		</Dialog>
 	);
 }
 
 function HelpDialogInner(props: {
+	Close: typeof DialogClose | typeof DrawerClose;
 	Description: typeof DialogDescription | typeof DrawerDescription;
 	Title: typeof DialogTitle | typeof DrawerTitle;
 }) {
-	const { Description, Title } = props;
+	const { Close, Description, Title } = props;
 
 	return (
 		<div className="relative flex min-h-0 flex-1 flex-col border-thin border-border bg-popover p-4 text-popover-foreground">
 			<Title className="absolute top-0 inset-s-1/2 -translate-1/2 bg-popover px-2 leading-none text-primary border-x-thin border-border z-raised">
 				:help keymaps
 			</Title>
+			<Close
+				aria-label="Close dialog"
+				className="absolute top-0 end-3 z-raised -translate-y-1/2 bg-popover px-1 text-primary leading-none focus:text-accent-foreground focus:outline-none"
+			>
+				[X]
+			</Close>
 
 			<div className="min-h-0 flex-1 grid gap-5 overflow-y-auto touch-auto py-3">
 				<Description className="border-b border-border pb-3">
