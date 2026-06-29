@@ -52,8 +52,8 @@ export const folderRoutes: ReadonlyArray<FolderRoute> = (() => {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getFolderForRoute(route: string): string {
-	const normalized = route || "/start";
-	if (normalized === "/start" || ["/readme", "/roadmap"].includes(normalized)) return "~";
+	const normalized = route || "/home";
+	if (normalized === "/home" || ["/readme", "/roadmap"].includes(normalized)) return "~";
 	if (normalized === "/about" || normalized === "/contact") return "src/routes";
 	if (normalized === "/works") return "src/routes/works";
 	return "~";
@@ -79,12 +79,12 @@ export function isEditorFileName(id: string): id is EditorFileName {
 }
 
 export function findEditorFileByRoute(route: string): EditorFileEntry | null {
-	const pathname = route.trim().split("?")[0]?.replace(/\/$/, "") || "/start";
+	const pathname = route.trim().split("?")[0]?.replace(/\/$/, "") || "/home";
 	return editorFiles.find((f) => f.route === pathname) ?? null;
 }
 
 export function getEditorFileRoute(id: string): string {
-	return findEditorFile(id)?.route ?? "/start";
+	return findEditorFile(id)?.route ?? "/home";
 }
 
 export function getDisplayRouteName(route: string): string {

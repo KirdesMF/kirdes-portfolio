@@ -18,10 +18,10 @@ export type WorkspaceViewMetadata = {
 
 export const workspaceViews: ReadonlyArray<WorkspaceView> = [
 	{
-		route: "/start",
+		route: "/home",
 		folder: "~",
 		label: "home",
-		renderer: "src/routes/_app/start.tsx",
+		renderer: "src/routes/_app/home.tsx",
 		files: ["README.md", "ROADMAP.md"],
 	},
 	{
@@ -41,7 +41,7 @@ export const workspaceViews: ReadonlyArray<WorkspaceView> = [
 ] as const;
 
 export const workspaceFileGroups: ReadonlyArray<FileGroup> = [
-	{ folder: "~", label: "home", route: "/start", files: ["README.md", "ROADMAP.md"] },
+	{ folder: "~", label: "home", route: "/home", files: ["README.md", "ROADMAP.md"] },
 	{ folder: "src/routes", label: "about", route: "/about", files: ["about.md"] },
 	{ folder: "src/routes", label: "contact", route: "/contact", files: ["contact.md"] },
 	{

@@ -8,6 +8,7 @@ import {
 	Languages,
 	LogOut,
 	type LucideIcon,
+	RotateCw,
 	Settings,
 	Sun,
 } from "lucide-react";
@@ -55,7 +56,7 @@ export function CommandMenu() {
 			shortcut: "h",
 			action: () => {
 				void navigate({
-					to: "/start",
+					to: "/home",
 					search,
 				});
 				setOpen(false);
@@ -143,6 +144,16 @@ export function CommandMenu() {
 			},
 		},
 		{
+			id: "reload",
+			Icon: RotateCw,
+			label: "Reload",
+			shortcut: "R",
+			action: () => {
+				void navigate({ to: "/" });
+				setOpen(false);
+			},
+		},
+		{
 			id: "settings",
 			Icon: Settings,
 			label: "Settings",
@@ -168,9 +179,9 @@ export function CommandMenu() {
 			label: "Quit",
 			shortcut: "q",
 			action: () => {
-				if (pathname !== "/start") {
+				if (pathname !== "/home") {
 					void navigate({
-						to: "/start",
+						to: "/home",
 						search: { neotree: search.neotree },
 					});
 				} else {

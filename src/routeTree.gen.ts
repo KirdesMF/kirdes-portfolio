@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoadingRouteImport } from './routes/loading'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppStartRouteImport } from './routes/_app/start'
+import { Route as AppHomeRouteImport } from './routes/_app/home'
 import { Route as AppWorkspaceRouteRouteImport } from './routes/_app/_workspace/route'
 import { Route as AppWorkspaceRoadmapRouteImport } from './routes/_app/_workspace/roadmap'
 import { Route as AppWorkspaceReadmeRouteImport } from './routes/_app/_workspace/readme'
@@ -35,9 +35,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppStartRoute = AppStartRouteImport.update({
-  id: '/start',
-  path: '/start',
+const AppHomeRoute = AppHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppWorkspaceRouteRoute = AppWorkspaceRouteRouteImport.update({
@@ -78,7 +78,7 @@ const AppWorkspaceWorksIndexRoute = AppWorkspaceWorksIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/loading': typeof LoadingRoute
-  '/start': typeof AppStartRoute
+  '/home': typeof AppHomeRoute
   '/about': typeof AppWorkspaceAboutRoute
   '/contact': typeof AppWorkspaceContactRoute
   '/editor': typeof AppWorkspaceEditorRoute
@@ -89,7 +89,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/loading': typeof LoadingRoute
-  '/start': typeof AppStartRoute
+  '/home': typeof AppHomeRoute
   '/about': typeof AppWorkspaceAboutRoute
   '/contact': typeof AppWorkspaceContactRoute
   '/editor': typeof AppWorkspaceEditorRoute
@@ -103,7 +103,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteRouteWithChildren
   '/loading': typeof LoadingRoute
   '/_app/_workspace': typeof AppWorkspaceRouteRouteWithChildren
-  '/_app/start': typeof AppStartRoute
+  '/_app/home': typeof AppHomeRoute
   '/_app/_workspace/about': typeof AppWorkspaceAboutRoute
   '/_app/_workspace/contact': typeof AppWorkspaceContactRoute
   '/_app/_workspace/editor': typeof AppWorkspaceEditorRoute
@@ -116,7 +116,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/loading'
-    | '/start'
+    | '/home'
     | '/about'
     | '/contact'
     | '/editor'
@@ -127,7 +127,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/loading'
-    | '/start'
+    | '/home'
     | '/about'
     | '/contact'
     | '/editor'
@@ -140,7 +140,7 @@ export interface FileRouteTypes {
     | '/_app'
     | '/loading'
     | '/_app/_workspace'
-    | '/_app/start'
+    | '/_app/home'
     | '/_app/_workspace/about'
     | '/_app/_workspace/contact'
     | '/_app/_workspace/editor'
@@ -178,11 +178,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/start': {
-      id: '/_app/start'
-      path: '/start'
-      fullPath: '/start'
-      preLoaderRoute: typeof AppStartRouteImport
+    '/_app/home': {
+      id: '/_app/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof AppHomeRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/_app/_workspace': {
@@ -260,12 +260,12 @@ const AppWorkspaceRouteRouteWithChildren =
 
 interface AppRouteRouteChildren {
   AppWorkspaceRouteRoute: typeof AppWorkspaceRouteRouteWithChildren
-  AppStartRoute: typeof AppStartRoute
+  AppHomeRoute: typeof AppHomeRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppWorkspaceRouteRoute: AppWorkspaceRouteRouteWithChildren,
-  AppStartRoute: AppStartRoute,
+  AppHomeRoute: AppHomeRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(

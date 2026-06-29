@@ -153,7 +153,7 @@ function IdeShell() {
 	const navigate = useNavigate();
 	const currentFile = findEditorFileByRoute(pathname)?.id;
 	const pageTitle =
-		pathname === "/start" ? "[h] home" : currentFile ? getDisplayFileName(currentFile) : undefined;
+		pathname === "/home" ? "[h] home" : currentFile ? getDisplayFileName(currentFile) : undefined;
 	const showPageLineNumbers = currentFile !== undefined;
 	const [hoveredPageLine, setHoveredPageLine] = useState<number | null>(null);
 	const [pageLineCount, setPageLineCount] = useState(defaultPageLineCount);
@@ -189,7 +189,7 @@ function IdeShell() {
 
 	function openHome() {
 		void navigate({
-			to: "/start",
+			to: "/home",
 			search: (prev) => prev,
 		});
 	}

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { GridBackground } from "#/components/grid-background";
 import { EmptyEditor } from "#/editor/empty-editor";
 
-export const Route = createFileRoute("/_app/start")({
+export const Route = createFileRoute("/_app/home")({
 	component: RouteComponent,
 });
 

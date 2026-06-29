@@ -47,7 +47,7 @@ const keybindingGroups = [
 		label: "Buffer",
 		rows: [
 			{ keys: "Space q", desc: "Close buffer / quit" },
-			{ keys: "Shift+R", desc: "Reload workspace" },
+			{ keys: "Shift+R", desc: "Replay intro" },
 		],
 	},
 ];

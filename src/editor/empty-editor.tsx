@@ -33,7 +33,7 @@ const emptyEditorCommands: Array<{
 	{ id: "recent-files", Icon: History, label: "Recent Files", shortcut: "r" },
 	{ id: "contacts", Icon: Mail, label: "Contacts", shortcut: "c" },
 	{ id: "settings", Icon: Settings, label: "Settings", shortcut: "s" },
-	{ id: "reload", Icon: RotateCw, label: "Reload", shortcut: "R" },
+	{ id: "reload", Icon: RotateCw, label: "Replay Intro", shortcut: "R" },
 	{ id: "help", Icon: HelpCircle, label: "Help", shortcut: "?" },
 ];
 
@@ -157,7 +157,7 @@ export function EmptyEditor() {
 		switch (commandId) {
 			case "explorer":
 				void navigate({
-					to: "/start",
+					to: "/home",
 					search: { neotree: "open" as const },
 				});
 				break;

@@ -147,7 +147,7 @@ export function NeoTree() {
 		neotree?: "open";
 	};
 
-	const currentRoute = pathname.replace(/\/$/, "") || "/start";
+	const currentRoute = pathname.replace(/\/$/, "") || "/home";
 	const isMobile = useIsMobile();
 
 	// Compute which folder IDs to expand initially, based on the currently

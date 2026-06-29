@@ -53,7 +53,7 @@ export const commandModeCommands: CommandModeCommand[] = [
 		aliases: ["bd", "close"],
 		execute: ({ navigate, searchParams }) =>
 			navigate({
-				to: "/start",
+				to: "/home",
 				search: { neotree: searchParams.neotree },
 			}),
 	},

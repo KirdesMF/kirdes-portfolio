@@ -1,17 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { animate, createScope, createTimeline, stagger, steps } from "animejs";
-import { splitText } from "animejs/text";
+import { createScope, createTimeline, stagger, steps } from "animejs";
 import { useLayoutEffect, useState } from "react";
-import { INTRO_COMMANDS, IntroTranscript } from "#/intro/intro-content";
+import { INTRO_LINES, IntroTranscript } from "#/intro/intro-content";
 
 export const Route = createFileRoute("/")({
 	component: RouteComponent,
 });
 
-const CHAR_MS = 18;
-const PAUSE_AFTER_TYPE = 120;
-const PAUSE_AFTER_OUT = 250;
-const FINAL_PAUSE = 1000;
+const LINE_MS = 140;
+const FINAL_PAUSE = 1200;
 
 function RouteComponent() {
 	const navigate = useNavigate();
@@ -28,79 +25,39 @@ function RouteComponent() {
 
 	useLayoutEffect(() => {
 		if (reduceMotion) {
-			const t = setTimeout(() => navigate({ replace: true, to: "/start" }), 800);
+			const t = setTimeout(() => navigate({ replace: true, to: "/home" }), 800);
 			return () => clearTimeout(t);
 		}
 
 		const tl = createTimeline({
-			defaults: { ease: "linear" },
-			onComplete: () => navigate({ replace: true, to: "/start" }),
+			defaults: { ease: steps(1) },
+			onComplete: () => navigate({ replace: true, to: "/home" }),
 		});
 
-		const charAnims: Array<ReturnType<typeof animate>> = [];
-		const splitters: Array<ReturnType<typeof splitText>> = [];
+		tl.set("[data-intro-line]", { opacity: 0 }, 0);
 
-		// Hide all entries at once
-		tl.set("[data-intro-entry]", { opacity: 0 }, 0);
-
-		// Show first entry wrapper immediately
-		tl.add('[data-intro-entry="0"]', { opacity: 1, duration: 0 }, 0);
-		tl.label("cmd-0", 0);
-
-		for (let i = 0; i < INTRO_COMMANDS.length; i++) {
-			const text = INTRO_COMMANDS[i];
-			const typeDuration = text.length * CHAR_MS;
-			const charStagger = typeDuration / text.length;
-
-			// Show next entry wrapper at the previous reveal point
-			if (i > 0) {
-				const prevReveal = `reveal-${i - 1}`;
-				tl.add(`[data-intro-entry="${i}"]`, { opacity: 1, duration: 0 }, prevReveal);
-				tl.label(`cmd-${i}`, `${prevReveal}+=${PAUSE_AFTER_OUT}`);
-			}
-
-			// Split and animate chars
-			const splitter = splitText(`[data-intro-cmd="${i}"]`, { chars: true });
-			splitters.push(splitter);
-
-			const charAnim = animate(splitter.chars, {
-				opacity: [0, 1],
-				duration: 1,
-				ease: steps(1),
-				delay: stagger(charStagger),
-				autoplay: false,
-			});
-			charAnims.push(charAnim);
-			tl.sync(charAnim, `cmd-${i}`);
-
-			// Label reveal point, pop the output
-			tl.label(`reveal-${i}`, `cmd-${i}+=${typeDuration + PAUSE_AFTER_TYPE}`);
+		INTRO_LINES.forEach((_, index) => {
 			tl.add(
-				`[data-intro-out="${i}"]`,
-				{ opacity: [0, 1], duration: 1, ease: steps(1) },
-				`reveal-${i}`,
+				`[data-intro-line="${index}"]`,
+				{ opacity: [0, 1], duration: 1, delay: stagger(0) },
+				index * LINE_MS,
 			);
-		}
+		});
 
-		// Final pause before redirect
-		tl.call(() => {}, `reveal-${INTRO_COMMANDS.length - 1}+=${FINAL_PAUSE}`);
+		tl.call(() => {}, (INTRO_LINES.length - 1) * LINE_MS + FINAL_PAUSE);
 
 		return () => {
 			tl.revert();
-			for (const a of charAnims) a.revert();
-			for (const s of splitters) s.revert();
 		};
 	}, [reduceMotion, navigate]);
 
 	return (
-		<main className="relative flex h-dvh items-center justify-center bg-background font-mono text-xs text-foreground">
-			<div className="w-full max-w-xl rounded border border-border bg-background/80 p-4">
-				<IntroTranscript skipAnimation={reduceMotion} />
-			</div>
+		<main className="relative flex h-dvh items-center justify-center bg-background p-8 font-mono text-foreground">
+			<IntroTranscript skipAnimation={reduceMotion} />
 			<button
 				className="absolute right-4 bottom-4 text-muted-foreground/50 transition hover:text-foreground"
 				type="button"
-				onClick={() => navigate({ replace: true, to: "/start" })}
+				onClick={() => navigate({ replace: true, to: "/home" })}
 			>
 				[skip intro]
 			</button>

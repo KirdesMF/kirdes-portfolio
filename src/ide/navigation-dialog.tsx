@@ -5,7 +5,7 @@ import { CommandDialog, CommandInput, CommandItem, CommandList } from "#/design-
 import { useIdeStore } from "#/ide/store";
 
 const navigationItems = [
-	{ label: "Home", route: "/start" },
+	{ label: "Home", route: "/home" },
 	{ label: "About", route: "/about" },
 	{ label: "Contact", route: "/contact" },
 	{ label: "Works", route: "/works" },
