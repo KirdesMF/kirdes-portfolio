@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "#/design-system/cn";
-import { CommandDialog, CommandInput, CommandItem, CommandList } from "#/design-system/command";
 import { useScrambleRef } from "#/design-system/use-scramble-ref";
 import { AsciiBanner } from "#/editor/ascii-banner/ascii-banner";
 import { useIdeStore } from "#/ide/store";
@@ -36,12 +35,6 @@ const emptyEditorCommands: Array<{
 	{ id: "reload", Icon: RotateCw, label: "Reload", shortcut: "R" },
 	{ id: "help", Icon: HelpCircle, label: "Help", shortcut: "?" },
 ];
-
-const navigationItems = [
-	{ label: "About", route: "/about" },
-	{ label: "Contact", route: "/contact" },
-	{ label: "Works", route: "/works" },
-] as const;
 
 const loaderCells = Array.from({ length: 9 }, (_, index) => index);
 const diagonalOrder = [0, 1, 2, 1, 2, 3, 2, 3, 4] as const;
@@ -82,8 +75,6 @@ function TinyDiagonalLoader() {
 
 export function EmptyEditor() {
 	const [compact, setCompact] = useState(false);
-	const [navigationOpen, setNavigationOpen] = useState(false);
-	const [navigationSearch, setNavigationSearch] = useState("");
 	const search = useRouterState({ select: (s) => s.location.search }) as { neotree?: "open" };
 	const commandMenuOpen = useIdeStore((s) => s.commandMenuOpen);
 	const settingsOpen = useIdeStore((s) => s.settingsOpen);
@@ -92,6 +83,7 @@ export function EmptyEditor() {
 	const setFindFileOpen = useIdeStore((s) => s.setFindFileOpen);
 	const setFindTextOpen = useIdeStore((s) => s.setFindTextOpen);
 	const setEditorMode = useIdeStore((s) => s.setEditorMode);
+	const setNavigationOpen = useIdeStore((s) => s.setNavigationOpen);
 	const setRecentFilesOpen = useIdeStore((s) => s.setRecentFilesOpen);
 	const recentFilesOpen = useIdeStore((s) => s.recentFilesOpen);
 	const helpOpen = useIdeStore((s) => s.helpOpen);
@@ -106,8 +98,7 @@ export function EmptyEditor() {
 		contactsOpen ||
 		findFileOpen ||
 		findTextOpen ||
-		recentFilesOpen ||
-		navigationOpen;
+		recentFilesOpen;
 	const navigate = useNavigate();
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const rootRef = useScrambleRef<HTMLDivElement>({
@@ -167,23 +158,6 @@ export function EmptyEditor() {
 		},
 	);
 
-	const filteredNavigationItems = navigationItems.filter((item) =>
-		item.label.toLowerCase().includes(navigationSearch.trim().toLowerCase()),
-	);
-
-	function openNavigationRoute(route: (typeof navigationItems)[number]["route"]) {
-		void navigate({ to: route, search });
-		setNavigationOpen(false);
-		setNavigationSearch("");
-		setEditorMode("normal");
-	}
-
-	function handleNavigationOpenChange(open: boolean) {
-		setNavigationOpen(open);
-		setEditorMode(open ? "insert" : "normal");
-		if (!open) setNavigationSearch("");
-	}
-
 	useEffect(() => {
 		const container = containerRef.current;
 		if (!container) return;
@@ -222,7 +196,7 @@ export function EmptyEditor() {
 				<div className={cn("grid w-full max-w-sm gap-1", compact && "grid-cols-2")}>
 					{emptyEditorCommands.map(({ Icon, id, label, shortcut }) => (
 						<button
-							className="relative grid grid-cols-[auto_1fr_1ch] items-center gap-4 px-2 py-1.5 text-left text-primary/90 before:absolute before:inset-y-0 before:s-0 before:w-1 before:bg-transparent hover:bg-accent hover:text-accent-foreground hover:before:bg-primary/60"
+							className="relative grid grid-cols-[auto_1fr_1ch] items-center gap-4 px-2 py-1.5 text-left text-primary/90 before:absolute before:inset-y-0 before:s-0 before:w-1 before:bg-transparent hover:bg-accent hover:text-accent-foreground hover:before:bg-primary/60 focus:bg-accent focus:text-accent-foreground focus:outline-none focus:before:bg-primary/60"
 							key={id}
 							type="button"
 							onClick={() => runEmptyEditorCommand(id)}
@@ -239,7 +213,7 @@ export function EmptyEditor() {
 				>
 					<TinyDiagonalLoader />
 					<Link
-						className="text-primary/70 transition hover:text-primary"
+						className="text-primary/70 transition hover:text-primary focus:text-primary focus:outline-none"
 						search={search}
 						to="/contact"
 					>
@@ -247,36 +221,6 @@ export function EmptyEditor() {
 					</Link>
 				</div>
 			</div>
-			<CommandDialog
-				commandClassName="h-[min(70dvh,18rem)]"
-				description="Choose a route to open in the editor."
-				open={navigationOpen}
-				title="NAVIGATION"
-				onOpenChange={handleNavigationOpenChange}
-			>
-				<CommandInput
-					autoFocus
-					className="h-9 border-b-0 px-0 text-xs"
-					placeholder="Navigate..."
-					value={navigationSearch}
-					onFocus={() => setEditorMode("insert")}
-					onValueChange={setNavigationSearch}
-				/>
-				<CommandList className="min-h-0 flex-1 p-0 pt-2">
-					{filteredNavigationItems.map((item) => (
-						<CommandItem
-							className="rounded-none px-2 text-muted-foreground"
-							key={item.route}
-							value={`${item.label} ${item.route}`}
-							onSelect={() => openNavigationRoute(item.route)}
-						>
-							<Compass className="size-3 shrink-0" />
-							<span>{item.label}</span>
-							<span className="ms-auto text-command-shortcut">{item.route}</span>
-						</CommandItem>
-					))}
-				</CommandList>
-			</CommandDialog>
 		</div>
 	);
 }

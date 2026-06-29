@@ -13,13 +13,7 @@ import {
 	Terminal,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-	Command,
-	CommandDialog,
-	CommandInput,
-	CommandItem,
-	CommandList,
-} from "#/design-system/command";
+import { Command, CommandItem, CommandList } from "#/design-system/command";
 import { Drawer, DrawerContent, DrawerHandle, DrawerPopup } from "#/design-system/drawer";
 import { Popover, PopoverContent, PopoverTrigger } from "#/design-system/popover";
 import { toastManager } from "#/design-system/toast";
@@ -37,12 +31,6 @@ type Item = {
 	action: () => void;
 };
 
-const navigationItems = [
-	{ label: "About", route: "/about" },
-	{ label: "Contact", route: "/contact" },
-	{ label: "Works", route: "/works" },
-] as const;
-
 export function CommandMenu() {
 	const isMobile = useIsMobile();
 	const open = useIdeStore((s) => s.commandMenuOpen);
@@ -51,8 +39,7 @@ export function CommandMenu() {
 	const setRecentFilesOpen = useIdeStore((s) => s.setRecentFilesOpen);
 	const setCommandHistoryOpen = useIdeStore((s) => s.setCommandHistoryOpen);
 	const setEditorMode = useIdeStore((s) => s.setEditorMode);
-	const [navigationOpen, setNavigationOpen] = useState(false);
-	const [navigationSearch, setNavigationSearch] = useState("");
+	const setNavigationOpen = useIdeStore((s) => s.setNavigationOpen);
 	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
 	const navigate = useNavigate();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -60,22 +47,6 @@ export function CommandMenu() {
 		neotree?: "open";
 	};
 	const { appearance, setAppearance } = useTheme();
-	const filteredNavigationItems = navigationItems.filter((item) =>
-		item.label.toLowerCase().includes(navigationSearch.trim().toLowerCase()),
-	);
-
-	function openNavigationRoute(route: (typeof navigationItems)[number]["route"]) {
-		void navigate({ to: route, search });
-		setNavigationOpen(false);
-		setNavigationSearch("");
-		setEditorMode("normal");
-	}
-
-	function handleNavigationOpenChange(open: boolean) {
-		setNavigationOpen(open);
-		setEditorMode(open ? "insert" : "normal");
-		if (!open) setNavigationSearch("");
-	}
 
 	const commands: Item[] = [
 		{
@@ -221,68 +192,29 @@ export function CommandMenu() {
 		},
 	];
 
-	const navigationDialog = (
-		<CommandDialog
-			commandClassName="h-[min(70dvh,18rem)]"
-			description="Choose a route to open in the editor."
-			open={navigationOpen}
-			title="NAVIGATION"
-			onOpenChange={handleNavigationOpenChange}
-		>
-			<CommandInput
-				autoFocus
-				className="h-9 border-b-0 px-0 text-xs"
-				placeholder="Navigate..."
-				value={navigationSearch}
-				onFocus={() => setEditorMode("insert")}
-				onValueChange={setNavigationSearch}
-			/>
-			<CommandList className="min-h-0 flex-1 p-0 pt-2">
-				{filteredNavigationItems.map((item) => (
-					<CommandItem
-						className="rounded-none px-2 text-muted-foreground"
-						key={item.route}
-						value={`${item.label} ${item.route}`}
-						onSelect={() => openNavigationRoute(item.route)}
-					>
-						<Compass className="size-3 shrink-0" />
-						<span>{item.label}</span>
-						<span className="ms-auto text-command-shortcut">{item.route}</span>
-					</CommandItem>
-				))}
-			</CommandList>
-		</CommandDialog>
-	);
-
 	if (isMobile) {
 		return (
-			<>
-				<Drawer open={open} onOpenChange={setOpen}>
-					<DrawerPopup className="px-3 pb-3">
-						<DrawerHandle />
-						<DrawerContent>
-							<CommandMenuInner commands={commands} onClose={() => setOpen(false)} />
-						</DrawerContent>
-					</DrawerPopup>
-				</Drawer>
-				{navigationDialog}
-			</>
+			<Drawer open={open} onOpenChange={setOpen}>
+				<DrawerPopup className="px-3 pb-3">
+					<DrawerHandle />
+					<DrawerContent>
+						<CommandMenuInner commands={commands} onClose={() => setOpen(false)} />
+					</DrawerContent>
+				</DrawerPopup>
+			</Drawer>
 		);
 	}
 
 	return (
-		<>
-			<Popover open={open} onOpenChange={setOpen}>
-				<PopoverTrigger
-					aria-label="Open command menu"
-					className="pointer-events-none fixed right-[calc(0.75rem+var(--border-width-thin))] bottom-[calc(var(--spacing-status-bar)*2)] size-0 opacity-0"
-				/>
-				<PopoverContent align="end" className="p-0" initialFocus side="top" sideOffset={0}>
-					<CommandMenuInner commands={commands} onClose={() => setOpen(false)} />
-				</PopoverContent>
-			</Popover>
-			{navigationDialog}
-		</>
+		<Popover open={open} onOpenChange={setOpen}>
+			<PopoverTrigger
+				aria-label="Open command menu"
+				className="pointer-events-none fixed right-[calc(0.75rem+var(--border-width-thin))] bottom-[calc(var(--spacing-status-bar)*2)] size-0 opacity-0"
+			/>
+			<PopoverContent align="end" className="p-0" initialFocus side="top" sideOffset={0}>
+				<CommandMenuInner commands={commands} onClose={() => setOpen(false)} />
+			</PopoverContent>
+		</Popover>
 	);
 }
 

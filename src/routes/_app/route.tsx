@@ -1,5 +1,5 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
-import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import { findEditorFileByRoute, getDisplayFileName } from "#/editor/editor-files";
@@ -10,6 +10,7 @@ import { ContactsDialog } from "#/ide/contacts-dialog";
 import { FindFileDialog } from "#/ide/find-file-dialog";
 import { FindTextDialog } from "#/ide/find-text-dialog";
 import { HelpDialog } from "#/ide/help-dialog";
+import { NavigationDialog } from "#/ide/navigation-dialog";
 import { NeoTree } from "#/ide/neo-tree";
 import { RecentFilesDialog } from "#/ide/recent-files-dialog";
 import { parseIdeSearch } from "#/ide/search";
@@ -159,6 +160,7 @@ function IdeShell() {
 	const settingsOpen = useIdeStore((s) => s.settingsOpen);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
 	const commandMenuOpen = useIdeStore((s) => s.commandMenuOpen);
+	const setCommandMenuOpen = useIdeStore((s) => s.setCommandMenuOpen);
 	const commandModeOpen = useIdeStore((s) => s.commandModeOpen);
 	const commandHistoryOpen = useIdeStore((s) => s.commandHistoryOpen);
 	const setCommandModeOpen = useIdeStore((s) => s.setCommandModeOpen);
@@ -171,6 +173,8 @@ function IdeShell() {
 	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
 	const contactsOpen = useIdeStore((s) => s.contactsOpen);
 	const setContactsOpen = useIdeStore((s) => s.setContactsOpen);
+	const navigationOpen = useIdeStore((s) => s.navigationOpen);
+	const setNavigationOpen = useIdeStore((s) => s.setNavigationOpen);
 	const toggleCommandMenu = useIdeStore((s) => s.toggleCommandMenu);
 
 	function toggleExplorer() {
@@ -198,7 +202,8 @@ function IdeShell() {
 		commandModeOpen ||
 		commandHistoryOpen ||
 		recentFilesOpen ||
-		contactsOpen;
+		contactsOpen ||
+		navigationOpen;
 
 	useHotkeys(
 		[
@@ -230,6 +235,14 @@ function IdeShell() {
 				hotkey: "H",
 				callback: () => {
 					if (!commandMenuOpen) openHome();
+				},
+			},
+			{
+				hotkey: "N",
+				callback: () => {
+					setCommandMenuOpen(false);
+					setNavigationOpen(true);
+					setEditorMode("insert");
 				},
 			},
 		],
@@ -273,36 +286,25 @@ function IdeShell() {
 	return (
 		<div className="grid h-dvh grid-rows-[auto_minmax(0,1fr)] p-3">
 			<header className="flex h-status-bar shrink-0 items-stretch justify-end border-x-thin border-t-thin border-border bg-background text-tiny text-muted-foreground">
-				<nav className="flex items-center gap-2 p-2">
-					<Link
-						className="flex items-center bg-status-muted px-2.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground"
-						search={search}
-						to="/about"
-					>
-						/about
-					</Link>
-					<Link
-						className="flex items-center bg-status-muted px-2.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground"
-						search={search}
-						to="/contact"
-					>
-						/contact
-					</Link>
-					<Link
-						className="flex items-center bg-status-muted px-2.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground"
-						search={search}
-						to="/works"
-					>
-						/works
-					</Link>
+				<div className="flex items-center gap-2 p-2">
 					<button
-						className="flex cursor-pointer items-center bg-status-muted px-2.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground"
+						className="flex cursor-pointer items-center bg-status-muted px-2.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground focus:bg-status-primary focus:text-status-primary-foreground focus:outline-none"
+						type="button"
+						onClick={() => {
+							setNavigationOpen(true);
+							setEditorMode("insert");
+						}}
+					>
+						n nav
+					</button>
+					<button
+						className="flex cursor-pointer items-center bg-status-muted px-2.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground focus:bg-status-primary focus:text-status-primary-foreground focus:outline-none"
 						type="button"
 						onClick={toggleCommandMenu}
 					>
 						<SpaceIcon className="me-1 inline size-3 align-[-0.125em]" /> menu
 					</button>
-				</nav>
+				</div>
 			</header>
 			<div
 				className={`relative grid min-h-0 ${search.neotree === "open" ? "grid-cols-[auto_minmax(0,1fr)]" : "grid-cols-1"}`}
@@ -335,6 +337,7 @@ function IdeShell() {
 			<CommandHistoryDialog />
 			<FindFileDialog />
 			<FindTextDialog />
+			<NavigationDialog />
 			<RecentFilesDialog />
 			<SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
 			<HelpDialog open={helpOpen} onOpenChange={setHelpOpen} />

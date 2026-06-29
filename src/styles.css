@@ -7,10 +7,6 @@
 	* {
 		@apply scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent;
 	}
-
-	*:focus-visible {
-		@apply outline-none ring-2 ring-focus-ring;
-	}
 }
 
 @utility dot-pattern {
