@@ -154,7 +154,7 @@ function IdeShell() {
 	const currentFile = findEditorFileByRoute(pathname)?.id;
 	const pageTitle =
 		pathname === "/start" ? "[h] home" : currentFile ? getDisplayFileName(currentFile) : undefined;
-	const showPageLineNumbers = pathname !== "/start";
+	const showPageLineNumbers = currentFile !== undefined;
 	const [hoveredPageLine, setHoveredPageLine] = useState<number | null>(null);
 	const [pageLineCount, setPageLineCount] = useState(defaultPageLineCount);
 	const settingsOpen = useIdeStore((s) => s.settingsOpen);

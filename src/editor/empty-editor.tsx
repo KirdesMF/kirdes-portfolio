@@ -1,6 +1,6 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { animate, createScope, stagger } from "animejs";
+import { animate, createScope, createTimeline, stagger } from "animejs";
 import {
 	Compass,
 	FileText,
@@ -36,8 +36,90 @@ const emptyEditorCommands: Array<{
 	{ id: "help", Icon: HelpCircle, label: "Help", shortcut: "?" },
 ];
 
+const commandIndicatorPixels = Array.from({ length: 5 }, (_, index) => index);
 const loaderCells = Array.from({ length: 9 }, (_, index) => index);
 const diagonalOrder = [0, 1, 2, 1, 2, 3, 2, 3, 4] as const;
+
+function EmptyEditorCommandButton({
+	Icon,
+	label,
+	onClick,
+	shortcut,
+}: {
+	Icon: LucideIcon;
+	label: string;
+	onClick: () => void;
+	shortcut: string;
+}) {
+	const buttonRef = useRef<HTMLButtonElement | null>(null);
+	const pixelRefs = useRef<Array<HTMLSpanElement | null>>([]);
+
+	useEffect(() => {
+		const scope = createScope({
+			mediaQueries: { reduceMotion: "(prefers-reduced-motion: reduce)" },
+			root: buttonRef,
+		}).add((self) => {
+			if (self?.matches.reduceMotion) return;
+
+			const max = commandIndicatorPixels.length - 1;
+			const steps = 8;
+			const renderPeak = (peak: number) => {
+				for (const pixel of commandIndicatorPixels) {
+					const node = pixelRefs.current[pixel];
+					if (!node) continue;
+
+					const distance = Math.abs(pixel - peak);
+					node.style.opacity = String(Math.max(1 - distance * 0.62, 0.18));
+				}
+			};
+
+			renderPeak(0);
+
+			const timeline = createTimeline({ loop: true });
+
+			for (let i = 0; i <= steps; i++) {
+				const position = (i / steps) * max;
+				timeline.call(() => renderPeak(position), i * 70);
+			}
+			for (let i = 1; i <= steps; i++) {
+				const position = max - (i / steps) * max;
+				timeline.call(() => renderPeak(position), (steps + i) * 70);
+			}
+		});
+
+		return () => {
+			scope.revert();
+		};
+	}, []);
+
+	return (
+		<button
+			className="group relative grid grid-cols-[auto_1fr_1ch] items-center gap-4 px-2 py-1.5 ps-3 text-left text-primary/90 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
+			ref={buttonRef}
+			type="button"
+			onClick={onClick}
+		>
+			<span
+				aria-hidden="true"
+				className="absolute inset-y-0 start-0 grid w-1 grid-rows-5 gap-px opacity-0 transition-opacity group-hover:opacity-100 group-focus:opacity-100"
+			>
+				{commandIndicatorPixels.map((pixel) => (
+					<span
+						className="bg-primary"
+						key={pixel}
+						ref={(node) => {
+							pixelRefs.current[pixel] = node;
+						}}
+						style={{ opacity: pixel === 0 ? 1 : 0.18 }}
+					/>
+				))}
+			</span>
+			<Icon aria-hidden="true" className="size-4 text-primary" />
+			<span className="truncate">{label}</span>
+			<span className="text-command-shortcut text-end">{shortcut}</span>
+		</button>
+	);
+}
 
 function TinyDiagonalLoader() {
 	const rootRef = useRef<HTMLDivElement | null>(null);
@@ -146,7 +228,6 @@ export function EmptyEditor() {
 		[
 			{ hotkey: "Shift+R", callback: () => runEmptyEditorCommand("reload") },
 			{ hotkey: "F", callback: () => runEmptyEditorCommand("find-file") },
-			{ hotkey: "N", callback: () => runEmptyEditorCommand("navigation") },
 			{ hotkey: "C", callback: () => runEmptyEditorCommand("contacts") },
 			{ hotkey: "G", callback: () => runEmptyEditorCommand("find-text") },
 			{ hotkey: "R", callback: () => runEmptyEditorCommand("recent-files") },
@@ -195,16 +276,13 @@ export function EmptyEditor() {
 				<AsciiBanner className={cn("w-full", compact ? "max-w-sm" : "max-w-lg")} />
 				<div className={cn("grid w-full max-w-sm gap-1", compact && "grid-cols-2")}>
 					{emptyEditorCommands.map(({ Icon, id, label, shortcut }) => (
-						<button
-							className="relative grid grid-cols-[auto_1fr_1ch] items-center gap-4 px-2 py-1.5 text-left text-primary/90 before:absolute before:inset-y-0 before:s-0 before:w-1 before:bg-transparent hover:bg-accent hover:text-accent-foreground hover:before:bg-primary/60 focus:bg-accent focus:text-accent-foreground focus:outline-none focus:before:bg-primary/60"
+						<EmptyEditorCommandButton
+							Icon={Icon}
 							key={id}
-							type="button"
+							label={label}
+							shortcut={shortcut}
 							onClick={() => runEmptyEditorCommand(id)}
-						>
-							<Icon aria-hidden="true" className="size-4 text-primary" />
-							<span className="truncate">{label}</span>
-							<span className="text-command-shortcut text-end">{shortcut}</span>
-						</button>
+						/>
 					))}
 				</div>
 				<div
