@@ -10,8 +10,8 @@ export const Route = createFileRoute("/_app/home")({
 function RouteComponent() {
 	return (
 		<div className="relative size-full overflow-hidden">
+			<PixelTrailCanvas className="pointer-events-none absolute inset-0 size-full" />
 			<GridBackground />
-			<PixelTrailCanvas className="pointer-events-none absolute inset-0 size-full opacity-70" />
 			<div className="relative z-10 size-full">
 				<EmptyEditor />
 			</div>

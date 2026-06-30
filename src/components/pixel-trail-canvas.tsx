@@ -128,7 +128,6 @@ uniform vec3 u_color;
 uniform vec3 u_backgroundColor;
 uniform float u_hasBackground;
 uniform float u_opacity;
-uniform float u_time;
 
 float hash(vec2 p) {
 	return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
@@ -139,24 +138,31 @@ void main() {
 	vec2 local = fract(gl_FragCoord.xy / u_charSize);
 	vec2 trailUv = (cell + 0.5) / u_gridSize;
 	float intensity = texture2D(u_trail, trailUv).r;
-	if (trailUv.x < 0.0 || trailUv.x > 1.0 || trailUv.y < 0.0 || trailUv.y > 1.0 || intensity < 0.035) {
+	if (trailUv.x < 0.0 || trailUv.x > 1.0 || trailUv.y < 0.0 || trailUv.y > 1.0) {
+		discard;
+	}
+
+	float visibility = smoothstep(0.04, 0.1, intensity);
+	if (visibility <= 0.0) {
 		discard;
 	}
 
 	float normalized = pow(intensity, 1.35);
-	float baseIndex = floor(normalized * (u_glyphCount - 1.0));
-	float jitter = floor(hash(cell + floor(u_time * 10.0)) * 3.0) - 1.0;
-	float glyphIndex = clamp(baseIndex + jitter, 0.0, u_glyphCount - 1.0);
+	float minVisibleGlyph = 3.0;
+	float baseIndex = floor(mix(minVisibleGlyph, u_glyphCount - 1.0, normalized));
+	float glyphIndex = clamp(baseIndex, 0.0, u_glyphCount - 1.0);
 	vec2 glyphCell = vec2(mod(glyphIndex, u_atlasGridSize.x), floor(glyphIndex / u_atlasGridSize.x));
 	vec2 atlasUv = (glyphCell + local) / u_atlasGridSize;
 	atlasUv.y = 1.0 - atlasUv.y;
 
 	float glyphAlpha = texture2D(u_atlasTexture, atlasUv).a;
 	float variation = mix(0.8, 1.0, hash(cell + 19.17));
-	float alpha = glyphAlpha * pow(intensity, 1.1) * variation * u_opacity;
-	vec3 color = mix(u_backgroundColor, u_color, alpha);
-	float outAlpha = mix(alpha, 1.0, u_hasBackground);
-	gl_FragColor = vec4(color, outAlpha);
+	float alpha = glyphAlpha * visibility * pow(intensity, 1.1) * variation * u_opacity;
+	if (u_hasBackground > 0.5) {
+		gl_FragColor = vec4(mix(u_backgroundColor, u_color, alpha), 1.0);
+	} else {
+		gl_FragColor = vec4(u_color, alpha);
+	}
 }
 `;
 
@@ -168,14 +174,14 @@ const DEFAULTS = {
 	fontSize: 13,
 	mobileFontSize: 14,
 	fontFamily: "Geist Mono",
-	charset: "@%#*=+-;:,. ",
+	charset: " .,:;-+=*#%:",
 	atlasScale: 2,
 	opacity: 0.78,
-	radius: 5.5,
-	damp: 0.975,
+	radius: 3.75,
+	damp: 0.94,
 	strength: 1,
 	pulseLife: 1,
-	pulseStrength: 0.75,
+	pulseStrength: 0.7,
 	pulseWidth: 2.5,
 	maxPulses: 8,
 	color: "var(--foreground)",
@@ -341,10 +347,9 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 
 		const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 		let reducedMotion = props.reducedMotion ?? reducedMotionQuery.matches;
-		if (reducedMotion) canvas.style.opacity = "0.45";
-
-		const context =
-			canvas.getContext("webgl2", { alpha: true }) ?? canvas.getContext("webgl", { alpha: true });
+		const contextAttributes: WebGLContextAttributes = { alpha: true, premultipliedAlpha: false };
+		const webgl2Context = canvas.getContext("webgl2", contextAttributes);
+		const context: GL | null = webgl2Context ?? canvas.getContext("webgl", contextAttributes);
 		if (!context) return;
 		const renderer = context;
 		const canvasElement = canvas;
@@ -363,6 +368,33 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 			quadBuffer: maybeQuadBuffer,
 		};
 		const { updateShaderProgram, renderShaderProgram, quadBuffer } = resources;
+		const updateUniforms = {
+			prevTrail: renderer.getUniformLocation(updateShaderProgram, "u_prevTrail"),
+			gridSize: renderer.getUniformLocation(updateShaderProgram, "u_gridSize"),
+			cellAspect: renderer.getUniformLocation(updateShaderProgram, "u_cellAspect"),
+			prevPointer: renderer.getUniformLocation(updateShaderProgram, "u_prevPointer"),
+			currPointer: renderer.getUniformLocation(updateShaderProgram, "u_currPointer"),
+			pointerActive: renderer.getUniformLocation(updateShaderProgram, "u_pointerActive"),
+			damp: renderer.getUniformLocation(updateShaderProgram, "u_damp"),
+			radius: renderer.getUniformLocation(updateShaderProgram, "u_radius"),
+			strength: renderer.getUniformLocation(updateShaderProgram, "u_strength"),
+			pulseCount: renderer.getUniformLocation(updateShaderProgram, "u_pulseCount"),
+			pulses: renderer.getUniformLocation(updateShaderProgram, "u_pulses[0]"),
+			pulseParams: renderer.getUniformLocation(updateShaderProgram, "u_pulseParams"),
+		};
+		const renderUniforms = {
+			trail: renderer.getUniformLocation(renderShaderProgram, "u_trail"),
+			atlasTexture: renderer.getUniformLocation(renderShaderProgram, "u_atlasTexture"),
+			gridSize: renderer.getUniformLocation(renderShaderProgram, "u_gridSize"),
+			charSize: renderer.getUniformLocation(renderShaderProgram, "u_charSize"),
+			atlasGridSize: renderer.getUniformLocation(renderShaderProgram, "u_atlasGridSize"),
+			glyphCount: renderer.getUniformLocation(renderShaderProgram, "u_glyphCount"),
+			opacity: renderer.getUniformLocation(renderShaderProgram, "u_opacity"),
+			color: renderer.getUniformLocation(renderShaderProgram, "u_color"),
+			backgroundColor: renderer.getUniformLocation(renderShaderProgram, "u_backgroundColor"),
+			hasBackground: renderer.getUniformLocation(renderShaderProgram, "u_hasBackground"),
+		};
+		const pulseUniforms = new Float32Array(MAX_PULSES * 4);
 
 		renderer.bindBuffer(renderer.ARRAY_BUFFER, quadBuffer);
 		renderer.bufferData(
@@ -371,8 +403,10 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 			renderer.STATIC_DRAW,
 		);
 		renderer.disable(renderer.DEPTH_TEST);
-		renderer.enable(renderer.BLEND);
-		renderer.blendFunc(renderer.SRC_ALPHA, renderer.ONE_MINUS_SRC_ALPHA);
+		renderer.disable(renderer.BLEND);
+		renderer.bindFramebuffer(renderer.FRAMEBUFFER, null);
+		renderer.clearColor(0, 0, 0, 0);
+		renderer.clear(renderer.COLOR_BUFFER_BIT);
 
 		let width = 1;
 		let height = 1;
@@ -387,6 +421,7 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 		let lastTime = performance.now();
 		let visible = true;
 		let inViewport = true;
+		let hasPresentedFirstFrame = false;
 		let effectColor: [number, number, number] = [1, 1, 1];
 		let effectBackgroundColor: [number, number, number] = [0, 0, 0];
 		let glyphAtlas: GlyphAtlas | null = null;
@@ -417,8 +452,8 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 				charset: props.charset ?? DEFAULTS.charset,
 				atlasScale: props.atlasScale ?? DEFAULTS.atlasScale,
 				opacity: props.opacity ?? DEFAULTS.opacity,
-				radius: reducedMotion ? 3.5 : (props.radius ?? (mobile ? 4.5 : DEFAULTS.radius)),
-				damp: reducedMotion ? 0.94 : (props.damp ?? (mobile ? 0.965 : DEFAULTS.damp)),
+				radius: reducedMotion ? 2.75 : (props.radius ?? (mobile ? 3.25 : DEFAULTS.radius)),
+				damp: reducedMotion ? 0.9 : (props.damp ?? (mobile ? 0.935 : DEFAULTS.damp)),
 				strength: reducedMotion ? 0.35 : (props.strength ?? (mobile ? 0.8 : DEFAULTS.strength)),
 				pulseLife: props.pulseLife ?? (mobile ? 0.85 : DEFAULTS.pulseLife),
 				pulseStrength: reducedMotion
@@ -530,51 +565,27 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 			renderer.bindFramebuffer(renderer.FRAMEBUFFER, writeTarget.framebuffer);
 			renderer.activeTexture(renderer.TEXTURE0);
 			renderer.bindTexture(renderer.TEXTURE_2D, readTarget.texture);
-			renderer.uniform1i(renderer.getUniformLocation(updateShaderProgram, "u_prevTrail"), 0);
-			renderer.uniform2f(
-				renderer.getUniformLocation(updateShaderProgram, "u_gridSize"),
-				cols,
-				rows,
-			);
-			renderer.uniform2f(
-				renderer.getUniformLocation(updateShaderProgram, "u_cellAspect"),
-				charAspectX,
-				1,
-			);
-			renderer.uniform2f(
-				renderer.getUniformLocation(updateShaderProgram, "u_prevPointer"),
-				pointer.previousX,
-				pointer.previousY,
-			);
-			renderer.uniform2f(
-				renderer.getUniformLocation(updateShaderProgram, "u_currPointer"),
-				pointer.currentX,
-				pointer.currentY,
-			);
-			renderer.uniform1f(
-				renderer.getUniformLocation(updateShaderProgram, "u_pointerActive"),
-				pointer.active ? 1 : 0,
-			);
-			renderer.uniform1f(renderer.getUniformLocation(updateShaderProgram, "u_damp"), next.damp);
-			renderer.uniform1f(renderer.getUniformLocation(updateShaderProgram, "u_radius"), next.radius);
-			renderer.uniform1f(
-				renderer.getUniformLocation(updateShaderProgram, "u_strength"),
-				next.strength,
-			);
-			renderer.uniform1i(
-				renderer.getUniformLocation(updateShaderProgram, "u_pulseCount"),
-				pulses.length,
-			);
-			renderer.uniform4fv(
-				renderer.getUniformLocation(updateShaderProgram, "u_pulses[0]"),
-				new Float32Array(MAX_PULSES * 4).map((_, index) => {
-					const pulse = pulses[Math.floor(index / 4)];
-					if (!pulse) return 0;
-					return [pulse.x, pulse.y, pulse.age, pulse.life][index % 4] ?? 0;
-				}),
-			);
+			renderer.uniform1i(updateUniforms.prevTrail, 0);
+			renderer.uniform2f(updateUniforms.gridSize, cols, rows);
+			renderer.uniform2f(updateUniforms.cellAspect, charAspectX, 1);
+			renderer.uniform2f(updateUniforms.prevPointer, pointer.previousX, pointer.previousY);
+			renderer.uniform2f(updateUniforms.currPointer, pointer.currentX, pointer.currentY);
+			renderer.uniform1f(updateUniforms.pointerActive, pointer.active ? 1 : 0);
+			renderer.uniform1f(updateUniforms.damp, next.damp ** (delta * 60));
+			renderer.uniform1f(updateUniforms.radius, next.radius);
+			renderer.uniform1f(updateUniforms.strength, next.strength);
+			renderer.uniform1i(updateUniforms.pulseCount, pulses.length);
+			pulseUniforms.fill(0);
+			for (let i = 0; i < pulses.length; i++) {
+				const offset = i * 4;
+				pulseUniforms[offset] = pulses[i].x;
+				pulseUniforms[offset + 1] = pulses[i].y;
+				pulseUniforms[offset + 2] = pulses[i].age;
+				pulseUniforms[offset + 3] = pulses[i].life;
+			}
+			renderer.uniform4fv(updateUniforms.pulses, pulseUniforms);
 			renderer.uniform4f(
-				renderer.getUniformLocation(updateShaderProgram, "u_pulseParams"),
+				updateUniforms.pulseParams,
 				next.pulseWidth,
 				Math.min(cols, rows) * 0.35,
 				next.pulseStrength,
@@ -593,51 +604,28 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 			renderer.clear(renderer.COLOR_BUFFER_BIT);
 			renderer.activeTexture(renderer.TEXTURE0);
 			renderer.bindTexture(renderer.TEXTURE_2D, readTarget.texture);
-			renderer.uniform1i(renderer.getUniformLocation(renderShaderProgram, "u_trail"), 0);
+			renderer.uniform1i(renderUniforms.trail, 0);
 			renderer.activeTexture(renderer.TEXTURE1);
 			renderer.bindTexture(renderer.TEXTURE_2D, glyphAtlas.texture);
-			renderer.uniform1i(renderer.getUniformLocation(renderShaderProgram, "u_atlasTexture"), 1);
-			renderer.uniform2f(
-				renderer.getUniformLocation(renderShaderProgram, "u_gridSize"),
-				cols,
-				rows,
-			);
-			renderer.uniform2f(
-				renderer.getUniformLocation(renderShaderProgram, "u_charSize"),
-				charWidth,
-				charHeight,
-			);
-			renderer.uniform2f(
-				renderer.getUniformLocation(renderShaderProgram, "u_atlasGridSize"),
-				glyphAtlas.gridWidth,
-				glyphAtlas.gridHeight,
-			);
-			renderer.uniform1f(
-				renderer.getUniformLocation(renderShaderProgram, "u_glyphCount"),
-				glyphAtlas.glyphCount,
-			);
-			renderer.uniform1f(
-				renderer.getUniformLocation(renderShaderProgram, "u_opacity"),
-				next.opacity,
-			);
-			renderer.uniform1f(renderer.getUniformLocation(renderShaderProgram, "u_time"), now / 1000);
+			renderer.uniform1i(renderUniforms.atlasTexture, 1);
+			renderer.uniform2f(renderUniforms.gridSize, cols, rows);
+			renderer.uniform2f(renderUniforms.charSize, charWidth, charHeight);
+			renderer.uniform2f(renderUniforms.atlasGridSize, glyphAtlas.gridWidth, glyphAtlas.gridHeight);
+			renderer.uniform1f(renderUniforms.glyphCount, glyphAtlas.glyphCount);
+			renderer.uniform1f(renderUniforms.opacity, next.opacity);
+			renderer.uniform3f(renderUniforms.color, effectColor[0], effectColor[1], effectColor[2]);
 			renderer.uniform3f(
-				renderer.getUniformLocation(renderShaderProgram, "u_color"),
-				effectColor[0],
-				effectColor[1],
-				effectColor[2],
-			);
-			renderer.uniform3f(
-				renderer.getUniformLocation(renderShaderProgram, "u_backgroundColor"),
+				renderUniforms.backgroundColor,
 				effectBackgroundColor[0],
 				effectBackgroundColor[1],
 				effectBackgroundColor[2],
 			);
-			renderer.uniform1f(
-				renderer.getUniformLocation(renderShaderProgram, "u_hasBackground"),
-				background === "transparent" ? 0 : 1,
-			);
+			renderer.uniform1f(renderUniforms.hasBackground, background === "transparent" ? 0 : 1);
 			renderer.drawArrays(renderer.TRIANGLE_STRIP, 0, 4);
+			if (!hasPresentedFirstFrame) {
+				hasPresentedFirstFrame = true;
+				canvasElement.classList.remove("invisible");
+			}
 
 			pointer.active = false;
 			frame = window.requestAnimationFrame(render);
@@ -700,5 +688,10 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 		};
 	}, [props]);
 
-	return <canvas className={props.className} ref={canvasRef} style={{ touchAction: "none" }} />;
+	return (
+		<canvas
+			className={`invisible touch-none bg-transparent ${props.className ?? ""}`}
+			ref={canvasRef}
+		/>
+	);
 }
