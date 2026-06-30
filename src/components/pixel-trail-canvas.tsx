@@ -150,8 +150,7 @@ void main() {
 	}
 
 	float normalized = pow(intensity, 1.35);
-	float minVisibleGlyph = 3.0;
-	float baseIndex = floor(mix(minVisibleGlyph, u_glyphCount - 1.0, normalized));
+	float baseIndex = floor(normalized * (u_glyphCount - 1.0));
 	float glyphIndex = clamp(baseIndex, 0.0, u_glyphCount - 1.0);
 	vec2 glyphCell = vec2(mod(glyphIndex, u_atlasGridSize.x), floor(glyphIndex / u_atlasGridSize.x));
 	vec2 atlasUv = (glyphCell + local) / u_atlasGridSize;
@@ -175,10 +174,10 @@ const DEFAULTS = {
 	mobileCharHeight: 16,
 	fontSize: 13,
 	mobileFontSize: 14,
-	fontFamily: "Geist Mono",
-	charset: " .,:;-+=*#%:",
+	fontFamily: "Geist Mono Variable",
+	charset: " @#-+::",
 	atlasScale: 2,
-	opacity: 0.78,
+	opacity: 0.55,
 	radius: 3.75,
 	damp: 0.955,
 	strength: 1,
@@ -186,7 +185,7 @@ const DEFAULTS = {
 	pulseStrength: 0.7,
 	pulseWidth: 2.5,
 	maxPulses: 8,
-	color: "var(--foreground)",
+	color: "var(--muted-foreground)",
 	backgroundColor: "transparent",
 };
 

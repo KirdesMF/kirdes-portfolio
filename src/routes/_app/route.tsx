@@ -288,7 +288,7 @@ function IdeShell() {
 			<header className="flex h-status-bar shrink-0 items-stretch justify-end border-x-thin border-t-thin border-border bg-background text-tiny text-muted-foreground">
 				<div className="flex items-center gap-2 p-2">
 					<button
-						className="flex cursor-pointer items-center bg-status-muted px-2.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground focus:bg-status-primary focus:text-status-primary-foreground focus:outline-none"
+						className="flex cursor-pointer items-center bg-status-muted px-2.5 py-0.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground focus:bg-status-primary focus:text-status-primary-foreground focus:outline-none"
 						type="button"
 						onClick={() => {
 							setNavigationOpen(true);
@@ -298,7 +298,7 @@ function IdeShell() {
 						[n] nav
 					</button>
 					<button
-						className="flex cursor-pointer items-center bg-status-muted px-2.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground focus:bg-status-primary focus:text-status-primary-foreground focus:outline-none"
+						className="flex cursor-pointer items-center bg-status-muted px-2.5 py-0.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground focus:bg-status-primary focus:text-status-primary-foreground focus:outline-none"
 						type="button"
 						onClick={toggleCommandMenu}
 					>
