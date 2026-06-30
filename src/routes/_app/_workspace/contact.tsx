@@ -20,7 +20,7 @@ function RouteComponent() {
 					</h1>
 				</header>
 
-				<section className="max-w-xl space-y-4 text-muted-foreground">
+				<section className="max-w-xl leading-5 space-y-2 text-muted-foreground">
 					<p>{m.contact_page_intro()}</p>
 					<p>{m.contact_page_followup()}</p>
 				</section>
