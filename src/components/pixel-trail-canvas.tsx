@@ -32,6 +32,7 @@ type Pointer = {
 	currentX: number;
 	currentY: number;
 	active: boolean;
+	needsReset: boolean;
 };
 
 type Pulse = {
@@ -434,6 +435,7 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 			currentX: 0,
 			currentY: 0,
 			active: false,
+			needsReset: true,
 		};
 
 		const config = () => {
@@ -532,11 +534,22 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 
 		function onPointerMove(event: PointerEvent) {
 			const point = pointerToGrid(event);
-			pointer.previousX = pointer.currentX || point.x;
-			pointer.previousY = pointer.currentY || point.y;
+			if (pointer.needsReset) {
+				pointer.previousX = point.x;
+				pointer.previousY = point.y;
+				pointer.needsReset = false;
+			} else {
+				pointer.previousX = pointer.currentX;
+				pointer.previousY = pointer.currentY;
+			}
 			pointer.currentX = point.x;
 			pointer.currentY = point.y;
 			pointer.active = true;
+		}
+
+		function onPointerLeave() {
+			pointer.needsReset = true;
+			pointer.active = false;
 		}
 
 		function onPointerDown(event: PointerEvent) {
@@ -667,6 +680,7 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 
 		window.addEventListener("pointermove", onPointerMove, { passive: true });
 		window.addEventListener("pointerdown", onPointerDown, { passive: true });
+		document.addEventListener("mouseleave", onPointerLeave);
 		document.addEventListener("visibilitychange", onVisibilityChange);
 		reducedMotionQuery.addEventListener("change", onReducedMotionChange);
 		frame = window.requestAnimationFrame(render);
@@ -675,6 +689,7 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 			disposed = true;
 			window.removeEventListener("pointermove", onPointerMove);
 			window.removeEventListener("pointerdown", onPointerDown);
+			document.removeEventListener("mouseleave", onPointerLeave);
 			document.removeEventListener("visibilitychange", onVisibilityChange);
 			reducedMotionQuery.removeEventListener("change", onReducedMotionChange);
 			resizeObserver.disconnect();
