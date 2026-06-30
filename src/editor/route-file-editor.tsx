@@ -39,7 +39,7 @@ const placeholderSections = [
 
 export function PlaceholderPage({ eyebrow, title }: { eyebrow: string; title: string }) {
 	return (
-		<article className="space-y-8 font-mono text-sm leading-7 text-foreground">
+		<article className="space-y-8 font-mono text-xs leading-7 text-foreground">
 			<header className="space-y-4">
 				<p className="text-muted-foreground text-tiny uppercase tracking-[0.24em]">{eyebrow}.md</p>
 				<PixelBand className="block w-full" />

@@ -53,6 +53,9 @@
 	"about_guidance": "consultez cat about.tsx pour le profil et le style de travail.",
 
 	"contact_comment": "/* contacts */",
+	"contact_page_title": "Contact",
+	"contact_page_intro": "Le plus simple pour me joindre est de m'envoyer un email. Ajoutez un court contexte, quelques liens, et ce que vous voulez construire ou discuter.",
+	"contact_page_followup": "Je lis chaque message et je réponds quand il y a une piste claire. Vous pouvez aussi me contacter sur x.com, LinkedIn ou GitHub si c'est plus simple.",
 	"contact_twitter_label": "twitter",
 	"contact_email_label": "email",
 	"contact_github_label": "github",

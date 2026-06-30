@@ -123,7 +123,7 @@ export function CommandInput({ className, ...props }: CommandInputProps): ReactN
 	return (
 		<BaseCommand.Input
 			className={cn(
-				"h-10 w-full border-border border-b bg-transparent px-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+				"h-10 w-full border-border border-b bg-transparent px-3 text-base outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm",
 				className,
 			)}
 			{...props}
