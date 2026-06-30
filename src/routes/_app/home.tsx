@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { GridBackground } from "#/components/grid-background";
+import { PixelTrailCanvas } from "#/components/pixel-trail-canvas";
 import { EmptyEditor } from "#/editor/empty-editor";
 
 export const Route = createFileRoute("/_app/home")({
@@ -10,6 +11,7 @@ function RouteComponent() {
 	return (
 		<div className="relative size-full overflow-hidden">
 			<GridBackground />
+			<PixelTrailCanvas className="pointer-events-none absolute inset-0 size-full opacity-70" />
 			<div className="relative z-10 size-full">
 				<EmptyEditor />
 			</div>

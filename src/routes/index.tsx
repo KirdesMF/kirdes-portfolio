@@ -37,10 +37,11 @@ function RouteComponent() {
 		tl.set("[data-intro-line]", { opacity: 0 }, 0);
 
 		INTRO_LINES.forEach((_, index) => {
+			const at = index * LINE_MS;
 			tl.add(
 				`[data-intro-line="${index}"]`,
 				{ opacity: [0, 1], duration: 1, delay: stagger(0) },
-				index * LINE_MS,
+				at,
 			);
 		});
 
