@@ -48,6 +48,8 @@ type GlyphAtlas = {
 	glyphCount: number;
 };
 
+type GlyphAtlasContext = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+
 const MAX_PULSES = 12;
 const VERTEX_SHADER = `
 attribute vec2 a_position;
@@ -142,7 +144,7 @@ void main() {
 		discard;
 	}
 
-	float visibility = smoothstep(0.04, 0.1, intensity);
+	float visibility = smoothstep(0.1, 0.22, intensity);
 	if (visibility <= 0.0) {
 		discard;
 	}
@@ -178,7 +180,7 @@ const DEFAULTS = {
 	atlasScale: 2,
 	opacity: 0.78,
 	radius: 3.75,
-	damp: 0.94,
+	damp: 0.955,
 	strength: 1,
 	pulseLife: 1,
 	pulseStrength: 0.7,
@@ -253,7 +255,7 @@ async function createGlyphAtlas(
 	atlasCanvas.width = atlasWidth;
 	atlasCanvas.height = atlasHeight;
 
-	const context = atlasCanvas.getContext("2d");
+	const context = atlasCanvas.getContext("2d") as GlyphAtlasContext | null;
 	if (!context) return null;
 	context.clearRect(0, 0, atlasWidth, atlasHeight);
 	context.fillStyle = "white";
@@ -347,7 +349,7 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 
 		const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 		let reducedMotion = props.reducedMotion ?? reducedMotionQuery.matches;
-		const contextAttributes: WebGLContextAttributes = { alpha: true, premultipliedAlpha: false };
+		const contextAttributes: WebGLContextAttributes = { alpha: true };
 		const webgl2Context = canvas.getContext("webgl2", contextAttributes);
 		const context: GL | null = webgl2Context ?? canvas.getContext("webgl", contextAttributes);
 		if (!context) return;
@@ -421,7 +423,6 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 		let lastTime = performance.now();
 		let visible = true;
 		let inViewport = true;
-		let hasPresentedFirstFrame = false;
 		let effectColor: [number, number, number] = [1, 1, 1];
 		let effectBackgroundColor: [number, number, number] = [0, 0, 0];
 		let glyphAtlas: GlyphAtlas | null = null;
@@ -453,7 +454,7 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 				atlasScale: props.atlasScale ?? DEFAULTS.atlasScale,
 				opacity: props.opacity ?? DEFAULTS.opacity,
 				radius: reducedMotion ? 2.75 : (props.radius ?? (mobile ? 3.25 : DEFAULTS.radius)),
-				damp: reducedMotion ? 0.9 : (props.damp ?? (mobile ? 0.935 : DEFAULTS.damp)),
+				damp: reducedMotion ? 0.92 : (props.damp ?? (mobile ? 0.945 : DEFAULTS.damp)),
 				strength: reducedMotion ? 0.35 : (props.strength ?? (mobile ? 0.8 : DEFAULTS.strength)),
 				pulseLife: props.pulseLife ?? (mobile ? 0.85 : DEFAULTS.pulseLife),
 				pulseStrength: reducedMotion
@@ -600,7 +601,12 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 			setQuad(renderer, renderShaderProgram, quadBuffer);
 			renderer.viewport(0, 0, width, height);
 			renderer.bindFramebuffer(renderer.FRAMEBUFFER, null);
-			renderer.clearColor(0, 0, 0, 0);
+			renderer.clearColor(
+				effectBackgroundColor[0],
+				effectBackgroundColor[1],
+				effectBackgroundColor[2],
+				background === "transparent" ? 0 : 1,
+			);
 			renderer.clear(renderer.COLOR_BUFFER_BIT);
 			renderer.activeTexture(renderer.TEXTURE0);
 			renderer.bindTexture(renderer.TEXTURE_2D, readTarget.texture);
@@ -622,10 +628,6 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 			);
 			renderer.uniform1f(renderUniforms.hasBackground, background === "transparent" ? 0 : 1);
 			renderer.drawArrays(renderer.TRIANGLE_STRIP, 0, 4);
-			if (!hasPresentedFirstFrame) {
-				hasPresentedFirstFrame = true;
-				canvasElement.classList.remove("invisible");
-			}
 
 			pointer.active = false;
 			frame = window.requestAnimationFrame(render);
@@ -688,10 +690,5 @@ export function PixelTrailCanvas(props: PixelTrailCanvasProps) {
 		};
 	}, [props]);
 
-	return (
-		<canvas
-			className={`invisible touch-none bg-transparent ${props.className ?? ""}`}
-			ref={canvasRef}
-		/>
-	);
+	return <canvas className={`touch-none bg-background ${props.className ?? ""}`} ref={canvasRef} />;
 }
