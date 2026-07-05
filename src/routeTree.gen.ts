@@ -17,8 +17,6 @@ import { Route as AppWorkspaceRouteRouteImport } from './routes/_app/_workspace/
 import { Route as AppWorkspaceRoadmapRouteImport } from './routes/_app/_workspace/roadmap'
 import { Route as AppWorkspaceReadmeRouteImport } from './routes/_app/_workspace/readme'
 import { Route as AppWorkspaceEditorRouteImport } from './routes/_app/_workspace/editor'
-import { Route as AppWorkspaceContactRouteImport } from './routes/_app/_workspace/contact'
-import { Route as AppWorkspaceAboutRouteImport } from './routes/_app/_workspace/about'
 import { Route as AppWorkspaceWorksIndexRouteImport } from './routes/_app/_workspace/works/index'
 
 const LoadingRoute = LoadingRouteImport.update({
@@ -59,16 +57,6 @@ const AppWorkspaceEditorRoute = AppWorkspaceEditorRouteImport.update({
   path: '/editor',
   getParentRoute: () => AppWorkspaceRouteRoute,
 } as any)
-const AppWorkspaceContactRoute = AppWorkspaceContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => AppWorkspaceRouteRoute,
-} as any)
-const AppWorkspaceAboutRoute = AppWorkspaceAboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => AppWorkspaceRouteRoute,
-} as any)
 const AppWorkspaceWorksIndexRoute = AppWorkspaceWorksIndexRouteImport.update({
   id: '/works/',
   path: '/works/',
@@ -79,8 +67,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/loading': typeof LoadingRoute
   '/home': typeof AppHomeRoute
-  '/about': typeof AppWorkspaceAboutRoute
-  '/contact': typeof AppWorkspaceContactRoute
   '/editor': typeof AppWorkspaceEditorRoute
   '/readme': typeof AppWorkspaceReadmeRoute
   '/roadmap': typeof AppWorkspaceRoadmapRoute
@@ -90,8 +76,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/loading': typeof LoadingRoute
   '/home': typeof AppHomeRoute
-  '/about': typeof AppWorkspaceAboutRoute
-  '/contact': typeof AppWorkspaceContactRoute
   '/editor': typeof AppWorkspaceEditorRoute
   '/readme': typeof AppWorkspaceReadmeRoute
   '/roadmap': typeof AppWorkspaceRoadmapRoute
@@ -104,8 +88,6 @@ export interface FileRoutesById {
   '/loading': typeof LoadingRoute
   '/_app/_workspace': typeof AppWorkspaceRouteRouteWithChildren
   '/_app/home': typeof AppHomeRoute
-  '/_app/_workspace/about': typeof AppWorkspaceAboutRoute
-  '/_app/_workspace/contact': typeof AppWorkspaceContactRoute
   '/_app/_workspace/editor': typeof AppWorkspaceEditorRoute
   '/_app/_workspace/readme': typeof AppWorkspaceReadmeRoute
   '/_app/_workspace/roadmap': typeof AppWorkspaceRoadmapRoute
@@ -117,23 +99,12 @@ export interface FileRouteTypes {
     | '/'
     | '/loading'
     | '/home'
-    | '/about'
-    | '/contact'
     | '/editor'
     | '/readme'
     | '/roadmap'
     | '/works/'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/loading'
-    | '/home'
-    | '/about'
-    | '/contact'
-    | '/editor'
-    | '/readme'
-    | '/roadmap'
-    | '/works'
+  to: '/' | '/loading' | '/home' | '/editor' | '/readme' | '/roadmap' | '/works'
   id:
     | '__root__'
     | '/'
@@ -141,8 +112,6 @@ export interface FileRouteTypes {
     | '/loading'
     | '/_app/_workspace'
     | '/_app/home'
-    | '/_app/_workspace/about'
-    | '/_app/_workspace/contact'
     | '/_app/_workspace/editor'
     | '/_app/_workspace/readme'
     | '/_app/_workspace/roadmap'
@@ -213,20 +182,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWorkspaceEditorRouteImport
       parentRoute: typeof AppWorkspaceRouteRoute
     }
-    '/_app/_workspace/contact': {
-      id: '/_app/_workspace/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof AppWorkspaceContactRouteImport
-      parentRoute: typeof AppWorkspaceRouteRoute
-    }
-    '/_app/_workspace/about': {
-      id: '/_app/_workspace/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AppWorkspaceAboutRouteImport
-      parentRoute: typeof AppWorkspaceRouteRoute
-    }
     '/_app/_workspace/works/': {
       id: '/_app/_workspace/works/'
       path: '/works'
@@ -238,8 +193,6 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppWorkspaceRouteRouteChildren {
-  AppWorkspaceAboutRoute: typeof AppWorkspaceAboutRoute
-  AppWorkspaceContactRoute: typeof AppWorkspaceContactRoute
   AppWorkspaceEditorRoute: typeof AppWorkspaceEditorRoute
   AppWorkspaceReadmeRoute: typeof AppWorkspaceReadmeRoute
   AppWorkspaceRoadmapRoute: typeof AppWorkspaceRoadmapRoute
@@ -247,8 +200,6 @@ interface AppWorkspaceRouteRouteChildren {
 }
 
 const AppWorkspaceRouteRouteChildren: AppWorkspaceRouteRouteChildren = {
-  AppWorkspaceAboutRoute: AppWorkspaceAboutRoute,
-  AppWorkspaceContactRoute: AppWorkspaceContactRoute,
   AppWorkspaceEditorRoute: AppWorkspaceEditorRoute,
   AppWorkspaceReadmeRoute: AppWorkspaceReadmeRoute,
   AppWorkspaceRoadmapRoute: AppWorkspaceRoadmapRoute,

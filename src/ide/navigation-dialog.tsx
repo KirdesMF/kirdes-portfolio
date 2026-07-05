@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { Compass } from "lucide-react";
 import { useMemo, useState } from "react";
 import { CommandDialog, CommandInput, CommandItem, CommandList } from "#/design-system/command";
@@ -6,8 +6,8 @@ import { useIdeStore } from "#/ide/store";
 
 const navigationItems = [
 	{ label: "Home", route: "/home" },
-	{ label: "About", route: "/about" },
-	{ label: "Contact", route: "/contact" },
+	{ label: "About", route: "about" },
+	{ label: "Contact", route: "contact" },
 	{ label: "Works", route: "/works" },
 ] as const;
 
@@ -16,6 +16,7 @@ export function NavigationDialog() {
 	const setOpen = useIdeStore((s) => s.setNavigationOpen);
 	const setEditorMode = useIdeStore((s) => s.setEditorMode);
 	const navigate = useNavigate();
+	const pathname = useRouterState({ select: (s) => s.location.pathname });
 	const [search, setSearch] = useState("");
 
 	const filteredNavigationItems = useMemo(() => {
@@ -33,7 +34,14 @@ export function NavigationDialog() {
 	}
 
 	function openRoute(route: (typeof navigationItems)[number]["route"]) {
-		void navigate({ to: route });
+		if (route === "about" || route === "contact") {
+			void navigate({
+				to: pathname,
+				search: (prev) => ({ ...prev, [route]: "open" as const }),
+			});
+		} else {
+			void navigate({ to: route });
+		}
 		setOpen(false);
 		setSearch("");
 		setEditorMode("normal");

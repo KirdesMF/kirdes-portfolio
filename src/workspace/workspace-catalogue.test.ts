@@ -4,7 +4,5 @@ import { workspaceViewMetadata } from "./workspace-catalogue";
 describe("workspace catalogue", () => {
 	it("has metadata keyed by view.route", () => {
 		expect(workspaceViewMetadata["/home"]).toBeDefined();
-		expect(workspaceViewMetadata["/about"]).toBeDefined();
-		expect(workspaceViewMetadata["/contact"]).toBeDefined();
 	});
 });

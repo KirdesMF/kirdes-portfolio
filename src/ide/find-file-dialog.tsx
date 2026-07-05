@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { FileText } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
@@ -17,6 +17,7 @@ export function FindFileDialog() {
 	const setEditorMode = useIdeStore((s) => s.setEditorMode);
 	const requestEditorFocus = useIdeStore((s) => s.requestEditorFocus);
 	const navigate = useNavigate();
+	const pathname = useRouterState({ select: (s) => s.location.pathname });
 	const [search, setSearch] = useState("");
 
 	const candidates = useMemo(() => {
@@ -49,9 +50,14 @@ export function FindFileDialog() {
 		const file = findEditorFile(fileId);
 		if (!file) return;
 
-		void navigate({
-			to: file.route,
-		});
+		if (file.id === "src/routes/about.md" || file.id === "src/routes/contact.md") {
+			const key = file.id === "src/routes/about.md" ? "about" : "contact";
+			void navigate({ to: pathname, search: (prev) => ({ ...prev, [key]: "open" as const }) });
+		} else {
+			void navigate({
+				to: file.route,
+			});
+		}
 		setOpen(false);
 		setEditorMode("normal");
 		requestEditorFocus();

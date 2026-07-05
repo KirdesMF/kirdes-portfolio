@@ -30,9 +30,6 @@ type IdeStore = {
 	helpOpen: boolean;
 	setHelpOpen: (open: boolean) => void;
 
-	contactsOpen: boolean;
-	setContactsOpen: (open: boolean) => void;
-
 	navigationOpen: boolean;
 	setNavigationOpen: (open: boolean) => void;
 
@@ -90,9 +87,6 @@ export const useIdeStore = create<IdeStore>((set) => ({
 
 	helpOpen: false,
 	setHelpOpen: (open) => set({ helpOpen: open }),
-
-	contactsOpen: false,
-	setContactsOpen: (open) => set({ contactsOpen: open }),
 
 	navigationOpen: false,
 	setNavigationOpen: (open) => set({ navigationOpen: open }),

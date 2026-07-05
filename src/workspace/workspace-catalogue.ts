@@ -24,20 +24,6 @@ export const workspaceViews: ReadonlyArray<WorkspaceView> = [
 		renderer: "src/routes/_app/home.tsx",
 		files: ["README.md", "ROADMAP.md"],
 	},
-	{
-		route: "/about",
-		folder: "src/routes",
-		label: "about",
-		renderer: "src/routes/_app/_workspace/about.tsx",
-		files: ["about.md"],
-	},
-	{
-		route: "/contact",
-		folder: "src/routes",
-		label: "contact",
-		renderer: "src/routes/_app/_workspace/contact.tsx",
-		files: ["contact.md"],
-	},
 ] as const;
 
 export const workspaceFileGroups: ReadonlyArray<FileGroup> = [

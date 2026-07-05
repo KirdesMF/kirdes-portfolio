@@ -1,6 +1,9 @@
 import * as v from "valibot";
 
-export const IdeSearchSchema = v.object({});
+export const IdeSearchSchema = v.object({
+	about: v.optional(v.literal("open")),
+	contact: v.optional(v.literal("open")),
+});
 
 export type IdeSearch = v.InferOutput<typeof IdeSearchSchema>;
 

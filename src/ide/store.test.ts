@@ -9,7 +9,6 @@ const initialState = {
 	commandHistory: [] as string[],
 	settingsOpen: false,
 	helpOpen: false,
-	contactsOpen: false,
 	navigationOpen: false,
 	findFileOpen: false,
 	findTextOpen: false,
@@ -39,7 +38,6 @@ describe("IdeStore initial state", () => {
 		expect(s.commandHistoryOpen).toBe(false);
 		expect(s.settingsOpen).toBe(false);
 		expect(s.helpOpen).toBe(false);
-		expect(s.contactsOpen).toBe(false);
 		expect(s.navigationOpen).toBe(false);
 		expect(s.findFileOpen).toBe(false);
 		expect(s.findTextOpen).toBe(false);

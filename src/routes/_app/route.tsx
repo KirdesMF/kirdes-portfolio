@@ -4,9 +4,9 @@ import { type ReactNode, useCallback, useEffect, useRef, useState } from "react"
 
 import { findEditorFileByRoute, getDisplayFileName } from "#/editor/editor-files";
 import { SpaceIcon } from "#/icons/space-icon";
+import { AboutWindow } from "#/ide/about-window";
 import { CommandMenu } from "#/ide/command-menu";
 import { CommandHistoryDialog, CommandModeDialog } from "#/ide/command-mode-dialog";
-import { ContactsDialog } from "#/ide/contacts-dialog";
 import { FindFileDialog } from "#/ide/find-file-dialog";
 import { FindTextDialog } from "#/ide/find-text-dialog";
 import { HelpDialog } from "#/ide/help-dialog";
@@ -169,8 +169,6 @@ function IdeShell() {
 	const recentFilesOpen = useIdeStore((s) => s.recentFilesOpen);
 	const helpOpen = useIdeStore((s) => s.helpOpen);
 	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
-	const contactsOpen = useIdeStore((s) => s.contactsOpen);
-	const setContactsOpen = useIdeStore((s) => s.setContactsOpen);
 	const navigationOpen = useIdeStore((s) => s.navigationOpen);
 	const setNavigationOpen = useIdeStore((s) => s.setNavigationOpen);
 	const toggleCommandMenu = useIdeStore((s) => s.toggleCommandMenu);
@@ -190,7 +188,6 @@ function IdeShell() {
 		commandModeOpen ||
 		commandHistoryOpen ||
 		recentFilesOpen ||
-		contactsOpen ||
 		navigationOpen;
 
 	useHotkeys(
@@ -320,7 +317,7 @@ function IdeShell() {
 			<RecentFilesDialog />
 			<SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
 			<HelpDialog open={helpOpen} onOpenChange={setHelpOpen} />
-			<ContactsDialog open={contactsOpen} onOpenChange={setContactsOpen} />
+			<AboutWindow />
 		</div>
 	);
 }

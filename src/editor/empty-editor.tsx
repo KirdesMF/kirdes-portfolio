@@ -1,5 +1,5 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { createScope, createTimeline } from "animejs";
 import {
 	Compass,
@@ -131,15 +131,12 @@ export function EmptyEditor() {
 	const setRecentFilesOpen = useIdeStore((s) => s.setRecentFilesOpen);
 	const recentFilesOpen = useIdeStore((s) => s.recentFilesOpen);
 	const helpOpen = useIdeStore((s) => s.helpOpen);
-	const contactsOpen = useIdeStore((s) => s.contactsOpen);
 	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
-	const setContactsOpen = useIdeStore((s) => s.setContactsOpen);
 	const emptyEditorHotkeysBlocked =
 		commandMenuOpen ||
 		helpOpen ||
 		settingsOpen ||
-		contactsOpen ||
 		findFileOpen ||
 		findTextOpen ||
 		recentFilesOpen;
@@ -166,7 +163,7 @@ export function EmptyEditor() {
 				setSettingsOpen(true);
 				break;
 			case "contacts":
-				setContactsOpen(true);
+				void navigate({ to: "/home", search: { contact: "open" as const } });
 				break;
 			case "recent-files":
 				setRecentFilesOpen(true);
@@ -246,12 +243,15 @@ export function EmptyEditor() {
 					ref={rootRef}
 				>
 					<ZapIcon aria-hidden="true" className="size-3 text-primary" />
-					<Link
+					<button
 						className="text-primary/70 transition hover:text-primary focus:text-primary focus:outline-none"
-						to="/contact"
+						type="button"
+						onClick={() => {
+							void navigate({ to: "/home", search: { contact: "open" as const } });
+						}}
 					>
 						<span data-anim-editor-status>open to freelance and full-time opportunities</span>
-					</Link>
+					</button>
 				</div>
 			</div>
 		</div>

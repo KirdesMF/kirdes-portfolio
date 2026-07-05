@@ -67,11 +67,15 @@
 	--spacing-status-bar: 1.5rem;
 	--border-width-thin: 0.5px;
 	--z-raised: 20;
+	--z-window: 60;
+	--z-window-active: 70;
 	--z-screen-effect: 100;
 }
 
 @theme inline {
 	--z-index-raised: var(--z-raised);
+	--z-index-window: var(--z-window);
+	--z-index-window-active: var(--z-window-active);
 	--z-index-screen-effect: var(--z-screen-effect);
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
