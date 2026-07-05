@@ -1,4 +1,4 @@
-import { useNavigate, useRouterState } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { Compass } from "lucide-react";
 import { useMemo, useState } from "react";
 import { CommandDialog, CommandInput, CommandItem, CommandList } from "#/design-system/command";
@@ -15,7 +15,6 @@ export function NavigationDialog() {
 	const open = useIdeStore((s) => s.navigationOpen);
 	const setOpen = useIdeStore((s) => s.setNavigationOpen);
 	const setEditorMode = useIdeStore((s) => s.setEditorMode);
-	const searchParams = useRouterState({ select: (s) => s.location.search }) as { neotree?: "open" };
 	const navigate = useNavigate();
 	const [search, setSearch] = useState("");
 
@@ -34,7 +33,7 @@ export function NavigationDialog() {
 	}
 
 	function openRoute(route: (typeof navigationItems)[number]["route"]) {
-		void navigate({ to: route, search: searchParams });
+		void navigate({ to: route });
 		setOpen(false);
 		setSearch("");
 		setEditorMode("normal");

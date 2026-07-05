@@ -11,7 +11,6 @@ import { FindFileDialog } from "#/ide/find-file-dialog";
 import { FindTextDialog } from "#/ide/find-text-dialog";
 import { HelpDialog } from "#/ide/help-dialog";
 import { NavigationDialog } from "#/ide/navigation-dialog";
-import { NeoTree } from "#/ide/neo-tree";
 import { RecentFilesDialog } from "#/ide/recent-files-dialog";
 import { parseIdeSearch } from "#/ide/search";
 import { StatusBar } from "#/ide/status-bar";
@@ -149,7 +148,6 @@ function PageLineNumberFrame({
 
 function IdeShell() {
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
-	const search = useRouterState({ select: (s) => s.location.search }) as { neotree?: "open" };
 	const navigate = useNavigate();
 	const currentFile = findEditorFileByRoute(pathname)?.id;
 	const pageTitle =
@@ -176,16 +174,6 @@ function IdeShell() {
 	const navigationOpen = useIdeStore((s) => s.navigationOpen);
 	const setNavigationOpen = useIdeStore((s) => s.setNavigationOpen);
 	const toggleCommandMenu = useIdeStore((s) => s.toggleCommandMenu);
-
-	function toggleExplorer() {
-		void navigate({
-			to: pathname,
-			search: (prev) => ({
-				...prev,
-				neotree: prev.neotree === "open" ? undefined : "open",
-			}),
-		});
-	}
 
 	function openHome() {
 		void navigate({
@@ -223,12 +211,6 @@ function IdeShell() {
 				hotkey: "S",
 				callback: () => {
 					if (!commandMenuOpen) setSettingsOpen(true);
-				},
-			},
-			{
-				hotkey: "E",
-				callback: () => {
-					if (!commandMenuOpen) toggleExplorer();
 				},
 			},
 			{
@@ -306,10 +288,7 @@ function IdeShell() {
 					</button>
 				</div>
 			</header>
-			<div
-				className={`relative grid min-h-0 ${search.neotree === "open" ? "grid-cols-[auto_minmax(0,1fr)]" : "grid-cols-1"}`}
-			>
-				<NeoTree />
+			<div className="relative grid min-h-0 grid-cols-1">
 				<main className="relative min-h-0 min-w-0">
 					<div className="flex size-full flex-col overflow-hidden border-thin border-border">
 						<PageLineNumberFrame

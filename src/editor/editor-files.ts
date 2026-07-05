@@ -102,6 +102,15 @@ export function getDisplayFileName(id: string): string {
 	return `${file.folder}/${file.name}`;
 }
 
+export function getEditorFilePaths(): ReadonlyMap<string, string> {
+	return new Map(
+		editorFiles.map((file) => [
+			file.id,
+			file.id === "src/routes/works/index.md" ? "src/routes/works.md" : file.id.replace(/^~\//, ""),
+		]),
+	);
+}
+
 /**
  * Context-aware file resolution.
  *

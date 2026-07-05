@@ -1,10 +1,9 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { createScope, createTimeline } from "animejs";
 import {
 	Compass,
 	FileText,
-	FolderTreeIcon,
 	HelpCircle,
 	History,
 	type LucideIcon,
@@ -26,7 +25,6 @@ const emptyEditorCommands: Array<{
 	label: string;
 	shortcut: string;
 }> = [
-	{ id: "explorer", Icon: FolderTreeIcon, label: "Explorer", shortcut: "e" },
 	{ id: "find-file", Icon: Search, label: "Find File", shortcut: "f" },
 	{ id: "navigation", Icon: Compass, label: "Navigation", shortcut: "n" },
 	{ id: "find-text", Icon: FileText, label: "Find Text", shortcut: "g" },
@@ -122,7 +120,6 @@ function EmptyEditorCommandButton({
 
 export function EmptyEditor() {
 	const [compact, setCompact] = useState(false);
-	const search = useRouterState({ select: (s) => s.location.search }) as { neotree?: "open" };
 	const commandMenuOpen = useIdeStore((s) => s.commandMenuOpen);
 	const settingsOpen = useIdeStore((s) => s.settingsOpen);
 	const findFileOpen = useIdeStore((s) => s.findFileOpen);
@@ -155,12 +152,6 @@ export function EmptyEditor() {
 
 	function runEmptyEditorCommand(commandId: string) {
 		switch (commandId) {
-			case "explorer":
-				void navigate({
-					to: "/home",
-					search: { neotree: "open" as const },
-				});
-				break;
 			case "find-file":
 				setFindFileOpen(true);
 				break;
@@ -257,7 +248,6 @@ export function EmptyEditor() {
 					<ZapIcon aria-hidden="true" className="size-3 text-primary" />
 					<Link
 						className="text-primary/70 transition hover:text-primary focus:text-primary focus:outline-none"
-						search={search}
 						to="/contact"
 					>
 						<span data-anim-editor-status>open to freelance and full-time opportunities</span>

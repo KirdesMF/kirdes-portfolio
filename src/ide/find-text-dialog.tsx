@@ -8,8 +8,7 @@ import {
 	CommandItem,
 	CommandList,
 } from "#/design-system/command";
-import { findEditorFile } from "#/editor/editor-files";
-import { getNeoTreeFilePaths } from "#/ide/neo-tree";
+import { findEditorFile, getEditorFilePaths } from "#/editor/editor-files";
 import { useIdeStore } from "#/ide/store";
 
 type TextMatch = {
@@ -28,7 +27,7 @@ export function FindTextDialog() {
 	const [search, setSearch] = useState("");
 
 	const index = useMemo(() => {
-		const treeFilePaths = getNeoTreeFilePaths();
+		const treeFilePaths = getEditorFilePaths();
 
 		return Array.from(treeFilePaths.entries()).map(([fileId, filePath]) => ({
 			fileId,
@@ -54,7 +53,6 @@ export function FindTextDialog() {
 
 		void navigate({
 			to: file.route,
-			search: { neotree: "open" as const },
 		});
 		setOpen(false);
 		setEditorMode("normal");
@@ -64,7 +62,7 @@ export function FindTextDialog() {
 		<CommandDialog
 			commandClassName="h-[min(70dvh,28rem)]"
 			contentClassName="w-[min(92vw,42rem)]"
-			description="Search explorer file names and open the selected page."
+			description="Search file names and open the selected page."
 			open={open}
 			title="FIND TEXT"
 			onOpenChange={handleOpenChange}

@@ -2,8 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { FileText, History } from "lucide-react";
 import { useMemo } from "react";
 import { CommandDialog, CommandEmpty, CommandItem, CommandList } from "#/design-system/command";
-import { findEditorFile } from "#/editor/editor-files";
-import { getNeoTreeFilePaths } from "#/ide/neo-tree";
+import { findEditorFile, getEditorFilePaths } from "#/editor/editor-files";
 import { useIdeStore } from "#/ide/store";
 
 export function RecentFilesDialog() {
@@ -15,7 +14,7 @@ export function RecentFilesDialog() {
 	const navigate = useNavigate();
 
 	const candidates = useMemo(() => {
-		const treeFilePaths = getNeoTreeFilePaths();
+		const treeFilePaths = getEditorFilePaths();
 
 		return recentFiles.flatMap((fileId) => {
 			const file = findEditorFile(fileId);
@@ -36,7 +35,6 @@ export function RecentFilesDialog() {
 
 		void navigate({
 			to: file.route,
-			search: { neotree: "open" as const },
 		});
 		setOpen(false);
 		setEditorMode("normal");

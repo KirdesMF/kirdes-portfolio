@@ -7,8 +7,6 @@
       "dependencies": {
         "@base-ui/react": "^1.5.0",
         "@cloudflare/vite-plugin": "^1.40.2",
-        "@headless-tree/core": "^1.7.0",
-        "@headless-tree/react": "^1.7.0",
         "@tailwindcss/vite": "^4.3.1",
         "@tanstack/react-hotkeys": "^0.10.0",
         "@tanstack/react-router": "^1.170.15",
@@ -216,10 +214,6 @@
     "@floating-ui/utils": ["@floating-ui/utils@0.2.11", "", {}, "sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg=="],
 
     "@fontsource-variable/geist-mono": ["@fontsource-variable/geist-mono@5.2.8", "", {}, "sha512-KI5bj+hkkRiHttYHmccotUZ80ZuZyai+RwI1d7UId0clkx/jXxlo8qYK8j54WzmpBjtMoEMPyllV7faDcj+6RA=="],
-
-    "@headless-tree/core": ["@headless-tree/core@1.7.0", "", {}, "sha512-LxcX7LNepwfOPrZcs4PNfDwCzbi326uCAX5jYBfw94jI+pZQA7ANaE/No3LW0XFgcBcQtK/G2bInbVEhLF1C/Q=="],
-
-    "@headless-tree/react": ["@headless-tree/react@1.7.0", "", { "peerDependencies": { "@headless-tree/core": "*", "react": "*", "react-dom": "*" } }, "sha512-hcnG4mpTP98KVWZYqKsXNOoiv7ZQqZVM2jWwzEWtF+VDSz+1O/juMI+/Q0G4lZM+ez07/tmBBWjvZub/mLAUXQ=="],
 
     "@img/colour": ["@img/colour@1.1.0", "", {}, "sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ=="],
 

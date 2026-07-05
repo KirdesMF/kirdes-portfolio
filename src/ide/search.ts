@@ -1,8 +1,6 @@
 import * as v from "valibot";
 
-export const IdeSearchSchema = v.object({
-	neotree: v.optional(v.literal("open")),
-});
+export const IdeSearchSchema = v.object({});
 
 export type IdeSearch = v.InferOutput<typeof IdeSearchSchema>;
 

@@ -1,7 +1,6 @@
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
 	Compass,
-	FolderTreeIcon,
 	HelpCircle,
 	History,
 	House,
@@ -43,9 +42,6 @@ export function CommandMenu() {
 	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
 	const navigate = useNavigate();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
-	const search = useRouterState({ select: (s) => s.location.search }) as {
-		neotree?: "open";
-	};
 	const { appearance, setAppearance } = useTheme();
 
 	const commands: Item[] = [
@@ -57,23 +53,6 @@ export function CommandMenu() {
 			action: () => {
 				void navigate({
 					to: "/home",
-					search,
-				});
-				setOpen(false);
-			},
-		},
-		{
-			id: "explorer",
-			Icon: FolderTreeIcon,
-			label: "Explorer",
-			shortcut: "e",
-			action: () => {
-				void navigate({
-					to: pathname,
-					search: (prev) => ({
-						...prev,
-						neotree: prev.neotree === "open" ? undefined : "open",
-					}),
 				});
 				setOpen(false);
 			},
@@ -182,7 +161,6 @@ export function CommandMenu() {
 				if (pathname !== "/home") {
 					void navigate({
 						to: "/home",
-						search: { neotree: search.neotree },
 					});
 				} else {
 					void navigate({ to: "/" });

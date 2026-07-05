@@ -8,8 +8,7 @@ import {
 	CommandItem,
 	CommandList,
 } from "#/design-system/command";
-import { findEditorFile } from "#/editor/editor-files";
-import { getNeoTreeFilePaths } from "#/ide/neo-tree";
+import { findEditorFile, getEditorFilePaths } from "#/editor/editor-files";
 import { useIdeStore } from "#/ide/store";
 
 export function FindFileDialog() {
@@ -21,7 +20,7 @@ export function FindFileDialog() {
 	const [search, setSearch] = useState("");
 
 	const candidates = useMemo(() => {
-		const treeFilePaths = getNeoTreeFilePaths();
+		const treeFilePaths = getEditorFilePaths();
 
 		return Array.from(treeFilePaths.entries()).flatMap(([fileId, displayName]) => {
 			const file = findEditorFile(fileId);
@@ -52,7 +51,6 @@ export function FindFileDialog() {
 
 		void navigate({
 			to: file.route,
-			search: { neotree: "open" as const },
 		});
 		setOpen(false);
 		setEditorMode("normal");

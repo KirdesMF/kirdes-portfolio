@@ -4,7 +4,7 @@ import { RouteFileEditor } from "#/editor/route-file-editor";
 const fileId = "src/routes/works/index.md";
 
 const workRows = [
-	["workspace-ui", "5.8 KB", "Editor frame, tabs, file tree"],
+	["workspace-ui", "5.8 KB", "Editor frame and command dialogs"],
 	["ascii-banner", "4.8 KB", "Canvas banner, shimmer effects"],
 	["command-menu", "4.7 KB", "Keyboard navigation, ranked search"],
 	["theme-system", "4.5 KB", "Light/dark IDE color palettes"],
@@ -12,7 +12,6 @@ const workRows = [
 	["page-line-status", "3.4 KB", "Scroll-aware line number status"],
 	["work-notes", "2.7 KB", "Markdown-inspired case studies"],
 	["settings-drawer", "2.3 KB", "Theme, language preferences"],
-	["neo-tree", "2.0 KB", "Workspace file navigation"],
 	["contact-dialog", "1.9 KB", "Focused links, quick reach out"],
 ] as const;
 
