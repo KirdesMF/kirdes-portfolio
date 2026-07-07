@@ -14,10 +14,12 @@ import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppHomeRouteImport } from './routes/_app/home'
 import { Route as AppWorkspaceRouteRouteImport } from './routes/_app/_workspace/route'
-import { Route as AppWorkspaceRoadmapRouteImport } from './routes/_app/_workspace/roadmap'
-import { Route as AppWorkspaceReadmeRouteImport } from './routes/_app/_workspace/readme'
-import { Route as AppWorkspaceEditorRouteImport } from './routes/_app/_workspace/editor'
+import { Route as AppWorkspaceWorksRouteRouteImport } from './routes/_app/_workspace/works/route'
+import { Route as AppWorkspaceLabRouteRouteImport } from './routes/_app/_workspace/lab/route'
 import { Route as AppWorkspaceWorksIndexRouteImport } from './routes/_app/_workspace/works/index'
+import { Route as AppWorkspaceLabIndexRouteImport } from './routes/_app/_workspace/lab/index'
+import { Route as AppWorkspaceWorksPortfolioOsRouteImport } from './routes/_app/_workspace/works/portfolio-os'
+import { Route as AppWorkspaceLabSignalRoomRouteImport } from './routes/_app/_workspace/lab/signal-room'
 
 const LoadingRoute = LoadingRouteImport.update({
   id: '/loading',
@@ -42,43 +44,57 @@ const AppWorkspaceRouteRoute = AppWorkspaceRouteRouteImport.update({
   id: '/_workspace',
   getParentRoute: () => AppRouteRoute,
 } as any)
-const AppWorkspaceRoadmapRoute = AppWorkspaceRoadmapRouteImport.update({
-  id: '/roadmap',
-  path: '/roadmap',
+const AppWorkspaceWorksRouteRoute = AppWorkspaceWorksRouteRouteImport.update({
+  id: '/works',
+  path: '/works',
   getParentRoute: () => AppWorkspaceRouteRoute,
 } as any)
-const AppWorkspaceReadmeRoute = AppWorkspaceReadmeRouteImport.update({
-  id: '/readme',
-  path: '/readme',
-  getParentRoute: () => AppWorkspaceRouteRoute,
-} as any)
-const AppWorkspaceEditorRoute = AppWorkspaceEditorRouteImport.update({
-  id: '/editor',
-  path: '/editor',
+const AppWorkspaceLabRouteRoute = AppWorkspaceLabRouteRouteImport.update({
+  id: '/lab',
+  path: '/lab',
   getParentRoute: () => AppWorkspaceRouteRoute,
 } as any)
 const AppWorkspaceWorksIndexRoute = AppWorkspaceWorksIndexRouteImport.update({
-  id: '/works/',
-  path: '/works/',
-  getParentRoute: () => AppWorkspaceRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppWorkspaceWorksRouteRoute,
 } as any)
+const AppWorkspaceLabIndexRoute = AppWorkspaceLabIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppWorkspaceLabRouteRoute,
+} as any)
+const AppWorkspaceWorksPortfolioOsRoute =
+  AppWorkspaceWorksPortfolioOsRouteImport.update({
+    id: '/portfolio-os',
+    path: '/portfolio-os',
+    getParentRoute: () => AppWorkspaceWorksRouteRoute,
+  } as any)
+const AppWorkspaceLabSignalRoomRoute =
+  AppWorkspaceLabSignalRoomRouteImport.update({
+    id: '/signal-room',
+    path: '/signal-room',
+    getParentRoute: () => AppWorkspaceLabRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/loading': typeof LoadingRoute
   '/home': typeof AppHomeRoute
-  '/editor': typeof AppWorkspaceEditorRoute
-  '/readme': typeof AppWorkspaceReadmeRoute
-  '/roadmap': typeof AppWorkspaceRoadmapRoute
+  '/lab': typeof AppWorkspaceLabRouteRouteWithChildren
+  '/works': typeof AppWorkspaceWorksRouteRouteWithChildren
+  '/lab/signal-room': typeof AppWorkspaceLabSignalRoomRoute
+  '/works/portfolio-os': typeof AppWorkspaceWorksPortfolioOsRoute
+  '/lab/': typeof AppWorkspaceLabIndexRoute
   '/works/': typeof AppWorkspaceWorksIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/loading': typeof LoadingRoute
   '/home': typeof AppHomeRoute
-  '/editor': typeof AppWorkspaceEditorRoute
-  '/readme': typeof AppWorkspaceReadmeRoute
-  '/roadmap': typeof AppWorkspaceRoadmapRoute
+  '/lab/signal-room': typeof AppWorkspaceLabSignalRoomRoute
+  '/works/portfolio-os': typeof AppWorkspaceWorksPortfolioOsRoute
+  '/lab': typeof AppWorkspaceLabIndexRoute
   '/works': typeof AppWorkspaceWorksIndexRoute
 }
 export interface FileRoutesById {
@@ -88,9 +104,11 @@ export interface FileRoutesById {
   '/loading': typeof LoadingRoute
   '/_app/_workspace': typeof AppWorkspaceRouteRouteWithChildren
   '/_app/home': typeof AppHomeRoute
-  '/_app/_workspace/editor': typeof AppWorkspaceEditorRoute
-  '/_app/_workspace/readme': typeof AppWorkspaceReadmeRoute
-  '/_app/_workspace/roadmap': typeof AppWorkspaceRoadmapRoute
+  '/_app/_workspace/lab': typeof AppWorkspaceLabRouteRouteWithChildren
+  '/_app/_workspace/works': typeof AppWorkspaceWorksRouteRouteWithChildren
+  '/_app/_workspace/lab/signal-room': typeof AppWorkspaceLabSignalRoomRoute
+  '/_app/_workspace/works/portfolio-os': typeof AppWorkspaceWorksPortfolioOsRoute
+  '/_app/_workspace/lab/': typeof AppWorkspaceLabIndexRoute
   '/_app/_workspace/works/': typeof AppWorkspaceWorksIndexRoute
 }
 export interface FileRouteTypes {
@@ -99,12 +117,21 @@ export interface FileRouteTypes {
     | '/'
     | '/loading'
     | '/home'
-    | '/editor'
-    | '/readme'
-    | '/roadmap'
+    | '/lab'
+    | '/works'
+    | '/lab/signal-room'
+    | '/works/portfolio-os'
+    | '/lab/'
     | '/works/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/loading' | '/home' | '/editor' | '/readme' | '/roadmap' | '/works'
+  to:
+    | '/'
+    | '/loading'
+    | '/home'
+    | '/lab/signal-room'
+    | '/works/portfolio-os'
+    | '/lab'
+    | '/works'
   id:
     | '__root__'
     | '/'
@@ -112,9 +139,11 @@ export interface FileRouteTypes {
     | '/loading'
     | '/_app/_workspace'
     | '/_app/home'
-    | '/_app/_workspace/editor'
-    | '/_app/_workspace/readme'
-    | '/_app/_workspace/roadmap'
+    | '/_app/_workspace/lab'
+    | '/_app/_workspace/works'
+    | '/_app/_workspace/lab/signal-room'
+    | '/_app/_workspace/works/portfolio-os'
+    | '/_app/_workspace/lab/'
     | '/_app/_workspace/works/'
   fileRoutesById: FileRoutesById
 }
@@ -161,49 +190,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWorkspaceRouteRouteImport
       parentRoute: typeof AppRouteRoute
     }
-    '/_app/_workspace/roadmap': {
-      id: '/_app/_workspace/roadmap'
-      path: '/roadmap'
-      fullPath: '/roadmap'
-      preLoaderRoute: typeof AppWorkspaceRoadmapRouteImport
+    '/_app/_workspace/works': {
+      id: '/_app/_workspace/works'
+      path: '/works'
+      fullPath: '/works'
+      preLoaderRoute: typeof AppWorkspaceWorksRouteRouteImport
       parentRoute: typeof AppWorkspaceRouteRoute
     }
-    '/_app/_workspace/readme': {
-      id: '/_app/_workspace/readme'
-      path: '/readme'
-      fullPath: '/readme'
-      preLoaderRoute: typeof AppWorkspaceReadmeRouteImport
-      parentRoute: typeof AppWorkspaceRouteRoute
-    }
-    '/_app/_workspace/editor': {
-      id: '/_app/_workspace/editor'
-      path: '/editor'
-      fullPath: '/editor'
-      preLoaderRoute: typeof AppWorkspaceEditorRouteImport
+    '/_app/_workspace/lab': {
+      id: '/_app/_workspace/lab'
+      path: '/lab'
+      fullPath: '/lab'
+      preLoaderRoute: typeof AppWorkspaceLabRouteRouteImport
       parentRoute: typeof AppWorkspaceRouteRoute
     }
     '/_app/_workspace/works/': {
       id: '/_app/_workspace/works/'
-      path: '/works'
+      path: '/'
       fullPath: '/works/'
       preLoaderRoute: typeof AppWorkspaceWorksIndexRouteImport
-      parentRoute: typeof AppWorkspaceRouteRoute
+      parentRoute: typeof AppWorkspaceWorksRouteRoute
+    }
+    '/_app/_workspace/lab/': {
+      id: '/_app/_workspace/lab/'
+      path: '/'
+      fullPath: '/lab/'
+      preLoaderRoute: typeof AppWorkspaceLabIndexRouteImport
+      parentRoute: typeof AppWorkspaceLabRouteRoute
+    }
+    '/_app/_workspace/works/portfolio-os': {
+      id: '/_app/_workspace/works/portfolio-os'
+      path: '/portfolio-os'
+      fullPath: '/works/portfolio-os'
+      preLoaderRoute: typeof AppWorkspaceWorksPortfolioOsRouteImport
+      parentRoute: typeof AppWorkspaceWorksRouteRoute
+    }
+    '/_app/_workspace/lab/signal-room': {
+      id: '/_app/_workspace/lab/signal-room'
+      path: '/signal-room'
+      fullPath: '/lab/signal-room'
+      preLoaderRoute: typeof AppWorkspaceLabSignalRoomRouteImport
+      parentRoute: typeof AppWorkspaceLabRouteRoute
     }
   }
 }
 
-interface AppWorkspaceRouteRouteChildren {
-  AppWorkspaceEditorRoute: typeof AppWorkspaceEditorRoute
-  AppWorkspaceReadmeRoute: typeof AppWorkspaceReadmeRoute
-  AppWorkspaceRoadmapRoute: typeof AppWorkspaceRoadmapRoute
+interface AppWorkspaceLabRouteRouteChildren {
+  AppWorkspaceLabSignalRoomRoute: typeof AppWorkspaceLabSignalRoomRoute
+  AppWorkspaceLabIndexRoute: typeof AppWorkspaceLabIndexRoute
+}
+
+const AppWorkspaceLabRouteRouteChildren: AppWorkspaceLabRouteRouteChildren = {
+  AppWorkspaceLabSignalRoomRoute: AppWorkspaceLabSignalRoomRoute,
+  AppWorkspaceLabIndexRoute: AppWorkspaceLabIndexRoute,
+}
+
+const AppWorkspaceLabRouteRouteWithChildren =
+  AppWorkspaceLabRouteRoute._addFileChildren(AppWorkspaceLabRouteRouteChildren)
+
+interface AppWorkspaceWorksRouteRouteChildren {
+  AppWorkspaceWorksPortfolioOsRoute: typeof AppWorkspaceWorksPortfolioOsRoute
   AppWorkspaceWorksIndexRoute: typeof AppWorkspaceWorksIndexRoute
 }
 
+const AppWorkspaceWorksRouteRouteChildren: AppWorkspaceWorksRouteRouteChildren =
+  {
+    AppWorkspaceWorksPortfolioOsRoute: AppWorkspaceWorksPortfolioOsRoute,
+    AppWorkspaceWorksIndexRoute: AppWorkspaceWorksIndexRoute,
+  }
+
+const AppWorkspaceWorksRouteRouteWithChildren =
+  AppWorkspaceWorksRouteRoute._addFileChildren(
+    AppWorkspaceWorksRouteRouteChildren,
+  )
+
+interface AppWorkspaceRouteRouteChildren {
+  AppWorkspaceLabRouteRoute: typeof AppWorkspaceLabRouteRouteWithChildren
+  AppWorkspaceWorksRouteRoute: typeof AppWorkspaceWorksRouteRouteWithChildren
+}
+
 const AppWorkspaceRouteRouteChildren: AppWorkspaceRouteRouteChildren = {
-  AppWorkspaceEditorRoute: AppWorkspaceEditorRoute,
-  AppWorkspaceReadmeRoute: AppWorkspaceReadmeRoute,
-  AppWorkspaceRoadmapRoute: AppWorkspaceRoadmapRoute,
-  AppWorkspaceWorksIndexRoute: AppWorkspaceWorksIndexRoute,
+  AppWorkspaceLabRouteRoute: AppWorkspaceLabRouteRouteWithChildren,
+  AppWorkspaceWorksRouteRoute: AppWorkspaceWorksRouteRouteWithChildren,
 }
 
 const AppWorkspaceRouteRouteWithChildren =

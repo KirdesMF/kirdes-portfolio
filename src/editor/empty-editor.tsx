@@ -1,16 +1,15 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { createScope, createTimeline } from "animejs";
 import {
-	Compass,
-	FileText,
+	FolderKanban,
+	FlaskConical,
 	HelpCircle,
-	History,
 	type LucideIcon,
 	Mail,
 	RotateCw,
-	Search,
 	Settings,
+	User,
 	ZapIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -25,10 +24,9 @@ const emptyEditorCommands: Array<{
 	label: string;
 	shortcut: string;
 }> = [
-	{ id: "find-file", Icon: Search, label: "Find File", shortcut: "f" },
-	{ id: "navigation", Icon: Compass, label: "Navigation", shortcut: "n" },
-	{ id: "find-text", Icon: FileText, label: "Find Text", shortcut: "g" },
-	{ id: "recent-files", Icon: History, label: "Recent Files", shortcut: "r" },
+	{ id: "about", Icon: User, label: "About", shortcut: "a" },
+	{ id: "works", Icon: FolderKanban, label: "Works", shortcut: "w" },
+	{ id: "lab", Icon: FlaskConical, label: "Lab", shortcut: "l" },
 	{ id: "contacts", Icon: Mail, label: "Contacts", shortcut: "c" },
 	{ id: "settings", Icon: Settings, label: "Settings", shortcut: "s" },
 	{ id: "reload", Icon: RotateCw, label: "Replay Intro", shortcut: "R" },
@@ -122,51 +120,50 @@ export function EmptyEditor() {
 	const [compact, setCompact] = useState(false);
 	const commandMenuOpen = useIdeStore((s) => s.commandMenuOpen);
 	const settingsOpen = useIdeStore((s) => s.settingsOpen);
-	const findFileOpen = useIdeStore((s) => s.findFileOpen);
-	const findTextOpen = useIdeStore((s) => s.findTextOpen);
-	const setFindFileOpen = useIdeStore((s) => s.setFindFileOpen);
-	const setFindTextOpen = useIdeStore((s) => s.setFindTextOpen);
-	const setEditorMode = useIdeStore((s) => s.setEditorMode);
-	const setNavigationOpen = useIdeStore((s) => s.setNavigationOpen);
-	const setRecentFilesOpen = useIdeStore((s) => s.setRecentFilesOpen);
-	const recentFilesOpen = useIdeStore((s) => s.recentFilesOpen);
 	const helpOpen = useIdeStore((s) => s.helpOpen);
 	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
 	const emptyEditorHotkeysBlocked =
 		commandMenuOpen ||
 		helpOpen ||
-		settingsOpen ||
-		findFileOpen ||
-		findTextOpen ||
-		recentFilesOpen;
+		settingsOpen;
 	const navigate = useNavigate();
+	const search = useRouterState({ select: (s) => s.location.search }) as {
+		about?: "open";
+		contact?: "open";
+	};
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const rootRef = useScrambleRef<HTMLDivElement>({
 		selector: "[data-anim-editor-status]",
 		staggerMs: 0,
 	});
 
+	function toggleWindow(key: "about" | "contact") {
+		void navigate({
+			to: "/home",
+			search: (prev) => ({
+				...prev,
+				[key]: search[key] === "open" ? undefined : "open",
+			}),
+		});
+	}
+
 	function runEmptyEditorCommand(commandId: string) {
 		switch (commandId) {
-			case "find-file":
-				setFindFileOpen(true);
+			case "about":
+				toggleWindow("about");
 				break;
-			case "navigation":
-				setNavigationOpen(true);
-				setEditorMode("insert");
+			case "works":
+				void navigate({ to: "/works", search: {} });
 				break;
-			case "find-text":
-				setFindTextOpen(true);
+			case "lab":
+				void navigate({ to: "/lab", search: {} });
 				break;
 			case "settings":
 				setSettingsOpen(true);
 				break;
 			case "contacts":
-				void navigate({ to: "/home", search: { contact: "open" as const } });
-				break;
-			case "recent-files":
-				setRecentFilesOpen(true);
+				toggleWindow("contact");
 				break;
 			case "help":
 				setHelpOpen(true);
@@ -180,10 +177,10 @@ export function EmptyEditor() {
 	useHotkeys(
 		[
 			{ hotkey: "Shift+R", callback: () => runEmptyEditorCommand("reload") },
-			{ hotkey: "F", callback: () => runEmptyEditorCommand("find-file") },
+			{ hotkey: "A", callback: () => runEmptyEditorCommand("about") },
 			{ hotkey: "C", callback: () => runEmptyEditorCommand("contacts") },
-			{ hotkey: "G", callback: () => runEmptyEditorCommand("find-text") },
-			{ hotkey: "R", callback: () => runEmptyEditorCommand("recent-files") },
+			{ hotkey: "L", callback: () => runEmptyEditorCommand("lab") },
+			{ hotkey: "W", callback: () => runEmptyEditorCommand("works") },
 		],
 		{
 			enabled: !emptyEditorHotkeysBlocked,
@@ -246,9 +243,7 @@ export function EmptyEditor() {
 					<button
 						className="text-primary/70 transition hover:text-primary focus:text-primary focus:outline-none"
 						type="button"
-						onClick={() => {
-							void navigate({ to: "/home", search: { contact: "open" as const } });
-						}}
+						onClick={() => toggleWindow("contact")}
 					>
 						<span data-anim-editor-status>open to freelance and full-time opportunities</span>
 					</button>

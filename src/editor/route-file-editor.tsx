@@ -1,22 +1,7 @@
-import { type ReactNode, useEffect } from "react";
+import type { ReactNode } from "react";
 import { PixelBand } from "#/components/pixel-band";
-import { findEditorFile } from "#/editor/editor-files";
-import { useIdeStore } from "#/ide/store";
 
-export function useTrackRouteFile(fileId: string, options?: { enabled?: boolean }) {
-	const addRecentFile = useIdeStore((s) => s.addRecentFile);
-	const activeFile = findEditorFile(fileId);
-	const activeFileId = activeFile?.id ?? fileId;
-	const enabled = options?.enabled ?? true;
-
-	useEffect(() => {
-		if (enabled) addRecentFile(activeFileId);
-	}, [activeFileId, addRecentFile, enabled]);
-}
-
-export function RouteFileEditor({ children, fileId }: { children: ReactNode; fileId: string }) {
-	useTrackRouteFile(fileId);
-
+export function RouteFileEditor({ children }: { children: ReactNode }) {
 	return (
 		<section className="relative flex h-full min-h-0 w-full flex-col border-border text-sm">
 			<div className="min-h-0 flex-1 overflow-auto scrollbar-gutter-both" data-page-scroll>

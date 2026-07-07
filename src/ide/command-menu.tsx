@@ -1,15 +1,18 @@
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
-	Compass,
+	FolderKanban,
+	FlaskConical,
 	HelpCircle,
 	History,
 	House,
 	Languages,
 	LogOut,
+	Mail,
 	type LucideIcon,
 	RotateCw,
 	Settings,
 	Sun,
+	User,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Command, CommandItem, CommandList } from "#/design-system/command";
@@ -35,14 +38,26 @@ export function CommandMenu() {
 	const open = useIdeStore((s) => s.commandMenuOpen);
 	const setOpen = useIdeStore((s) => s.setCommandMenuOpen);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
-	const setRecentFilesOpen = useIdeStore((s) => s.setRecentFilesOpen);
 	const setCommandHistoryOpen = useIdeStore((s) => s.setCommandHistoryOpen);
-	const setEditorMode = useIdeStore((s) => s.setEditorMode);
-	const setNavigationOpen = useIdeStore((s) => s.setNavigationOpen);
 	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
 	const navigate = useNavigate();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
+	const search = useRouterState({ select: (s) => s.location.search }) as {
+		about?: "open";
+		contact?: "open";
+	};
 	const { appearance, setAppearance } = useTheme();
+
+	function toggleWindow(key: "about" | "contact") {
+		void navigate({
+			to: pathname,
+			search: (prev) => ({
+				...prev,
+				[key]: search[key] === "open" ? undefined : "open",
+			}),
+		});
+		setOpen(false);
+	}
 
 	const commands: Item[] = [
 		{
@@ -58,15 +73,38 @@ export function CommandMenu() {
 			},
 		},
 		{
-			id: "navigation",
-			Icon: Compass,
-			label: "Navigation",
-			shortcut: "n",
+			id: "works",
+			Icon: FolderKanban,
+			label: "Works",
+			shortcut: "w",
 			action: () => {
-				setNavigationOpen(true);
-				setEditorMode("insert");
+				void navigate({ to: "/works", search: {} });
 				setOpen(false);
 			},
+		},
+		{
+			id: "lab",
+			Icon: FlaskConical,
+			label: "Lab",
+			shortcut: "L",
+			action: () => {
+				void navigate({ to: "/lab", search: {} });
+				setOpen(false);
+			},
+		},
+		{
+			id: "about",
+			Icon: User,
+			label: "About",
+			shortcut: "a",
+			action: () => toggleWindow("about"),
+		},
+		{
+			id: "contact",
+			Icon: Mail,
+			label: "Contact",
+			shortcut: "c",
+			action: () => toggleWindow("contact"),
 		},
 		{
 			id: "command-history",
@@ -75,16 +113,6 @@ export function CommandMenu() {
 			shortcut: ":",
 			action: () => {
 				setCommandHistoryOpen(true);
-				setOpen(false);
-			},
-		},
-		{
-			id: "recent-files",
-			Icon: History,
-			label: "Recent Files",
-			shortcut: "r",
-			action: () => {
-				setRecentFilesOpen(true);
 				setOpen(false);
 			},
 		},

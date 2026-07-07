@@ -1,20 +1,11 @@
-import type { FileGroup } from "#/editor/editor-files.types";
-
 export type WorkspaceView = {
 	readonly route: string;
 	readonly folder: string;
 	readonly label: string;
-	readonly renderer: string;
-	readonly files: ReadonlyArray<string>;
+	renderer: string;
 };
 
-export type WorkspaceViewMetadata = {
-	readonly route: string;
-	readonly folder: string;
-	readonly label: string;
-	readonly renderer: string;
-	readonly contentFiles: ReadonlyArray<string>;
-};
+export type WorkspaceViewMetadata = WorkspaceView;
 
 export const workspaceViews: ReadonlyArray<WorkspaceView> = [
 	{
@@ -22,33 +13,11 @@ export const workspaceViews: ReadonlyArray<WorkspaceView> = [
 		folder: "~",
 		label: "home",
 		renderer: "src/routes/_app/home.tsx",
-		files: ["README.md", "ROADMAP.md"],
 	},
 ] as const;
 
-export const workspaceFileGroups: ReadonlyArray<FileGroup> = [
-	{ folder: "~", label: "home", route: "/home", files: ["README.md", "ROADMAP.md"] },
-	{ folder: "src/routes", label: "about", route: "/about", files: ["about.md"] },
-	{ folder: "src/routes", label: "contact", route: "/contact", files: ["contact.md"] },
-	{
-		folder: "src/routes/works",
-		label: "works",
-		route: "/works",
-		files: ["index.md"],
-	},
-];
-
 export const workspaceViewMetadata: Record<string, WorkspaceViewMetadata> = Object.fromEntries(
-	workspaceViews.map((view) => [
-		view.route,
-		{
-			route: view.route,
-			folder: view.folder,
-			label: view.label,
-			renderer: view.renderer,
-			contentFiles: view.files,
-		},
-	]),
+	workspaceViews.map((view) => [view.route, view]),
 );
 
 export function getWorkspaceViewByRoute(route: string): WorkspaceViewMetadata | null {

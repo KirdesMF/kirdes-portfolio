@@ -1,5 +1,5 @@
-import { ClockIcon, GitBranch } from "lucide-react";
-import type { CSSProperties, ReactNode } from "react";
+import { ClockIcon, GitBranch, MouseIcon } from "lucide-react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { cn } from "#/design-system/cn";
 import { Clock } from "#/ide/clock";
 import { useIdeStore } from "#/ide/store";
@@ -45,10 +45,35 @@ const variantClass = {
 
 const EDITOR_BRANCH_NAME = "feat/portfolio";
 
-function getPageProgress(line: number, lineCount: number): string {
-	if (line <= 1) return "Top";
-	if (line >= lineCount) return "Bot";
-	return `${Math.floor((line / lineCount) * 100)}%`;
+type MousePosition = { x: number; y: number };
+
+function useMousePosition(): MousePosition {
+	const [position, setPosition] = useState<MousePosition>({ x: 0, y: 0 });
+	const nextPositionRef = useRef(position);
+	const frameRef = useRef(0);
+
+	useEffect(() => {
+		function updatePosition(event: PointerEvent) {
+			nextPositionRef.current = {
+				x: Math.round(event.clientX),
+				y: Math.round(event.clientY),
+			};
+
+			if (frameRef.current) return;
+			frameRef.current = window.requestAnimationFrame(() => {
+				frameRef.current = 0;
+				setPosition(nextPositionRef.current);
+			});
+		}
+
+		window.addEventListener("pointermove", updatePosition, { passive: true });
+		return () => {
+			window.removeEventListener("pointermove", updatePosition);
+			if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
+		};
+	}, []);
+
+	return position;
 }
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
@@ -140,19 +165,9 @@ function Chevron(props: { direction: "left" | "right"; variant: StatusVariant })
 
 // ─── Main component ──────────────────────────────────────────────────────────
 
-export function StatusBar({
-	currentFile,
-	pageLine,
-	pageLineCount,
-}: {
-	currentFile?: string;
-	pageLine?: number | null;
-	pageLineCount?: number | null;
-}) {
+export function StatusBar() {
 	const editorMode = useIdeStore((s) => s.editorMode);
-	const activePageLine = pageLine ?? 1;
-	const activePageLineCount = pageLineCount ?? 1;
-	const pageProgress = getPageProgress(activePageLine, activePageLineCount);
+	const mousePosition = useMousePosition();
 
 	const leftItems: StatusItem[] = [
 		{
@@ -170,26 +185,19 @@ export function StatusBar({
 				</>
 			),
 		},
-		...(currentFile
-			? [
-					{
-						id: "file",
-						variant: "primary" as const,
-						content: <span className="truncate">{currentFile}</span>,
-						className: "hidden sm:flex",
-					} as StatusItem,
-				]
-			: []),
 	];
 
 	const rightItems: StatusItem[] = [
 		{
-			id: "page-line",
+			id: "mouse-position",
 			variant: "muted",
 			content: (
-				<span className="tabular-nums">
-					{pageProgress} {activePageLine}/{activePageLineCount}
-				</span>
+				<>
+					<MouseIcon className="size-3 shrink-0" />
+					<span className="inline-block w-[9ch] text-end tabular-nums">
+						{mousePosition.x}:{mousePosition.y}
+					</span>
+				</>
 			),
 			className: "hidden sm:flex",
 		},

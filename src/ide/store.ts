@@ -2,13 +2,6 @@ import { create } from "zustand";
 
 type EditorMode = "normal" | "insert" | "command";
 
-export type WorkspaceTab = {
-	id: string;
-	label: string;
-	route: string;
-	kind: "file";
-};
-
 type IdeStore = {
 	editorMode: EditorMode;
 	setEditorMode: (mode: EditorMode) => void;
@@ -30,20 +23,6 @@ type IdeStore = {
 	helpOpen: boolean;
 	setHelpOpen: (open: boolean) => void;
 
-	navigationOpen: boolean;
-	setNavigationOpen: (open: boolean) => void;
-
-	findFileOpen: boolean;
-	setFindFileOpen: (open: boolean) => void;
-
-	findTextOpen: boolean;
-	setFindTextOpen: (open: boolean) => void;
-
-	recentFilesOpen: boolean;
-	setRecentFilesOpen: (open: boolean) => void;
-	recentFiles: string[];
-	addRecentFile: (fileId: string) => void;
-
 	cursorLine: number;
 	cursorColumn: number;
 	cursorLineCount: number;
@@ -53,12 +32,6 @@ type IdeStore = {
 
 	editorFocusRequest: number;
 	requestEditorFocus: () => void;
-
-	workspaceTabs: WorkspaceTab[];
-	activeWorkspaceTabId: string | null;
-	openWorkspaceTab: (tab: WorkspaceTab) => void;
-	closeWorkspaceTab: (id: string) => void;
-	setActiveWorkspaceTab: (id: string) => void;
 };
 
 export const useIdeStore = create<IdeStore>((set) => ({
@@ -88,23 +61,6 @@ export const useIdeStore = create<IdeStore>((set) => ({
 	helpOpen: false,
 	setHelpOpen: (open) => set({ helpOpen: open }),
 
-	navigationOpen: false,
-	setNavigationOpen: (open) => set({ navigationOpen: open }),
-
-	findFileOpen: false,
-	setFindFileOpen: (open) => set({ findFileOpen: open }),
-
-	findTextOpen: false,
-	setFindTextOpen: (open) => set({ findTextOpen: open }),
-
-	recentFilesOpen: false,
-	setRecentFilesOpen: (open) => set({ recentFilesOpen: open }),
-	recentFiles: [],
-	addRecentFile: (fileId) =>
-		set((s) => ({
-			recentFiles: [fileId, ...s.recentFiles.filter((id) => id !== fileId)].slice(0, 20),
-		})),
-
 	cursorLine: 1,
 	cursorColumn: 1,
 	cursorLineCount: 1,
@@ -114,21 +70,4 @@ export const useIdeStore = create<IdeStore>((set) => ({
 
 	editorFocusRequest: 0,
 	requestEditorFocus: () => set((s) => ({ editorFocusRequest: s.editorFocusRequest + 1 })),
-
-	workspaceTabs: [],
-	activeWorkspaceTabId: null,
-	openWorkspaceTab: (tab) =>
-		set((s) => {
-			const exists = s.workspaceTabs.find((t) => t.id === tab.id);
-			return {
-				workspaceTabs: exists ? s.workspaceTabs : [...s.workspaceTabs, tab],
-				activeWorkspaceTabId: tab.id,
-			};
-		}),
-	closeWorkspaceTab: (id) =>
-		set((s) => ({
-			workspaceTabs: s.workspaceTabs.filter((t) => t.id !== id),
-			activeWorkspaceTabId: s.activeWorkspaceTabId === id ? null : s.activeWorkspaceTabId,
-		})),
-	setActiveWorkspaceTab: (id) => set({ activeWorkspaceTabId: id }),
 }));
