@@ -1,3 +1,4 @@
+import { useHotkeys } from "@tanstack/react-hotkeys";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { createScope, createTimeline, stagger, steps } from "animejs";
 import { useLayoutEffect, useState } from "react";
@@ -13,6 +14,14 @@ const FINAL_PAUSE = 1200;
 function RouteComponent() {
 	const navigate = useNavigate();
 	const [reduceMotion, setReduceMotion] = useState(false);
+
+	function skipIntro() {
+		void navigate({ replace: true, to: "/home" });
+	}
+
+	useHotkeys([{ hotkey: "Escape", callback: skipIntro }], {
+		preventDefault: true,
+	});
 
 	useLayoutEffect(() => {
 		const scope = createScope({
@@ -55,13 +64,17 @@ function RouteComponent() {
 	return (
 		<main className="relative flex h-dvh items-center justify-center bg-background p-8 font-mono text-foreground">
 			<IntroTranscript skipAnimation={reduceMotion} />
-			<button
-				className="absolute right-4 bottom-4 text-muted-foreground/50 transition hover:text-foreground"
-				type="button"
-				onClick={() => navigate({ replace: true, to: "/home" })}
-			>
-				[skip intro]
-			</button>
+			<div className="absolute right-4 bottom-4 flex flex-col items-end gap-1">
+				<button
+					aria-keyshortcuts="Escape"
+					className="text-muted-foreground/50 transition hover:text-foreground"
+					type="button"
+					onClick={skipIntro}
+				>
+					[skip intro]
+				</button>
+				<p className="text-muted-foreground/40 text-tiny">press Esc to skip</p>
+			</div>
 		</main>
 	);
 }

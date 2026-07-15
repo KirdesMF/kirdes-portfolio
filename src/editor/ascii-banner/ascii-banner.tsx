@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { ScrambleText } from "#/design-system/scramble-text";
-import { BANNER_ART } from "./banner-art";
+import { createBannerArt } from "./banner-art";
 import {
 	ASCII_BANNER_FONT_FAMILY,
 	ASCII_BANNER_FRAME_INTERVAL_MS,
@@ -16,6 +16,8 @@ import {
 	drawAsciiBanner,
 } from "./draw-ascii-banner";
 import { useDeviceShimmer } from "./use-device-shimmer";
+
+const BANNER_ART = createBannerArt("CEDRIC");
 
 export type AsciiBannerProps = {
 	colors?: Partial<AsciiBannerColors>;
@@ -69,21 +71,6 @@ function usePrefersReducedMotion() {
 	}, []);
 
 	return ref;
-}
-
-function NameLabel() {
-	const [expanded, setExpanded] = useState(false);
-	const text = expanded ? "cedric gourville" : "ced grvl";
-
-	return (
-		<p
-			className="cursor-default"
-			onMouseEnter={() => setExpanded(true)}
-			onMouseLeave={() => setExpanded(false)}
-		>
-			<ScrambleText key={text} text={text} />
-		</p>
-	);
 }
 
 function VersionLabel() {
@@ -265,8 +252,7 @@ export function AsciiBanner({
 			}}
 		>
 			<div className="grid gap-1">
-				<div className="flex items-center justify-between text-status-primary text-xs leading-none">
-					<NameLabel />
+				<div className="flex items-center justify-end text-status-primary text-xs leading-none">
 					<span>
 						<VersionLabel />
 					</span>
