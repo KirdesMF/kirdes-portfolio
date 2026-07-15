@@ -1,5 +1,5 @@
-import { ClientOnly, createFileRoute } from "@tanstack/react-router";
-import { PixelTrailCanvas } from "#/components/pixel-trail-canvas";
+import { createFileRoute } from "@tanstack/react-router";
+import { AnimationCanvas, spotlightDecodeAnimation } from "#/animations";
 import { EmptyEditor } from "#/editor/empty-editor";
 
 export const Route = createFileRoute("/_app/home")({
@@ -8,14 +8,12 @@ export const Route = createFileRoute("/_app/home")({
 
 function RouteComponent() {
 	return (
-		<div className="relative size-full overflow-hidden">
-			<ClientOnly fallback={<div className="absolute inset-0 size-full bg-background" />}>
-				<PixelTrailCanvas
-					backgroundColor="var(--background)"
-					className="pointer-events-none absolute inset-0 size-full"
-				/>
-			</ClientOnly>
-			<div className="relative z-10 size-full">
+		<div className="relative size-full overflow-hidden bg-editor">
+			<AnimationCanvas
+				className="absolute inset-0 block size-full"
+				route={spotlightDecodeAnimation}
+			/>
+			<div className="pointer-events-none relative z-10 size-full">
 				<EmptyEditor />
 			</div>
 		</div>

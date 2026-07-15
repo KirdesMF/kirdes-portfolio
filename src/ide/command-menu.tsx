@@ -1,14 +1,14 @@
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
-	FolderKanban,
 	FlaskConical,
+	FolderKanban,
 	HelpCircle,
 	History,
 	House,
 	Languages,
 	LogOut,
-	Mail,
 	type LucideIcon,
+	Mail,
 	RotateCw,
 	Settings,
 	Sun,
@@ -43,17 +43,16 @@ export function CommandMenu() {
 	const navigate = useNavigate();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
 	const search = useRouterState({ select: (s) => s.location.search }) as {
-		about?: "open";
 		contact?: "open";
 	};
 	const { appearance, setAppearance } = useTheme();
 
-	function toggleWindow(key: "about" | "contact") {
+	function toggleContact() {
 		void navigate({
 			to: pathname,
 			search: (prev) => ({
 				...prev,
-				[key]: search[key] === "open" ? undefined : "open",
+				contact: search.contact === "open" ? undefined : "open",
 			}),
 		});
 		setOpen(false);
@@ -97,14 +96,17 @@ export function CommandMenu() {
 			Icon: User,
 			label: "About",
 			shortcut: "a",
-			action: () => toggleWindow("about"),
+			action: () => {
+				void navigate({ to: "/about", search: {} });
+				setOpen(false);
+			},
 		},
 		{
 			id: "contact",
 			Icon: Mail,
 			label: "Contact",
 			shortcut: "c",
-			action: () => toggleWindow("contact"),
+			action: toggleContact,
 		},
 		{
 			id: "command-history",

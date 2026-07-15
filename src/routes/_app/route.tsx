@@ -1,9 +1,9 @@
-import { useHotkeys, type RegisterableHotkey } from "@tanstack/react-hotkeys";
-import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
+import { type RegisterableHotkey, useHotkeys } from "@tanstack/react-hotkeys";
+import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { SpaceIcon } from "#/icons/space-icon";
-import { AboutWindow } from "#/ide/about-window";
 import { CommandMenu } from "#/ide/command-menu";
 import { CommandHistoryDialog, CommandModeDialog } from "#/ide/command-mode-dialog";
+import { ContactDialog } from "#/ide/contact-dialog";
 import { HelpDialog } from "#/ide/help-dialog";
 import { parseIdeSearch } from "#/ide/search";
 import { StatusBar } from "#/ide/status-bar";
@@ -17,15 +17,20 @@ export const Route = createFileRoute("/_app")({
 
 function IdeShell() {
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
+	const search = useRouterState({ select: (s) => s.location.search }) as {
+		contact?: "open";
+	};
 	const navigate = useNavigate();
 	const pageTitle =
 		pathname === "/home"
 			? "[h] home"
-			: pathname.startsWith("/works")
-				? "[w] works"
-				: pathname.startsWith("/lab")
-					? "lab"
-					: undefined;
+			: pathname === "/about"
+				? "[a] about"
+				: pathname.startsWith("/works")
+					? "[w] works"
+					: pathname.startsWith("/lab")
+						? "[l] lab"
+						: undefined;
 	const settingsOpen = useIdeStore((s) => s.settingsOpen);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
 	const commandMenuOpen = useIdeStore((s) => s.commandMenuOpen);
@@ -45,7 +50,21 @@ function IdeShell() {
 		});
 	}
 
-	const dialogHotkeysBlocked = settingsOpen || helpOpen || commandModeOpen || commandHistoryOpen;
+	function openAbout() {
+		void navigate({ to: "/about", search: {} });
+	}
+
+	function openLab() {
+		void navigate({ to: "/lab", search: {} });
+	}
+
+	function openWorks() {
+		void navigate({ to: "/works", search: {} });
+	}
+
+	const contactOpen = search.contact === "open";
+	const dialogHotkeysBlocked =
+		contactOpen || settingsOpen || helpOpen || commandModeOpen || commandHistoryOpen;
 
 	useHotkeys(
 		[
@@ -74,6 +93,24 @@ function IdeShell() {
 				},
 			},
 			{
+				hotkey: "A",
+				callback: () => {
+					if (!commandMenuOpen) openAbout();
+				},
+			},
+			{
+				hotkey: "L",
+				callback: () => {
+					if (!commandMenuOpen) openLab();
+				},
+			},
+			{
+				hotkey: "W",
+				callback: () => {
+					if (!commandMenuOpen) openWorks();
+				},
+			},
+			{
 				hotkey: ":" as RegisterableHotkey,
 				callback: () => {
 					if (commandMenuOpen) {
@@ -94,11 +131,40 @@ function IdeShell() {
 	);
 
 	return (
-		<div className="grid h-dvh grid-rows-[auto_minmax(0,1fr)] px-3 pb-3">
-			<header className="flex h-status-bar shrink-0 items-center justify-end bg-background text-tiny text-muted-foreground">
-				<div className="flex items-center gap-2 p-2">
+		<div className="grid h-dvh grid-rows-[var(--spacing-status-bar)_minmax(0,1fr)] px-3 pb-3">
+			<header className="grid min-h-0 grid-cols-[1fr_auto_1fr] items-center bg-background text-tiny leading-none text-muted-foreground">
+				<nav className="col-start-2 flex h-full items-center gap-1">
+					<Link
+						className="flex h-full items-center px-2 hover:bg-status-primary hover:text-status-primary-foreground focus:bg-status-primary focus:text-status-primary-foreground focus:outline-none"
+						to="/home"
+					>
+						[h] home
+					</Link>
+					<Link
+						className="flex h-full items-center px-2 hover:bg-status-primary hover:text-status-primary-foreground focus:bg-status-primary focus:text-status-primary-foreground focus:outline-none"
+						search={{}}
+						to="/about"
+					>
+						[a] about
+					</Link>
+					<Link
+						className="flex h-full items-center px-2 hover:bg-status-primary hover:text-status-primary-foreground focus:bg-status-primary focus:text-status-primary-foreground focus:outline-none"
+						search={{}}
+						to="/works"
+					>
+						[w] works
+					</Link>
+					<Link
+						className="flex h-full items-center px-2 hover:bg-status-primary hover:text-status-primary-foreground focus:bg-status-primary focus:text-status-primary-foreground focus:outline-none"
+						search={{}}
+						to="/lab"
+					>
+						[l] lab
+					</Link>
+				</nav>
+				<div className="col-start-3 flex h-full items-center justify-end gap-2">
 					<button
-						className="flex cursor-pointer items-center px-2.5 py-0.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground focus:bg-status-primary focus:text-status-primary-foreground focus:outline-none"
+						className="flex h-full cursor-pointer items-center px-2.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground focus:bg-status-primary focus:text-status-primary-foreground focus:outline-none"
 						type="button"
 						onClick={toggleCommandMenu}
 					>
@@ -126,7 +192,7 @@ function IdeShell() {
 			<CommandHistoryDialog />
 			<SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
 			<HelpDialog open={helpOpen} onOpenChange={setHelpOpen} />
-			<AboutWindow />
+			<ContactDialog />
 		</div>
 	);
 }

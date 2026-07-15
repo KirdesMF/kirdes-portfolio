@@ -53,3 +53,4 @@ export const animationRoutes = [
 
 export const scanlineRevealAnimation = ScanlineAnimation;
 export const radarHaloAnimation = RadarHaloAnimation;
+export const spotlightDecodeAnimation = SpotlightAnimation;

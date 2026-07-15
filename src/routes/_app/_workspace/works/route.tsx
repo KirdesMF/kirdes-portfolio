@@ -11,7 +11,8 @@ export const Route = createFileRoute("/_app/_workspace/works")({
 
 function WorksLayout() {
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
-	const isWorksIndex = pathname === "/works";
+	const normalizedPathname = pathname.replace(/\/$/, "");
+	const isWorksIndex = normalizedPathname === "/works";
 
 	return (
 		<div className="grid h-full min-h-0 grid-cols-1 overflow-hidden bg-editor font-mono text-tiny md:grid-cols-[minmax(14rem,1fr)_minmax(0,2fr)]">

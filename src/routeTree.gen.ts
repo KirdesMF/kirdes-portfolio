@@ -13,6 +13,7 @@ import { Route as LoadingRouteImport } from './routes/loading'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppHomeRouteImport } from './routes/_app/home'
+import { Route as AppAboutRouteImport } from './routes/_app/about'
 import { Route as AppWorkspaceRouteRouteImport } from './routes/_app/_workspace/route'
 import { Route as AppWorkspaceWorksRouteRouteImport } from './routes/_app/_workspace/works/route'
 import { Route as AppWorkspaceLabRouteRouteImport } from './routes/_app/_workspace/lab/route'
@@ -38,6 +39,11 @@ const IndexRoute = IndexRouteImport.update({
 const AppHomeRoute = AppHomeRouteImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppAboutRoute = AppAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppWorkspaceRouteRoute = AppWorkspaceRouteRouteImport.update({
@@ -80,6 +86,7 @@ const AppWorkspaceLabSignalRoomRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/loading': typeof LoadingRoute
+  '/about': typeof AppAboutRoute
   '/home': typeof AppHomeRoute
   '/lab': typeof AppWorkspaceLabRouteRouteWithChildren
   '/works': typeof AppWorkspaceWorksRouteRouteWithChildren
@@ -91,6 +98,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/loading': typeof LoadingRoute
+  '/about': typeof AppAboutRoute
   '/home': typeof AppHomeRoute
   '/lab/signal-room': typeof AppWorkspaceLabSignalRoomRoute
   '/works/portfolio-os': typeof AppWorkspaceWorksPortfolioOsRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteRouteWithChildren
   '/loading': typeof LoadingRoute
   '/_app/_workspace': typeof AppWorkspaceRouteRouteWithChildren
+  '/_app/about': typeof AppAboutRoute
   '/_app/home': typeof AppHomeRoute
   '/_app/_workspace/lab': typeof AppWorkspaceLabRouteRouteWithChildren
   '/_app/_workspace/works': typeof AppWorkspaceWorksRouteRouteWithChildren
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/loading'
+    | '/about'
     | '/home'
     | '/lab'
     | '/works'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/loading'
+    | '/about'
     | '/home'
     | '/lab/signal-room'
     | '/works/portfolio-os'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/_app'
     | '/loading'
     | '/_app/_workspace'
+    | '/_app/about'
     | '/_app/home'
     | '/_app/_workspace/lab'
     | '/_app/_workspace/works'
@@ -181,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof AppHomeRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/about': {
+      id: '/_app/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AppAboutRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/_app/_workspace': {
@@ -279,11 +298,13 @@ const AppWorkspaceRouteRouteWithChildren =
 
 interface AppRouteRouteChildren {
   AppWorkspaceRouteRoute: typeof AppWorkspaceRouteRouteWithChildren
+  AppAboutRoute: typeof AppAboutRoute
   AppHomeRoute: typeof AppHomeRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppWorkspaceRouteRoute: AppWorkspaceRouteRouteWithChildren,
+  AppAboutRoute: AppAboutRoute,
   AppHomeRoute: AppHomeRoute,
 }
 

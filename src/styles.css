@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@fontsource-variable/geist-mono";
+@import "@fontsource-variable/fraunces";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -59,7 +60,7 @@
 	--ascii-banner-glow: var(--status-primary);
 	--ascii-banner-shimmer: color-mix(in oklch, var(--status-primary) 18%, white);
 	--font-sans: system-ui, sans-serif;
-	--font-serif: Georgia, serif;
+	--font-serif: "Fraunces Variable", Georgia, serif;
 	--font-mono: Geist Mono, ui-monospace, monospace;
 	--radius: 0.375rem;
 	--tracking-normal: 0.01em;

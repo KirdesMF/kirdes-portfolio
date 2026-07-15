@@ -61,6 +61,8 @@ type AnimationPalette = {
 	background: string;
 	text: string;
 	muted: string;
+	staticText: string;
+	spotlightText: string;
 	radar: string;
 	primary: string;
 	accent: string;
@@ -70,6 +72,8 @@ const DEFAULT_ANIMATION_PALETTE: AnimationPalette = {
 	background: "#09090b",
 	text: TEXT_COLOR,
 	muted: "#20242c",
+	staticText: "#111318",
+	spotlightText: "#4b5563",
 	radar: "#6b7280",
 	primary: BRIGHT_TEXT_COLOR,
 	accent: "#a7f3d0",
@@ -133,6 +137,8 @@ class TextCanvasRenderer {
 	private visible = true;
 	private palette = DEFAULT_ANIMATION_PALETTE;
 	private lastTextureFrameTime = 0;
+	private spotlightRadius = 0;
+	private spotlightRadiusLastTimestamp = 0;
 	private radarHaloAngle = 0;
 	private radarHaloLastTimestamp = 0;
 	private radarHaloHold = 0;
@@ -222,11 +228,18 @@ class TextCanvasRenderer {
 
 	private bindEvents() {
 		const { signal } = this.abortController;
+		const clearInteraction = () => {
+			this.releaseMagneticField(performance.now());
+			this.pointer.active = false;
+			this.pointer.down = false;
+			this.spotlightRadius = 0;
+			this.bursts = [];
+		};
 
-		this.canvas.addEventListener("pointermove", (event) => this.setPointer(event, true), {
+		this.canvas.addEventListener("pointermove", (event) => this.setPointerFromViewport(event), {
 			signal,
 		});
-		this.canvas.addEventListener("pointerenter", (event) => this.setPointer(event, true), {
+		this.canvas.addEventListener("pointerenter", (event) => this.setPointerFromViewport(event), {
 			signal,
 		});
 		this.canvas.addEventListener(
@@ -241,7 +254,7 @@ class TextCanvasRenderer {
 		this.canvas.addEventListener(
 			"pointerdown",
 			(event) => {
-				this.setPointer(event, true);
+				this.setPointerFromViewport(event);
 				this.pointer.down = true;
 				this.magneticPressStartedAt = performance.now();
 				this.magneticReleaseStartedAt = -1;
@@ -257,11 +270,19 @@ class TextCanvasRenderer {
 			},
 			{ signal },
 		);
-		window.addEventListener(
+		this.canvas.addEventListener(
 			"pointerup",
 			() => {
 				this.releaseMagneticField(performance.now());
 				this.pointer.down = false;
+			},
+			{ signal },
+		);
+		window.addEventListener("blur", clearInteraction, { signal });
+		document.addEventListener(
+			"visibilitychange",
+			() => {
+				if (document.visibilityState !== "visible") clearInteraction();
 			},
 			{ signal },
 		);
@@ -276,8 +297,22 @@ class TextCanvasRenderer {
 		this.magneticReleaseStartedAt = timestamp;
 	}
 
-	private setPointer(event: PointerEvent, active: boolean) {
-		updatePointerFromEvent(this.canvas, this.pointer, event, active);
+	private setPointerFromViewport(event: PointerEvent) {
+		const rect = this.canvas.getBoundingClientRect();
+		const active =
+			event.clientX >= rect.left &&
+			event.clientX <= rect.right &&
+			event.clientY >= rect.top &&
+			event.clientY <= rect.bottom;
+
+		this.pointer.active = active;
+		this.pointer.x = event.clientX - rect.left;
+		this.pointer.y = event.clientY - rect.top;
+
+		if (!active) {
+			this.releaseMagneticField(performance.now());
+			this.pointer.down = false;
+		}
 	}
 
 	private getTextSize() {
@@ -316,6 +351,7 @@ class TextCanvasRenderer {
 	}
 
 	private drawTextTexture(timestamp: number) {
+		this.updateSpotlightRadius(timestamp);
 		this.updateMutations(timestamp);
 		this.updateBursts(timestamp);
 		this.updateElasticRows();
@@ -736,8 +772,13 @@ class TextCanvasRenderer {
 		rowIndex: number,
 		timestamp: number,
 	) {
-		const pointerReveal = this.pointer.active
-			? 1 - smoothstep(0, 150, Math.hypot(x - this.pointer.x, y - this.pointer.y))
+		const pointerReveal = this.spotlightRadius
+			? 1 -
+				smoothstep(
+					0,
+					150 * this.spotlightRadius,
+					Math.hypot(x - this.pointer.x, y - this.pointer.y),
+				)
 			: 0;
 		const burstReveal = this.getScrambleWaveInfluence(x, y, charIndex, rowIndex, timestamp);
 		const reveal = Math.max(pointerReveal, burstReveal);
@@ -747,20 +788,20 @@ class TextCanvasRenderer {
 		if (reveal > hash * 0.75) {
 			return {
 				char: original,
-				color: mixColor(TEXT_COLOR, BRIGHT_TEXT_COLOR, 0.25 + reveal * 0.75),
+				color: this.palette.spotlightText,
 			};
 		}
 
 		if (this.mode === "spotlight-hidden") {
 			return {
 				char: original,
-				color: "#09090b",
+				color: this.palette.background,
 			};
 		}
 
 		return {
 			char: getStableMutationChar(original, charIndex, rowIndex),
-			color: mixColor("#252a33", TEXT_COLOR, hash * 0.55),
+			color: this.palette.staticText,
 		};
 	}
 
@@ -815,13 +856,13 @@ class TextCanvasRenderer {
 		if (beam > hashCell(charIndex, rowIndex) * 0.88) {
 			return {
 				char: original,
-				color: beam > 0.72 ? this.palette.primary : this.palette.accent,
+				color: this.palette.spotlightText,
 			};
 		}
 
 		return {
 			char: active > 0.16 ? getStableMutationChar(original, charIndex, rowIndex) : original,
-			color: active > 0.3 ? this.palette.text : this.palette.muted,
+			color: active > 0.3 ? this.palette.spotlightText : this.palette.staticText,
 		};
 	}
 
@@ -884,13 +925,13 @@ class TextCanvasRenderer {
 		if (active > hashCell(charIndex, rowIndex) * 0.82) {
 			return {
 				char: original,
-				color: active > 0.65 ? this.palette.primary : this.palette.accent,
+				color: this.palette.spotlightText,
 			};
 		}
 
 		return {
 			char: getStableMutationChar(original, charIndex, rowIndex),
-			color: active > 0.36 ? this.palette.text : this.palette.muted,
+			color: active > 0.36 ? this.palette.spotlightText : this.palette.staticText,
 		};
 	}
 
@@ -924,7 +965,7 @@ class TextCanvasRenderer {
 		if (beamActive > hashCell(charIndex, rowIndex) * 0.84) {
 			return {
 				char: original,
-				color: this.palette.radar,
+				color: this.palette.spotlightText,
 			};
 		}
 
@@ -937,13 +978,13 @@ class TextCanvasRenderer {
 					this.radarHaloLastTimestamp,
 					92,
 				),
-				color: this.palette.radar,
+				color: this.palette.spotlightText,
 			};
 		}
 
 		return {
 			char: getStableMutationChar(original, charIndex, rowIndex),
-			color: active > 0.28 ? this.palette.text : this.palette.muted,
+			color: active > 0.28 ? this.palette.spotlightText : this.palette.staticText,
 		};
 	}
 
@@ -1194,6 +1235,16 @@ class TextCanvasRenderer {
 			row.velocity *= 0.82;
 			row.offset += row.velocity;
 		}
+	}
+
+	private updateSpotlightRadius(timestamp: number) {
+		const delta = this.spotlightRadiusLastTimestamp
+			? Math.min(50, timestamp - this.spotlightRadiusLastTimestamp)
+			: 16;
+		this.spotlightRadiusLastTimestamp = timestamp;
+		const target = this.pointer.active ? 1 : 0;
+		this.spotlightRadius += (target - this.spotlightRadius) * (1 - Math.exp(-delta / 180));
+		if (this.spotlightRadius < 0.001) this.spotlightRadius = 0;
 	}
 
 	private updateMutations(timestamp: number) {
@@ -1940,6 +1991,28 @@ function getAnimationPalette(target: HTMLElement): AnimationPalette {
 		background: getThemeValue(target, style, "--editor", DEFAULT_ANIMATION_PALETTE.background),
 		text: getThemeValue(target, style, "--muted-foreground", DEFAULT_ANIMATION_PALETTE.text),
 		muted: getThemeValue(target, style, "--muted", DEFAULT_ANIMATION_PALETTE.muted),
+		staticText: getThemeValue(
+			target,
+			style,
+			"--spotlight-static-text",
+			`color-mix(in oklch, ${getThemeValue(
+				target,
+				style,
+				"--muted-foreground",
+				DEFAULT_ANIMATION_PALETTE.text,
+			)} 10%, ${getThemeValue(target, style, "--editor", DEFAULT_ANIMATION_PALETTE.background)})`,
+		),
+		spotlightText: getThemeValue(
+			target,
+			style,
+			"--spotlight-text",
+			`color-mix(in oklch, ${getThemeValue(
+				target,
+				style,
+				"--muted-foreground",
+				DEFAULT_ANIMATION_PALETTE.text,
+			)} 32%, ${getThemeValue(target, style, "--editor", DEFAULT_ANIMATION_PALETTE.background)})`,
+		),
 		radar: getThemeValue(
 			target,
 			style,

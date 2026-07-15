@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { animate, createScope, stagger } from "animejs";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/loading")({
 	component: LoadingPlayground,
@@ -441,8 +441,43 @@ function getAnimationConfig(variant: LoaderVariantName) {
 
 function GridLoader({ loader }: { loader: LoaderVariant }) {
 	const rootRef = useRef<HTMLDivElement | null>(null);
+	const [active, setActive] = useState(
+		() => typeof document !== "undefined" && document.visibilityState === "visible",
+	);
 
 	useEffect(() => {
+		const root = rootRef.current;
+		if (!root) return;
+
+		let inView = typeof IntersectionObserver === "undefined";
+		const updateActive = () => {
+			setActive(document.visibilityState === "visible" && document.hasFocus() && inView);
+		};
+		const observer =
+			typeof IntersectionObserver === "undefined"
+				? null
+				: new IntersectionObserver(([entry]) => {
+						inView = entry?.isIntersecting ?? false;
+						updateActive();
+					});
+
+		observer?.observe(root);
+		updateActive();
+		document.addEventListener("visibilitychange", updateActive);
+		window.addEventListener("focus", updateActive);
+		window.addEventListener("blur", updateActive);
+
+		return () => {
+			observer?.disconnect();
+			document.removeEventListener("visibilitychange", updateActive);
+			window.removeEventListener("focus", updateActive);
+			window.removeEventListener("blur", updateActive);
+		};
+	}, []);
+
+	useEffect(() => {
+		if (!active) return;
+
 		const scope = createScope({
 			mediaQueries: { reduceMotion: "(prefers-reduced-motion: reduce)" },
 			root: rootRef,
@@ -452,7 +487,7 @@ function GridLoader({ loader }: { loader: LoaderVariant }) {
 		});
 
 		return () => scope.revert();
-	}, [loader.variant]);
+	}, [active, loader.variant]);
 
 	return (
 		<div aria-hidden="true" className="grid grid-cols-3 gap-px" ref={rootRef}>
@@ -487,7 +522,7 @@ function LoadingPlayground() {
 					<div className="grid gap-4 pb-6 sm:grid-cols-2 lg:grid-cols-3">
 						{loaderVariants.map((loader) => (
 							<article
-								className="grid min-h-52 place-items-center gap-5 border-thin border-border bg-background/80 p-6"
+								className="grid min-h-52 place-items-center gap-5 border-thin border-border bg-background/80 p-6 [contain-intrinsic-size:13rem] [content-visibility:auto]"
 								key={loader.variant}
 							>
 								<GridLoader loader={loader} />

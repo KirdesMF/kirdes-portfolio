@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { animationRoutes, radarHaloAnimation, scanlineRevealAnimation } from "./index";
+import {
+	animationRoutes,
+	radarHaloAnimation,
+	scanlineRevealAnimation,
+	spotlightDecodeAnimation,
+} from "./index";
 
 describe("webgl text animations", () => {
 	it("registers each animation once", () => {
@@ -18,6 +23,10 @@ describe("webgl text animations", () => {
 		expect(radarHaloAnimation).toMatchObject({
 			label: "Radar Halo",
 			mode: "radar-halo",
+		});
+		expect(spotlightDecodeAnimation).toMatchObject({
+			label: "Spotlight Decode",
+			mode: "spotlight",
 		});
 	});
 });

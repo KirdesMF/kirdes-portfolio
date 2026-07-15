@@ -2,8 +2,8 @@ import { useHotkeys } from "@tanstack/react-hotkeys";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { createScope, createTimeline } from "animejs";
 import {
-	FolderKanban,
 	FlaskConical,
+	FolderKanban,
 	HelpCircle,
 	type LucideIcon,
 	Mail,
@@ -89,7 +89,7 @@ function EmptyEditorCommandButton({
 
 	return (
 		<button
-			className="group relative grid grid-cols-[auto_1fr_1ch] items-center gap-4 px-2 py-1.5 text-left text-primary/90 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
+			className="pointer-events-auto group relative grid grid-cols-[auto_1fr_1ch] items-center gap-4 px-2 py-1.5 text-left text-primary/90 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
 			ref={buttonRef}
 			type="button"
 			onClick={onClick}
@@ -123,27 +123,24 @@ export function EmptyEditor() {
 	const helpOpen = useIdeStore((s) => s.helpOpen);
 	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
 	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
-	const emptyEditorHotkeysBlocked =
-		commandMenuOpen ||
-		helpOpen ||
-		settingsOpen;
 	const navigate = useNavigate();
 	const search = useRouterState({ select: (s) => s.location.search }) as {
-		about?: "open";
 		contact?: "open";
 	};
+	const contactOpen = search.contact === "open";
+	const emptyEditorHotkeysBlocked = contactOpen || commandMenuOpen || helpOpen || settingsOpen;
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const rootRef = useScrambleRef<HTMLDivElement>({
 		selector: "[data-anim-editor-status]",
 		staggerMs: 0,
 	});
 
-	function toggleWindow(key: "about" | "contact") {
+	function toggleContact() {
 		void navigate({
 			to: "/home",
 			search: (prev) => ({
 				...prev,
-				[key]: search[key] === "open" ? undefined : "open",
+				contact: search.contact === "open" ? undefined : "open",
 			}),
 		});
 	}
@@ -151,7 +148,7 @@ export function EmptyEditor() {
 	function runEmptyEditorCommand(commandId: string) {
 		switch (commandId) {
 			case "about":
-				toggleWindow("about");
+				void navigate({ to: "/about", search: {} });
 				break;
 			case "works":
 				void navigate({ to: "/works", search: {} });
@@ -163,7 +160,7 @@ export function EmptyEditor() {
 				setSettingsOpen(true);
 				break;
 			case "contacts":
-				toggleWindow("contact");
+				toggleContact();
 				break;
 			case "help":
 				setHelpOpen(true);
@@ -177,10 +174,7 @@ export function EmptyEditor() {
 	useHotkeys(
 		[
 			{ hotkey: "Shift+R", callback: () => runEmptyEditorCommand("reload") },
-			{ hotkey: "A", callback: () => runEmptyEditorCommand("about") },
 			{ hotkey: "C", callback: () => runEmptyEditorCommand("contacts") },
-			{ hotkey: "L", callback: () => runEmptyEditorCommand("lab") },
-			{ hotkey: "W", callback: () => runEmptyEditorCommand("works") },
 		],
 		{
 			enabled: !emptyEditorHotkeysBlocked,
@@ -223,8 +217,12 @@ export function EmptyEditor() {
 					compact ? "gap-4" : "gap-7",
 				)}
 			>
-				<AsciiBanner className={cn("w-full", compact ? "max-w-sm" : "max-w-lg")} />
-				<div className={cn("grid w-full max-w-sm gap-1", compact && "grid-cols-2")}>
+				<AsciiBanner
+					className={cn("pointer-events-auto w-full", compact ? "max-w-sm" : "max-w-lg")}
+				/>
+				<div
+					className={cn("pointer-events-auto grid w-full max-w-sm gap-1", compact && "grid-cols-2")}
+				>
 					{emptyEditorCommands.map(({ Icon, id, label, shortcut }) => (
 						<EmptyEditorCommandButton
 							Icon={Icon}
@@ -241,9 +239,9 @@ export function EmptyEditor() {
 				>
 					<ZapIcon aria-hidden="true" className="size-3 text-primary" />
 					<button
-						className="text-primary/70 transition hover:text-primary focus:text-primary focus:outline-none"
+						className="pointer-events-auto text-primary/70 transition hover:text-primary focus:text-primary focus:outline-none"
 						type="button"
-						onClick={() => toggleWindow("contact")}
+						onClick={toggleContact}
 					>
 						<span data-anim-editor-status>open to freelance and full-time opportunities</span>
 					</button>
