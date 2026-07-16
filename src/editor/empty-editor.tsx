@@ -110,8 +110,8 @@ function EmptyEditorCommandButton({
 				))}
 			</span>
 			<Icon aria-hidden="true" className="size-4 text-primary" />
-			<span className="truncate">{label}</span>
-			<span className="text-command-shortcut text-end">{shortcut}</span>
+			<span className="truncate font-medium">{label}</span>
+			<span className="text-command-shortcut font-medium text-end">{shortcut}</span>
 		</button>
 	);
 }
@@ -243,7 +243,9 @@ export function EmptyEditor() {
 						type="button"
 						onClick={toggleContact}
 					>
-						<span data-anim-editor-status>open to freelance and full-time opportunities</span>
+						<span data-anim-editor-status className="font-medium">
+							open to freelance and full-time opportunities
+						</span>
 					</button>
 				</div>
 			</div>
