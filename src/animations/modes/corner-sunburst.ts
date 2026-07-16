@@ -1,7 +1,8 @@
-import type { AnimationRoute } from "../webgl-text";
+import { type AnimationRoute, TextCanvasRenderer } from "../webgl-text";
 
 export const CornerSunburstAnimation = {
-	path: "/corner-sunburst",
+	path: "/lab/corner-sunburst",
 	label: "Corner Sunburst",
 	mode: "corner-sunburst",
+	createRenderer: (canvas) => new TextCanvasRenderer(canvas, "corner-sunburst"),
 } satisfies AnimationRoute;

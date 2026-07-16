@@ -11,8 +11,25 @@ describe("webgl text animations", () => {
 	it("registers each animation once", () => {
 		const modes = animationRoutes.map((route) => route.mode);
 
-		expect(animationRoutes).toHaveLength(23);
+		expect(animationRoutes).toHaveLength(18);
 		expect(new Set(modes).size).toBe(animationRoutes.length);
+		expect(modes).not.toEqual(
+			expect.arrayContaining([
+				"wave-text",
+				"text-waterfall",
+				"magnetic",
+				"gravity",
+				"repulsive",
+				"elastic-tear",
+				"slinky",
+				"glass-lens",
+			]),
+		);
+	});
+
+	it("sorts lab animations alphabetically", () => {
+		const labels = animationRoutes.map((route) => route.label);
+		expect(labels).toEqual([...labels].sort((a, b) => a.localeCompare(b)));
 	});
 
 	it("exports route-specific animations", () => {

@@ -15,16 +15,13 @@ function AboutPage() {
 	}
 
 	return (
-		<article className="h-full overflow-auto bg-editor font-mono text-foreground">
-			<div className="mx-auto grid min-h-full w-full max-w-4xl content-center gap-8 p-6 sm:p-10 md:grid-cols-[minmax(0,3fr)_minmax(13rem,2fr)] md:gap-12">
+		<article className="relative isolate h-full overflow-auto bg-editor font-mono text-foreground">
+			<div className="relative z-10 mx-auto grid min-h-full w-full max-w-4xl content-center gap-8 p-6 sm:p-10 md:grid-cols-[minmax(0,3fr)_minmax(13rem,2fr)] md:gap-12">
 				<div className="grid content-start gap-6">
 					<p className="text-muted-foreground text-tiny">~/about/cedric-gourville.md</p>
 					<header className="grid gap-3">
 						<p className="text-primary text-tiny uppercase">Software engineer</p>
-						<h1 className="font-serif font-normal text-2xl uppercase tracking-wide sm:text-3xl">
-							Cédric Gourville
-						</h1>
-						<p className="max-w-xl text-muted-foreground text-sm leading-7">
+						<p className="max-w-xl text-muted-foreground text-xs">
 							I build clear, fast, and maintainable web interfaces with close attention to product
 							and interaction details.
 						</p>
@@ -83,6 +80,12 @@ function AboutPage() {
 					</div>
 				</aside>
 			</div>
+			<p
+				aria-hidden="true"
+				className="pointer-events-none absolute bottom-0 left-4 select-none font-serif font-extrabold text-[clamp(5rem,16vw,13rem)] text-muted-foreground/5 leading-[0.7] tracking-[-0.06em] sm:left-8"
+			>
+				About
+			</p>
 		</article>
 	);
 }

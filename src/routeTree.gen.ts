@@ -20,7 +20,7 @@ import { Route as AppWorkspaceLabRouteRouteImport } from './routes/_app/_workspa
 import { Route as AppWorkspaceWorksIndexRouteImport } from './routes/_app/_workspace/works/index'
 import { Route as AppWorkspaceLabIndexRouteImport } from './routes/_app/_workspace/lab/index'
 import { Route as AppWorkspaceWorksPortfolioOsRouteImport } from './routes/_app/_workspace/works/portfolio-os'
-import { Route as AppWorkspaceLabSignalRoomRouteImport } from './routes/_app/_workspace/lab/signal-room'
+import { Route as AppWorkspaceLabAnimationIdRouteImport } from './routes/_app/_workspace/lab/$animationId'
 
 const LoadingRoute = LoadingRouteImport.update({
   id: '/loading',
@@ -76,10 +76,10 @@ const AppWorkspaceWorksPortfolioOsRoute =
     path: '/portfolio-os',
     getParentRoute: () => AppWorkspaceWorksRouteRoute,
   } as any)
-const AppWorkspaceLabSignalRoomRoute =
-  AppWorkspaceLabSignalRoomRouteImport.update({
-    id: '/signal-room',
-    path: '/signal-room',
+const AppWorkspaceLabAnimationIdRoute =
+  AppWorkspaceLabAnimationIdRouteImport.update({
+    id: '/$animationId',
+    path: '/$animationId',
     getParentRoute: () => AppWorkspaceLabRouteRoute,
   } as any)
 
@@ -90,7 +90,7 @@ export interface FileRoutesByFullPath {
   '/home': typeof AppHomeRoute
   '/lab': typeof AppWorkspaceLabRouteRouteWithChildren
   '/works': typeof AppWorkspaceWorksRouteRouteWithChildren
-  '/lab/signal-room': typeof AppWorkspaceLabSignalRoomRoute
+  '/lab/$animationId': typeof AppWorkspaceLabAnimationIdRoute
   '/works/portfolio-os': typeof AppWorkspaceWorksPortfolioOsRoute
   '/lab/': typeof AppWorkspaceLabIndexRoute
   '/works/': typeof AppWorkspaceWorksIndexRoute
@@ -100,7 +100,7 @@ export interface FileRoutesByTo {
   '/loading': typeof LoadingRoute
   '/about': typeof AppAboutRoute
   '/home': typeof AppHomeRoute
-  '/lab/signal-room': typeof AppWorkspaceLabSignalRoomRoute
+  '/lab/$animationId': typeof AppWorkspaceLabAnimationIdRoute
   '/works/portfolio-os': typeof AppWorkspaceWorksPortfolioOsRoute
   '/lab': typeof AppWorkspaceLabIndexRoute
   '/works': typeof AppWorkspaceWorksIndexRoute
@@ -115,7 +115,7 @@ export interface FileRoutesById {
   '/_app/home': typeof AppHomeRoute
   '/_app/_workspace/lab': typeof AppWorkspaceLabRouteRouteWithChildren
   '/_app/_workspace/works': typeof AppWorkspaceWorksRouteRouteWithChildren
-  '/_app/_workspace/lab/signal-room': typeof AppWorkspaceLabSignalRoomRoute
+  '/_app/_workspace/lab/$animationId': typeof AppWorkspaceLabAnimationIdRoute
   '/_app/_workspace/works/portfolio-os': typeof AppWorkspaceWorksPortfolioOsRoute
   '/_app/_workspace/lab/': typeof AppWorkspaceLabIndexRoute
   '/_app/_workspace/works/': typeof AppWorkspaceWorksIndexRoute
@@ -129,7 +129,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/lab'
     | '/works'
-    | '/lab/signal-room'
+    | '/lab/$animationId'
     | '/works/portfolio-os'
     | '/lab/'
     | '/works/'
@@ -139,7 +139,7 @@ export interface FileRouteTypes {
     | '/loading'
     | '/about'
     | '/home'
-    | '/lab/signal-room'
+    | '/lab/$animationId'
     | '/works/portfolio-os'
     | '/lab'
     | '/works'
@@ -153,7 +153,7 @@ export interface FileRouteTypes {
     | '/_app/home'
     | '/_app/_workspace/lab'
     | '/_app/_workspace/works'
-    | '/_app/_workspace/lab/signal-room'
+    | '/_app/_workspace/lab/$animationId'
     | '/_app/_workspace/works/portfolio-os'
     | '/_app/_workspace/lab/'
     | '/_app/_workspace/works/'
@@ -244,23 +244,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWorkspaceWorksPortfolioOsRouteImport
       parentRoute: typeof AppWorkspaceWorksRouteRoute
     }
-    '/_app/_workspace/lab/signal-room': {
-      id: '/_app/_workspace/lab/signal-room'
-      path: '/signal-room'
-      fullPath: '/lab/signal-room'
-      preLoaderRoute: typeof AppWorkspaceLabSignalRoomRouteImport
+    '/_app/_workspace/lab/$animationId': {
+      id: '/_app/_workspace/lab/$animationId'
+      path: '/$animationId'
+      fullPath: '/lab/$animationId'
+      preLoaderRoute: typeof AppWorkspaceLabAnimationIdRouteImport
       parentRoute: typeof AppWorkspaceLabRouteRoute
     }
   }
 }
 
 interface AppWorkspaceLabRouteRouteChildren {
-  AppWorkspaceLabSignalRoomRoute: typeof AppWorkspaceLabSignalRoomRoute
+  AppWorkspaceLabAnimationIdRoute: typeof AppWorkspaceLabAnimationIdRoute
   AppWorkspaceLabIndexRoute: typeof AppWorkspaceLabIndexRoute
 }
 
 const AppWorkspaceLabRouteRouteChildren: AppWorkspaceLabRouteRouteChildren = {
-  AppWorkspaceLabSignalRoomRoute: AppWorkspaceLabSignalRoomRoute,
+  AppWorkspaceLabAnimationIdRoute: AppWorkspaceLabAnimationIdRoute,
   AppWorkspaceLabIndexRoute: AppWorkspaceLabIndexRoute,
 }
 

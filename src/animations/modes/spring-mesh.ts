@@ -1,7 +1,8 @@
-import type { AnimationRoute } from "../webgl-text";
+import { type AnimationRoute, TextCanvasRenderer } from "../webgl-text";
 
 export const SpringMeshAnimation = {
-	path: "/spring-mesh",
+	path: "/lab/spring-mesh",
 	label: "Spring Mesh Typography",
 	mode: "spring-mesh",
+	createRenderer: (canvas) => new TextCanvasRenderer(canvas, "spring-mesh"),
 } satisfies AnimationRoute;

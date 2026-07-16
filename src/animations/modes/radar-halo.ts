@@ -1,7 +1,8 @@
-import type { AnimationRoute } from "../webgl-text";
+import { type AnimationRoute, TextCanvasRenderer } from "../webgl-text";
 
 export const RadarHaloAnimation = {
-	path: "/radar-halo",
+	path: "/lab/radar-halo",
 	label: "Radar Halo",
 	mode: "radar-halo",
+	createRenderer: (canvas) => new TextCanvasRenderer(canvas, "radar-halo"),
 } satisfies AnimationRoute;

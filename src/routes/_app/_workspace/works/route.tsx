@@ -60,6 +60,12 @@ function WorksLayout() {
 						<div className="pointer-events-none absolute left-3 top-3 font-mono text-muted-foreground text-tiny uppercase">
 							{radarHaloAnimation.label}
 						</div>
+						<p
+							aria-hidden="true"
+							className="pointer-events-none absolute bottom-0 left-4 select-none font-serif font-extrabold text-[clamp(5rem,16vw,13rem)] text-muted-foreground/5 leading-[0.7] tracking-[-0.06em] sm:left-8"
+						>
+							Works
+						</p>
 					</>
 				) : (
 					<Outlet />

@@ -626,3 +626,52 @@
 	--status-muted: oklch(27.00% 0.035 155);
 	--status-muted-foreground: oklch(67.00% 0.105 145);
 }
+
+.effect-settings {
+	position: absolute;
+	top: 2.25rem;
+	right: 0.75rem;
+	z-index: 20;
+	display: grid;
+	width: 12rem;
+	gap: 0.625rem;
+	border: 1px solid color-mix(in oklch, var(--border) 65%, transparent);
+	background: color-mix(in oklch, var(--editor) 88%, transparent);
+	padding: 0.75rem;
+	color: var(--muted-foreground);
+	font-family: var(--font-mono);
+	font-size: 0.625rem;
+	text-transform: uppercase;
+	backdrop-filter: blur(8px);
+}
+
+.effect-settings__title {
+	color: var(--foreground);
+}
+
+.effect-settings label,
+.effect-settings__range {
+	display: flex;
+	align-items: center;
+	gap: 0.4375rem;
+}
+
+.effect-settings__range {
+	align-items: stretch;
+	flex-direction: column;
+}
+
+.effect-settings__range span {
+	display: flex;
+	justify-content: space-between;
+}
+
+.effect-settings input[type="range"] {
+	width: 100%;
+	accent-color: var(--primary);
+}
+
+.effect-settings input[type="checkbox"] {
+	margin: 0;
+	accent-color: var(--primary);
+}

@@ -1,7 +1,8 @@
-import type { AnimationRoute } from "../webgl-text";
+import { type AnimationRoute, TextCanvasRenderer } from "../webgl-text";
 
 export const ScanlineAnimation = {
-	path: "/scanline",
+	path: "/lab/scanline",
 	label: "Scanline Reveal",
 	mode: "scanline",
+	createRenderer: (canvas) => new TextCanvasRenderer(canvas, "scanline"),
 } satisfies AnimationRoute;

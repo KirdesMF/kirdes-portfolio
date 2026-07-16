@@ -18,6 +18,8 @@ export function startAnimationLoop(renderer: AnimationRenderer, target?: Element
 	let intersecting = true;
 	let needsResize = true;
 	let lastSize: RenderSize | null = null;
+	let lastRenderTime = 0;
+	const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 	const isActive = () => document.visibilityState === "visible" && focused && intersecting;
 	const resize = () => {
@@ -72,6 +74,12 @@ export function startAnimationLoop(renderer: AnimationRenderer, target?: Element
 			needsResize = false;
 		}
 
+		if (reducedMotionQuery.matches && timestamp - lastRenderTime < 100) {
+			scheduleFrame();
+			return;
+		}
+
+		lastRenderTime = timestamp;
 		renderer.render(timestamp);
 		scheduleFrame();
 	};
@@ -86,6 +94,7 @@ export function startAnimationLoop(renderer: AnimationRenderer, target?: Element
 	};
 
 	window.addEventListener("resize", resize);
+	reducedMotionQuery.addEventListener("change", resize);
 	document.addEventListener("visibilitychange", handleVisibilityChange);
 	window.addEventListener("focus", handleFocus);
 	window.addEventListener("blur", handleBlur);
@@ -108,6 +117,7 @@ export function startAnimationLoop(renderer: AnimationRenderer, target?: Element
 		disposed = true;
 		stopFrame();
 		window.removeEventListener("resize", resize);
+		reducedMotionQuery.removeEventListener("change", resize);
 		document.removeEventListener("visibilitychange", handleVisibilityChange);
 		window.removeEventListener("focus", handleFocus);
 		window.removeEventListener("blur", handleBlur);
