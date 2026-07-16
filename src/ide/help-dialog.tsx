@@ -1,3 +1,4 @@
+import { XIcon } from "lucide-react";
 import {
 	Dialog,
 	DialogClose,
@@ -96,7 +97,9 @@ function HelpDialogInner(props: {
 				aria-label="Close dialog"
 				className="absolute top-0 end-3 z-raised -translate-y-1/2 bg-popover px-1 text-primary leading-none focus:text-accent-foreground focus:outline-none"
 			>
-				[X]
+				<span aria-hidden="true" className="flex items-center">
+					[<XIcon className="size-3" />]
+				</span>
 			</Close>
 
 			<div className="min-h-0 flex-1 grid gap-5 overflow-y-auto touch-auto py-3">

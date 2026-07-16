@@ -13,6 +13,7 @@ import {
 	Settings,
 	Sun,
 	User,
+	XIcon,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Command, CommandItem, CommandList } from "#/design-system/command";
@@ -289,7 +290,9 @@ function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: ()
 				type="button"
 				onClick={onClose}
 			>
-				[X]
+				<span aria-hidden="true" className="flex items-center">
+					[<XIcon className="size-3" />]
+				</span>
 			</button>
 			<Command
 				className="rounded-none bg-transparent outline-none"

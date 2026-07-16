@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { SlidingPuzzle } from "#/components/sliding-puzzle";
 
 export const Route = createFileRoute("/_app/about")({
 	component: AboutPage,
@@ -40,6 +41,8 @@ function AboutPage() {
 				</div>
 
 				<aside className="grid content-start gap-7 border-border border-t-thin pt-6 md:border-t-0 md:border-l-thin md:pt-0 md:pl-8">
+					<SlidingPuzzle />
+
 					<section className="grid gap-3">
 						<h2 className="text-primary text-tiny uppercase">Focus</h2>
 						<ul className="grid gap-2 text-muted-foreground text-xs">

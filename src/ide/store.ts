@@ -23,6 +23,10 @@ type IdeStore = {
 	helpOpen: boolean;
 	setHelpOpen: (open: boolean) => void;
 
+	statusOpen: boolean;
+	setStatusOpen: (open: boolean) => void;
+	toggleStatus: () => void;
+
 	cursorLine: number;
 	cursorColumn: number;
 	cursorLineCount: number;
@@ -60,6 +64,10 @@ export const useIdeStore = create<IdeStore>((set) => ({
 
 	helpOpen: false,
 	setHelpOpen: (open) => set({ helpOpen: open }),
+
+	statusOpen: true,
+	setStatusOpen: (open) => set({ statusOpen: open }),
+	toggleStatus: () => set((s) => ({ statusOpen: !s.statusOpen })),
 
 	cursorLine: 1,
 	cursorColumn: 1,

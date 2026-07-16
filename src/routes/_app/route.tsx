@@ -7,15 +7,20 @@ import { ContactDialog } from "#/ide/contact-dialog";
 import { HelpDialog } from "#/ide/help-dialog";
 import { parseIdeSearch } from "#/ide/search";
 import { StatusBar } from "#/ide/status-bar";
+import { StatusBox } from "#/ide/status-box";
+import { getCurrentWeather } from "#/ide/status-box.functions";
 import { useIdeStore } from "#/ide/store";
 import { SettingsDialog } from "#/settings-dialog";
 
 export const Route = createFileRoute("/_app")({
 	validateSearch: parseIdeSearch,
+	loader: () => getCurrentWeather(),
+	staleTime: 5 * 60 * 1000,
 	component: IdeShell,
 });
 
 function IdeShell() {
+	const weather = Route.useLoaderData();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
 	const search = useRouterState({ select: (s) => s.location.search }) as {
 		contact?: "open";
@@ -41,6 +46,9 @@ function IdeShell() {
 	const setEditorMode = useIdeStore((s) => s.setEditorMode);
 	const helpOpen = useIdeStore((s) => s.helpOpen);
 	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
+	const statusOpen = useIdeStore((s) => s.statusOpen);
+	const setStatusOpen = useIdeStore((s) => s.setStatusOpen);
+	const toggleStatus = useIdeStore((s) => s.toggleStatus);
 	const toggleCommandMenu = useIdeStore((s) => s.toggleCommandMenu);
 
 	function openHome() {
@@ -84,6 +92,12 @@ function IdeShell() {
 				hotkey: "S",
 				callback: () => {
 					if (!commandMenuOpen) setSettingsOpen(true);
+				},
+			},
+			{
+				hotkey: "I",
+				callback: () => {
+					if (!commandMenuOpen) toggleStatus();
 				},
 			},
 			{
@@ -170,6 +184,7 @@ function IdeShell() {
 					>
 						[<SpaceIcon className="inline size-3" />] menu
 					</button>
+					<StatusBox open={statusOpen} weather={weather} onOpenChange={setStatusOpen} />
 				</div>
 			</header>
 			<div className="relative grid min-h-0 grid-cols-1">

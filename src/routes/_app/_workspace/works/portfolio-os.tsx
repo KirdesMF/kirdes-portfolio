@@ -1,4 +1,5 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { XIcon } from "lucide-react";
 
 export const Route = createFileRoute("/_app/_workspace/works/portfolio-os")({
 	component: ProjectRoute,
@@ -12,7 +13,9 @@ function ProjectRoute() {
 				className="absolute top-6 right-6 px-1 text-primary text-tiny leading-none focus:text-accent-foreground focus:outline-none hover:text-accent-foreground"
 				to="/works"
 			>
-				[X]
+				<span aria-hidden="true" className="flex items-center">
+					[<XIcon className="size-3" />]
+				</span>
 			</Link>
 			<div className="mx-auto grid min-h-full w-full max-w-2xl content-center gap-4">
 				<p className="text-muted-foreground text-tiny">~/works/portfolio-os</p>

@@ -1,4 +1,5 @@
 import { Command as BaseCommand } from "cmdk";
+import { XIcon } from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "#/design-system/cn";
@@ -87,7 +88,9 @@ export function CommandDialog({
 				aria-label="Close dialog"
 				className="absolute top-0 end-3 z-raised -translate-y-1/2 bg-popover px-1 text-primary leading-none focus:text-accent-foreground focus:outline-none"
 			>
-				[X]
+				<span aria-hidden="true" className="flex items-center">
+					[<XIcon className="size-3" />]
+				</span>
 			</Close>
 			<Description className="sr-only">{description}</Description>
 			<Command

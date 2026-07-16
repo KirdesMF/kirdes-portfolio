@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { XIcon } from "lucide-react";
 import { AnimationCanvas, getAnimationBySlug } from "#/animations";
 
 export const Route = createFileRoute("/_app/_workspace/lab/$animationId")({
@@ -23,7 +24,9 @@ function AnimationRoute() {
 				className="absolute top-3 right-3 z-10 px-1 font-mono text-primary text-tiny leading-none focus:text-accent-foreground focus:outline-none hover:text-accent-foreground"
 				to="/lab"
 			>
-				[X]
+				<span aria-hidden="true" className="flex items-center">
+					[<XIcon className="size-3" />]
+				</span>
 			</Link>
 		</article>
 	);

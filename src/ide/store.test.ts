@@ -9,6 +9,7 @@ const initialState = {
 	commandHistory: [] as string[],
 	settingsOpen: false,
 	helpOpen: false,
+	statusOpen: true,
 	cursorLine: 1,
 	cursorColumn: 1,
 	cursorLineCount: 1,
@@ -24,13 +25,14 @@ describe("IdeStore initial state", () => {
 		expect(useIdeStore.getState().editorMode).toBe("normal");
 	});
 
-	it("has all dialog booleans false", () => {
+	it("has dialogs closed and status open", () => {
 		const s = useIdeStore.getState();
 		expect(s.commandMenuOpen).toBe(false);
 		expect(s.commandModeOpen).toBe(false);
 		expect(s.commandHistoryOpen).toBe(false);
 		expect(s.settingsOpen).toBe(false);
 		expect(s.helpOpen).toBe(false);
+		expect(s.statusOpen).toBe(true);
 	});
 
 	it("has empty histories", () => {
@@ -57,6 +59,16 @@ describe("toggleCommandMenu", () => {
 		expect(useIdeStore.getState().commandMenuOpen).toBe(true);
 		toggleCommandMenu();
 		expect(useIdeStore.getState().commandMenuOpen).toBe(false);
+	});
+});
+
+describe("toggleStatus", () => {
+	it("flips true → false → true", () => {
+		const { toggleStatus } = useIdeStore.getState();
+		toggleStatus();
+		expect(useIdeStore.getState().statusOpen).toBe(false);
+		toggleStatus();
+		expect(useIdeStore.getState().statusOpen).toBe(true);
 	});
 });
 

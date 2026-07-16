@@ -1,4 +1,5 @@
 import { useNavigate, useRouterState } from "@tanstack/react-router";
+import { XIcon } from "lucide-react";
 import { contactInfo } from "#/data";
 import { Dialog, DialogClose, DialogContent, DialogTitle } from "#/design-system/dialog";
 import {
@@ -64,18 +65,20 @@ function ContactDialogInner(props: {
 				aria-label="Close contact dialog"
 				className="absolute top-0 end-3 z-raised -translate-y-1/2 bg-popover px-1 text-primary leading-none focus:text-accent-foreground focus:outline-none"
 			>
-				[X]
+				<span aria-hidden="true" className="flex items-center">
+					[<XIcon className="size-3" />]
+				</span>
 			</Close>
 
 			<div className="grid gap-2 text-muted-foreground text-tiny leading-5">
 				<a
-					className="text-foreground underline-offset-4 hover:underline"
+					className="text-foreground hover:bg-accent hover:text-accent-foreground"
 					href={`mailto:${contactInfo.email}`}
 				>
 					{contactInfo.email}
 				</a>
 				<a
-					className="text-foreground underline-offset-4 hover:underline"
+					className="text-foreground hover:bg-accent hover:text-accent-foreground"
 					href={contactInfo.linkedin.url}
 					rel="noreferrer"
 					target="_blank"
@@ -83,7 +86,7 @@ function ContactDialogInner(props: {
 					LinkedIn / {contactInfo.linkedin.handle} ↗
 				</a>
 				<a
-					className="text-foreground underline-offset-4 hover:underline"
+					className="text-foreground hover:bg-accent hover:text-accent-foreground"
 					href={contactInfo.github.url}
 					rel="noreferrer"
 					target="_blank"
@@ -91,7 +94,7 @@ function ContactDialogInner(props: {
 					GitHub / {contactInfo.github.handle} ↗
 				</a>
 				<a
-					className="text-foreground underline-offset-4 hover:underline"
+					className="text-foreground hover:bg-accent hover:text-accent-foreground"
 					href={contactInfo.x.url}
 					rel="noreferrer"
 					target="_blank"

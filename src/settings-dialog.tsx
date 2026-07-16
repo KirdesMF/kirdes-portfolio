@@ -1,4 +1,4 @@
-import { CheckIcon, MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
+import { CheckIcon, MonitorIcon, MoonIcon, SunIcon, XIcon } from "lucide-react";
 import { cn } from "#/design-system/cn";
 import {
 	Dialog,
@@ -102,7 +102,9 @@ function SettingsDialogInner(props: {
 				aria-label="Close dialog"
 				className="absolute top-0 end-3 z-raised -translate-y-1/2 bg-popover px-1 text-primary leading-none focus:text-accent-foreground focus:outline-none"
 			>
-				[X]
+				<span aria-hidden="true" className="flex items-center">
+					[<XIcon className="size-3" />]
+				</span>
 			</Close>
 
 			<div className="min-h-0 flex-1 grid gap-5 overflow-y-auto touch-auto px-1 py-3">

@@ -1,3 +1,4 @@
+import { XIcon } from "lucide-react";
 import { type PointerEvent, type ReactNode, useState } from "react";
 import { cn } from "#/design-system/cn";
 
@@ -70,7 +71,9 @@ export function FloatingWindow({
 					type="button"
 					onClick={onClose}
 				>
-					[X]
+					<span aria-hidden="true" className="flex items-center">
+						[<XIcon className="size-3" />]
+					</span>
 				</button>
 				<div className="text-tiny leading-5">{children}</div>
 			</div>
