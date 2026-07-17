@@ -9,7 +9,7 @@ import { useAppStore } from "#/store";
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type StatusSide = "left" | "right";
-type StatusVariant = "primary" | "muted" | "activePrimary" | "activeMuted";
+type StatusVariant = "primary" | "muted" | "commandPrimary" | "commandMuted";
 
 type StatusItem = {
 	id: string;
@@ -26,15 +26,15 @@ const variantClass = {
 		foreground: "text-status-primary-foreground",
 		fill: "fill-status-primary",
 	},
-	activePrimary: {
-		background: "bg-active-background",
-		foreground: "text-active-foreground",
-		fill: "fill-active-background",
+	commandPrimary: {
+		background: "bg-command-status",
+		foreground: "text-command-status-foreground",
+		fill: "fill-command-status",
 	},
-	activeMuted: {
-		background: "bg-active-foreground",
-		foreground: "text-active-background",
-		fill: "fill-active-foreground",
+	commandMuted: {
+		background: "bg-command-status-foreground",
+		foreground: "text-command-status",
+		fill: "fill-command-status-foreground",
 	},
 	muted: {
 		background: "bg-status-muted",
@@ -115,8 +115,8 @@ function StatusSegment(props: {
 	const effectiveVariant =
 		props.shellMode === "command"
 			? props.item.variant === "primary"
-				? "activePrimary"
-				: "activeMuted"
+				? "commandPrimary"
+				: "commandMuted"
 			: props.item.variant;
 	const variant = variantClass[effectiveVariant];
 

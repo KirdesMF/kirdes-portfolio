@@ -38,6 +38,40 @@ describe("StatusBox", () => {
 		expect(screen.queryByText(/Wind/)).toBeNull();
 	});
 
+	it("renders a distinct icon for every supported weather condition", () => {
+		const weatherCases = [
+			{ code: 0, label: "Clear" },
+			{ code: 1, label: "Partly cloudy" },
+			{ code: 3, label: "Overcast" },
+			{ code: 45, label: "Fog" },
+			{ code: 51, label: "Drizzle" },
+			{ code: 56, label: "Freezing drizzle" },
+			{ code: 61, label: "Rain" },
+			{ code: 66, label: "Freezing rain" },
+			{ code: 71, label: "Snow" },
+			{ code: 80, label: "Rain showers" },
+			{ code: 85, label: "Snow showers" },
+			{ code: 95, label: "Thunderstorm" },
+			{ code: 96, label: "Thunderstorm with hail" },
+		];
+		const paths = new Set<string>();
+
+		for (const { code, label } of weatherCases) {
+			const { unmount } = render(
+				<ControlledStatusBox weather={{ temperature: 10, weatherCode: code }} />,
+			);
+			const path = screen.getByTestId("weather-icon").querySelector("path")?.getAttribute("d");
+
+			expect(screen.getByText(`10°C / ${label}`)).toBeTruthy();
+			expect(path).toBeTruthy();
+			expect(paths.has(path ?? "")).toBe(false);
+			paths.add(path ?? "");
+			unmount();
+		}
+
+		expect(paths.size).toBe(weatherCases.length);
+	});
+
 	it("hides the status box and trigger on mobile", () => {
 		installMatchMedia(true);
 		render(<ControlledStatusBox weather={null} />);

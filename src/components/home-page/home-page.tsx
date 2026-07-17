@@ -90,7 +90,7 @@ function HomePageCommandButton({
 
 	return (
 		<button
-			className="pointer-events-auto group relative grid grid-cols-[auto_1fr_2ch] items-center gap-4 px-2 py-1.5 text-left text-primary/90 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
+			className="pointer-events-auto group relative grid grid-cols-[auto_1fr_2ch] items-center gap-4 px-2 py-1.5 text-left text-primary hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
 			ref={buttonRef}
 			type="button"
 			onClick={onClick}
@@ -112,7 +112,9 @@ function HomePageCommandButton({
 			</span>
 			<Icon aria-hidden="true" className="size-4 text-primary" />
 			<span className="truncate font-medium">{label}</span>
-			<span className="text-command-shortcut font-medium text-end">{shortcut}</span>
+			<span className="text-command-shortcut group-hover:text-accent-foreground group-focus:text-accent-foreground font-medium text-end">
+				{shortcut}
+			</span>
 		</button>
 	);
 }

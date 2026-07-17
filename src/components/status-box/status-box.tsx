@@ -6,13 +6,18 @@ import { CloseIcon } from "#/icons/close";
 import { CloudIcon } from "#/icons/cloud";
 import { CloudDrizzleIcon } from "#/icons/cloud-drizzle";
 import { CloudFogIcon } from "#/icons/cloud-fog";
+import { CloudFreezingDrizzleIcon } from "#/icons/cloud-freezing-drizzle";
+import { CloudFreezingRainIcon } from "#/icons/cloud-freezing-rain";
 import { CloudLightningIcon } from "#/icons/cloud-lightning";
+import { CloudLightningHailIcon } from "#/icons/cloud-lightning-hail";
 import { CloudRainIcon } from "#/icons/cloud-rain";
+import { CloudRainShowersIcon } from "#/icons/cloud-rain-showers";
+import { CloudSnowIcon } from "#/icons/cloud-snow";
+import { CloudSnowShowersIcon } from "#/icons/cloud-snow-showers";
 import { CloudSunIcon } from "#/icons/cloud-sun";
 import { GlobeIcon } from "#/icons/globe";
 import type { IconComponent } from "#/icons/icon.types";
 import { PaletteIcon } from "#/icons/palette";
-import { SnowflakeIcon } from "#/icons/snowflake";
 import { SunIcon } from "#/icons/sun";
 import { TerminalIcon } from "#/icons/terminal";
 import { themeLabels } from "#/theme/theme.types";
@@ -167,12 +172,19 @@ function weatherDetails(code: number): { Icon: IconComponent; label: string } {
 	if (code <= 2) return { Icon: CloudSunIcon, label: "Partly cloudy" };
 	if (code === 3) return { Icon: CloudIcon, label: "Overcast" };
 	if (code === 45 || code === 48) return { Icon: CloudFogIcon, label: "Fog" };
-	if (code >= 51 && code <= 57) return { Icon: CloudDrizzleIcon, label: "Drizzle" };
-	if (code >= 61 && code <= 67) return { Icon: CloudRainIcon, label: "Rain" };
-	if (code >= 71 && code <= 77) return { Icon: SnowflakeIcon, label: "Snow" };
-	if (code >= 80 && code <= 82) return { Icon: CloudRainIcon, label: "Rain showers" };
-	if (code === 85 || code === 86) return { Icon: SnowflakeIcon, label: "Snow showers" };
-	if (code >= 95) return { Icon: CloudLightningIcon, label: "Thunderstorm" };
+	if (code >= 51 && code <= 55) return { Icon: CloudDrizzleIcon, label: "Drizzle" };
+	if (code === 56 || code === 57) {
+		return { Icon: CloudFreezingDrizzleIcon, label: "Freezing drizzle" };
+	}
+	if (code >= 61 && code <= 65) return { Icon: CloudRainIcon, label: "Rain" };
+	if (code === 66 || code === 67) return { Icon: CloudFreezingRainIcon, label: "Freezing rain" };
+	if (code >= 71 && code <= 77) return { Icon: CloudSnowIcon, label: "Snow" };
+	if (code >= 80 && code <= 82) return { Icon: CloudRainShowersIcon, label: "Rain showers" };
+	if (code === 85 || code === 86) return { Icon: CloudSnowShowersIcon, label: "Snow showers" };
+	if (code === 96 || code === 99) {
+		return { Icon: CloudLightningHailIcon, label: "Thunderstorm with hail" };
+	}
+	if (code === 95) return { Icon: CloudLightningIcon, label: "Thunderstorm" };
 	return { Icon: CloudIcon, label: "Unknown conditions" };
 }
 

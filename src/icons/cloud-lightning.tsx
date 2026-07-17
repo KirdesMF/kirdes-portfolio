@@ -3,7 +3,7 @@ import type { ComponentProps } from "react";
 export function CloudLightningIcon(props: ComponentProps<"svg">) {
 	return (
 		<svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" {...props}>
-			<path d="M4 13h8v6h2v2h-2v2h-2v-8H2v-4h2v2Zm12 6h-2v-2h2v2Zm2-2h-2v-2h2v2Zm2-2h-2v-2h2v2Zm-6-6h8v4h-2v-2h-8V5h-2V3h2V1h2v8Zm-8 2H4V9h2v2Zm2-2H6V7h2v2Zm2-2H8V5h2v2Z" />
+			<path d="M20 14H4v-2h16v2ZM4 12H2V8h2v4Zm18 0h-2V8h2v4ZM8 8H4V6h4v2Zm12 0h-4V6h4v2ZM10 6H8V4h2v2Zm6 0h-2V4h2v2Zm-2-2h-4V2h4v2Zm0 10h-4v4H8v2h2v4h2v-4h2v-2h2v-2h-2v-2Z" />
 		</svg>
 	);
 }
