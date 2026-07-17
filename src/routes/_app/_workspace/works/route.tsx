@@ -3,8 +3,18 @@ import { AnimationCanvas, radarHaloAnimation } from "#/animations";
 import { cn } from "#/design-system/cn";
 import { FolderIcon } from "#/icons/folder";
 import { FolderOpenIcon } from "#/icons/folder-open";
+import { projects } from "./-projects";
 
-const projects = [{ label: "Portfolio OS", to: "/works/portfolio-os" }] as const;
+function statusClassName(status: (typeof projects)[number]["status"]) {
+	switch (status) {
+		case "LIVE":
+			return "text-primary";
+		case "WIP":
+			return "text-orange-400";
+		case "ARCHIVED":
+			return "text-muted-foreground/70";
+	}
+}
 
 export const Route = createFileRoute("/_app/_workspace/works")({
 	component: WorksLayout,
@@ -28,8 +38,9 @@ function WorksLayout() {
 						<Link
 							activeOptions={{ exact: true }}
 							className="flex items-center gap-1.5 px-2 py-1 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
-							key={project.to}
-							to={project.to}
+							key={project.slug}
+							params={{ projectSlug: project.slug }}
+							to="/works/$projectSlug"
 							activeProps={{ className: "bg-accent text-accent-foreground" }}
 						>
 							{({ isActive }) => (
@@ -39,7 +50,10 @@ function WorksLayout() {
 									) : (
 										<FolderIcon className="size-3 shrink-0" />
 									)}
-									<span>{project.label}</span>
+									<span className="truncate">{project.label}</span>
+									<span className={`ml-auto shrink-0 ${statusClassName(project.status)}`}>
+										[{project.status}]
+									</span>
 								</>
 							)}
 						</Link>

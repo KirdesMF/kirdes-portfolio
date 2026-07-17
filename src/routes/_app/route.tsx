@@ -5,18 +5,15 @@ import {
 	CommandHistoryDialog,
 	CommandModeDialog,
 } from "#/components/command-mode-dialog/command-mode-dialog";
-import { ContactDialog } from "#/components/contact-dialog/contact-dialog";
 import { HelpDialog } from "#/components/help-dialog/help-dialog";
 import { SettingsDialog } from "#/components/settings-dialog/settings-dialog";
 import { StatusBar } from "#/components/status-bar/status-bar";
 import { StatusBox } from "#/components/status-box/status-box";
 import { getCurrentWeather } from "#/components/status-box/status-box.functions";
 import { SpaceIcon } from "#/icons/space-icon";
-import { parseAppSearch } from "#/search";
 import { useAppStore } from "#/store";
 
 export const Route = createFileRoute("/_app")({
-	validateSearch: parseAppSearch,
 	loader: () => getCurrentWeather(),
 	staleTime: 5 * 60 * 1000,
 	component: AppShell,
@@ -25,9 +22,6 @@ export const Route = createFileRoute("/_app")({
 function AppShell() {
 	const weather = Route.useLoaderData();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
-	const search = useRouterState({ select: (s) => s.location.search }) as {
-		contact?: "open";
-	};
 	const router = useRouter();
 	const pageTitle =
 		pathname === "/home"
@@ -73,9 +67,7 @@ function AppShell() {
 		void router.navigate({ to: "/works", search: {} });
 	}
 
-	const contactOpen = search.contact === "open";
-	const dialogHotkeysBlocked =
-		contactOpen || settingsOpen || helpOpen || commandModeOpen || commandHistoryOpen;
+	const dialogHotkeysBlocked = settingsOpen || helpOpen || commandModeOpen || commandHistoryOpen;
 
 	useHotkeys(
 		[
@@ -210,7 +202,6 @@ function AppShell() {
 			<CommandHistoryDialog />
 			<SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
 			<HelpDialog open={helpOpen} onOpenChange={setHelpOpen} />
-			<ContactDialog />
 		</div>
 	);
 }

@@ -47,7 +47,6 @@ const keybindingGroups = [
 		label: "Leader mappings",
 		rows: [
 			{ keys: "Space l", desc: "Toggle language" },
-			{ keys: "c", desc: "Open contacts" },
 			{ keys: "s", desc: "Open settings" },
 		],
 	},

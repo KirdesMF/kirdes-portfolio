@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SlidingPuzzle } from "#/components/sliding-puzzle/sliding-puzzle";
+import { contactInfo } from "#/data";
 
 export const Route = createFileRoute("/_app/about")({
 	component: AboutPage,
@@ -29,6 +30,39 @@ function AboutPage() {
 							design systems to the details that make an experience feel responsive and coherent.
 						</p>
 					</div>
+
+					<nav aria-label="Contact links" className="flex flex-wrap gap-x-4 gap-y-2 text-tiny">
+						<a
+							className="text-foreground hover:text-primary focus:text-primary focus:outline-none"
+							href={contactInfo.github.url}
+							rel="noreferrer"
+							target="_blank"
+						>
+							GitHub ↗
+						</a>
+						<a
+							className="text-foreground hover:text-primary focus:text-primary focus:outline-none"
+							href={contactInfo.linkedin.url}
+							rel="noreferrer"
+							target="_blank"
+						>
+							LinkedIn ↗
+						</a>
+						<a
+							className="text-foreground hover:text-primary focus:text-primary focus:outline-none"
+							href={`mailto:${contactInfo.email}`}
+						>
+							Email
+						</a>
+						<a
+							className="text-foreground hover:text-primary focus:text-primary focus:outline-none"
+							href={contactInfo.x.url}
+							rel="noreferrer"
+							target="_blank"
+						>
+							X.com ↗
+						</a>
+					</nav>
 				</div>
 
 				<aside className="grid content-start gap-7 border-border border-t-thin pt-6 md:border-t-0 md:border-l-thin md:pt-0 md:pl-8">
@@ -63,13 +97,6 @@ function AboutPage() {
 							to="/works"
 						>
 							View works
-						</Link>
-						<Link
-							className="border-thin border-border px-3 py-2 text-foreground hover:border-primary hover:text-primary focus:border-primary focus:text-primary focus:outline-none"
-							search={(previous) => ({ ...previous, contact: "open" })}
-							to="/about"
-						>
-							Contact
 						</Link>
 					</div>
 				</aside>

@@ -1,14 +1,16 @@
-import { useHotkeys } from "@tanstack/react-hotkeys";
-import { useNavigate, useRouterState } from "@tanstack/react-router";
+import { useHotkeySequence, useHotkeys } from "@tanstack/react-hotkeys";
+import { useNavigate } from "@tanstack/react-router";
 import { createScope, createTimeline } from "animejs";
 import { useEffect, useRef, useState } from "react";
 import { AsciiBanner } from "#/components/ascii-banner/ascii-banner";
+import { contactInfo } from "#/data";
 import { cn } from "#/design-system/cn";
 import { useScrambleRef } from "#/design-system/use-scramble-ref";
 import { BriefcaseIcon } from "#/icons/briefcase";
+import { EmailIcon } from "#/icons/email";
+import { GitHubIcon } from "#/icons/github";
 import { HelpCircleIcon } from "#/icons/help-circle";
 import type { IconComponent } from "#/icons/icon.types";
-import { MailIcon } from "#/icons/mail";
 import { RotateCwIcon } from "#/icons/rotate-cw";
 import { SettingsIcon } from "#/icons/settings";
 import { TestTubeIcon } from "#/icons/test-tube";
@@ -25,7 +27,8 @@ const homePageCommands: Array<{
 	{ id: "about", Icon: UserIcon, label: "About", shortcut: "a" },
 	{ id: "works", Icon: BriefcaseIcon, label: "Works", shortcut: "w" },
 	{ id: "lab", Icon: TestTubeIcon, label: "Lab", shortcut: "l" },
-	{ id: "contacts", Icon: MailIcon, label: "Contacts", shortcut: "c" },
+	{ id: "github", Icon: GitHubIcon, label: "GitHub", shortcut: "gh" },
+	{ id: "email", Icon: EmailIcon, label: "Email", shortcut: "cm" },
 	{ id: "settings", Icon: SettingsIcon, label: "Settings", shortcut: "s" },
 	{ id: "reload", Icon: RotateCwIcon, label: "Reload", shortcut: "R" },
 	{ id: "help", Icon: HelpCircleIcon, label: "Help", shortcut: "?" },
@@ -87,7 +90,7 @@ function HomePageCommandButton({
 
 	return (
 		<button
-			className="pointer-events-auto group relative grid grid-cols-[auto_1fr_1ch] items-center gap-4 px-2 py-1.5 text-left text-primary/90 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
+			className="pointer-events-auto group relative grid grid-cols-[auto_1fr_2ch] items-center gap-4 px-2 py-1.5 text-left text-primary/90 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
 			ref={buttonRef}
 			type="button"
 			onClick={onClick}
@@ -122,26 +125,12 @@ export function HomePage() {
 	const setHelpOpen = useAppStore((s) => s.setHelpOpen);
 	const setSettingsOpen = useAppStore((s) => s.setSettingsOpen);
 	const navigate = useNavigate();
-	const search = useRouterState({ select: (s) => s.location.search }) as {
-		contact?: "open";
-	};
-	const contactOpen = search.contact === "open";
-	const homePageHotkeysBlocked = contactOpen || commandMenuOpen || helpOpen || settingsOpen;
+	const homePageHotkeysBlocked = commandMenuOpen || helpOpen || settingsOpen;
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const rootRef = useScrambleRef<HTMLDivElement>({
 		selector: "[data-anim-home-status]",
 		staggerMs: 0,
 	});
-
-	function toggleContact() {
-		void navigate({
-			to: "/home",
-			search: (prev) => ({
-				...prev,
-				contact: search.contact === "open" ? undefined : "open",
-			}),
-		});
-	}
 
 	function runHomePageCommand(commandId: string) {
 		switch (commandId) {
@@ -154,11 +143,14 @@ export function HomePage() {
 			case "lab":
 				void navigate({ to: "/lab", search: {} });
 				break;
+			case "github":
+				window.open(contactInfo.github.url, "_blank", "noopener,noreferrer");
+				break;
+			case "email":
+				window.location.href = `mailto:${contactInfo.email}`;
+				break;
 			case "settings":
 				setSettingsOpen(true);
-				break;
-			case "contacts":
-				toggleContact();
 				break;
 			case "help":
 				setHelpOpen(true);
@@ -169,17 +161,21 @@ export function HomePage() {
 		}
 	}
 
-	useHotkeys(
-		[
-			{ hotkey: "Shift+R", callback: () => runHomePageCommand("reload") },
-			{ hotkey: "C", callback: () => runHomePageCommand("contacts") },
-		],
-		{
-			enabled: !homePageHotkeysBlocked,
-			ignoreInputs: true,
-			preventDefault: true,
-		},
-	);
+	useHotkeys([{ hotkey: "Shift+R", callback: () => runHomePageCommand("reload") }], {
+		enabled: !homePageHotkeysBlocked,
+		ignoreInputs: true,
+		preventDefault: true,
+	});
+	useHotkeySequence(["G", "H"], () => runHomePageCommand("github"), {
+		enabled: !homePageHotkeysBlocked,
+		ignoreInputs: true,
+		preventDefault: true,
+	});
+	useHotkeySequence(["C", "M"], () => runHomePageCommand("email"), {
+		enabled: !homePageHotkeysBlocked,
+		ignoreInputs: true,
+		preventDefault: true,
+	});
 
 	useEffect(() => {
 		const container = containerRef.current;
@@ -236,15 +232,9 @@ export function HomePage() {
 					ref={rootRef}
 				>
 					<ZapIcon aria-hidden="true" className="size-3 text-primary" />
-					<button
-						className="pointer-events-auto text-primary/70 transition hover:text-primary focus:text-primary focus:outline-none"
-						type="button"
-						onClick={toggleContact}
-					>
-						<span data-anim-home-status className="font-medium">
-							open to freelance and full-time opportunities
-						</span>
-					</button>
+					<span data-anim-home-status className="font-medium">
+						open to freelance and full-time opportunities
+					</span>
 				</div>
 			</div>
 		</div>

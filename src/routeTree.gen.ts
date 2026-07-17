@@ -19,7 +19,7 @@ import { Route as AppWorkspaceWorksRouteRouteImport } from './routes/_app/_works
 import { Route as AppWorkspaceLabRouteRouteImport } from './routes/_app/_workspace/lab/route'
 import { Route as AppWorkspaceWorksIndexRouteImport } from './routes/_app/_workspace/works/index'
 import { Route as AppWorkspaceLabIndexRouteImport } from './routes/_app/_workspace/lab/index'
-import { Route as AppWorkspaceWorksPortfolioOsRouteImport } from './routes/_app/_workspace/works/portfolio-os'
+import { Route as AppWorkspaceWorksProjectSlugRouteImport } from './routes/_app/_workspace/works/$projectSlug'
 import { Route as AppWorkspaceLabAnimationIdRouteImport } from './routes/_app/_workspace/lab/$animationId'
 
 const LoadingRoute = LoadingRouteImport.update({
@@ -70,10 +70,10 @@ const AppWorkspaceLabIndexRoute = AppWorkspaceLabIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppWorkspaceLabRouteRoute,
 } as any)
-const AppWorkspaceWorksPortfolioOsRoute =
-  AppWorkspaceWorksPortfolioOsRouteImport.update({
-    id: '/portfolio-os',
-    path: '/portfolio-os',
+const AppWorkspaceWorksProjectSlugRoute =
+  AppWorkspaceWorksProjectSlugRouteImport.update({
+    id: '/$projectSlug',
+    path: '/$projectSlug',
     getParentRoute: () => AppWorkspaceWorksRouteRoute,
   } as any)
 const AppWorkspaceLabAnimationIdRoute =
@@ -91,7 +91,7 @@ export interface FileRoutesByFullPath {
   '/lab': typeof AppWorkspaceLabRouteRouteWithChildren
   '/works': typeof AppWorkspaceWorksRouteRouteWithChildren
   '/lab/$animationId': typeof AppWorkspaceLabAnimationIdRoute
-  '/works/portfolio-os': typeof AppWorkspaceWorksPortfolioOsRoute
+  '/works/$projectSlug': typeof AppWorkspaceWorksProjectSlugRoute
   '/lab/': typeof AppWorkspaceLabIndexRoute
   '/works/': typeof AppWorkspaceWorksIndexRoute
 }
@@ -101,7 +101,7 @@ export interface FileRoutesByTo {
   '/about': typeof AppAboutRoute
   '/home': typeof AppHomeRoute
   '/lab/$animationId': typeof AppWorkspaceLabAnimationIdRoute
-  '/works/portfolio-os': typeof AppWorkspaceWorksPortfolioOsRoute
+  '/works/$projectSlug': typeof AppWorkspaceWorksProjectSlugRoute
   '/lab': typeof AppWorkspaceLabIndexRoute
   '/works': typeof AppWorkspaceWorksIndexRoute
 }
@@ -116,7 +116,7 @@ export interface FileRoutesById {
   '/_app/_workspace/lab': typeof AppWorkspaceLabRouteRouteWithChildren
   '/_app/_workspace/works': typeof AppWorkspaceWorksRouteRouteWithChildren
   '/_app/_workspace/lab/$animationId': typeof AppWorkspaceLabAnimationIdRoute
-  '/_app/_workspace/works/portfolio-os': typeof AppWorkspaceWorksPortfolioOsRoute
+  '/_app/_workspace/works/$projectSlug': typeof AppWorkspaceWorksProjectSlugRoute
   '/_app/_workspace/lab/': typeof AppWorkspaceLabIndexRoute
   '/_app/_workspace/works/': typeof AppWorkspaceWorksIndexRoute
 }
@@ -130,7 +130,7 @@ export interface FileRouteTypes {
     | '/lab'
     | '/works'
     | '/lab/$animationId'
-    | '/works/portfolio-os'
+    | '/works/$projectSlug'
     | '/lab/'
     | '/works/'
   fileRoutesByTo: FileRoutesByTo
@@ -140,7 +140,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/home'
     | '/lab/$animationId'
-    | '/works/portfolio-os'
+    | '/works/$projectSlug'
     | '/lab'
     | '/works'
   id:
@@ -154,7 +154,7 @@ export interface FileRouteTypes {
     | '/_app/_workspace/lab'
     | '/_app/_workspace/works'
     | '/_app/_workspace/lab/$animationId'
-    | '/_app/_workspace/works/portfolio-os'
+    | '/_app/_workspace/works/$projectSlug'
     | '/_app/_workspace/lab/'
     | '/_app/_workspace/works/'
   fileRoutesById: FileRoutesById
@@ -237,11 +237,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWorkspaceLabIndexRouteImport
       parentRoute: typeof AppWorkspaceLabRouteRoute
     }
-    '/_app/_workspace/works/portfolio-os': {
-      id: '/_app/_workspace/works/portfolio-os'
-      path: '/portfolio-os'
-      fullPath: '/works/portfolio-os'
-      preLoaderRoute: typeof AppWorkspaceWorksPortfolioOsRouteImport
+    '/_app/_workspace/works/$projectSlug': {
+      id: '/_app/_workspace/works/$projectSlug'
+      path: '/$projectSlug'
+      fullPath: '/works/$projectSlug'
+      preLoaderRoute: typeof AppWorkspaceWorksProjectSlugRouteImport
       parentRoute: typeof AppWorkspaceWorksRouteRoute
     }
     '/_app/_workspace/lab/$animationId': {
@@ -268,13 +268,13 @@ const AppWorkspaceLabRouteRouteWithChildren =
   AppWorkspaceLabRouteRoute._addFileChildren(AppWorkspaceLabRouteRouteChildren)
 
 interface AppWorkspaceWorksRouteRouteChildren {
-  AppWorkspaceWorksPortfolioOsRoute: typeof AppWorkspaceWorksPortfolioOsRoute
+  AppWorkspaceWorksProjectSlugRoute: typeof AppWorkspaceWorksProjectSlugRoute
   AppWorkspaceWorksIndexRoute: typeof AppWorkspaceWorksIndexRoute
 }
 
 const AppWorkspaceWorksRouteRouteChildren: AppWorkspaceWorksRouteRouteChildren =
   {
-    AppWorkspaceWorksPortfolioOsRoute: AppWorkspaceWorksPortfolioOsRoute,
+    AppWorkspaceWorksProjectSlugRoute: AppWorkspaceWorksProjectSlugRoute,
     AppWorkspaceWorksIndexRoute: AppWorkspaceWorksIndexRoute,
   }
 

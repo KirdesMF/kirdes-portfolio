@@ -12,7 +12,6 @@ import { HouseIcon } from "#/icons/house";
 import type { IconComponent } from "#/icons/icon.types";
 import { LanguagesIcon } from "#/icons/languages";
 import { LogOutIcon } from "#/icons/log-out";
-import { MailIcon } from "#/icons/mail";
 import { RotateCwIcon } from "#/icons/rotate-cw";
 import { SettingsIcon } from "#/icons/settings";
 import { SpaceIcon } from "#/icons/space-icon";
@@ -40,21 +39,7 @@ export function CommandMenu() {
 	const setHelpOpen = useAppStore((s) => s.setHelpOpen);
 	const navigate = useNavigate();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
-	const search = useRouterState({ select: (s) => s.location.search }) as {
-		contact?: "open";
-	};
 	const { appearance, setAppearance } = useTheme();
-
-	function toggleContact() {
-		void navigate({
-			to: pathname,
-			search: (prev) => ({
-				...prev,
-				contact: search.contact === "open" ? undefined : "open",
-			}),
-		});
-		setOpen(false);
-	}
 
 	const commands: Item[] = [
 		{
@@ -98,13 +83,6 @@ export function CommandMenu() {
 				void navigate({ to: "/about", search: {} });
 				setOpen(false);
 			},
-		},
-		{
-			id: "contact",
-			Icon: MailIcon,
-			label: "Contact",
-			shortcut: "c",
-			action: toggleContact,
 		},
 		{
 			id: "command-history",
