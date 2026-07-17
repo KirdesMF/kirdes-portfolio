@@ -22,6 +22,7 @@ import {
 	PopoverTitle,
 	PopoverTrigger,
 } from "#/design-system/popover";
+import { useIsMobile } from "#/design-system/use-media-query";
 import type { WeatherData } from "#/ide/status-box.functions";
 import { themeLabels } from "#/theme/theme.types";
 import { useTheme } from "#/theme/theme-provider";
@@ -39,6 +40,7 @@ type StatusBoxProps = {
 };
 
 export function StatusBox({ onOpenChange, open, weather }: StatusBoxProps) {
+	const isMobile = useIsMobile();
 	const { activeTheme, resolvedMode } = useTheme();
 	const [terminalStatus, setTerminalStatus] = useState<TerminalStatus>({
 		cpu: 18,
@@ -47,6 +49,8 @@ export function StatusBox({ onOpenChange, open, weather }: StatusBoxProps) {
 	});
 
 	useEffect(() => {
+		if (isMobile) return;
+
 		const interval = window.setInterval(() => {
 			setTerminalStatus((current) => ({
 				cpu: fluctuate(current.cpu, 5),
@@ -56,7 +60,9 @@ export function StatusBox({ onOpenChange, open, weather }: StatusBoxProps) {
 		}, 2500);
 
 		return () => window.clearInterval(interval);
-	}, []);
+	}, [isMobile]);
+
+	if (isMobile) return null;
 
 	return (
 		<Popover open={open} onOpenChange={onOpenChange}>

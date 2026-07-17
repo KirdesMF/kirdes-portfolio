@@ -38,6 +38,14 @@ describe("StatusBox", () => {
 		expect(screen.queryByText(/Wind/)).toBeNull();
 	});
 
+	it("hides the status box and trigger on mobile", () => {
+		installMatchMedia(true);
+		render(<ControlledStatusBox weather={null} />);
+
+		expect(screen.queryByRole("button", { name: "Toggle system status" })).toBeNull();
+		expect(screen.queryByText("STATUS")).toBeNull();
+	});
+
 	it("can be closed and reopened from accessible controls", () => {
 		render(<ControlledStatusBox weather={null} />);
 
