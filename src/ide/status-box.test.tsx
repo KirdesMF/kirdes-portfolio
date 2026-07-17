@@ -42,14 +42,28 @@ describe("StatusBox", () => {
 		installMatchMedia(true);
 		render(<ControlledStatusBox weather={null} />);
 
-		expect(screen.queryByRole("button", { name: "Toggle system status" })).toBeNull();
+		expect(screen.queryByRole("button", { name: "Open system status" })).toBeNull();
 		expect(screen.queryByText("STATUS")).toBeNull();
+	});
+
+	it("stays open on outside click and Escape", () => {
+		render(<ControlledStatusBox weather={null} />);
+
+		const trigger = screen.getByRole("button", { name: "Open system status" });
+		fireEvent.click(trigger);
+		fireEvent.pointerDown(document.body);
+		fireEvent.mouseDown(document.body);
+		fireEvent.click(document.body);
+		fireEvent.keyDown(document.body, { key: "Escape" });
+
+		expect(trigger.getAttribute("aria-expanded")).toBe("true");
+		expect(screen.getByRole("region", { name: "STATUS" })).toBeTruthy();
 	});
 
 	it("can be closed and reopened from accessible controls", () => {
 		render(<ControlledStatusBox weather={null} />);
 
-		const trigger = screen.getByRole("button", { name: "Toggle system status" });
+		const trigger = screen.getByRole("button", { name: "Open system status" });
 		expect(trigger.getAttribute("aria-expanded")).toBe("true");
 
 		fireEvent.click(screen.getByRole("button", { name: "Close status box" }));

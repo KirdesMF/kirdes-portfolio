@@ -5,10 +5,8 @@ import { cn } from "#/design-system/cn";
 
 type PopoverProps = ComponentProps<typeof BasePopover.Root>;
 type PopoverTriggerProps = ComponentProps<typeof BasePopover.Trigger>;
-type PopoverCloseProps = ComponentProps<typeof BasePopover.Close>;
 type PopoverContentProps = Omit<ComponentProps<typeof BasePopover.Popup>, "className"> & {
 	align?: ComponentProps<typeof BasePopover.Positioner>["align"];
-	alignOffset?: ComponentProps<typeof BasePopover.Positioner>["alignOffset"];
 	className?: string;
 	side?: ComponentProps<typeof BasePopover.Positioner>["side"];
 	sideOffset?: ComponentProps<typeof BasePopover.Positioner>["sideOffset"];
@@ -28,13 +26,8 @@ export function PopoverTrigger(props: PopoverTriggerProps): ReactNode {
 	return <BasePopover.Trigger {...props} />;
 }
 
-export function PopoverClose(props: PopoverCloseProps): ReactNode {
-	return <BasePopover.Close {...props} />;
-}
-
 export function PopoverContent({
 	align,
-	alignOffset,
 	children,
 	className,
 	side = "top",
@@ -43,12 +36,7 @@ export function PopoverContent({
 }: PopoverContentProps): ReactNode {
 	return (
 		<BasePopover.Portal>
-			<BasePopover.Positioner
-				align={align}
-				alignOffset={alignOffset}
-				side={side}
-				sideOffset={sideOffset}
-			>
+			<BasePopover.Positioner align={align} side={side} sideOffset={sideOffset}>
 				<BasePopover.Popup
 					className={cn("rounded-md bg-popover p-2 text-popover-foreground shadow-md", className)}
 					initialFocus={false}

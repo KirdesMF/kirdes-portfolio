@@ -14,14 +14,7 @@ import {
 	Terminal,
 	XIcon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
-import {
-	Popover,
-	PopoverClose,
-	PopoverContent,
-	PopoverTitle,
-	PopoverTrigger,
-} from "#/design-system/popover";
+import { useEffect, useId, useState } from "react";
 import { useIsMobile } from "#/design-system/use-media-query";
 import type { WeatherData } from "#/ide/status-box.functions";
 import { themeLabels } from "#/theme/theme.types";
@@ -40,6 +33,8 @@ type StatusBoxProps = {
 };
 
 export function StatusBox({ onOpenChange, open, weather }: StatusBoxProps) {
+	const panelId = useId();
+	const titleId = useId();
 	const isMobile = useIsMobile();
 	const { activeTheme, resolvedMode } = useTheme();
 	const [terminalStatus, setTerminalStatus] = useState<TerminalStatus>({
@@ -65,32 +60,39 @@ export function StatusBox({ onOpenChange, open, weather }: StatusBoxProps) {
 	if (isMobile) return null;
 
 	return (
-		<Popover open={open} onOpenChange={onOpenChange}>
-			<PopoverTrigger
-				aria-label="Toggle system status"
+		<>
+			<button
+				aria-controls={panelId}
+				aria-expanded={open}
+				aria-label="Open system status"
 				className="flex h-full cursor-pointer items-center px-2.5 text-status-muted-foreground transition hover:bg-status-primary hover:text-status-primary-foreground focus:bg-status-primary focus:text-status-primary-foreground focus:outline-none"
+				type="button"
+				onClick={() => onOpenChange(true)}
 			>
 				[i] status
-			</PopoverTrigger>
-			<PopoverContent
-				align="end"
-				alignOffset={30}
-				className="w-[min(17rem,calc(100vw-3rem))] rounded-none bg-popover p-0 shadow-none outline-none"
-				side="top"
-				sideOffset={12}
-			>
-				<div className="relative border-thin border-border bg-popover p-3 pt-4 text-tiny leading-4">
-					<PopoverTitle className="absolute top-0 inset-s-1/2 z-raised -translate-1/2 border-x-thin border-border bg-popover px-2 text-primary leading-none">
+			</button>
+			{open && (
+				<section
+					aria-labelledby={titleId}
+					className="fixed top-[calc(var(--spacing-status-bar)+0.75rem)] right-6 z-window w-[min(17rem,calc(100vw-3rem))] border-thin border-border bg-popover p-3 pt-4 text-popover-foreground text-tiny leading-4"
+					id={panelId}
+				>
+					<h2
+						className="absolute top-0 inset-s-1/2 z-raised -translate-1/2 border-x-thin border-border bg-popover px-2 text-primary leading-none"
+						id={titleId}
+					>
 						STATUS
-					</PopoverTitle>
-					<PopoverClose
+					</h2>
+					<button
 						aria-label="Close status box"
 						className="absolute top-0 end-2 z-raised -translate-y-1/2 bg-popover px-1 text-primary leading-none focus:text-accent-foreground focus:outline-none"
+						type="button"
+						onClick={() => onOpenChange(false)}
 					>
 						<span aria-hidden="true" className="flex items-center">
 							[<XIcon className="size-3" />]
 						</span>
-					</PopoverClose>
+					</button>
 
 					<div className="grid gap-2">
 						<p className="flex items-center gap-2">
@@ -131,9 +133,9 @@ export function StatusBox({ onOpenChange, open, weather }: StatusBoxProps) {
 							</dl>
 						</section>
 					</div>
-				</div>
-			</PopoverContent>
-		</Popover>
+				</section>
+			)}
+		</>
 	);
 }
 
