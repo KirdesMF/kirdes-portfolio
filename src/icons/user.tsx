@@ -1,0 +1,9 @@
+import type { ComponentProps } from "react";
+
+export function UserIcon(props: ComponentProps<"svg">) {
+	return (
+		<svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" {...props}>
+			<path d="M6 22H4v-4h2v4Zm14 0h-2v-4h2v4ZM8 18H6v-2h2v2Zm10 0h-2v-2h2v2Zm-2-2H8v-2h8v2Zm-1-4H9v-2h6v2Zm-6-2H7V4h2v6Zm8 0h-2V4h2v6Zm-2-6H9V2h6v2Z" />
+		</svg>
+	);
+}

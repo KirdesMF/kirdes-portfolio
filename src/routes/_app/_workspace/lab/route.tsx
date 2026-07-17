@@ -1,7 +1,8 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
-import { Folder, FolderOpen } from "lucide-react";
 import { AnimationCanvas, animationRoutes, scanlineRevealAnimation } from "#/animations";
 import { cn } from "#/design-system/cn";
+import { FolderIcon } from "#/icons/folder";
+import { FolderOpenIcon } from "#/icons/folder-open";
 
 const experiments = animationRoutes.map(({ label, path }) => ({
 	label,
@@ -38,9 +39,9 @@ function LabLayout() {
 							{({ isActive }) => (
 								<>
 									{isActive ? (
-										<FolderOpen className="size-3 shrink-0" />
+										<FolderOpenIcon className="size-3 shrink-0" />
 									) : (
-										<Folder className="size-3 shrink-0" />
+										<FolderIcon className="size-3 shrink-0" />
 									)}
 									<span>{experiment.label}</span>
 								</>

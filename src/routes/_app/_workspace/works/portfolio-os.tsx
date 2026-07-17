@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { XIcon } from "lucide-react";
+import { CloseIcon } from "#/icons/close";
 
 export const Route = createFileRoute("/_app/_workspace/works/portfolio-os")({
 	component: ProjectRoute,
@@ -14,7 +14,7 @@ function ProjectRoute() {
 				to="/works"
 			>
 				<span aria-hidden="true" className="flex items-center">
-					[<XIcon className="size-3" />]
+					[<CloseIcon className="size-3" />]
 				</span>
 			</Link>
 			<div className="mx-auto grid min-h-full w-full max-w-2xl content-center gap-4">

@@ -1,7 +1,5 @@
 import { Command as BaseCommand } from "cmdk";
-import { XIcon } from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
-
 import { cn } from "#/design-system/cn";
 import {
 	Dialog,
@@ -20,6 +18,7 @@ import {
 	DrawerTitle,
 } from "#/design-system/drawer";
 import { useIsMobile } from "#/design-system/use-media-query";
+import { CloseIcon } from "#/icons/close";
 
 type CommandProps = Omit<ComponentProps<typeof BaseCommand>, "className"> & {
 	className?: string;
@@ -89,7 +88,7 @@ export function CommandDialog({
 				className="absolute top-0 end-3 z-raised -translate-y-1/2 bg-popover px-1 text-primary leading-none focus:text-accent-foreground focus:outline-none"
 			>
 				<span aria-hidden="true" className="flex items-center">
-					[<XIcon className="size-3" />]
+					[<CloseIcon className="size-3" />]
 				</span>
 			</Close>
 			<Description className="sr-only">{description}</Description>

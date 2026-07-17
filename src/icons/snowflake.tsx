@@ -1,0 +1,9 @@
+import type { ComponentProps } from "react";
+
+export function SnowflakeIcon(props: ComponentProps<"svg">) {
+	return (
+		<svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" {...props}>
+			<path d="M13 23h-2v-4h2v4Zm-2-4H9v-4h2v4Zm4 0h-2v-4h2v4Zm-6-4H5v-2h4v2Zm10-2v2h-4v-2h4ZM5 13H1v-2h4v2Zm18 0h-4v-2h4v2ZM9 11H5V9h4v2Zm10 0h-4V9h4v2Zm-8-2H9V5h2v4Zm4 0h-2V5h2v4Zm-2-4h-2V1h2v4Z" />
+		</svg>
+	);
+}

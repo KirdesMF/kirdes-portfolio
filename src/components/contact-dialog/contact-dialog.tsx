@@ -1,5 +1,4 @@
 import { useNavigate, useRouterState } from "@tanstack/react-router";
-import { XIcon } from "lucide-react";
 import { contactInfo } from "#/data";
 import { Dialog, DialogClose, DialogContent, DialogTitle } from "#/design-system/dialog";
 import {
@@ -11,6 +10,7 @@ import {
 	DrawerTitle,
 } from "#/design-system/drawer";
 import { useIsMobile } from "#/design-system/use-media-query";
+import { CloseIcon } from "#/icons/close";
 
 export function ContactDialog() {
 	const isMobile = useIsMobile();
@@ -66,7 +66,7 @@ function ContactDialogInner(props: {
 				className="absolute top-0 end-3 z-raised -translate-y-1/2 bg-popover px-1 text-primary leading-none focus:text-accent-foreground focus:outline-none"
 			>
 				<span aria-hidden="true" className="flex items-center">
-					[<XIcon className="size-3" />]
+					[<CloseIcon className="size-3" />]
 				</span>
 			</Close>
 

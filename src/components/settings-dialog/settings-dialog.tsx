@@ -1,4 +1,3 @@
-import { CheckIcon, MonitorIcon, MoonIcon, SunIcon, XIcon } from "lucide-react";
 import { LanguageSwitcher } from "#/components/language-switcher/language-switcher";
 import { cn } from "#/design-system/cn";
 import {
@@ -21,6 +20,11 @@ import { RadioGroup, RadioGroupIndicator, RadioGroupItem } from "#/design-system
 import { Separator } from "#/design-system/separator";
 import { ToggleGroup, ToggleGroupItem } from "#/design-system/toggle-group";
 import { useIsMobile } from "#/design-system/use-media-query";
+import { CheckIcon } from "#/icons/check";
+import { CloseIcon } from "#/icons/close";
+import { MonitorIcon } from "#/icons/monitor";
+import { MoonIcon } from "#/icons/moon";
+import { SunIcon } from "#/icons/sun";
 import { m } from "#/paraglide/messages";
 import {
 	type AppearanceMode,
@@ -103,7 +107,7 @@ function SettingsDialogInner(props: {
 				className="absolute top-0 end-3 z-raised -translate-y-1/2 bg-popover px-1 text-primary leading-none focus:text-accent-foreground focus:outline-none"
 			>
 				<span aria-hidden="true" className="flex items-center">
-					[<XIcon className="size-3" />]
+					[<CloseIcon className="size-3" />]
 				</span>
 			</Close>
 

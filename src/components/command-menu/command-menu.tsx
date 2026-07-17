@@ -1,33 +1,31 @@
 import { useNavigate, useRouterState } from "@tanstack/react-router";
-import {
-	FlaskConical,
-	FolderKanban,
-	HelpCircle,
-	History,
-	House,
-	Languages,
-	LogOut,
-	type LucideIcon,
-	Mail,
-	RotateCw,
-	Settings,
-	Sun,
-	User,
-	XIcon,
-} from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Command, CommandItem, CommandList } from "#/design-system/command";
 import { Drawer, DrawerContent, DrawerHandle, DrawerPopup } from "#/design-system/drawer";
 import { Popover, PopoverContent, PopoverTrigger } from "#/design-system/popover";
 import { useIsMobile } from "#/design-system/use-media-query";
+import { CloseIcon } from "#/icons/close";
+import { FolderKanbanIcon } from "#/icons/folder-kanban";
+import { HelpCircleIcon } from "#/icons/help-circle";
+import { HistoryIcon } from "#/icons/history";
+import { HouseIcon } from "#/icons/house";
+import type { IconComponent } from "#/icons/icon.types";
+import { LanguagesIcon } from "#/icons/languages";
+import { LogOutIcon } from "#/icons/log-out";
+import { MailIcon } from "#/icons/mail";
+import { RotateCwIcon } from "#/icons/rotate-cw";
+import { SettingsIcon } from "#/icons/settings";
 import { SpaceIcon } from "#/icons/space-icon";
+import { SunIcon } from "#/icons/sun";
+import { TestTubeIcon } from "#/icons/test-tube";
+import { UserIcon } from "#/icons/user";
 import { getLocale, setLocale } from "#/paraglide/runtime";
 import { useAppStore } from "#/store";
 import { useTheme } from "#/theme/use-theme";
 
 type Item = {
 	id: string;
-	Icon: LucideIcon;
+	Icon: IconComponent;
 	label: string;
 	shortcut: string;
 	action: () => void;
@@ -61,7 +59,7 @@ export function CommandMenu() {
 	const commands: Item[] = [
 		{
 			id: "home",
-			Icon: House,
+			Icon: HouseIcon,
 			label: "Home",
 			shortcut: "h",
 			action: () => {
@@ -73,7 +71,7 @@ export function CommandMenu() {
 		},
 		{
 			id: "works",
-			Icon: FolderKanban,
+			Icon: FolderKanbanIcon,
 			label: "Works",
 			shortcut: "w",
 			action: () => {
@@ -83,7 +81,7 @@ export function CommandMenu() {
 		},
 		{
 			id: "lab",
-			Icon: FlaskConical,
+			Icon: TestTubeIcon,
 			label: "Lab",
 			shortcut: "l",
 			action: () => {
@@ -93,7 +91,7 @@ export function CommandMenu() {
 		},
 		{
 			id: "about",
-			Icon: User,
+			Icon: UserIcon,
 			label: "About",
 			shortcut: "a",
 			action: () => {
@@ -103,14 +101,14 @@ export function CommandMenu() {
 		},
 		{
 			id: "contact",
-			Icon: Mail,
+			Icon: MailIcon,
 			label: "Contact",
 			shortcut: "c",
 			action: toggleContact,
 		},
 		{
 			id: "command-history",
-			Icon: History,
+			Icon: HistoryIcon,
 			label: "Command History",
 			shortcut: ":",
 			action: () => {
@@ -120,7 +118,7 @@ export function CommandMenu() {
 		},
 		{
 			id: "theme-mode",
-			Icon: Sun,
+			Icon: SunIcon,
 			label: "Theme Mode",
 			shortcut: "T",
 			action: () => {
@@ -133,7 +131,7 @@ export function CommandMenu() {
 		},
 		{
 			id: "language",
-			Icon: Languages,
+			Icon: LanguagesIcon,
 			label: "Toggle Language",
 			shortcut: "L",
 			action: () => {
@@ -144,7 +142,7 @@ export function CommandMenu() {
 		},
 		{
 			id: "reload",
-			Icon: RotateCw,
+			Icon: RotateCwIcon,
 			label: "Reload",
 			shortcut: "R",
 			action: () => {
@@ -154,7 +152,7 @@ export function CommandMenu() {
 		},
 		{
 			id: "settings",
-			Icon: Settings,
+			Icon: SettingsIcon,
 			label: "Settings",
 			shortcut: "s",
 			action: () => {
@@ -164,7 +162,7 @@ export function CommandMenu() {
 		},
 		{
 			id: "help",
-			Icon: HelpCircle,
+			Icon: HelpCircleIcon,
 			label: "Help",
 			shortcut: "?",
 			action: () => {
@@ -174,7 +172,7 @@ export function CommandMenu() {
 		},
 		{
 			id: "quit",
-			Icon: LogOut,
+			Icon: LogOutIcon,
 			label: "Quit",
 			shortcut: "q",
 			action: () => {
@@ -280,7 +278,7 @@ function CommandMenuInner({ commands, onClose }: { commands: Item[]; onClose: ()
 				onClick={onClose}
 			>
 				<span aria-hidden="true" className="flex items-center">
-					[<XIcon className="size-3" />]
+					[<CloseIcon className="size-3" />]
 				</span>
 			</button>
 			<Command

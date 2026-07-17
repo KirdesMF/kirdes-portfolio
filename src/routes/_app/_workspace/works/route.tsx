@@ -1,7 +1,8 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
-import { Folder, FolderOpen } from "lucide-react";
 import { AnimationCanvas, radarHaloAnimation } from "#/animations";
 import { cn } from "#/design-system/cn";
+import { FolderIcon } from "#/icons/folder";
+import { FolderOpenIcon } from "#/icons/folder-open";
 
 const projects = [{ label: "Portfolio OS", to: "/works/portfolio-os" }] as const;
 
@@ -34,9 +35,9 @@ function WorksLayout() {
 							{({ isActive }) => (
 								<>
 									{isActive ? (
-										<FolderOpen className="size-3 shrink-0" />
+										<FolderOpenIcon className="size-3 shrink-0" />
 									) : (
-										<Folder className="size-3 shrink-0" />
+										<FolderIcon className="size-3 shrink-0" />
 									)}
 									<span>{project.label}</span>
 								</>

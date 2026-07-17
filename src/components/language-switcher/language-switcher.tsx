@@ -1,5 +1,5 @@
-import { CheckIcon } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "#/design-system/toggle-group";
+import { CheckIcon } from "#/icons/check";
 import { getLocale, setLocale } from "#/paraglide/runtime";
 
 const locales = [

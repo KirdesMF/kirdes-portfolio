@@ -1,22 +1,20 @@
-import {
-	CircleCheck,
-	Cloud,
-	CloudDrizzle,
-	CloudFog,
-	CloudLightning,
-	CloudRain,
-	CloudSun,
-	Globe2,
-	type LucideIcon,
-	Palette,
-	Snowflake,
-	Sun,
-	Terminal,
-	XIcon,
-} from "lucide-react";
 import { useEffect, useId, useState } from "react";
 import type { WeatherData } from "#/components/status-box/status-box.functions";
 import { useIsMobile } from "#/design-system/use-media-query";
+import { CheckIcon } from "#/icons/check";
+import { CloseIcon } from "#/icons/close";
+import { CloudIcon } from "#/icons/cloud";
+import { CloudDrizzleIcon } from "#/icons/cloud-drizzle";
+import { CloudFogIcon } from "#/icons/cloud-fog";
+import { CloudLightningIcon } from "#/icons/cloud-lightning";
+import { CloudRainIcon } from "#/icons/cloud-rain";
+import { CloudSunIcon } from "#/icons/cloud-sun";
+import { GlobeIcon } from "#/icons/globe";
+import type { IconComponent } from "#/icons/icon.types";
+import { PaletteIcon } from "#/icons/palette";
+import { SnowflakeIcon } from "#/icons/snowflake";
+import { SunIcon } from "#/icons/sun";
+import { TerminalIcon } from "#/icons/terminal";
 import { themeLabels } from "#/theme/theme.types";
 import { useTheme } from "#/theme/use-theme";
 
@@ -90,13 +88,13 @@ export function StatusBox({ onOpenChange, open, weather }: StatusBoxProps) {
 						onClick={() => onOpenChange(false)}
 					>
 						<span aria-hidden="true" className="flex items-center">
-							[<XIcon className="size-3" />]
+							[<CloseIcon className="size-3" />]
 						</span>
 					</button>
 
 					<div className="grid gap-2">
 						<p className="flex items-center gap-2">
-							<Globe2
+							<GlobeIcon
 								aria-hidden="true"
 								className="size-3 shrink-0 text-muted-foreground"
 								data-testid="location-icon"
@@ -107,18 +105,18 @@ export function StatusBox({ onOpenChange, open, weather }: StatusBoxProps) {
 						<div aria-live="polite">{renderWeather(weather)}</div>
 
 						<p className="flex items-center gap-2 lowercase">
-							<Palette aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
+							<PaletteIcon aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
 							{resolvedMode} / {themeLabels[activeTheme]}
 						</p>
 
 						<p className="flex items-center gap-2 text-primary">
-							<CircleCheck aria-hidden="true" className="size-3 shrink-0" />
+							<CheckIcon aria-hidden="true" className="size-3 shrink-0" />
 							Available for work
 						</p>
 
 						<section className="border-border border-t-thin pt-2">
 							<h3 className="mb-1 flex items-center gap-2 text-muted-foreground">
-								<Terminal aria-hidden="true" className="size-3 shrink-0" />
+								<TerminalIcon aria-hidden="true" className="size-3 shrink-0" />
 								TERMINAL
 							</h3>
 							<dl className="grid grid-cols-[1fr_auto] gap-x-4 font-mono tabular-nums">
@@ -143,7 +141,7 @@ function renderWeather(weather: WeatherData | null) {
 	if (!weather) {
 		return (
 			<p className="flex items-center gap-2">
-				<Cloud aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
+				<CloudIcon aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
 				Weather unavailable
 			</p>
 		);
@@ -164,18 +162,18 @@ function renderWeather(weather: WeatherData | null) {
 	);
 }
 
-function weatherDetails(code: number): { Icon: LucideIcon; label: string } {
-	if (code === 0) return { Icon: Sun, label: "Clear" };
-	if (code <= 2) return { Icon: CloudSun, label: "Partly cloudy" };
-	if (code === 3) return { Icon: Cloud, label: "Overcast" };
-	if (code === 45 || code === 48) return { Icon: CloudFog, label: "Fog" };
-	if (code >= 51 && code <= 57) return { Icon: CloudDrizzle, label: "Drizzle" };
-	if (code >= 61 && code <= 67) return { Icon: CloudRain, label: "Rain" };
-	if (code >= 71 && code <= 77) return { Icon: Snowflake, label: "Snow" };
-	if (code >= 80 && code <= 82) return { Icon: CloudRain, label: "Rain showers" };
-	if (code === 85 || code === 86) return { Icon: Snowflake, label: "Snow showers" };
-	if (code >= 95) return { Icon: CloudLightning, label: "Thunderstorm" };
-	return { Icon: Cloud, label: "Unknown conditions" };
+function weatherDetails(code: number): { Icon: IconComponent; label: string } {
+	if (code === 0) return { Icon: SunIcon, label: "Clear" };
+	if (code <= 2) return { Icon: CloudSunIcon, label: "Partly cloudy" };
+	if (code === 3) return { Icon: CloudIcon, label: "Overcast" };
+	if (code === 45 || code === 48) return { Icon: CloudFogIcon, label: "Fog" };
+	if (code >= 51 && code <= 57) return { Icon: CloudDrizzleIcon, label: "Drizzle" };
+	if (code >= 61 && code <= 67) return { Icon: CloudRainIcon, label: "Rain" };
+	if (code >= 71 && code <= 77) return { Icon: SnowflakeIcon, label: "Snow" };
+	if (code >= 80 && code <= 82) return { Icon: CloudRainIcon, label: "Rain showers" };
+	if (code === 85 || code === 86) return { Icon: SnowflakeIcon, label: "Snow showers" };
+	if (code >= 95) return { Icon: CloudLightningIcon, label: "Thunderstorm" };
+	return { Icon: CloudIcon, label: "Unknown conditions" };
 }
 
 function fluctuate(value: number, range: number) {

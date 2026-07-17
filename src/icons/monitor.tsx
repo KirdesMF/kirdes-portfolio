@@ -1,0 +1,9 @@
+import type { ComponentProps } from "react";
+
+export function MonitorIcon(props: ComponentProps<"svg">) {
+	return (
+		<svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" {...props}>
+			<path d="M16 22H8v-2h3v-2H4v-2h16v2h-7v2h3v2ZM4 16H2V4h2v12Zm18 0h-2V4h2v12ZM20 4H4V2h16v2Z" />
+		</svg>
+	);
+}

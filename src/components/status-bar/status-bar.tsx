@@ -1,7 +1,9 @@
-import { ClockIcon, GitBranch, MouseIcon } from "lucide-react";
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from "react";
 import { Clock } from "#/components/clock/clock";
 import { cn } from "#/design-system/cn";
+import { ClockIcon } from "#/icons/clock";
+import { GitBranchIcon } from "#/icons/git-branch";
+import { MouseIcon } from "#/icons/mouse";
 import { useAppStore } from "#/store";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -180,7 +182,7 @@ export function StatusBar() {
 			variant: "muted",
 			content: (
 				<>
-					<GitBranch className="size-3 shrink-0" />
+					<GitBranchIcon className="size-3 shrink-0" />
 					<span className="truncate">{BRANCH_NAME}</span>
 				</>
 			),

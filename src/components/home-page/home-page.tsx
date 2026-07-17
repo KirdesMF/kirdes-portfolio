@@ -1,36 +1,34 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { createScope, createTimeline } from "animejs";
-import {
-	FlaskConical,
-	FolderKanban,
-	HelpCircle,
-	type LucideIcon,
-	Mail,
-	RotateCw,
-	Settings,
-	User,
-	ZapIcon,
-} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { AsciiBanner } from "#/components/ascii-banner/ascii-banner";
 import { cn } from "#/design-system/cn";
 import { useScrambleRef } from "#/design-system/use-scramble-ref";
+import { BriefcaseIcon } from "#/icons/briefcase";
+import { HelpCircleIcon } from "#/icons/help-circle";
+import type { IconComponent } from "#/icons/icon.types";
+import { MailIcon } from "#/icons/mail";
+import { RotateCwIcon } from "#/icons/rotate-cw";
+import { SettingsIcon } from "#/icons/settings";
+import { TestTubeIcon } from "#/icons/test-tube";
+import { UserIcon } from "#/icons/user";
+import { ZapIcon } from "#/icons/zap";
 import { useAppStore } from "#/store";
 
 const homePageCommands: Array<{
 	id: string;
-	Icon: LucideIcon;
+	Icon: IconComponent;
 	label: string;
 	shortcut: string;
 }> = [
-	{ id: "about", Icon: User, label: "About", shortcut: "a" },
-	{ id: "works", Icon: FolderKanban, label: "Works", shortcut: "w" },
-	{ id: "lab", Icon: FlaskConical, label: "Lab", shortcut: "l" },
-	{ id: "contacts", Icon: Mail, label: "Contacts", shortcut: "c" },
-	{ id: "settings", Icon: Settings, label: "Settings", shortcut: "s" },
-	{ id: "reload", Icon: RotateCw, label: "Replay Intro", shortcut: "R" },
-	{ id: "help", Icon: HelpCircle, label: "Help", shortcut: "?" },
+	{ id: "about", Icon: UserIcon, label: "About", shortcut: "a" },
+	{ id: "works", Icon: BriefcaseIcon, label: "Works", shortcut: "w" },
+	{ id: "lab", Icon: TestTubeIcon, label: "Lab", shortcut: "l" },
+	{ id: "contacts", Icon: MailIcon, label: "Contacts", shortcut: "c" },
+	{ id: "settings", Icon: SettingsIcon, label: "Settings", shortcut: "s" },
+	{ id: "reload", Icon: RotateCwIcon, label: "Reload", shortcut: "R" },
+	{ id: "help", Icon: HelpCircleIcon, label: "Help", shortcut: "?" },
 ];
 
 const commandIndicatorPixels = Array.from({ length: 5 }, (_, index) => index);
@@ -41,7 +39,7 @@ function HomePageCommandButton({
 	onClick,
 	shortcut,
 }: {
-	Icon: LucideIcon;
+	Icon: IconComponent;
 	label: string;
 	onClick: () => void;
 	shortcut: string;

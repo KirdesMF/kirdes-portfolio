@@ -1,9 +1,9 @@
 import type { ComponentProps } from "react";
 
-export function SpaceIcon(props: ComponentProps<"svg">) {
+export function FolderIcon(props: ComponentProps<"svg">) {
 	return (
 		<svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" {...props}>
-			<path d="M6 8H4v8h16V8h-2v6H6V8Z" />
+			<path d="M20 20H4v-2h16v2ZM4 18H2V6h2v12Zm18 0h-2V8h2v10ZM20 8H10V6H4V4h8v2h8v2Z" />
 		</svg>
 	);
 }
