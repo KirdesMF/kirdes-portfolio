@@ -1,27 +1,16 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
 import type { ReactNode } from "react";
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { setAppearanceSettings } from "./theme.functions";
 import {
 	type AppearanceSettings,
 	cycleThemeForMode,
 	defaultResolvedMode,
-	type ResolvedMode,
 	resolveAppearanceMode,
 	resolveThemeForMode,
 	sanitizeAppearanceSettings,
-	type ThemeId,
 } from "./theme.types";
-
-type ThemeContextValue = {
-	appearance: AppearanceSettings;
-	activeTheme: ThemeId;
-	resolvedMode: ResolvedMode;
-	setAppearance: (appearance: AppearanceSettings) => void;
-};
-
-const ThemeContext = createContext<ThemeContextValue | null>(null);
+import { ThemeContext } from "./theme-context";
 
 function getPrefersDark() {
 	return window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -106,14 +95,4 @@ export function ThemeProvider({
 	);
 
 	return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
-}
-
-export function useTheme() {
-	const value = useContext(ThemeContext);
-
-	if (value === null) {
-		throw new Error("useTheme must be used within ThemeProvider");
-	}
-
-	return value;
 }

@@ -15,7 +15,7 @@ function WorksLayout() {
 	const isWorksIndex = normalizedPathname === "/works";
 
 	return (
-		<div className="grid h-full min-h-0 grid-cols-1 overflow-hidden bg-editor font-mono text-tiny md:grid-cols-[minmax(14rem,1fr)_minmax(0,2fr)]">
+		<div className="grid h-full min-h-0 grid-cols-1 overflow-hidden bg-page font-mono text-tiny md:grid-cols-[minmax(14rem,1fr)_minmax(0,2fr)]">
 			<aside
 				className={cn(
 					"min-h-0 border-border bg-background p-2 text-muted-foreground md:block md:border-r-thin",

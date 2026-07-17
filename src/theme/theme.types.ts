@@ -21,7 +21,7 @@ export const darkThemeIds = [
 	"ayu-dark",
 	"sage-dark",
 ] as const;
-export const themeIds = [...lightThemeIds, ...darkThemeIds] as const;
+const themeIds = [...lightThemeIds, ...darkThemeIds] as const;
 
 export type AppearanceMode = (typeof appearanceModes)[number];
 export type ResolvedMode = Exclude<AppearanceMode, "system">;
@@ -89,10 +89,6 @@ export function isLightThemeId(value: unknown): value is LightThemeId {
 
 export function isDarkThemeId(value: unknown): value is DarkThemeId {
 	return typeof value === "string" && darkThemeIds.includes(value as DarkThemeId);
-}
-
-export function isThemeId(value: unknown): value is ThemeId {
-	return typeof value === "string" && themeIds.includes(value as ThemeId);
 }
 
 export function resolveAppearanceMode(mode: AppearanceMode, prefersDark: boolean): ResolvedMode {

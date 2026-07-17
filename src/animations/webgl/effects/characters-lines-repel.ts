@@ -656,31 +656,32 @@ export class CharactersLinesRepelRenderer {
 
 	private createSettings(): HTMLDivElement {
 		const panel = document.createElement("div");
-		panel.className = "effect-settings";
+		panel.className =
+			"absolute top-9 right-3 z-20 grid w-48 gap-2.5 border border-border/65 bg-page/88 p-3 font-mono text-[0.625rem] text-muted-foreground uppercase backdrop-blur-sm";
 		panel.innerHTML = `
-      <div class="effect-settings__title">Line repel settings</div>
-      <label class="effect-settings__range">
-        <span>Repel size <output data-output-repel>${this.repellerRadius}</output></span>
-        <input data-repel type="range" min="40" max="300" step="1" value="${this.repellerRadius}" />
+      <div class="text-foreground">Line repel settings</div>
+      <label class="flex flex-col items-stretch gap-[0.4375rem]">
+        <span class="flex justify-between">Repel size <output data-output-repel>${this.repellerRadius}</output></span>
+        <input class="w-full accent-primary" data-repel type="range" min="40" max="300" step="1" value="${this.repellerRadius}" />
       </label>
-      <label class="effect-settings__range">
-        <span>Snap distance <output data-output-snap>${this.snapDistance}</output></span>
-        <input data-snap type="range" min="41" max="400" step="1" value="${this.snapDistance}" />
+      <label class="flex flex-col items-stretch gap-[0.4375rem]">
+        <span class="flex justify-between">Snap distance <output data-output-snap>${this.snapDistance}</output></span>
+        <input class="w-full accent-primary" data-snap type="range" min="41" max="400" step="1" value="${this.snapDistance}" />
       </label>
-      <label class="effect-settings__range">
-        <span>Duration <output data-output-duration>${this.duration.toFixed(1)}</output></span>
-        <input data-duration type="range" min="0.1" max="6" step="0.1" value="${this.duration}" />
+      <label class="flex flex-col items-stretch gap-[0.4375rem]">
+        <span class="flex justify-between">Duration <output data-output-duration>${this.duration.toFixed(1)}</output></span>
+        <input class="w-full accent-primary" data-duration type="range" min="0.1" max="6" step="0.1" value="${this.duration}" />
       </label>
-      <label class="effect-settings__range">
-        <span>Wave strength <output data-output-strength>${this.waveStrength.toFixed(1)}</output></span>
-        <input data-strength type="range" min="1" max="2.5" step="0.1" value="${this.waveStrength}" />
+      <label class="flex flex-col items-stretch gap-[0.4375rem]">
+        <span class="flex justify-between">Wave strength <output data-output-strength>${this.waveStrength.toFixed(1)}</output></span>
+        <input class="w-full accent-primary" data-strength type="range" min="1" max="2.5" step="0.1" value="${this.waveStrength}" />
       </label>
-      <label class="effect-settings__range">
-        <span>Wave length <output data-output-length>${this.waveLength.toFixed(1)}</output></span>
-        <input data-length type="range" min="0.1" max="1" step="0.1" value="${this.waveLength}" />
+      <label class="flex flex-col items-stretch gap-[0.4375rem]">
+        <span class="flex justify-between">Wave length <output data-output-length>${this.waveLength.toFixed(1)}</output></span>
+        <input class="w-full accent-primary" data-length type="range" min="0.1" max="1" step="0.1" value="${this.waveLength}" />
       </label>
-      <label><input type="checkbox" data-show-points checked /> Show middle points</label>
-      <label><input type="checkbox" data-lock-y checked /> Lock Y axis</label>
+      <label class="flex items-center gap-[0.4375rem]"><input class="m-0 accent-primary" type="checkbox" data-show-points checked /> Show middle points</label>
+      <label class="flex items-center gap-[0.4375rem]"><input class="m-0 accent-primary" type="checkbox" data-lock-y checked /> Lock Y axis</label>
     `;
 
 		const { signal } = this.abortController;

@@ -1,7 +1,8 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { installMatchMedia } from "#/test-utils/match-media";
-import { ThemeProvider, useTheme } from "./theme-provider";
+import { ThemeProvider } from "./theme-provider";
+import { useTheme } from "./use-theme";
 
 vi.mock("./theme.functions", () => ({
 	setAppearanceSettings: vi.fn(),

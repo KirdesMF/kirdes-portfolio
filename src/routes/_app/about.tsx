@@ -1,22 +1,13 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { SlidingPuzzle } from "#/components/sliding-puzzle";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { SlidingPuzzle } from "#/components/sliding-puzzle/sliding-puzzle";
 
 export const Route = createFileRoute("/_app/about")({
 	component: AboutPage,
 });
 
 function AboutPage() {
-	const navigate = useNavigate();
-
-	function openContact() {
-		void navigate({
-			to: "/about",
-			search: (previous) => ({ ...previous, contact: "open" }),
-		});
-	}
-
 	return (
-		<article className="relative isolate h-full overflow-auto bg-editor font-mono text-foreground">
+		<article className="relative isolate h-full overflow-auto bg-page font-mono text-foreground">
 			<div className="relative z-10 mx-auto grid min-h-full w-full max-w-4xl content-center gap-8 p-6 sm:p-10 md:grid-cols-[minmax(0,3fr)_minmax(13rem,2fr)] md:gap-12">
 				<div className="grid content-start gap-6">
 					<p className="text-muted-foreground text-tiny">~/about/cedric-gourville.md</p>
@@ -73,13 +64,13 @@ function AboutPage() {
 						>
 							View works
 						</Link>
-						<button
+						<Link
 							className="border-thin border-border px-3 py-2 text-foreground hover:border-primary hover:text-primary focus:border-primary focus:text-primary focus:outline-none"
-							type="button"
-							onClick={openContact}
+							search={(previous) => ({ ...previous, contact: "open" })}
+							to="/about"
 						>
 							Contact
-						</button>
+						</Link>
 					</div>
 				</aside>
 			</div>

@@ -34,7 +34,7 @@ export function getAnimationPalette(target: HTMLElement): AnimationPalette {
 	const style = getComputedStyle(target);
 
 	return {
-		background: getThemeValue(target, style, "--editor", DEFAULT_ANIMATION_PALETTE.background),
+		background: getThemeValue(target, style, "--page", DEFAULT_ANIMATION_PALETTE.background),
 		text: getThemeValue(target, style, "--muted-foreground", DEFAULT_ANIMATION_PALETTE.text),
 	};
 }

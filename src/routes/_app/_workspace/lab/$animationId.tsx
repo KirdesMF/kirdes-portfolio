@@ -12,7 +12,7 @@ function AnimationRoute() {
 	if (!animation) throw notFound();
 
 	return (
-		<article className="relative flex size-full min-h-[420px] flex-col items-center justify-center gap-8 overflow-auto bg-editor p-6 sm:p-10">
+		<article className="relative flex size-full min-h-[420px] flex-col items-center justify-center gap-8 overflow-auto bg-page p-6 sm:p-10">
 			<h1 className="text-center font-serif font-bold text-[clamp(2.5rem,6vw,5rem)] leading-none tracking-[-0.04em]">
 				{animation.label}
 			</h1>

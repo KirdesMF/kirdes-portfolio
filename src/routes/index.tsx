@@ -1,8 +1,9 @@
 import { useHotkeys } from "@tanstack/react-hotkeys";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { createScope, createTimeline, stagger, steps } from "animejs";
 import { useLayoutEffect, useState } from "react";
-import { INTRO_LINES, IntroTranscript } from "#/intro/intro-content";
+import { INTRO_LINES } from "#/components/intro/intro.constants";
+import { IntroTranscript } from "#/components/intro/intro-content";
 
 export const Route = createFileRoute("/")({
 	component: RouteComponent,
@@ -12,11 +13,11 @@ const LINE_MS = 140;
 const FINAL_PAUSE = 1200;
 
 function RouteComponent() {
-	const navigate = useNavigate();
+	const router = useRouter();
 	const [reduceMotion, setReduceMotion] = useState(false);
 
 	function skipIntro() {
-		void navigate({ replace: true, to: "/home" });
+		void router.navigate({ replace: true, to: "/home" });
 	}
 
 	useHotkeys([{ hotkey: "Escape", callback: skipIntro }], {
@@ -34,13 +35,13 @@ function RouteComponent() {
 
 	useLayoutEffect(() => {
 		if (reduceMotion) {
-			const t = setTimeout(() => navigate({ replace: true, to: "/home" }), 800);
+			const t = setTimeout(() => router.navigate({ replace: true, to: "/home" }), 800);
 			return () => clearTimeout(t);
 		}
 
 		const tl = createTimeline({
 			defaults: { ease: steps(1) },
-			onComplete: () => navigate({ replace: true, to: "/home" }),
+			onComplete: () => router.navigate({ replace: true, to: "/home" }),
 		});
 
 		tl.set("[data-intro-line]", { opacity: 0 }, 0);
@@ -59,7 +60,7 @@ function RouteComponent() {
 		return () => {
 			tl.revert();
 		};
-	}, [reduceMotion, navigate]);
+	}, [reduceMotion, router]);
 
 	return (
 		<main className="relative flex h-dvh items-center justify-center bg-background p-8 font-mono text-foreground">

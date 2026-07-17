@@ -1,0 +1,15 @@
+export const INTRO_LINES = [
+	"KIRDES_OS v1.0.0 -- booting...",
+	"Loading design_systems.pkg",
+	"Loading mcp_connectors.pkg",
+	"Loading react_frontend.pkg",
+	"Loading tanstack_router.pkg",
+	"Mounting /projects/melo",
+	"Mounting /projects/ai_agent_ux",
+	"Mounting /projects/consumer_pivots",
+	"Mounting /projects/paguro",
+	"Checking open_to_work status",
+	"Loading portfolio interface",
+	"Portfolio ready",
+	"Opening workspace",
+] as const;

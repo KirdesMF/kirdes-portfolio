@@ -1,31 +1,34 @@
 import { type RegisterableHotkey, useHotkeys } from "@tanstack/react-hotkeys";
-import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouter, useRouterState } from "@tanstack/react-router";
+import { CommandMenu } from "#/components/command-menu/command-menu";
+import {
+	CommandHistoryDialog,
+	CommandModeDialog,
+} from "#/components/command-mode-dialog/command-mode-dialog";
+import { ContactDialog } from "#/components/contact-dialog/contact-dialog";
+import { HelpDialog } from "#/components/help-dialog/help-dialog";
+import { SettingsDialog } from "#/components/settings-dialog/settings-dialog";
+import { StatusBar } from "#/components/status-bar/status-bar";
+import { StatusBox } from "#/components/status-box/status-box";
+import { getCurrentWeather } from "#/components/status-box/status-box.functions";
 import { SpaceIcon } from "#/icons/space-icon";
-import { CommandMenu } from "#/ide/command-menu";
-import { CommandHistoryDialog, CommandModeDialog } from "#/ide/command-mode-dialog";
-import { ContactDialog } from "#/ide/contact-dialog";
-import { HelpDialog } from "#/ide/help-dialog";
-import { parseIdeSearch } from "#/ide/search";
-import { StatusBar } from "#/ide/status-bar";
-import { StatusBox } from "#/ide/status-box";
-import { getCurrentWeather } from "#/ide/status-box.functions";
-import { useIdeStore } from "#/ide/store";
-import { SettingsDialog } from "#/settings-dialog";
+import { parseAppSearch } from "#/search";
+import { useAppStore } from "#/store";
 
 export const Route = createFileRoute("/_app")({
-	validateSearch: parseIdeSearch,
+	validateSearch: parseAppSearch,
 	loader: () => getCurrentWeather(),
 	staleTime: 5 * 60 * 1000,
-	component: IdeShell,
+	component: AppShell,
 });
 
-function IdeShell() {
+function AppShell() {
 	const weather = Route.useLoaderData();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
 	const search = useRouterState({ select: (s) => s.location.search }) as {
 		contact?: "open";
 	};
-	const navigate = useNavigate();
+	const router = useRouter();
 	const pageTitle =
 		pathname === "/home"
 			? "[h] home"
@@ -36,38 +39,38 @@ function IdeShell() {
 					: pathname.startsWith("/lab")
 						? "[l] lab"
 						: undefined;
-	const settingsOpen = useIdeStore((s) => s.settingsOpen);
-	const setSettingsOpen = useIdeStore((s) => s.setSettingsOpen);
-	const commandMenuOpen = useIdeStore((s) => s.commandMenuOpen);
-	const commandModeOpen = useIdeStore((s) => s.commandModeOpen);
-	const commandHistoryOpen = useIdeStore((s) => s.commandHistoryOpen);
-	const setCommandModeOpen = useIdeStore((s) => s.setCommandModeOpen);
-	const setCommandHistoryOpen = useIdeStore((s) => s.setCommandHistoryOpen);
-	const setEditorMode = useIdeStore((s) => s.setEditorMode);
-	const helpOpen = useIdeStore((s) => s.helpOpen);
-	const setHelpOpen = useIdeStore((s) => s.setHelpOpen);
-	const statusOpen = useIdeStore((s) => s.statusOpen);
-	const setStatusOpen = useIdeStore((s) => s.setStatusOpen);
-	const toggleStatus = useIdeStore((s) => s.toggleStatus);
-	const toggleCommandMenu = useIdeStore((s) => s.toggleCommandMenu);
+	const settingsOpen = useAppStore((s) => s.settingsOpen);
+	const setSettingsOpen = useAppStore((s) => s.setSettingsOpen);
+	const commandMenuOpen = useAppStore((s) => s.commandMenuOpen);
+	const commandModeOpen = useAppStore((s) => s.commandModeOpen);
+	const commandHistoryOpen = useAppStore((s) => s.commandHistoryOpen);
+	const setCommandModeOpen = useAppStore((s) => s.setCommandModeOpen);
+	const setCommandHistoryOpen = useAppStore((s) => s.setCommandHistoryOpen);
+	const setShellMode = useAppStore((s) => s.setShellMode);
+	const helpOpen = useAppStore((s) => s.helpOpen);
+	const setHelpOpen = useAppStore((s) => s.setHelpOpen);
+	const statusOpen = useAppStore((s) => s.statusOpen);
+	const setStatusOpen = useAppStore((s) => s.setStatusOpen);
+	const toggleStatus = useAppStore((s) => s.toggleStatus);
+	const toggleCommandMenu = useAppStore((s) => s.toggleCommandMenu);
 
 	function openHome() {
-		void navigate({
+		void router.navigate({
 			to: "/home",
 			search: (prev) => prev,
 		});
 	}
 
 	function openAbout() {
-		void navigate({ to: "/about", search: {} });
+		void router.navigate({ to: "/about", search: {} });
 	}
 
 	function openLab() {
-		void navigate({ to: "/lab", search: {} });
+		void router.navigate({ to: "/lab", search: {} });
 	}
 
 	function openWorks() {
-		void navigate({ to: "/works", search: {} });
+		void router.navigate({ to: "/works", search: {} });
 	}
 
 	const contactOpen = search.contact === "open";
@@ -133,7 +136,7 @@ function IdeShell() {
 					}
 
 					setCommandModeOpen(true);
-					setEditorMode("command");
+					setShellMode("command");
 				},
 			},
 		],

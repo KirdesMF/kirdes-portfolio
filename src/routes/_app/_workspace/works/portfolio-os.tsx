@@ -23,8 +23,8 @@ function ProjectRoute() {
 					<span className="text-muted-foreground/35">##</span> Portfolio OS
 				</h1>
 				<p className="max-w-xl text-muted-foreground text-xs leading-6">
-					A fake project route for now. This will become a real case study once project names
-					and content are finalized.
+					A fake project route for now. This will become a real case study once project names and
+					content are finalized.
 				</p>
 			</div>
 		</article>

@@ -1,20 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimationCanvas, spotlightDecodeAnimation } from "#/animations";
-import { EmptyEditor } from "#/editor/empty-editor";
+import { HomePage } from "#/components/home-page/home-page";
 
 export const Route = createFileRoute("/_app/home")({
-	component: RouteComponent,
+	component: HomeRoute,
 });
 
-function RouteComponent() {
+function HomeRoute() {
 	return (
-		<div className="relative size-full overflow-hidden bg-editor">
+		<div className="relative size-full overflow-hidden bg-page">
 			<AnimationCanvas
 				className="absolute inset-0 block size-full"
 				route={spotlightDecodeAnimation}
 			/>
 			<div className="pointer-events-none relative z-10 size-full">
-				<EmptyEditor />
+				<HomePage />
 			</div>
 		</div>
 	);

@@ -17,8 +17,8 @@ import { SpotlightAnimation } from "./modes/spotlight";
 import { SpotlightHiddenAnimation } from "./modes/spotlight-hidden";
 import { SpringMeshAnimation } from "./modes/spring-mesh";
 
+export { AnimationCanvas } from "./animation-canvas";
 export type { AnimationRoute } from "./webgl-text";
-export { AnimationCanvas } from "./webgl-text";
 
 export const animationRoutes = [
 	AsciiFluidAnimation,
