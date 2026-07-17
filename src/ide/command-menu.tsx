@@ -85,7 +85,7 @@ export function CommandMenu() {
 			id: "lab",
 			Icon: FlaskConical,
 			label: "Lab",
-			shortcut: "L",
+			shortcut: "l",
 			action: () => {
 				void navigate({ to: "/lab", search: {} });
 				setOpen(false);
@@ -135,7 +135,7 @@ export function CommandMenu() {
 			id: "language",
 			Icon: Languages,
 			label: "Toggle Language",
-			shortcut: "l",
+			shortcut: "L",
 			action: () => {
 				const nextLocale = getLocale() === "en" ? "fr" : "en";
 				setOpen(false);

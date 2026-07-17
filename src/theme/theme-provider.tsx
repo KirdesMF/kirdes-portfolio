@@ -1,9 +1,11 @@
+import { useHotkeys } from "@tanstack/react-hotkeys";
 import type { ReactNode } from "react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import { setAppearanceSettings } from "./theme.functions";
 import {
 	type AppearanceSettings,
+	cycleThemeForMode,
 	defaultResolvedMode,
 	type ResolvedMode,
 	resolveAppearanceMode,
@@ -83,6 +85,15 @@ export function ThemeProvider({
 		setAppearanceState(safeAppearance);
 		setAppearanceSettings({ data: safeAppearance });
 	}, []);
+
+	const cycleTheme = useCallback(() => {
+		setAppearance(cycleThemeForMode(appearance, resolved.resolvedMode));
+	}, [appearance, resolved.resolvedMode, setAppearance]);
+
+	useHotkeys([{ hotkey: "T", callback: cycleTheme }], {
+		ignoreInputs: true,
+		preventDefault: true,
+	});
 
 	const value = useMemo(
 		() => ({

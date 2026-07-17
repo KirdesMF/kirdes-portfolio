@@ -110,6 +110,25 @@ export function resolveThemeForMode(
 	return resolvedMode === "dark" ? settings.darkTheme : settings.lightTheme;
 }
 
+export function cycleThemeForMode(
+	settings: AppearanceSettings,
+	resolvedMode: ResolvedMode,
+): AppearanceSettings {
+	if (resolvedMode === "dark") {
+		const currentIndex = darkThemeIds.indexOf(settings.darkTheme);
+		return {
+			...settings,
+			darkTheme: darkThemeIds[(currentIndex + 1) % darkThemeIds.length] ?? defaultDarkTheme,
+		};
+	}
+
+	const currentIndex = lightThemeIds.indexOf(settings.lightTheme);
+	return {
+		...settings,
+		lightTheme: lightThemeIds[(currentIndex + 1) % lightThemeIds.length] ?? defaultLightTheme,
+	};
+}
+
 export function sanitizeAppearanceSettings(settings: {
 	mode?: unknown;
 	lightTheme?: unknown;

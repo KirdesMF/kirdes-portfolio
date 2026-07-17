@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+	cycleThemeForMode,
 	isAppearanceMode,
 	isDarkThemeId,
 	isLightThemeId,
@@ -50,6 +51,37 @@ describe("resolveThemeForMode", () => {
 
 		expect(resolveThemeForMode(settings, "light")).toBe("ayu-light");
 		expect(resolveThemeForMode(settings, "dark")).toBe("sage-dark");
+	});
+});
+
+describe("cycleThemeForMode", () => {
+	const settings = {
+		mode: "system",
+		lightTheme: "github-light",
+		darkTheme: "tokyo-night",
+	} as const;
+
+	it("cycles the light theme without changing mode or dark theme", () => {
+		expect(cycleThemeForMode(settings, "light")).toEqual({
+			...settings,
+			lightTheme: "ayu-light",
+		});
+	});
+
+	it("cycles the dark theme without changing mode or light theme", () => {
+		expect(cycleThemeForMode(settings, "dark")).toEqual({
+			...settings,
+			darkTheme: "ayu-dark",
+		});
+	});
+
+	it("wraps from the last theme to the first theme", () => {
+		expect(cycleThemeForMode({ ...settings, lightTheme: "sage-light" }, "light").lightTheme).toBe(
+			"original-light",
+		);
+		expect(cycleThemeForMode({ ...settings, darkTheme: "sage-dark" }, "dark").darkTheme).toBe(
+			"original-dark",
+		);
 	});
 });
 

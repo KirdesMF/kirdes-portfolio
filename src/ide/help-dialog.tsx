@@ -30,15 +30,22 @@ const keybindingGroups = [
 			{ keys: "?", desc: "Open help" },
 			{ keys: "Space", desc: "Open leader menu" },
 			{ keys: ":", desc: "Enter command-line mode" },
-			{ keys: "f", desc: "Find file" },
-			{ keys: "g", desc: "Find text" },
-			{ keys: "r", desc: "Recent files" },
+			{ keys: "i", desc: "Toggle status" },
+			{ keys: "t", desc: "Cycle theme" },
+		],
+	},
+	{
+		label: "Navigation",
+		rows: [
+			{ keys: "h", desc: "Open Home" },
+			{ keys: "a", desc: "Open About" },
+			{ keys: "w", desc: "Open Works" },
+			{ keys: "l", desc: "Open Lab" },
 		],
 	},
 	{
 		label: "Leader mappings",
 		rows: [
-			{ keys: "Space T", desc: "Cycle theme mode" },
 			{ keys: "Space l", desc: "Toggle language" },
 			{ keys: "c", desc: "Open contacts" },
 			{ keys: "s", desc: "Open settings" },

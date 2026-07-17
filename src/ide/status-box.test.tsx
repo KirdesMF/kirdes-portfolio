@@ -1,14 +1,27 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { StatusBox } from "#/ide/status-box";
 import type { WeatherData } from "#/ide/status-box.functions";
+import { installMatchMedia } from "#/test-utils/match-media";
+import { ThemeProvider } from "#/theme/theme-provider";
 
 afterEach(cleanup);
+beforeEach(() => installMatchMedia(false));
 
 function ControlledStatusBox({ weather }: { weather: WeatherData | null }) {
 	const [open, setOpen] = useState(true);
-	return <StatusBox open={open} weather={weather} onOpenChange={setOpen} />;
+	return (
+		<ThemeProvider
+			initialAppearance={{
+				mode: "light",
+				lightTheme: "catppuccin-latte",
+				darkTheme: "tokyo-night",
+			}}
+		>
+			<StatusBox open={open} weather={weather} onOpenChange={setOpen} />
+		</ThemeProvider>
+	);
 }
 
 describe("StatusBox", () => {
@@ -20,6 +33,7 @@ describe("StatusBox", () => {
 		expect(screen.getByText("Available for work")).toBeTruthy();
 		expect(screen.getByTestId("location-icon")).toBeTruthy();
 		expect(screen.getByText("14°C / Clear")).toBeTruthy();
+		expect(screen.getByText("light / Catppuccin Latte")).toBeTruthy();
 		expect(screen.getByTestId("weather-icon").getAttribute("data-weather-code")).toBe("0");
 		expect(screen.queryByText(/Wind/)).toBeNull();
 	});

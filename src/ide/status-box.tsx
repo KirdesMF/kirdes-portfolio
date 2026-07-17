@@ -8,6 +8,7 @@ import {
 	CloudSun,
 	Globe2,
 	type LucideIcon,
+	Palette,
 	Snowflake,
 	Sun,
 	Terminal,
@@ -22,6 +23,8 @@ import {
 	PopoverTrigger,
 } from "#/design-system/popover";
 import type { WeatherData } from "#/ide/status-box.functions";
+import { themeLabels } from "#/theme/theme.types";
+import { useTheme } from "#/theme/theme-provider";
 
 type TerminalStatus = {
 	cpu: number;
@@ -36,6 +39,7 @@ type StatusBoxProps = {
 };
 
 export function StatusBox({ onOpenChange, open, weather }: StatusBoxProps) {
+	const { activeTheme, resolvedMode } = useTheme();
 	const [terminalStatus, setTerminalStatus] = useState<TerminalStatus>({
 		cpu: 18,
 		gpu: 32,
@@ -93,6 +97,11 @@ export function StatusBox({ onOpenChange, open, weather }: StatusBoxProps) {
 						</p>
 
 						<div aria-live="polite">{renderWeather(weather)}</div>
+
+						<p className="flex items-center gap-2 lowercase">
+							<Palette aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
+							{resolvedMode} / {themeLabels[activeTheme]}
+						</p>
 
 						<p className="flex items-center gap-2 text-primary">
 							<CircleCheck aria-hidden="true" className="size-3 shrink-0" />
