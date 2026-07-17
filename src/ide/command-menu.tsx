@@ -19,7 +19,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Command, CommandItem, CommandList } from "#/design-system/command";
 import { Drawer, DrawerContent, DrawerHandle, DrawerPopup } from "#/design-system/drawer";
 import { Popover, PopoverContent, PopoverTrigger } from "#/design-system/popover";
-import { toastManager } from "#/design-system/toast";
 import { useIsMobile } from "#/design-system/use-media-query";
 import { SpaceIcon } from "#/icons/space-icon";
 import { useIdeStore } from "#/ide/store";
@@ -126,19 +125,9 @@ export function CommandMenu() {
 			shortcut: "T",
 			action: () => {
 				const modeCycle = ["system", "light", "dark"] as const;
-				const modeLabels: Record<string, string> = {
-					system: "System",
-					light: "Light",
-					dark: "Dark",
-				};
 				const currentIndex = modeCycle.indexOf(appearance.mode);
 				const nextMode = modeCycle[(currentIndex + 1) % modeCycle.length];
 				setAppearance({ ...appearance, mode: nextMode });
-				toastManager.add({
-					description: `Theme mode set to ${modeLabels[nextMode]}.`,
-					title: "Theme updated",
-					type: "success",
-				});
 				setOpen(false);
 			},
 		},

@@ -1,6 +1,5 @@
 import { createRootRoute, HeadContent, Outlet, ScriptOnce, Scripts } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Toaster, ToastProvider } from "#/design-system/toast";
 import { getLocale } from "#/paraglide/runtime";
 import { getInitialAppearanceSettings } from "#/theme/theme.functions";
 import {
@@ -65,12 +64,7 @@ function RootDocument({ children }: { children: ReactNode }) {
 					<rect width="100%" height="100%" filter="url(#noise-bg-fx)" />
 				</svg>
 				<div className="relative isolate h-full">
-					<ThemeProvider initialAppearance={initialAppearance}>
-						<ToastProvider>
-							{children}
-							<Toaster />
-						</ToastProvider>
-					</ThemeProvider>
+					<ThemeProvider initialAppearance={initialAppearance}>{children}</ThemeProvider>
 				</div>
 				<Scripts />
 			</body>
