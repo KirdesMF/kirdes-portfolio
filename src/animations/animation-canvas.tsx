@@ -14,14 +14,29 @@ export function AnimationCanvas({
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
+		if (!canvas) return;
 
-		if (!canvas) {
-			return;
-		}
+		let stopAnimation: (() => void) | undefined;
+		const startAnimation = () => {
+			stopAnimation?.();
+			stopAnimation = startAnimationLoop(route.createRenderer(canvas), canvas);
+		};
+		const handleContextLost = (event: Event) => {
+			event.preventDefault();
+			stopAnimation?.();
+			stopAnimation = undefined;
+		};
+		const handleContextRestored = () => startAnimation();
 
-		const renderer = route.createRenderer(canvas);
+		canvas.addEventListener("webglcontextlost", handleContextLost);
+		canvas.addEventListener("webglcontextrestored", handleContextRestored);
+		startAnimation();
 
-		return startAnimationLoop(renderer, canvas);
+		return () => {
+			canvas.removeEventListener("webglcontextlost", handleContextLost);
+			canvas.removeEventListener("webglcontextrestored", handleContextRestored);
+			stopAnimation?.();
+		};
 	}, [route]);
 
 	return <canvas key={route.mode} ref={canvasRef} className={className ?? "block size-full"} />;

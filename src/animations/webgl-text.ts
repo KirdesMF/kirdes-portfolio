@@ -46,6 +46,11 @@ type PointerState = {
 	y: number;
 };
 
+type ViewportPointerState = PointerState & {
+	clientX: number;
+	clientY: number;
+};
+
 const TEXT_SIZE = 10;
 const LINE_HEIGHT = 13;
 
@@ -107,7 +112,7 @@ export class TextCanvasRenderer {
 	private dpr = 1;
 	private visible = true;
 	private palette = DEFAULT_ANIMATION_PALETTE;
-	private lastTextureFrameTime = 0;
+	private lastTextureFrameTime = Number.NEGATIVE_INFINITY;
 	private spotlightRadius = 0;
 	private spotlightRadiusLastTimestamp = 0;
 	private radarHaloAngle = 0;
@@ -126,9 +131,11 @@ export class TextCanvasRenderer {
 	private readonly texture: WebGLTexture;
 	private readonly abortController = new AbortController();
 	private readonly themeObserver: MutationObserver;
-	private readonly pointer: PointerState = {
+	private readonly pointer: ViewportPointerState = {
 		active: false,
 		down: false,
+		clientX: -9999,
+		clientY: -9999,
 		x: -9999,
 		y: -9999,
 	};
@@ -153,6 +160,7 @@ export class TextCanvasRenderer {
 
 	resize() {
 		const { width, height } = this.canvas.getBoundingClientRect();
+		const previousHeight = this.height;
 		const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
 		const pixelWidth = Math.max(1, Math.floor(width * dpr));
 		const pixelHeight = Math.max(1, Math.floor(height * dpr));
@@ -171,7 +179,12 @@ export class TextCanvasRenderer {
 
 		this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
 		this.rebuildRows();
-		this.drawTextTexture(0);
+		this.remapPointer();
+		this.remapScanline(previousHeight);
+		this.lastTextureFrameTime = Number.NEGATIVE_INFINITY;
+		this.spotlightRadiusLastTimestamp = 0;
+		this.radarHaloLastTimestamp = 0;
+		this.scanlineLastTimestamp = 0;
 	}
 
 	render(timestamp: number) {
@@ -201,14 +214,11 @@ export class TextCanvasRenderer {
 
 	private bindEvents() {
 		const { signal } = this.abortController;
-		const clearInteraction = () => {
-			this.pointer.active = false;
+		const releasePointer = () => {
 			this.pointer.down = false;
-			this.spotlightRadius = 0;
-			this.bursts = [];
 		};
 
-		this.canvas.addEventListener("pointermove", (event) => this.setPointerFromViewport(event), {
+		window.addEventListener("pointermove", (event) => this.setPointerFromViewport(event), {
 			signal,
 		});
 		this.canvas.addEventListener("pointerenter", (event) => this.setPointerFromViewport(event), {
@@ -246,31 +256,41 @@ export class TextCanvasRenderer {
 			},
 			{ signal },
 		);
-		window.addEventListener("blur", clearInteraction, { signal });
+		window.addEventListener("blur", releasePointer, { signal });
 		document.addEventListener(
 			"visibilitychange",
 			() => {
-				if (document.visibilityState !== "visible") clearInteraction();
+				if (document.visibilityState !== "visible") releasePointer();
 			},
 			{ signal },
 		);
 	}
 
 	private setPointerFromViewport(event: PointerEvent) {
+		this.pointer.clientX = event.clientX;
+		this.pointer.clientY = event.clientY;
+		this.remapPointer();
+	}
+
+	private remapPointer() {
 		const rect = this.canvas.getBoundingClientRect();
 		const active =
-			event.clientX >= rect.left &&
-			event.clientX <= rect.right &&
-			event.clientY >= rect.top &&
-			event.clientY <= rect.bottom;
+			this.pointer.clientX >= rect.left &&
+			this.pointer.clientX <= rect.right &&
+			this.pointer.clientY >= rect.top &&
+			this.pointer.clientY <= rect.bottom;
 
 		this.pointer.active = active;
-		this.pointer.x = event.clientX - rect.left;
-		this.pointer.y = event.clientY - rect.top;
+		this.pointer.x = this.pointer.clientX - rect.left;
+		this.pointer.y = this.pointer.clientY - rect.top;
+		if (!active) this.pointer.down = false;
+	}
 
-		if (!active) {
-			this.pointer.down = false;
-		}
+	private remapScanline(previousHeight: number) {
+		if (this.mode !== "scanline" || previousHeight <= 0 || this.height <= 0) return;
+
+		const progress = (this.scanlineY + 90) / (previousHeight + 180);
+		this.scanlineY = progress * (this.height + 180) - 90;
 	}
 
 	private getTextSize() {
@@ -837,11 +857,7 @@ export class TextCanvasRenderer {
 			return;
 		}
 
-		if (this.scanlineLastTimestamp === 0) {
-			this.scanlineLastTimestamp = timestamp;
-		}
-
-		const delta = Math.min(50, timestamp - this.scanlineLastTimestamp);
+		const delta = getFrameDelta(timestamp, this.scanlineLastTimestamp, 0);
 		this.scanlineLastTimestamp = timestamp;
 
 		const holdTarget = this.pointer.down && this.pointer.active ? 1 : 0;
@@ -878,8 +894,7 @@ export class TextCanvasRenderer {
 			return;
 		}
 
-		const delta =
-			this.radarHaloLastTimestamp > 0 ? Math.min(50, timestamp - this.radarHaloLastTimestamp) : 16;
+		const delta = getFrameDelta(timestamp, this.radarHaloLastTimestamp, 16);
 		this.radarHaloLastTimestamp = timestamp;
 		const holdTarget = this.pointer.down ? 1 : 0;
 		this.radarHaloHold += (holdTarget - this.radarHaloHold) * 0.16;
@@ -927,9 +942,7 @@ export class TextCanvasRenderer {
 	}
 
 	private updateSpotlightRadius(timestamp: number) {
-		const delta = this.spotlightRadiusLastTimestamp
-			? Math.min(50, timestamp - this.spotlightRadiusLastTimestamp)
-			: 16;
+		const delta = getFrameDelta(timestamp, this.spotlightRadiusLastTimestamp, 16);
 		this.spotlightRadiusLastTimestamp = timestamp;
 		const target = this.pointer.active ? 1 : 0;
 		this.spotlightRadius += (target - this.spotlightRadius) * (1 - Math.exp(-delta / 180));
@@ -1399,6 +1412,11 @@ function randomBetween(min: number, max: number) {
 	return min + Math.random() * (max - min);
 }
 
+function getFrameDelta(timestamp: number, previousTimestamp: number, initialDelta: number) {
+	if (previousTimestamp <= 0) return initialDelta;
+	return Math.max(0, Math.min(50, timestamp - previousTimestamp));
+}
+
 function updatePointerFromEvent(
 	canvas: HTMLCanvasElement,
 	pointer: PointerState,
@@ -1501,6 +1519,8 @@ function createProgram(
 	renderingContext.attachShader(nextProgram, vertexShader);
 	renderingContext.attachShader(nextProgram, fragmentShader);
 	renderingContext.linkProgram(nextProgram);
+	renderingContext.deleteShader(vertexShader);
+	renderingContext.deleteShader(fragmentShader);
 
 	if (!renderingContext.getProgramParameter(nextProgram, renderingContext.LINK_STATUS)) {
 		const info = renderingContext.getProgramInfoLog(nextProgram);

@@ -12,59 +12,36 @@ type RenderSize = {
 };
 
 export function startAnimationLoop(renderer: AnimationRenderer, target?: Element) {
-	let frame = 0;
+	let frame: number | null = null;
 	let disposed = false;
-	let focused = document.hasFocus();
-	let intersecting = true;
 	let needsResize = true;
 	let lastSize: RenderSize | null = null;
 	let lastRenderTime = 0;
 	const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-	const isActive = () => document.visibilityState === "visible" && focused && intersecting;
-	const resize = () => {
-		needsResize = true;
-	};
-	const stopFrame = () => {
-		if (!frame) return;
-		cancelAnimationFrame(frame);
-		frame = 0;
-	};
-	const scheduleFrame = () => {
-		if (disposed || frame || !isActive()) return;
+	function schedule() {
+		if (disposed || frame !== null) return;
 		frame = requestAnimationFrame(render);
-	};
-	const syncActiveState = () => {
-		if (isActive()) {
-			renderer.setVisible?.(true);
-			resize();
-			scheduleFrame();
-			return;
-		}
+	}
 
-		stopFrame();
-		renderer.setVisible?.(false);
-	};
-	const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize);
-	const intersectionObserver =
-		target && typeof IntersectionObserver !== "undefined"
-			? new IntersectionObserver(([entry]) => {
-					intersecting = entry?.isIntersecting ?? true;
-					syncActiveState();
-				})
-			: null;
-	const render = (timestamp: number) => {
-		frame = 0;
+	function cancel() {
+		if (frame === null) return;
+		cancelAnimationFrame(frame);
+		frame = null;
+	}
 
-		if (disposed || !isActive()) {
-			syncActiveState();
-			return;
-		}
+	function handleResize() {
+		needsResize = true;
+		schedule();
+	}
+
+	function render(timestamp: number) {
+		frame = null;
+		if (disposed) return;
 
 		const size = getRenderSize(target);
-
 		if (!size) {
-			scheduleFrame();
+			schedule();
 			return;
 		}
 
@@ -74,55 +51,36 @@ export function startAnimationLoop(renderer: AnimationRenderer, target?: Element
 			needsResize = false;
 		}
 
-		if (reducedMotionQuery.matches && timestamp - lastRenderTime < 100) {
-			scheduleFrame();
-			return;
+		if (!reducedMotionQuery.matches || timestamp - lastRenderTime >= 100) {
+			lastRenderTime = timestamp;
+			renderer.render(timestamp);
 		}
+		schedule();
+	}
 
-		lastRenderTime = timestamp;
-		renderer.render(timestamp);
-		scheduleFrame();
-	};
-	const handleVisibilityChange = () => syncActiveState();
-	const handleFocus = () => {
-		focused = true;
-		syncActiveState();
-	};
-	const handleBlur = () => {
-		focused = false;
-		syncActiveState();
-	};
+	const resizeObserver =
+		typeof ResizeObserver === "undefined" ? null : new ResizeObserver(handleResize);
 
-	window.addEventListener("resize", resize);
-	reducedMotionQuery.addEventListener("change", resize);
-	document.addEventListener("visibilitychange", handleVisibilityChange);
-	window.addEventListener("focus", handleFocus);
-	window.addEventListener("blur", handleBlur);
+	window.addEventListener("resize", handleResize);
+	reducedMotionQuery.addEventListener("change", handleResize);
 
 	if (target) {
 		resizeObserver?.observe(target);
-		intersectionObserver?.observe(target);
-		if (target.parentElement) {
-			resizeObserver?.observe(target.parentElement);
-		}
+		if (target.parentElement) resizeObserver?.observe(target.parentElement);
 	}
 
 	void document.fonts.ready.then(() => {
-		if (!disposed) resize();
+		if (!disposed) handleResize();
 	});
 
-	syncActiveState();
+	schedule();
 
 	return () => {
 		disposed = true;
-		stopFrame();
-		window.removeEventListener("resize", resize);
-		reducedMotionQuery.removeEventListener("change", resize);
-		document.removeEventListener("visibilitychange", handleVisibilityChange);
-		window.removeEventListener("focus", handleFocus);
-		window.removeEventListener("blur", handleBlur);
+		cancel();
+		window.removeEventListener("resize", handleResize);
+		reducedMotionQuery.removeEventListener("change", handleResize);
 		resizeObserver?.disconnect();
-		intersectionObserver?.disconnect();
 		renderer.dispose();
 	};
 }
@@ -140,9 +98,7 @@ function getRenderSize(target?: Element): RenderSize | null {
 	const width = Math.floor(rect.width);
 	const height = Math.floor(rect.height);
 
-	if (width <= 0 || height <= 0) {
-		return null;
-	}
+	if (width <= 0 || height <= 0) return null;
 
 	return {
 		width,
